@@ -1,0 +1,318 @@
+{
+	"nav": {
+		"dashboard": "Dashboard",
+		"learn": "Learn",
+		"leaderboard": "Leaderboard",
+		"profile": "Profile",
+		"settings": "Settings",
+		"admin": "Admin",
+		"logout": "Log out",
+		"login": "Log in",
+		"register": "Get started"
+	},
+	"common": {
+		"loading": "Loading...",
+		"save": "Save",
+		"cancel": "Cancel",
+		"delete": "Delete",
+		"edit": "Edit",
+		"create": "Create",
+		"back": "Back",
+		"next": "Next",
+		"submit": "Submit",
+		"search": "Search",
+		"noResults": "No results found",
+		"error": "An error occurred",
+		"success": "Success"
+	},
+	"auth": {
+		"email": "Email",
+		"password": "Password",
+		"confirmPassword": "Confirm Password",
+		"displayName": "Display Name",
+		"loginTitle": "Welcome back",
+		"loginSubtitle": "Sign in to continue your learning journey",
+		"registerTitle": "Create your account",
+		"registerSubtitle": "Join thousands of learners today",
+		"loginButton": "Sign in",
+		"registerButton": "Create account",
+		"noAccount": "Don't have an account?",
+		"hasAccount": "Already have an account?",
+		"forgotPassword": "Forgot password?",
+		"errors": {
+			"required": "All fields are required",
+			"invalidEmail": "Please enter a valid email",
+			"passwordLength": "Password must be at least 8 characters",
+			"passwordMismatch": "Passwords do not match",
+			"invalidCredentials": "Invalid email or password",
+			"emailExists": "An account with this email already exists"
+		}
+	},
+	"landing": {
+		"title": "The free, fun, and effective way to learn",
+		"titleHighlight": "Spanish",
+		"subtitle": "Learn with AI-powered lessons, practice speaking with voice mode, and stay motivated with gamification.",
+		"getStarted": "Get started for free",
+		"haveAccount": "I already have an account",
+		"whyTitle": "Why OpenLingo?",
+		"features": {
+			"gamified": {
+				"title": "Gamified Learning",
+				"description": "Earn XP, maintain streaks, and compete on leaderboards. Learning has never been this fun!"
+			},
+			"voice": {
+				"title": "Voice Practice",
+				"description": "Practice speaking with AI-powered voice mode and get instant feedback on your pronunciation."
+			},
+			"ai": {
+				"title": "AI Tutor",
+				"description": "Stuck on a question? Ask our AI tutor for personalized explanations and tips."
+			}
+		},
+		"levelsTitle": "From Beginner to Fluent",
+		"levelsSubtitle": "Our curriculum covers all CEFR levels from A1 to C2",
+		"ctaTitle": "Ready to start learning?",
+		"ctaSubtitle": "Join thousands of learners and start your Spanish journey today.",
+		"ctaButton": "Create free account",
+		"footer": "OpenLingo - Learn Spanish the fun way"
+	},
+	"dashboard": {
+		"welcome": "Welcome back",
+		"continueTitle": "Continue Learning",
+		"continueSubtitle": "Pick up where you left off",
+		"startButton": "Start Learning",
+		"quickActions": "Quick Actions",
+		"stats": {
+			"xp": "Total XP",
+			"streak": "Day Streak",
+			"hearts": "Hearts",
+			"bestStreak": "Best Streak"
+		},
+		"actions": {
+			"practice": {
+				"title": "Practice",
+				"description": "Review previous lessons"
+			},
+			"leaderboard": {
+				"title": "Leaderboard",
+				"description": "See how you rank"
+			},
+			"aiSettings": {
+				"title": "AI Settings",
+				"description": "Configure OpenAI API"
+			}
+		}
+	},
+	"lessons": {
+		"title": "Learn Spanish",
+		"subtitle": "Choose a level to start learning",
+		"startLearning": "Start Learning",
+		"comingSoon": "Coming soon",
+		"unitsAvailable": "units available",
+		"levels": {
+			"A1": { "name": "Beginner", "description": "Basic phrases and expressions for everyday situations" },
+			"A2": { "name": "Elementary", "description": "Simple sentences about familiar topics" },
+			"B1": { "name": "Intermediate", "description": "Main points on familiar matters regularly encountered" },
+			"B2": { "name": "Upper Intermediate", "description": "Complex texts on both concrete and abstract topics" },
+			"C1": { "name": "Advanced", "description": "Demanding texts and implicit meaning recognition" },
+			"C2": { "name": "Mastery", "description": "Near-native fluency and understanding" }
+		}
+	},
+	"lesson": {
+		"spanishLessons": "Spanish Lessons",
+		"chooseLevelToStart": "Choose a level to start learning",
+		"startLearning": "Start Learning",
+		"comingSoon": "Coming soon",
+		"noLessons": "No lessons yet",
+		"lessonsBeingPrepared": "Lessons are being prepared. Check back soon!",
+		"unitsBeingPrepared": "Units are being prepared for this level. Check back soon!",
+		"backToLevels": "Back to Levels",
+		"start": "Start",
+		"practice": "Practice",
+		"progress": "Progress",
+		"question": "Question",
+		"of": "of",
+		"checkAnswer": "Check Answer",
+		"continue": "Continue",
+		"skip": "Skip",
+		"hint": "Hint",
+		"askAI": "Ask AI for help",
+		"correct": "Correct!",
+		"incorrect": "Incorrect",
+		"correctAnswer": "Correct answer",
+		"tryAgain": "Try again",
+		"types": {
+			"multipleChoice": "Choose the correct answer",
+			"fillBlank": "Fill in the blank",
+			"translation": "Translate this sentence",
+			"matching": "Match the pairs",
+			"speaking": "Speak the sentence",
+			"listening": "Listen and type what you hear"
+		},
+		"complete": {
+			"title": "Lesson Complete!",
+			"xpEarned": "XP Earned",
+			"accuracy": "Accuracy",
+			"perfect": "Perfect!",
+			"great": "Great job!",
+			"good": "Good work!",
+			"keepPracticing": "Keep practicing!",
+			"continueButton": "Continue",
+			"reviewButton": "Review Mistakes"
+		},
+		"outOfHearts": {
+			"title": "Out of Hearts",
+			"message": "You've run out of hearts. Wait for them to regenerate or practice to earn more.",
+			"waitTime": "Next heart in",
+			"practiceButton": "Practice Instead"
+		}
+	},
+	"gamification": {
+		"hearts": "Hearts",
+		"xp": "XP",
+		"streak": "Day Streak",
+		"streakFreezes": "Streak Freezes",
+		"level": "Level",
+		"achievements": "Achievements",
+		"earnedAchievement": "Achievement Unlocked!",
+		"streakFrozen": "Streak Frozen",
+		"streakLost": "Streak Lost",
+		"freezeEarned": "Streak Freeze Earned!",
+		"freezeUsed": "Streak Freeze Used!"
+	},
+	"leaderboard": {
+		"title": "Leaderboard",
+		"subtitle": "See how you compare to other learners",
+		"tabs": {
+			"daily": "Daily",
+			"weekly": "Weekly",
+			"monthly": "Monthly",
+			"allTime": "All Time"
+		},
+		"rank": "Rank",
+		"player": "Player",
+		"xp": "XP",
+		"you": "You",
+		"noData": "No leaderboard data available"
+	},
+	"profile": {
+		"title": "Profile",
+		"editProfile": "Edit Profile",
+		"changePassword": "Change Password",
+		"memberSince": "Member since",
+		"stats": {
+			"title": "Statistics",
+			"lessonsCompleted": "Lessons Completed",
+			"totalXP": "Total XP",
+			"currentStreak": "Current Streak",
+			"longestStreak": "Longest Streak",
+			"perfectLessons": "Perfect Lessons"
+		},
+		"achievements": {
+			"title": "Achievements",
+			"earned": "Earned",
+			"locked": "Locked"
+		}
+	},
+	"settings": {
+		"title": "Settings",
+		"language": "Language",
+		"languageDescription": "Choose your preferred interface language",
+		"apiKey": {
+			"title": "OpenAI API Key",
+			"description": "Enter your OpenAI API key to enable AI-powered features like personalized feedback and voice practice.",
+			"placeholder": "sk-...",
+			"status": {
+				"configured": "API key configured",
+				"notConfigured": "No API key configured"
+			},
+			"save": "Save API Key",
+			"remove": "Remove API Key",
+			"getKey": "Get an API key from OpenAI",
+			"success": "API key saved successfully",
+			"removed": "API key removed",
+			"error": "Failed to save API key"
+		}
+	},
+	"admin": {
+		"title": "Admin Dashboard",
+		"nav": {
+			"dashboard": "Dashboard",
+			"lessons": "Lessons",
+			"users": "Users"
+		},
+		"stats": {
+			"totalUsers": "Total Users",
+			"totalLessons": "Total Lessons",
+			"totalQuestions": "Total Questions",
+			"activeToday": "Active Today"
+		},
+		"lessons": {
+			"title": "Lesson Management",
+			"create": "Create Lesson",
+			"edit": "Edit Lesson",
+			"delete": "Delete Lesson",
+			"published": "Published",
+			"draft": "Draft",
+			"questions": "Questions",
+			"noLessons": "No lessons found",
+			"form": {
+				"title": "Title",
+				"description": "Description",
+				"unit": "Unit",
+				"type": "Type",
+				"xpReward": "XP Reward",
+				"isPublished": "Published"
+			},
+			"aiGenerate": "AI Lesson Generator",
+			"apiKeyRequired": "API Key Required",
+			"apiKeyRequiredDesc": "You need to configure your OpenAI API key to use the AI lesson generator.",
+			"configureApiKey": "Configure API Key",
+			"generateNew": "Generate New Lesson",
+			"generateDesc": "Use AI to automatically create a complete Spanish lesson with questions.",
+			"selectUnit": "Select a unit...",
+			"topic": "Lesson Topic",
+			"topicPlaceholder": "e.g., Restaurant vocabulary, Job interview phrases",
+			"topicHint": "Be specific about what vocabulary or phrases you want to teach.",
+			"questionCount": "Number of Questions",
+			"difficulty": "Difficulty",
+			"difficultyBeginner": "Beginner",
+			"difficultyIntermediate": "Intermediate",
+			"difficultyAdvanced": "Advanced",
+			"willGenerate": "This will generate:",
+			"multipleChoice": "Multiple choice questions",
+			"fillBlank": "Fill in the blank questions",
+			"translation": "Translation questions",
+			"matching": "Matching questions",
+			"generateLesson": "Generate Lesson",
+			"generating": "Generating lesson...",
+			"generatingHint": "This may take 30-60 seconds. Please don't close this page.",
+			"tips": "Tips for better results",
+			"tip1": "Choose a specific topic (e.g., 'hotel vocabulary' not just 'travel')",
+			"tip2": "Match the difficulty to the CEFR level of the unit",
+			"tip3": "Generated lessons are saved as drafts - review before publishing",
+			"tip4": "You can edit questions after generation in the lesson editor"
+		},
+		"users": {
+			"title": "User Management",
+			"search": "Search users...",
+			"role": "Role",
+			"joined": "Joined",
+			"lastActive": "Last Active",
+			"xp": "XP",
+			"makeAdmin": "Make Admin",
+			"removeAdmin": "Remove Admin",
+			"deleteUser": "Delete User",
+			"noUsers": "No users found"
+		}
+	},
+	"errors": {
+		"notFound": "Page not found",
+		"notFoundMessage": "The page you're looking for doesn't exist.",
+		"unauthorized": "Unauthorized",
+		"unauthorizedMessage": "You don't have permission to access this page.",
+		"serverError": "Server Error",
+		"serverErrorMessage": "Something went wrong. Please try again later.",
+		"goHome": "Go Home"
+	}
+}

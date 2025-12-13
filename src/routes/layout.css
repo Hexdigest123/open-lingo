@@ -1,0 +1,293 @@
+@import 'tailwindcss';
+@plugin '@tailwindcss/forms';
+@plugin '@tailwindcss/typography';
+
+@theme {
+	/* Duolingo-inspired colors */
+	--color-success: #58cc02;
+	--color-success-dark: #4caf00;
+	--color-success-light: #89e219;
+
+	--color-error: #ff4b4b;
+	--color-error-dark: #ea2b2b;
+	--color-error-light: #ff6b6b;
+
+	--color-primary: #1cb0f6;
+	--color-primary-dark: #1899d6;
+	--color-primary-light: #49c0f8;
+
+	--color-purple: #ce82ff;
+	--color-purple-dark: #a855f7;
+	--color-purple-light: #dda0ff;
+
+	--color-yellow: #ffc800;
+	--color-yellow-dark: #e5b400;
+	--color-yellow-light: #ffd633;
+
+	--color-orange: #ff9600;
+	--color-orange-dark: #e58600;
+
+	/* Background colors */
+	--color-bg-dark: #131f24;
+	--color-bg-dark-secondary: #1a2c35;
+	--color-bg-light: #ffffff;
+	--color-bg-light-secondary: #f7f7f7;
+
+	/* Surface colors */
+	--color-surface-dark: #1f3541;
+	--color-surface-light: #ffffff;
+
+	/* Text colors */
+	--color-text-dark: #ffffff;
+	--color-text-light: #3c3c3c;
+	--color-text-muted: #6b7280;
+
+	/* Border colors */
+	--color-border-dark: #37464f;
+	--color-border-light: #e5e7eb;
+
+	/* Custom spacing */
+	--spacing-touch: 48px;
+
+	/* Border radius */
+	--radius-sm: 8px;
+	--radius-md: 12px;
+	--radius-lg: 16px;
+	--radius-xl: 24px;
+
+	/* Shadows */
+	--shadow-sm: 0 1px 2px 0 rgb(0 0 0 / 0.05);
+	--shadow-md: 0 4px 6px -1px rgb(0 0 0 / 0.1);
+	--shadow-lg: 0 10px 15px -3px rgb(0 0 0 / 0.1);
+	--shadow-button: 0 4px 0 0 var(--color-success-dark);
+	--shadow-button-primary: 0 4px 0 0 var(--color-primary-dark);
+	--shadow-button-error: 0 4px 0 0 var(--color-error-dark);
+
+	/* Font families */
+	--font-sans: 'Inter', ui-sans-serif, system-ui, sans-serif;
+
+	/* Animation durations */
+	--duration-fast: 150ms;
+	--duration-normal: 300ms;
+	--duration-slow: 500ms;
+}
+
+/* Base styles */
+html {
+	font-family: var(--font-sans);
+}
+
+body {
+	@apply bg-bg-light text-text-light;
+	@apply antialiased;
+}
+
+/* Dark mode support */
+@media (prefers-color-scheme: dark) {
+	body {
+		@apply bg-bg-dark text-text-dark;
+	}
+}
+
+/* Button base styles */
+.btn {
+	@apply inline-flex items-center justify-center font-bold rounded-xl transition-all;
+	@apply focus:outline-none focus:ring-2 focus:ring-offset-2;
+	@apply disabled:opacity-50 disabled:cursor-not-allowed;
+	min-height: var(--spacing-touch);
+}
+
+.btn-sm {
+	@apply px-4 py-2 text-sm;
+	min-height: 36px;
+}
+
+.btn-md {
+	@apply px-6 py-3 text-base;
+}
+
+.btn-lg {
+	@apply px-8 py-4 text-lg;
+}
+
+.btn-success {
+	@apply bg-success text-white;
+	box-shadow: var(--shadow-button);
+}
+
+.btn-success:hover:not(:disabled) {
+	@apply bg-success-dark;
+}
+
+.btn-success:active:not(:disabled) {
+	box-shadow: none;
+	transform: translateY(4px);
+}
+
+.btn-primary {
+	@apply bg-primary text-white;
+	box-shadow: var(--shadow-button-primary);
+}
+
+.btn-primary:hover:not(:disabled) {
+	@apply bg-primary-dark;
+}
+
+.btn-primary:active:not(:disabled) {
+	box-shadow: none;
+	transform: translateY(4px);
+}
+
+.btn-error {
+	@apply bg-error text-white;
+	box-shadow: var(--shadow-button-error);
+}
+
+.btn-error:hover:not(:disabled) {
+	@apply bg-error-dark;
+}
+
+.btn-error:active:not(:disabled) {
+	box-shadow: none;
+	transform: translateY(4px);
+}
+
+.btn-ghost {
+	@apply bg-transparent text-text-light border-2 border-border-light;
+}
+
+.btn-ghost:hover:not(:disabled) {
+	@apply bg-bg-light-secondary;
+}
+
+/* Card styles */
+.card {
+	@apply bg-surface-light rounded-xl p-6;
+	@apply border border-border-light;
+	box-shadow: var(--shadow-md);
+}
+
+/* Input styles */
+.input {
+	@apply w-full px-4 py-3 rounded-xl border-2 border-border-light;
+	@apply bg-bg-light text-text-light;
+	@apply focus:border-primary focus:ring-0 focus:outline-none;
+	@apply transition-colors duration-150;
+	min-height: var(--spacing-touch);
+}
+
+.input:focus {
+	@apply border-primary;
+}
+
+.input-error {
+	@apply border-error;
+}
+
+/* Progress bar */
+.progress-bar {
+	@apply h-2 bg-border-light rounded-full overflow-hidden;
+}
+
+.progress-bar-fill {
+	@apply h-full bg-success rounded-full transition-all duration-300;
+}
+
+/* Animations */
+@keyframes pulse-success {
+	0%,
+	100% {
+		transform: scale(1);
+		box-shadow: 0 0 0 0 rgba(88, 204, 2, 0.7);
+	}
+	50% {
+		transform: scale(1.05);
+		box-shadow: 0 0 0 10px rgba(88, 204, 2, 0);
+	}
+}
+
+@keyframes shake {
+	0%,
+	100% {
+		transform: translateX(0);
+	}
+	10%,
+	30%,
+	50%,
+	70%,
+	90% {
+		transform: translateX(-10px);
+	}
+	20%,
+	40%,
+	60%,
+	80% {
+		transform: translateX(10px);
+	}
+}
+
+@keyframes heart-break {
+	0% {
+		transform: scale(1);
+		opacity: 1;
+	}
+	50% {
+		transform: scale(1.2) rotate(10deg);
+	}
+	100% {
+		transform: scale(0);
+		opacity: 0;
+	}
+}
+
+@keyframes confetti {
+	0% {
+		transform: translateY(0) rotate(0deg);
+		opacity: 1;
+	}
+	100% {
+		transform: translateY(-100px) rotate(720deg);
+		opacity: 0;
+	}
+}
+
+@keyframes bounce-in {
+	0% {
+		transform: scale(0);
+		opacity: 0;
+	}
+	50% {
+		transform: scale(1.1);
+	}
+	100% {
+		transform: scale(1);
+		opacity: 1;
+	}
+}
+
+.animate-pulse-success {
+	animation: pulse-success 0.5s ease-in-out;
+}
+
+.animate-shake {
+	animation: shake 0.5s ease-in-out;
+}
+
+.animate-heart-break {
+	animation: heart-break 0.3s ease-out forwards;
+}
+
+.animate-bounce-in {
+	animation: bounce-in 0.3s ease-out;
+}
+
+/* Utility classes */
+.text-balance {
+	text-wrap: balance;
+}
+
+/* Touch-friendly tap targets */
+.tap-target {
+	min-height: var(--spacing-touch);
+	min-width: var(--spacing-touch);
+}
