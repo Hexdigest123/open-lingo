@@ -154,7 +154,8 @@
 		"matched": "Matched",
 		"languages": {
 			"spanish": "Spanish",
-			"english": "English"
+			"english": "English",
+			"german": "German"
 		},
 		"types": {
 			"multipleChoice": "Choose the correct answer",

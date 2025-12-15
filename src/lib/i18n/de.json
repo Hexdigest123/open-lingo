@@ -154,7 +154,8 @@
 		"matched": "Zugeordnet",
 		"languages": {
 			"spanish": "Spanisch",
-			"english": "Englisch"
+			"english": "Englisch",
+			"german": "Deutsch"
 		},
 		"types": {
 			"multipleChoice": "Wähle die richtige Antwort",

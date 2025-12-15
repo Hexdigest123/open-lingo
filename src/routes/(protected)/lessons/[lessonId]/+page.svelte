@@ -1,6 +1,6 @@
 <script lang="ts">
 	import type { PageData } from './$types';
-	import { t } from '$lib/i18n/index.svelte';
+	import { i18n, t } from '$lib/i18n/index.svelte';
 	import { goto, invalidateAll } from '$app/navigation';
 	import { deserialize } from '$app/forms';
 	import MultipleChoiceQuestion from '$lib/components/lessons/MultipleChoiceQuestion.svelte';
@@ -38,6 +38,48 @@
 	const currentQuestion = $derived(questions[currentIndex]);
 	const questionContent = $derived(currentQuestion?.content as Record<string, unknown>);
 
+	// Helper to get locale-specific content with fallback
+	function getLocalizedText(enKey: string, deKey: string, fallbackKey?: string): string {
+		const content = questionContent;
+		if (!content) return '';
+
+		if (i18n.locale === 'de' && content[deKey]) {
+			return content[deKey] as string;
+		}
+		if (content[enKey]) {
+			return content[enKey] as string;
+		}
+		// Fallback for legacy questions that have a single key
+		if (fallbackKey && content[fallbackKey]) {
+			return content[fallbackKey] as string;
+		}
+		return '';
+	}
+
+	// Locale-aware question text for multiple choice
+	const localizedQuestionText = $derived(
+		getLocalizedText('questionEn', 'questionDe', 'question')
+	);
+
+	// Locale-aware sentence and hint for fill blank
+	const localizedSentence = $derived(
+		getLocalizedText('sentenceEn', 'sentenceDe', 'sentence')
+	);
+	const localizedHint = $derived(
+		getLocalizedText('hintEn', 'hintDe', 'hint')
+	);
+
+	// Locale-aware pairs for matching (transform to use correct language)
+	function getLocalizedPairs(): Array<{ spanish: string; english: string }> {
+		if (!questionContent?.pairs) return [];
+		const pairs = questionContent.pairs as Array<{ spanish: string; english: string; german?: string }>;
+		return pairs.map(p => ({
+			spanish: p.spanish,
+			english: i18n.locale === 'de' && p.german ? p.german : p.english
+		}));
+	}
+	const localizedPairs = $derived(getLocalizedPairs());
+
 	$effect(() => {
 		if (hearts <= 0 && !isComplete && !data.isRevision) {
 			// Out of hearts - could show modal or redirect
@@ -56,7 +98,8 @@
 				headers: { 'Content-Type': 'application/json' },
 				body: JSON.stringify({
 					questionId: currentQuestion.id,
-					userAnswer: lastUserAnswer
+					userAnswer: lastUserAnswer,
+					locale: i18n.locale
 				})
 			});
 
@@ -85,6 +128,7 @@
 		const formData = new FormData();
 		formData.append('questionId', question.id.toString());
 		formData.append('answer', answer);
+		formData.append('isRevision', data.isRevision ? 'true' : 'false');
 
 		try {
 			const response = await fetch(`?/submit`, {
@@ -253,15 +297,15 @@
 		{#key currentQuestion.id}
 			{#if currentQuestion.type === 'multiple_choice'}
 				<MultipleChoiceQuestion
-					questionText={questionContent.question as string}
+					questionText={localizedQuestionText}
 					options={questionContent.options as string[]}
 					disabled={showFeedback || isSubmitting}
 					onAnswer={handleAnswer}
 				/>
 			{:else if currentQuestion.type === 'fill_blank'}
 				<FillBlankQuestion
-					sentence={questionContent.sentence as string}
-					hint={questionContent.hint as string}
+					sentence={localizedSentence}
+					hint={localizedHint}
 					disabled={showFeedback || isSubmitting}
 					onAnswer={handleAnswer}
 				/>
@@ -274,7 +318,7 @@
 				/>
 			{:else if currentQuestion.type === 'matching'}
 				<MatchingQuestion
-					pairs={questionContent.pairs as Array<{ spanish: string; english: string }>}
+					pairs={localizedPairs}
 					disabled={showFeedback || isSubmitting}
 					onAnswer={handleAnswer}
 				/>
@@ -290,7 +334,7 @@
 			<div
 				class="mt-6 rounded-xl p-4 {lastAnswer.isCorrect ? 'bg-success/10' : 'bg-error/10'}"
 			>
-				<div class="flex items-center gap-3">
+				<div class="flex items-start gap-3">
 					<span class="text-2xl">{lastAnswer.isCorrect ? '✅' : '❌'}</span>
 					<div class="flex-1">
 						<p class="font-bold {lastAnswer.isCorrect ? 'text-success' : 'text-error'}">
@@ -300,16 +344,16 @@
 							<p class="text-sm text-text-muted">
 								{t('lesson.correctAnswer')}: <span class="font-medium">{lastAnswer.correctAnswer}</span>
 							</p>
+							{#if data.hasApiKey && !aiExplanation && !isLoadingExplanation}
+								<button
+									onclick={fetchExplanation}
+									class="btn btn-ghost text-sm text-primary hover:bg-primary/10 mt-3 -ml-2"
+								>
+									🤖 {t('lesson.explain')}
+								</button>
+							{/if}
 						{/if}
 					</div>
-					{#if !lastAnswer.isCorrect && data.hasApiKey && !aiExplanation && !isLoadingExplanation}
-						<button
-							onclick={fetchExplanation}
-							class="btn btn-ghost text-sm text-primary hover:bg-primary/10"
-						>
-							🤖 {t('lesson.explain')}
-						</button>
-					{/if}
 				</div>
 
 				<AiExplanation

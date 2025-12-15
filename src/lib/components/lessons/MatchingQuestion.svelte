@@ -1,5 +1,5 @@
 <script lang="ts">
-	import { t } from '$lib/i18n/index.svelte';
+	import { i18n, t } from '$lib/i18n/index.svelte';
 
 	interface Pair {
 		spanish: string;
@@ -13,6 +13,11 @@
 	}
 
 	let { pairs, disabled, onAnswer }: Props = $props();
+
+	// Show "German" or "English" based on locale
+	const targetLanguageLabel = $derived(
+		i18n.locale === 'de' ? t('lesson.languages.german') : t('lesson.languages.english')
+	);
 
 	let selectedSpanish = $state<string | null>(null);
 	let selectedEnglish = $state<string | null>(null);
@@ -81,9 +86,9 @@
 			{/each}
 		</div>
 
-		<!-- English Column -->
+		<!-- Target Language Column (English or German based on locale) -->
 		<div class="space-y-2">
-			<div class="mb-2 text-center text-sm font-medium text-success">{t('lesson.languages.english')}</div>
+			<div class="mb-2 text-center text-sm font-medium text-success">{targetLanguageLabel}</div>
 			{#each englishWords as word}
 				<button
 					onclick={() => selectEnglish(word)}

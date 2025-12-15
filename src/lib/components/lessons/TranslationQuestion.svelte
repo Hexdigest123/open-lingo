@@ -12,9 +12,37 @@
 
 	let answer = $state('');
 
-	const isEnToEs = $derived(direction === 'en_to_es');
-	const fromLang = $derived(isEnToEs ? t('lesson.languages.english') : t('lesson.languages.spanish'));
-	const toLang = $derived(isEnToEs ? t('lesson.languages.spanish') : t('lesson.languages.english'));
+	// Determine source and target languages based on direction
+	function getFromLang(dir: string): string {
+		switch (dir) {
+			case 'en_to_es':
+				return t('lesson.languages.english');
+			case 'es_to_en':
+			case 'es_to_de':
+				return t('lesson.languages.spanish');
+			case 'de_to_es':
+				return t('lesson.languages.german');
+			default:
+				return t('lesson.languages.english');
+		}
+	}
+
+	function getToLang(dir: string): string {
+		switch (dir) {
+			case 'en_to_es':
+			case 'de_to_es':
+				return t('lesson.languages.spanish');
+			case 'es_to_en':
+				return t('lesson.languages.english');
+			case 'es_to_de':
+				return t('lesson.languages.german');
+			default:
+				return t('lesson.languages.spanish');
+		}
+	}
+
+	const fromLang = $derived(getFromLang(direction));
+	const toLang = $derived(getToLang(direction));
 
 	function submit() {
 		if (answer.trim() && !disabled) {

@@ -13,11 +13,27 @@ export const POST: RequestHandler = async ({ request, locals }) => {
 	}
 
 	const body = await request.json();
-	const { questionId, userAnswer } = body;
+	const { questionId, userAnswer, locale = 'en' } = body;
 
 	if (!questionId || !userAnswer) {
 		return json({ error: 'Question ID and user answer are required' }, { status: 400 });
 	}
+
+	// Build locale-specific system prompt
+	const systemPrompt =
+		locale === 'de'
+			? `Du bist ein hilfreicher Spanisch-Tutor. Ein Schüler hat eine Frage falsch beantwortet und braucht Hilfe. Gib eine kurze, ermutigende Erklärung (2-3 Sätze):
+1. Warum die Antwort falsch war
+2. Warum die richtige Antwort korrekt ist
+3. Einen hilfreichen Tipp, um sich dieses Konzept zu merken
+
+Sei knapp, freundlich und lehrreich. Verwende einfache Sprache.`
+			: `You are a helpful Spanish language tutor. A student got a question wrong and needs help understanding why. Provide a brief, encouraging explanation (2-3 sentences) about:
+1. Why their answer was incorrect
+2. Why the correct answer is right
+3. A helpful tip to remember this concept
+
+Be concise, friendly, and educational. Use simple language.`;
 
 	// Get user's API key
 	const [user] = await db
@@ -76,12 +92,7 @@ export const POST: RequestHandler = async ({ request, locals }) => {
 				messages: [
 					{
 						role: 'system',
-						content: `You are a helpful Spanish language tutor. A student got a question wrong and needs help understanding why. Provide a brief, encouraging explanation (2-3 sentences) about:
-1. Why their answer was incorrect
-2. Why the correct answer is right
-3. A helpful tip to remember this concept
-
-Be concise, friendly, and educational. Use simple language.`
+						content: systemPrompt
 					},
 					{
 						role: 'user',
@@ -90,7 +101,7 @@ Be concise, friendly, and educational. Use simple language.`
 Student's answer: "${userAnswer}"
 Correct answer: "${question.correctAnswer}"
 
-Please explain why this was wrong and help me understand the correct answer.`
+${locale === 'de' ? 'Bitte erkläre, warum das falsch war und hilf mir, die richtige Antwort zu verstehen.' : 'Please explain why this was wrong and help me understand the correct answer.'}`
 					}
 				],
 				temperature: 0.7,

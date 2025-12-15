@@ -31,7 +31,7 @@ function getRandomItems<T>(array: T[], count: number): T[] {
 	return shuffled.slice(0, Math.min(count, array.length));
 }
 
-// Generate multiple choice questions
+// Generate multiple choice questions (bilingual - store both English and German)
 function generateMultipleChoiceQuestions(
 	vocabItems: VocabItem[],
 	lessonId: number,
@@ -47,12 +47,14 @@ function generateMultipleChoiceQuestions(
 		const wrongAnswers = getRandomItems(otherItems, 3).map((v) => v.es);
 		const options = shuffle([item.es, ...wrongAnswers]);
 
+		// Store both English and German versions - UI will select based on locale
 		questions.push({
 			id: 0, // Will be set by DB
 			lessonId,
 			type: 'multiple_choice' as const,
 			content: {
-				question: `How do you say "${item.en}" in Spanish?`,
+				questionEn: `How do you say "${item.en}" in Spanish?`,
+				questionDe: `Wie sagt man "${item.de}" auf Spanisch?`,
 				options
 			},
 			correctAnswer: item.es,
@@ -65,7 +67,7 @@ function generateMultipleChoiceQuestions(
 	return questions;
 }
 
-// Generate fill in the blank questions
+// Generate fill in the blank questions (bilingual - store both English and German)
 function generateFillBlankQuestions(
 	vocabItems: VocabItem[],
 	sentences: { es: string; en: string }[],
@@ -89,13 +91,15 @@ function generateFillBlankQuestions(
 					new RegExp(vocab.es, 'i'),
 					'_____'
 				);
+				// Store both English and German hints
 				questions.push({
 					id: 0,
 					lessonId,
 					type: 'fill_blank' as const,
 					content: {
 						sentence: blankSentence,
-						hint: vocab.en
+						hintEn: vocab.en,
+						hintDe: vocab.de
 					},
 					correctAnswer: vocab.es,
 					audioUrl: null,
@@ -108,16 +112,19 @@ function generateFillBlankQuestions(
 		}
 	}
 
-	// If we need more, create simple fill-in-blank from vocab
+	// If we need more, create simple fill-in-blank from vocab (store both language versions)
 	for (let i = 0; added < count && i < shuffledVocab.length; i++) {
 		const item = shuffledVocab[i];
+
 		questions.push({
 			id: 0,
 			lessonId,
 			type: 'fill_blank' as const,
 			content: {
-				sentence: `The Spanish word for "${item.en}" is _____.`,
-				hint: `Starts with "${item.es.charAt(0)}"`
+				sentenceEn: `The Spanish word for "${item.en}" is _____.`,
+				sentenceDe: `Das spanische Wort für "${item.de}" ist _____.`,
+				hintEn: `Starts with "${item.es.charAt(0)}"`,
+				hintDe: `Beginnt mit "${item.es.charAt(0)}"`
 			},
 			correctAnswer: item.es,
 			audioUrl: null,
@@ -130,7 +137,7 @@ function generateFillBlankQuestions(
 	return questions;
 }
 
-// Generate translation questions
+// Generate translation questions (bilingual - includes English and German directions)
 function generateTranslationQuestions(
 	vocabItems: VocabItem[],
 	sentences: { es: string; en: string }[],
@@ -139,10 +146,10 @@ function generateTranslationQuestions(
 	count: number
 ): schema.Question[] {
 	const questions: schema.Question[] = [];
-	const halfCount = Math.ceil(count / 2);
+	const quarterCount = Math.ceil(count / 4);
 
 	// English to Spanish translations
-	const enToEsItems = getRandomItems(vocabItems, halfCount);
+	const enToEsItems = getRandomItems(vocabItems, quarterCount);
 	for (let i = 0; i < enToEsItems.length; i++) {
 		const item = enToEsItems[i];
 		questions.push({
@@ -161,10 +168,8 @@ function generateTranslationQuestions(
 	}
 
 	// Spanish to English translations
-	const esToEnItems = getRandomItems(
-		vocabItems.filter((v) => !enToEsItems.includes(v)),
-		count - halfCount
-	);
+	const remainingVocab1 = vocabItems.filter((v) => !enToEsItems.includes(v));
+	const esToEnItems = getRandomItems(remainingVocab1, quarterCount);
 	for (let i = 0; i < esToEnItems.length; i++) {
 		const item = esToEnItems[i];
 		questions.push({
@@ -177,7 +182,47 @@ function generateTranslationQuestions(
 			},
 			correctAnswer: item.en,
 			audioUrl: null,
-			order: startOrder + halfCount + i,
+			order: startOrder + quarterCount + i,
+			createdAt: new Date()
+		});
+	}
+
+	// German to Spanish translations
+	const remainingVocab2 = remainingVocab1.filter((v) => !esToEnItems.includes(v));
+	const deToEsItems = getRandomItems(remainingVocab2, quarterCount);
+	for (let i = 0; i < deToEsItems.length; i++) {
+		const item = deToEsItems[i];
+		questions.push({
+			id: 0,
+			lessonId,
+			type: 'translation' as const,
+			content: {
+				text: item.de,
+				direction: 'de_to_es'
+			},
+			correctAnswer: item.es,
+			audioUrl: null,
+			order: startOrder + quarterCount * 2 + i,
+			createdAt: new Date()
+		});
+	}
+
+	// Spanish to German translations
+	const remainingVocab3 = remainingVocab2.filter((v) => !deToEsItems.includes(v));
+	const esToDeItems = getRandomItems(remainingVocab3, count - quarterCount * 3);
+	for (let i = 0; i < esToDeItems.length; i++) {
+		const item = esToDeItems[i];
+		questions.push({
+			id: 0,
+			lessonId,
+			type: 'translation' as const,
+			content: {
+				text: item.es,
+				direction: 'es_to_de'
+			},
+			correctAnswer: item.de,
+			audioUrl: null,
+			order: startOrder + quarterCount * 3 + i,
 			createdAt: new Date()
 		});
 	}
@@ -185,7 +230,7 @@ function generateTranslationQuestions(
 	return questions;
 }
 
-// Generate matching questions
+// Generate matching questions (bilingual - store both English and German)
 function generateMatchingQuestions(
 	vocabItems: VocabItem[],
 	lessonId: number,
@@ -206,9 +251,11 @@ function generateMatchingQuestions(
 			selectedVocab.push(vocabItems[(startIdx + j) % vocabItems.length]);
 		}
 
+		// Store both English and German versions - UI will select based on locale
 		const pairs = selectedVocab.map((v) => ({
 			spanish: v.es,
-			english: v.en
+			english: v.en,
+			german: v.de
 		}));
 
 		questions.push({

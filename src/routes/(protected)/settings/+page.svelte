@@ -24,8 +24,8 @@
 					onclick={() => setLocale(locale.code)}
 					class="flex items-center gap-2 rounded-xl border-2 px-4 py-3 font-medium transition-colors
 						{i18n.locale === locale.code
-							? 'border-primary bg-primary/10 text-primary'
-							: 'border-border-light hover:border-primary/50'}"
+						? 'border-primary bg-primary/10 text-primary'
+						: 'border-border-light text-text-light hover:border-primary/50'}"
 				>
 					<span class="text-xl">{locale.code === 'en' ? '🇬🇧' : '🇩🇪'}</span>
 					<span>{locale.name}</span>

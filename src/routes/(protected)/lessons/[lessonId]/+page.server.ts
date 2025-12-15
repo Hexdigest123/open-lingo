@@ -201,6 +201,7 @@ export const actions: Actions = {
 
 		const questionId = parseInt(data.get('questionId')?.toString() || '0');
 		const answer = data.get('answer')?.toString().trim() || '';
+		const isRevision = data.get('isRevision')?.toString() === 'true';
 
 		if (!questionId || !answer) {
 			return fail(400, { error: 'Question ID and answer are required' });
@@ -242,7 +243,7 @@ export const actions: Actions = {
 				.where(eq(userStats.userId, userId));
 		}
 
-		if (availableHearts <= 0) {
+		if (availableHearts <= 0 && !isRevision) {
 			return fail(403, { error: 'No hearts remaining' });
 		}
 
@@ -285,7 +286,10 @@ export const actions: Actions = {
 				);
 
 				if (daysDiff === 0) {
-					// Same day, keep streak
+					// Same day - ensure streak is at least 1 (first activity of the day)
+					if (newStreak === 0) {
+						newStreak = 1;
+					}
 				} else if (daysDiff === 1) {
 					// Next day, increment streak
 					newStreak = (stats?.currentStreak || 0) + 1;
@@ -348,26 +352,38 @@ export const actions: Actions = {
 				correctAnswer: question.correctAnswer,
 				freezeEarned,
 				hearts: availableHearts,
-				streakFreezeUsed
+				streakFreezeUsed,
+				currentStreak: newStreak
 			};
 		} else {
-			// Lose a heart
-			const newHearts = Math.max(0, availableHearts - 1);
-			await db
-				.update(userStats)
-				.set({
-					hearts: newHearts,
-					heartsLastRefilled:
-						newHearts < availableHearts ? new Date() : stats?.heartsLastRefilled
-				})
-				.where(eq(userStats.userId, userId));
+			// Only deduct hearts if not in revision mode
+			if (!isRevision) {
+				const newHearts = Math.max(0, availableHearts - 1);
+				await db
+					.update(userStats)
+					.set({
+						hearts: newHearts,
+						heartsLastRefilled:
+							newHearts < availableHearts ? new Date() : stats?.heartsLastRefilled
+					})
+					.where(eq(userStats.userId, userId));
 
+				return {
+					success: true,
+					isCorrect,
+					correctAnswer: question.correctAnswer,
+					freezeEarned: false,
+					hearts: newHearts
+				};
+			}
+
+			// Revision mode - no heart deduction
 			return {
 				success: true,
 				isCorrect,
 				correctAnswer: question.correctAnswer,
-				freezeEarned,
-				hearts: newHearts
+				freezeEarned: false,
+				hearts: availableHearts
 			};
 		}
 	},
