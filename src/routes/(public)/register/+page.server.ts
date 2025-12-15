@@ -39,24 +39,26 @@ export const actions: Actions = {
 			return fail(400, { error: 'An account with this email already exists', displayName, email });
 		}
 
+		let tokens;
 		try {
 			// Create user and session
-			const { tokens } = await createUserWithSession(email, password, displayName);
-
-			// Set refresh token cookie
-			cookies.set(REFRESH_COOKIE_NAME, tokens.refreshToken, {
-				path: '/',
-				httpOnly: true,
-				secure: !import.meta.env.DEV,
-				sameSite: 'lax',
-				maxAge: 60 * 60 * 24 * 7 // 7 days
-			});
-
-			// Redirect to dashboard
-			redirect(303, '/dashboard');
+			const result = await createUserWithSession(email, password, displayName);
+			tokens = result.tokens;
 		} catch (error) {
 			console.error('Registration error:', error);
 			return fail(500, { error: 'Something went wrong. Please try again.', displayName, email });
 		}
+
+		// Set refresh token cookie (outside try/catch to avoid catching redirect)
+		cookies.set(REFRESH_COOKIE_NAME, tokens.refreshToken, {
+			path: '/',
+			httpOnly: true,
+			secure: !import.meta.env.DEV,
+			sameSite: 'lax',
+			maxAge: 60 * 60 * 24 * 7 // 7 days
+		});
+
+		// Redirect to dashboard (must be outside try/catch as redirect() throws)
+		redirect(303, '/dashboard');
 	}
 };

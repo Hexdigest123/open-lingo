@@ -1,11 +1,21 @@
 <script lang="ts">
 	import type { PageData } from './$types';
 	import { t } from '$lib/i18n/index.svelte';
-	import { goto } from '$app/navigation';
+	import { goto, invalidateAll } from '$app/navigation';
+	import { deserialize } from '$app/forms';
 	import MultipleChoiceQuestion from '$lib/components/lessons/MultipleChoiceQuestion.svelte';
 	import FillBlankQuestion from '$lib/components/lessons/FillBlankQuestion.svelte';
 	import TranslationQuestion from '$lib/components/lessons/TranslationQuestion.svelte';
 	import MatchingQuestion from '$lib/components/lessons/MatchingQuestion.svelte';
+	import AiExplanation from '$lib/components/lessons/AiExplanation.svelte';
+
+	type SubmitActionData = {
+		success: boolean;
+		isCorrect: boolean;
+		correctAnswer: string;
+		freezeEarned?: boolean;
+		hearts?: number;
+	};
 
 	let { data }: { data: PageData } = $props();
 
@@ -17,6 +27,10 @@
 	let lastAnswer = $state<{ isCorrect: boolean; correctAnswer: string } | null>(null);
 	let isComplete = $state(false);
 	let isSubmitting = $state(false);
+	let lastUserAnswer = $state<string>('');
+	let aiExplanation = $state<string | null>(null);
+	let isLoadingExplanation = $state(false);
+	let explanationError = $state<string | null>(null);
 
 	const questions = data.questions;
 	const totalQuestions = questions.length;
@@ -25,15 +39,47 @@
 	const questionContent = $derived(currentQuestion?.content as Record<string, unknown>);
 
 	$effect(() => {
-		if (hearts <= 0 && !isComplete) {
+		if (hearts <= 0 && !isComplete && !data.isRevision) {
 			// Out of hearts - could show modal or redirect
 		}
 	});
 
+	async function fetchExplanation() {
+		if (isLoadingExplanation || !lastUserAnswer) return;
+
+		isLoadingExplanation = true;
+		explanationError = null;
+
+		try {
+			const response = await fetch('/api/ai/explain', {
+				method: 'POST',
+				headers: { 'Content-Type': 'application/json' },
+				body: JSON.stringify({
+					questionId: currentQuestion.id,
+					userAnswer: lastUserAnswer
+				})
+			});
+
+			const result = await response.json();
+
+			if (!response.ok) {
+				explanationError = result.error || t('lesson.explanation.error');
+			} else {
+				aiExplanation = result.explanation;
+			}
+		} catch (error) {
+			console.error('Failed to fetch explanation:', error);
+			explanationError = t('lesson.explanation.error');
+		} finally {
+			isLoadingExplanation = false;
+		}
+	}
+
 	async function handleAnswer(answer: string) {
-		if (isSubmitting || showFeedback) return;
+		if (isSubmitting || showFeedback || (hearts <= 0 && !data.isRevision)) return;
 
 		isSubmitting = true;
+		lastUserAnswer = answer;
 		const question = questions[currentIndex];
 
 		const formData = new FormData();
@@ -46,19 +92,31 @@
 				body: formData
 			});
 
-			const result = await response.json();
-			const actionData = result.data ? JSON.parse(result.data) : result;
+			const result = deserialize(await response.text());
+
+			if (result.type !== 'success') {
+				throw new Error('Submission failed');
+			}
+
+			const actionData = result.data as SubmitActionData;
 
 			lastAnswer = {
-				isCorrect: actionData[1] || actionData.isCorrect,
-				correctAnswer: actionData[2] || actionData.correctAnswer
+				isCorrect: actionData.isCorrect,
+				correctAnswer: actionData.correctAnswer
 			};
+
+			// Sync hearts from server if provided
+			if (actionData.hearts !== undefined) {
+				hearts = actionData.hearts;
+				// Refresh layout data to sync header hearts display
+				invalidateAll();
+			} else if (!lastAnswer.isCorrect) {
+				hearts = Math.max(0, hearts - 1);
+			}
 
 			if (lastAnswer.isCorrect) {
 				xpEarned += 10;
 				correctCount++;
-			} else {
-				hearts = Math.max(0, hearts - 1);
 			}
 
 			showFeedback = true;
@@ -72,6 +130,9 @@
 	function nextQuestion() {
 		showFeedback = false;
 		lastAnswer = null;
+		lastUserAnswer = '';
+		aiExplanation = null;
+		explanationError = null;
 
 		if (currentIndex < totalQuestions - 1) {
 			currentIndex++;
@@ -88,10 +149,14 @@
 		formData.append('xpEarned', xpEarned.toString());
 
 		try {
-			await fetch(`?/complete`, {
+			const response = await fetch(`?/complete`, {
 				method: 'POST',
 				body: formData
 			});
+			const result = deserialize(await response.text());
+			if (result.type !== 'success') {
+				console.error('Failed to complete lesson:', result);
+			}
 		} catch (error) {
 			console.error('Failed to complete lesson:', error);
 		}
@@ -141,7 +206,7 @@
 			</button>
 		</div>
 	</div>
-{:else if hearts <= 0}
+{:else if hearts <= 0 && !data.isRevision}
 	<!-- Out of Hearts Screen -->
 	<div class="fixed inset-0 z-50 flex items-center justify-center bg-black/50 p-4">
 		<div class="card w-full max-w-md text-center">
@@ -227,7 +292,7 @@
 			>
 				<div class="flex items-center gap-3">
 					<span class="text-2xl">{lastAnswer.isCorrect ? '✅' : '❌'}</span>
-					<div>
+					<div class="flex-1">
 						<p class="font-bold {lastAnswer.isCorrect ? 'text-success' : 'text-error'}">
 							{lastAnswer.isCorrect ? t('lesson.correct') : t('lesson.incorrect')}
 						</p>
@@ -237,7 +302,21 @@
 							</p>
 						{/if}
 					</div>
+					{#if !lastAnswer.isCorrect && data.hasApiKey && !aiExplanation && !isLoadingExplanation}
+						<button
+							onclick={fetchExplanation}
+							class="btn btn-ghost text-sm text-primary hover:bg-primary/10"
+						>
+							🤖 {t('lesson.explain')}
+						</button>
+					{/if}
 				</div>
+
+				<AiExplanation
+					explanation={aiExplanation}
+					isLoading={isLoadingExplanation}
+					error={explanationError}
+				/>
 
 				<button
 					onclick={nextQuestion}

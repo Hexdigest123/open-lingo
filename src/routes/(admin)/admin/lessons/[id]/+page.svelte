@@ -203,7 +203,7 @@
 										{question.type}
 									</span>
 								</div>
-								<p class="font-medium text-text-light">{question.questionText}</p>
+								<p class="font-medium text-text-light">{(question.content as Record<string, unknown>).question || (question.content as Record<string, unknown>).sentence || (question.content as Record<string, unknown>).text || 'Matching pairs'}</p>
 								<p class="text-sm text-text-muted mt-1">
 									Answer: <span class="text-success">{question.correctAnswer}</span>
 								</p>

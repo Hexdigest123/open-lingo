@@ -2,6 +2,7 @@
 	"nav": {
 		"dashboard": "Übersicht",
 		"learn": "Lernen",
+		"chat": "Chat",
 		"leaderboard": "Rangliste",
 		"profile": "Profil",
 		"settings": "Einstellungen",
@@ -141,6 +142,20 @@
 		"incorrect": "Falsch",
 		"correctAnswer": "Richtige Antwort",
 		"tryAgain": "Nochmal versuchen",
+		"explain": "Erklären",
+		"explaining": "Erklärung wird geladen...",
+		"explanation": {
+			"title": "KI-Erklärung",
+			"error": "Erklärung konnte nicht geladen werden"
+		},
+		"typeAnswer": "Gib deine Antwort ein...",
+		"typeTranslation": "Gib deine Übersetzung ein...",
+		"tapToMatch": "Tippe, um die spanischen Wörter mit ihren englischen Übersetzungen zu verbinden",
+		"matched": "Zugeordnet",
+		"languages": {
+			"spanish": "Spanisch",
+			"english": "Englisch"
+		},
 		"types": {
 			"multipleChoice": "Wähle die richtige Antwort",
 			"fillBlank": "Fülle die Lücke aus",
@@ -304,6 +319,29 @@
 			"removeAdmin": "Admin entfernen",
 			"deleteUser": "Benutzer löschen",
 			"noUsers": "Keine Benutzer gefunden"
+		}
+	},
+	"chat": {
+		"title": "Übungs-Chat",
+		"subtitle": "Übe Spanisch mit KI",
+		"newSession": "Neue Unterhaltung",
+		"noSessions": "Noch keine Unterhaltungen",
+		"startConversation": "Starte eine Unterhaltung, um Spanisch zu üben!",
+		"typeMessage": "Schreibe deine Nachricht...",
+		"send": "Senden",
+		"voiceMode": "Sprache",
+		"textMode": "Text",
+		"recording": "Aufnahme...",
+		"holdToSpeak": "Gedrückt halten zum Sprechen",
+		"apiKeyRequired": "API-Schlüssel erforderlich",
+		"apiKeyRequiredDesc": "Konfiguriere deinen OpenAI API-Schlüssel, um den Chat zu nutzen.",
+		"connecting": "Verbinde...",
+		"connected": "Verbunden",
+		"disconnected": "Getrennt",
+		"error": {
+			"microphoneAccess": "Mikrofonzugriff verweigert",
+			"connectionFailed": "Verbindung fehlgeschlagen",
+			"sendFailed": "Nachricht konnte nicht gesendet werden"
 		}
 	},
 	"errors": {

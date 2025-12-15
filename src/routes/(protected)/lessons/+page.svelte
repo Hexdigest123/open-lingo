@@ -2,6 +2,7 @@
 	import type { PageData } from './$types';
 	import { t } from '$lib/i18n/index.svelte';
 	import { enhance } from '$app/forms';
+	import { goto } from '$app/navigation';
 
 	type LevelWithCount = {
 		id: number;
@@ -13,6 +14,15 @@
 	};
 
 	let { data }: { data: PageData } = $props();
+
+	// Handle error messages
+	let showError = $state(!!data.error);
+
+	function dismissError() {
+		showError = false;
+		// Remove error from URL
+		goto('/lessons', { replaceState: true });
+	}
 
 	// Cast levels to include unitCount
 	const levelsWithCount = $derived((data.levels || []) as LevelWithCount[]);
@@ -62,6 +72,21 @@
 <svelte:head>
 	<title>{data.selectedLevel ? `${data.selectedLevel.name} - ` : ''}{t('nav.learn')} - OpenLingo</title>
 </svelte:head>
+
+{#if showError && data.error === 'no_hearts'}
+	<div class="mb-6 rounded-xl bg-error/10 p-4 flex items-center justify-between">
+		<div class="flex items-center gap-3">
+			<span class="text-2xl">💔</span>
+			<div>
+				<p class="font-bold text-error">{t('lesson.outOfHearts.title')}</p>
+				<p class="text-sm text-text-muted">{t('lesson.outOfHearts.message')}</p>
+			</div>
+		</div>
+		<button onclick={dismissError} class="text-text-muted hover:text-text-light text-xl">
+			✕
+		</button>
+	</div>
+{/if}
 
 <div class="space-y-8">
 	{#if data.selectedLevel}

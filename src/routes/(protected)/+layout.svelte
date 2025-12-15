@@ -2,15 +2,29 @@
 	import type { Snippet } from 'svelte';
 	import type { LayoutData } from './$types';
 	import { page } from '$app/stores';
+	import { goto } from '$app/navigation';
 	import { i18n, t } from '$lib/i18n/index.svelte';
 
 	let { children, data }: { children: Snippet; data: LayoutData } = $props();
 
 	let showLangMenu = $state(false);
+	let showUserMenu = $state(false);
+
+	async function handleLogout() {
+		try {
+			await fetch('/api/auth/logout', { method: 'POST' });
+			goto('/login');
+		} catch (error) {
+			console.error('Logout failed:', error);
+			// Force redirect anyway
+			goto('/login');
+		}
+	}
 
 	const navItems = [
 		{ href: '/dashboard', labelKey: 'nav.dashboard', icon: '🏠' },
 		{ href: '/lessons', labelKey: 'nav.learn', icon: '📚' },
+		{ href: '/chat', labelKey: 'nav.chat', icon: '💬' },
 		{ href: '/leaderboard', labelKey: 'nav.leaderboard', icon: '🏆' },
 		{ href: '/profile', labelKey: 'nav.profile', icon: '👤' }
 	];
@@ -111,6 +125,40 @@
 									{locale.name}
 								</button>
 							{/each}
+						</div>
+					{/if}
+				</div>
+
+				<!-- User Menu with Logout -->
+				<div class="relative">
+					<button
+						onclick={() => (showUserMenu = !showUserMenu)}
+						class="flex h-9 w-9 items-center justify-center rounded-full bg-gradient-to-br from-success to-primary text-sm font-bold text-white hover:opacity-90"
+						title={data.user.displayName}
+					>
+						{data.user.displayName.charAt(0).toUpperCase()}
+					</button>
+					{#if showUserMenu}
+						<div class="absolute right-0 top-full mt-2 w-48 rounded-xl border border-border-light bg-white py-1 shadow-lg">
+							<div class="px-4 py-2 border-b border-border-light">
+								<p class="font-medium text-text-light">{data.user.displayName}</p>
+								<p class="text-xs text-text-muted">{data.user.email}</p>
+							</div>
+							<a
+								href="/settings"
+								onclick={() => (showUserMenu = false)}
+								class="flex w-full items-center gap-2 px-4 py-2 text-left hover:bg-bg-light-secondary"
+							>
+								<span>⚙️</span>
+								<span>{t('nav.settings')}</span>
+							</a>
+							<button
+								onclick={handleLogout}
+								class="flex w-full items-center gap-2 px-4 py-2 text-left text-error hover:bg-error/10"
+							>
+								<span>🚪</span>
+								<span>{t('nav.logout')}</span>
+							</button>
 						</div>
 					{/if}
 				</div>

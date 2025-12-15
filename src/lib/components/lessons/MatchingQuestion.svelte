@@ -58,12 +58,12 @@
 
 <div class="card">
 	<h2 class="mb-2 text-lg font-bold text-text-light">{t('lesson.types.matching')}</h2>
-	<p class="mb-6 text-text-muted">Tap to match the Spanish words with their English translations</p>
+	<p class="mb-6 text-text-muted">{t('lesson.tapToMatch')}</p>
 
 	<div class="grid grid-cols-2 gap-4">
 		<!-- Spanish Column -->
 		<div class="space-y-2">
-			<div class="mb-2 text-center text-sm font-medium text-primary">Spanish</div>
+			<div class="mb-2 text-center text-sm font-medium text-primary">{t('lesson.languages.spanish')}</div>
 			{#each spanishWords as word}
 				<button
 					onclick={() => selectSpanish(word)}
@@ -83,7 +83,7 @@
 
 		<!-- English Column -->
 		<div class="space-y-2">
-			<div class="mb-2 text-center text-sm font-medium text-success">English</div>
+			<div class="mb-2 text-center text-sm font-medium text-success">{t('lesson.languages.english')}</div>
 			{#each englishWords as word}
 				<button
 					onclick={() => selectEnglish(word)}
@@ -103,6 +103,6 @@
 	</div>
 
 	<div class="mt-4 text-center text-sm text-text-muted">
-		Matched: {matchedPairs.size / 2} / {pairs.length}
+		{t('lesson.matched')}: {matchedPairs.size / 2} / {pairs.length}
 	</div>
 </div>

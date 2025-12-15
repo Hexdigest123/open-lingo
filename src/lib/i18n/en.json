@@ -2,6 +2,7 @@
 	"nav": {
 		"dashboard": "Dashboard",
 		"learn": "Learn",
+		"chat": "Chat",
 		"leaderboard": "Leaderboard",
 		"profile": "Profile",
 		"settings": "Settings",
@@ -141,6 +142,20 @@
 		"incorrect": "Incorrect",
 		"correctAnswer": "Correct answer",
 		"tryAgain": "Try again",
+		"explain": "Explain",
+		"explaining": "Getting explanation...",
+		"explanation": {
+			"title": "AI Explanation",
+			"error": "Failed to get explanation"
+		},
+		"typeAnswer": "Type your answer...",
+		"typeTranslation": "Type your translation...",
+		"tapToMatch": "Tap to match the Spanish words with their English translations",
+		"matched": "Matched",
+		"languages": {
+			"spanish": "Spanish",
+			"english": "English"
+		},
 		"types": {
 			"multipleChoice": "Choose the correct answer",
 			"fillBlank": "Fill in the blank",
@@ -304,6 +319,29 @@
 			"removeAdmin": "Remove Admin",
 			"deleteUser": "Delete User",
 			"noUsers": "No users found"
+		}
+	},
+	"chat": {
+		"title": "Practice Chat",
+		"subtitle": "Practice Spanish with AI",
+		"newSession": "New Conversation",
+		"noSessions": "No conversations yet",
+		"startConversation": "Start a conversation to practice Spanish!",
+		"typeMessage": "Type your message...",
+		"send": "Send",
+		"voiceMode": "Voice",
+		"textMode": "Text",
+		"recording": "Recording...",
+		"holdToSpeak": "Hold to speak",
+		"apiKeyRequired": "API Key Required",
+		"apiKeyRequiredDesc": "Configure your OpenAI API key to use chat.",
+		"connecting": "Connecting...",
+		"connected": "Connected",
+		"disconnected": "Disconnected",
+		"error": {
+			"microphoneAccess": "Microphone access denied",
+			"connectionFailed": "Connection failed",
+			"sendFailed": "Failed to send message"
 		}
 	},
 	"errors": {

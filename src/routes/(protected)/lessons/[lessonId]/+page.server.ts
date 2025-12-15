@@ -1,5 +1,5 @@
 import type { PageServerLoad, Actions } from './$types';
-import { error, fail } from '@sveltejs/kit';
+import { error, fail, redirect } from '@sveltejs/kit';
 import { db } from '$lib/server/db';
 import {
 	lessons,
@@ -9,9 +9,11 @@ import {
 	userQuestionAttempts,
 	dailyStreaks,
 	achievements,
-	userAchievements
+	userAchievements,
+	users
 } from '$lib/server/db/schema';
 import { eq, and, sql } from 'drizzle-orm';
+import { isAnswerCorrect } from '$lib/server/validation/answers';
 
 // Check and unlock achievements based on user stats
 async function checkAndUnlockAchievements(
@@ -40,26 +42,35 @@ async function checkAndUnlockAchievements(
 			case 'first_lesson':
 				shouldUnlock = stats.lessonsCompleted >= 1;
 				break;
+			case 'lessons_5':
+				shouldUnlock = stats.lessonsCompleted >= 5;
+				break;
+			case 'lessons_25':
+				shouldUnlock = stats.lessonsCompleted >= 25;
+				break;
+			case 'lessons_100':
+				shouldUnlock = stats.lessonsCompleted >= 100;
+				break;
+			case 'lessons_500':
+				shouldUnlock = stats.lessonsCompleted >= 500;
+				break;
 			case 'streak_7':
 				shouldUnlock = stats.currentStreak >= 7;
 				break;
 			case 'streak_30':
 				shouldUnlock = stats.currentStreak >= 30;
 				break;
+			case 'streak_100':
+				shouldUnlock = stats.currentStreak >= 100;
+				break;
+			case 'xp_100':
+				shouldUnlock = stats.xpTotal >= 100;
+				break;
 			case 'xp_1000':
 				shouldUnlock = stats.xpTotal >= 1000;
 				break;
 			case 'xp_5000':
 				shouldUnlock = stats.xpTotal >= 5000;
-				break;
-			case 'lessons_10':
-				shouldUnlock = stats.lessonsCompleted >= 10;
-				break;
-			case 'lessons_50':
-				shouldUnlock = stats.lessonsCompleted >= 50;
-				break;
-			case 'lessons_100':
-				shouldUnlock = stats.lessonsCompleted >= 100;
 				break;
 			case 'perfect_lesson':
 				shouldUnlock = lessonScore === 100;
@@ -72,11 +83,33 @@ async function checkAndUnlockAchievements(
 				.values({
 					userId,
 					achievementId: achievement.id,
-					unlockedAt: new Date()
+					earnedAt: new Date()
 				})
 				.onConflictDoNothing();
 		}
 	}
+}
+
+function getHeartsWithRegeneration(stats?: typeof userStats.$inferSelect): {
+	hearts: number;
+	regenerated: boolean;
+} {
+	let hearts = stats?.hearts ?? 5;
+	let regenerated = false;
+
+	if (stats?.heartsLastRefilled) {
+		// Regenerate 1 heart per 30 minutes
+		const halfHoursSinceRefill =
+			(Date.now() - new Date(stats.heartsLastRefilled).getTime()) / (1000 * 60 * 30);
+		const heartsToAdd = Math.floor(halfHoursSinceRefill);
+		if (heartsToAdd > 0) {
+			const updatedHearts = Math.min(5, hearts + heartsToAdd);
+			regenerated = updatedHearts > hearts;
+			hearts = updatedHearts;
+		}
+	}
+
+	return { hearts, regenerated };
 }
 
 export const load: PageServerLoad = async ({ params, locals }) => {
@@ -113,19 +146,50 @@ export const load: PageServerLoad = async ({ params, locals }) => {
 	const [stats] = await db.select().from(userStats).where(eq(userStats.userId, userId)).limit(1);
 
 	// Calculate actual hearts (with regeneration)
-	let hearts = stats?.hearts || 5;
-	if (stats?.heartsLastRefilled) {
-		const hoursSinceRefill = (Date.now() - new Date(stats.heartsLastRefilled).getTime()) / (1000 * 60 * 60);
-		const heartsToAdd = Math.floor(hoursSinceRefill);
-		hearts = Math.min(5, hearts + heartsToAdd);
+	const { hearts, regenerated } = getHeartsWithRegeneration(stats);
+
+	// Update DB if hearts regenerated
+	if (regenerated && stats) {
+		await db
+			.update(userStats)
+			.set({
+				hearts,
+				heartsLastRefilled: new Date()
+			})
+			.where(eq(userStats.userId, userId));
 	}
+
+	// Check if lesson is already completed (allow revision with 0 hearts)
+	const [progress] = await db
+		.select()
+		.from(userLessonProgress)
+		.where(and(eq(userLessonProgress.userId, userId), eq(userLessonProgress.lessonId, lessonId)))
+		.limit(1);
+
+	const isRevision = progress?.status === 'completed' || progress?.status === 'mastered';
+
+	// Guard: redirect if no hearts available AND not revising a completed lesson
+	if (hearts <= 0 && !isRevision) {
+		redirect(303, '/lessons?error=no_hearts');
+	}
+
+	// Check if user has OpenAI API key configured
+	const [user] = await db
+		.select({ openaiApiKeyEncrypted: users.openaiApiKeyEncrypted })
+		.from(users)
+		.where(eq(users.id, userId))
+		.limit(1);
+
+	const hasApiKey = !!user?.openaiApiKeyEncrypted;
 
 	return {
 		lesson,
 		questions: lessonQuestions,
 		hearts,
 		isExam: lesson.isExam,
-		examPassThreshold: lesson.examPassThreshold || 80
+		examPassThreshold: lesson.examPassThreshold || 80,
+		isRevision,
+		hasApiKey
 	};
 };
 
@@ -142,15 +206,48 @@ export const actions: Actions = {
 			return fail(400, { error: 'Question ID and answer are required' });
 		}
 
+		// Ensure lesson exists and is available
+		const [lesson] = await db.select().from(lessons).where(eq(lessons.id, lessonId)).limit(1);
+
+		if (!lesson) {
+			return fail(404, { error: 'Lesson not found' });
+		}
+
+		if (!lesson.isPublished) {
+			return fail(403, { error: 'This lesson is not available yet' });
+		}
+
 		// Get the question
-		const [question] = await db.select().from(questions).where(eq(questions.id, questionId)).limit(1);
+		const [question] = await db
+			.select()
+			.from(questions)
+			.where(and(eq(questions.id, questionId), eq(questions.lessonId, lessonId)))
+			.limit(1);
 
 		if (!question) {
 			return fail(404, { error: 'Question not found' });
 		}
 
-		// Check if answer is correct (case-insensitive for text answers)
-		const isCorrect = answer.toLowerCase() === question.correctAnswer.toLowerCase();
+		// Get user stats
+		const [stats] = await db.select().from(userStats).where(eq(userStats.userId, userId)).limit(1);
+		const { hearts: availableHearts, regenerated } = getHeartsWithRegeneration(stats);
+
+		if (regenerated && stats) {
+			await db
+				.update(userStats)
+				.set({
+					hearts: availableHearts,
+					heartsLastRefilled: new Date()
+				})
+				.where(eq(userStats.userId, userId));
+		}
+
+		if (availableHearts <= 0) {
+			return fail(403, { error: 'No hearts remaining' });
+		}
+
+		// Check if answer is correct with normalization support
+		const isCorrect = isAnswerCorrect(answer, question.correctAnswer);
 
 		// Record the attempt
 		await db.insert(userQuestionAttempts).values({
@@ -159,9 +256,6 @@ export const actions: Actions = {
 			answer,
 			isCorrect
 		});
-
-		// Get user stats
-		const [stats] = await db.select().from(userStats).where(eq(userStats.userId, userId)).limit(1);
 
 		let freezeEarned = false;
 
@@ -172,34 +266,67 @@ export const actions: Actions = {
 			const freezesFromAnswers = Math.floor(newCorrectTotal / 50);
 			const currentFreezes = stats?.freezesEarnedTotal || 0;
 
-			// Check if user earned a new freeze
-			if (freezesFromAnswers > currentFreezes) {
-				freezeEarned = true;
-				await db
-					.update(userStats)
-					.set({
-						xpTotal: (stats?.xpTotal || 0) + xpGain,
-						totalCorrectAnswers: newCorrectTotal,
-						streakFreezes: (stats?.streakFreezes || 0) + 1,
-						freezesEarnedTotal: freezesFromAnswers,
-						lastActivity: new Date()
-					})
-					.where(eq(userStats.userId, userId));
-			} else {
-				await db
-					.update(userStats)
-					.set({
-						xpTotal: (stats?.xpTotal || 0) + xpGain,
-						totalCorrectAnswers: newCorrectTotal,
-						lastActivity: new Date()
-					})
-					.where(eq(userStats.userId, userId));
-			}
-
-			// Update daily streak
+			// Calculate streak update on correct answer
 			const today = new Date();
 			today.setHours(0, 0, 0, 0);
 
+			let newStreak = stats?.currentStreak || 0;
+			let newFreezes = stats?.streakFreezes || 0;
+			let streakFreezeUsed = false;
+
+			const lastActivity = stats?.lastActivity ? new Date(stats.lastActivity) : null;
+
+			if (lastActivity) {
+				const lastActivityDate = new Date(lastActivity);
+				lastActivityDate.setHours(0, 0, 0, 0);
+
+				const daysDiff = Math.floor(
+					(today.getTime() - lastActivityDate.getTime()) / (1000 * 60 * 60 * 24)
+				);
+
+				if (daysDiff === 0) {
+					// Same day, keep streak
+				} else if (daysDiff === 1) {
+					// Next day, increment streak
+					newStreak = (stats?.currentStreak || 0) + 1;
+				} else if (daysDiff > 1) {
+					// Would break streak - check for freeze
+					if ((stats?.streakFreezes || 0) > 0) {
+						// Use a freeze to protect streak
+						newFreezes = (stats?.streakFreezes || 0) - 1;
+						streakFreezeUsed = true;
+						// Keep the streak, just continue from where it was
+					} else {
+						// No freeze available - streak resets
+						newStreak = 1;
+					}
+				}
+			} else {
+				// First activity ever
+				newStreak = 1;
+			}
+
+			// Check if user earned a new freeze from correct answers
+			if (freezesFromAnswers > currentFreezes) {
+				freezeEarned = true;
+				newFreezes = newFreezes + 1;
+			}
+
+			// Update user stats with XP, correct answers, streak, and freezes
+			await db
+				.update(userStats)
+				.set({
+					xpTotal: (stats?.xpTotal || 0) + xpGain,
+					totalCorrectAnswers: newCorrectTotal,
+					currentStreak: newStreak,
+					longestStreak: Math.max(stats?.longestStreak || 0, newStreak),
+					streakFreezes: freezeEarned ? newFreezes : streakFreezeUsed ? newFreezes : stats?.streakFreezes || 0,
+					freezesEarnedTotal: freezeEarned ? freezesFromAnswers : stats?.freezesEarnedTotal || 0,
+					lastActivity: new Date()
+				})
+				.where(eq(userStats.userId, userId));
+
+			// Update daily streak record
 			await db
 				.insert(dailyStreaks)
 				.values({
@@ -213,24 +340,36 @@ export const actions: Actions = {
 						xpEarned: sql`${dailyStreaks.xpEarned} + ${xpGain}`
 					}
 				});
+
+			// Return current hearts for correct answers
+			return {
+				success: true,
+				isCorrect,
+				correctAnswer: question.correctAnswer,
+				freezeEarned,
+				hearts: availableHearts,
+				streakFreezeUsed
+			};
 		} else {
 			// Lose a heart
-			const newHearts = Math.max(0, (stats?.hearts || 5) - 1);
+			const newHearts = Math.max(0, availableHearts - 1);
 			await db
 				.update(userStats)
 				.set({
 					hearts: newHearts,
-					heartsLastRefilled: newHearts < (stats?.hearts || 5) ? new Date() : stats?.heartsLastRefilled
+					heartsLastRefilled:
+						newHearts < availableHearts ? new Date() : stats?.heartsLastRefilled
 				})
 				.where(eq(userStats.userId, userId));
-		}
 
-		return {
-			success: true,
-			isCorrect,
-			correctAnswer: question.correctAnswer,
-			freezeEarned
-		};
+			return {
+				success: true,
+				isCorrect,
+				correctAnswer: question.correctAnswer,
+				freezeEarned,
+				hearts: newHearts
+			};
+		}
 	},
 
 	complete: async ({ request, locals, params }) => {
@@ -243,6 +382,15 @@ export const actions: Actions = {
 
 		// Get the lesson to check if it's an exam
 		const [lesson] = await db.select().from(lessons).where(eq(lessons.id, lessonId)).limit(1);
+
+		if (!lesson) {
+			return fail(404, { error: 'Lesson not found' });
+		}
+
+		if (!lesson.isPublished) {
+			return fail(403, { error: 'This lesson is not available yet' });
+		}
+
 		const isExam = lesson?.isExam || false;
 		const examPassThreshold = lesson?.examPassThreshold || 80;
 		const passed = !isExam || score >= examPassThreshold;
@@ -268,69 +416,27 @@ export const actions: Actions = {
 				}
 			});
 
-		// Update streak (with freeze logic)
+		// Update lessonsCompleted count and check achievements (streak is updated per-task in submit action)
 		const [stats] = await db.select().from(userStats).where(eq(userStats.userId, userId)).limit(1);
 
-		let streakFreezeUsed = false;
-
-		if (stats) {
-			const lastActivity = stats.lastActivity ? new Date(stats.lastActivity) : null;
-			const today = new Date();
-			today.setHours(0, 0, 0, 0);
-
-			let newStreak = stats.currentStreak;
-			let newFreezes = stats.streakFreezes;
-
-			if (lastActivity) {
-				const lastActivityDate = new Date(lastActivity);
-				lastActivityDate.setHours(0, 0, 0, 0);
-
-				const daysDiff = Math.floor((today.getTime() - lastActivityDate.getTime()) / (1000 * 60 * 60 * 24));
-
-				if (daysDiff === 0) {
-					// Same day, keep streak
-				} else if (daysDiff === 1) {
-					// Next day, increment streak
-					newStreak = stats.currentStreak + 1;
-				} else if (daysDiff > 1) {
-					// Would break streak - check for freeze
-					if (stats.streakFreezes > 0) {
-						// Use a freeze to protect streak
-						newFreezes = stats.streakFreezes - 1;
-						streakFreezeUsed = true;
-						// Keep the streak, just continue from where it was
-					} else {
-						// No freeze available - streak resets
-						newStreak = 1;
-					}
-				}
-			} else {
-				newStreak = 1;
-			}
-
+		if (stats && passed) {
 			await db
 				.update(userStats)
 				.set({
-					currentStreak: newStreak,
-					longestStreak: Math.max(stats.longestStreak, newStreak),
-					streakFreezes: newFreezes,
-					lessonsCompleted: passed ? sql`${userStats.lessonsCompleted} + 1` : stats.lessonsCompleted,
-					lastActivity: new Date()
+					lessonsCompleted: sql`${userStats.lessonsCompleted} + 1`
 				})
 				.where(eq(userStats.userId, userId));
 
 			// Check and unlock achievements
-			if (passed) {
-				await checkAndUnlockAchievements(
-					userId,
-					{
-						lessonsCompleted: stats.lessonsCompleted + 1,
-						currentStreak: newStreak,
-						xpTotal: stats.xpTotal
-					},
-					score
-				);
-			}
+			await checkAndUnlockAchievements(
+				userId,
+				{
+					lessonsCompleted: stats.lessonsCompleted + 1,
+					currentStreak: stats.currentStreak,
+					xpTotal: stats.xpTotal
+				},
+				score
+			);
 		}
 
 		return {
@@ -339,8 +445,7 @@ export const actions: Actions = {
 			passed,
 			isExam,
 			examPassThreshold,
-			score,
-			streakFreezeUsed
+			score
 		};
 	}
 };

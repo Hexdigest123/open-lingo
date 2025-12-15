@@ -12,9 +12,9 @@
 
 	let answer = $state('');
 
-	const isEnToEs = direction === 'en_to_es';
-	const fromLang = isEnToEs ? 'English' : 'Spanish';
-	const toLang = isEnToEs ? 'Spanish' : 'English';
+	const isEnToEs = $derived(direction === 'en_to_es');
+	const fromLang = $derived(isEnToEs ? t('lesson.languages.english') : t('lesson.languages.spanish'));
+	const toLang = $derived(isEnToEs ? t('lesson.languages.spanish') : t('lesson.languages.english'));
 
 	function submit() {
 		if (answer.trim() && !disabled) {
@@ -50,7 +50,7 @@
 		<textarea
 			bind:value={answer}
 			onkeydown={handleKeydown}
-			placeholder="Type your translation..."
+			placeholder={t('lesson.typeTranslation')}
 			disabled={disabled}
 			rows="2"
 			class="input text-lg"

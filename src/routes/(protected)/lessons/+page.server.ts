@@ -5,6 +5,7 @@ import { asc, eq, inArray } from 'drizzle-orm';
 
 export const load: PageServerLoad = async ({ url, locals }) => {
 	const levelCode = url.searchParams.get('level');
+	const errorParam = url.searchParams.get('error');
 
 	if (levelCode) {
 		// Load specific level with units and lessons
@@ -17,7 +18,7 @@ export const load: PageServerLoad = async ({ url, locals }) => {
 		if (!level) {
 			// Level not found, return to level selection
 			const allLevels = await db.select().from(levels).orderBy(asc(levels.order));
-			return { levels: allLevels, selectedLevel: null, units: [], userProgress: [] };
+			return { levels: allLevels, selectedLevel: null, units: [], userProgress: [], error: errorParam };
 		}
 
 		// Get units for this level
@@ -58,7 +59,8 @@ export const load: PageServerLoad = async ({ url, locals }) => {
 			selectedLevel: level,
 			units: unitsWithLessons,
 			userProgress,
-			levels: null
+			levels: null,
+			error: errorParam
 		};
 	}
 
@@ -85,7 +87,8 @@ export const load: PageServerLoad = async ({ url, locals }) => {
 		levels: levelsWithUnitCount,
 		selectedLevel: null,
 		units: [],
-		userProgress: []
+		userProgress: [],
+		error: errorParam
 	};
 };
 

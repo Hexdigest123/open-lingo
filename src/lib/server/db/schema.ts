@@ -169,7 +169,8 @@ export const userStats = pgTable(
 		// Streak freeze system
 		streakFreezes: integer('streak_freezes').default(0).notNull(),
 		freezesEarnedTotal: integer('freezes_earned_total').default(0).notNull(),
-		totalCorrectAnswers: integer('total_correct_answers').default(0).notNull()
+		totalCorrectAnswers: integer('total_correct_answers').default(0).notNull(),
+		lessonsCompleted: integer('lessons_completed').default(0).notNull()
 	},
 	(table) => [index('user_stats_user_id_idx').on(table.userId)]
 );
@@ -240,6 +241,7 @@ export const dailyStreaks = pgTable(
 // Achievements table
 export const achievements = pgTable('achievements', {
 	id: serial('id').primaryKey(),
+	code: varchar('code', { length: 50 }).notNull().unique(),
 	name: varchar('name', { length: 100 }).notNull(),
 	description: text('description').notNull(),
 	iconUrl: varchar('icon_url', { length: 500 }),
@@ -285,6 +287,41 @@ export const leaderboardCache = pgTable(
 	]
 );
 
+// Chat enums
+export const chatModeEnum = pgEnum('chat_mode', ['voice', 'text']);
+export const chatRoleEnum = pgEnum('chat_role', ['user', 'assistant', 'system']);
+
+// Chat sessions table
+export const chatSessions = pgTable(
+	'chat_sessions',
+	{
+		id: serial('id').primaryKey(),
+		userId: integer('user_id')
+			.references(() => users.id, { onDelete: 'cascade' })
+			.notNull(),
+		title: varchar('title', { length: 200 }),
+		mode: chatModeEnum('mode').default('text').notNull(),
+		createdAt: timestamp('created_at').defaultNow().notNull(),
+		updatedAt: timestamp('updated_at').defaultNow().notNull()
+	},
+	(table) => [index('chat_sessions_user_id_idx').on(table.userId)]
+);
+
+// Chat messages table
+export const chatMessages = pgTable(
+	'chat_messages',
+	{
+		id: serial('id').primaryKey(),
+		sessionId: integer('session_id')
+			.references(() => chatSessions.id, { onDelete: 'cascade' })
+			.notNull(),
+		role: chatRoleEnum('role').notNull(),
+		content: text('content').notNull(),
+		createdAt: timestamp('created_at').defaultNow().notNull()
+	},
+	(table) => [index('chat_messages_session_id_idx').on(table.sessionId)]
+);
+
 // Relations
 export const usersRelations = relations(users, ({ one, many }) => ({
 	stats: one(userStats, {
@@ -296,7 +333,8 @@ export const usersRelations = relations(users, ({ one, many }) => ({
 	questionAttempts: many(userQuestionAttempts),
 	dailyStreaks: many(dailyStreaks),
 	achievements: many(userAchievements),
-	leaderboardEntries: many(leaderboardCache)
+	leaderboardEntries: many(leaderboardCache),
+	chatSessions: many(chatSessions)
 }));
 
 export const refreshTokensRelations = relations(refreshTokens, ({ one }) => ({
@@ -393,6 +431,21 @@ export const leaderboardCacheRelations = relations(leaderboardCache, ({ one }) =
 	})
 }));
 
+export const chatSessionsRelations = relations(chatSessions, ({ one, many }) => ({
+	user: one(users, {
+		fields: [chatSessions.userId],
+		references: [users.id]
+	}),
+	messages: many(chatMessages)
+}));
+
+export const chatMessagesRelations = relations(chatMessages, ({ one }) => ({
+	session: one(chatSessions, {
+		fields: [chatMessages.sessionId],
+		references: [chatSessions.id]
+	})
+}));
+
 // Type exports for use throughout the app
 export type User = typeof users.$inferSelect;
 export type NewUser = typeof users.$inferInsert;
@@ -403,3 +456,7 @@ export type Question = typeof questions.$inferSelect;
 export type UserStats = typeof userStats.$inferSelect;
 export type UserLessonProgress = typeof userLessonProgress.$inferSelect;
 export type Achievement = typeof achievements.$inferSelect;
+export type ChatSession = typeof chatSessions.$inferSelect;
+export type NewChatSession = typeof chatSessions.$inferInsert;
+export type ChatMessage = typeof chatMessages.$inferSelect;
+export type NewChatMessage = typeof chatMessages.$inferInsert;

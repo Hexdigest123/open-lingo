@@ -47,7 +47,7 @@
 		type="text"
 		bind:value={answer}
 		onkeydown={handleKeydown}
-		placeholder="Type your answer..."
+		placeholder={t('lesson.typeAnswer')}
 		disabled={disabled}
 		class="input text-lg"
 	/>

@@ -562,138 +562,161 @@ async function seed() {
 	console.log('\n🏆 Creating achievements...');
 	const achievementData = [
 		{
+			code: 'first_lesson',
 			name: 'First Steps',
 			description: 'Complete your first lesson',
 			iconUrl: '/achievements/first-steps.svg',
 			criteria: { type: 'lessons_completed', count: 1 }
 		},
 		{
+			code: 'lessons_5',
 			name: 'Getting Started',
 			description: 'Complete 5 lessons',
 			iconUrl: '/achievements/getting-started.svg',
 			criteria: { type: 'lessons_completed', count: 5 }
 		},
 		{
+			code: 'lessons_25',
 			name: 'Committed Learner',
 			description: 'Complete 25 lessons',
 			iconUrl: '/achievements/committed-learner.svg',
 			criteria: { type: 'lessons_completed', count: 25 }
 		},
 		{
+			code: 'lessons_100',
 			name: 'Lesson Master',
 			description: 'Complete 100 lessons',
 			iconUrl: '/achievements/lesson-master.svg',
 			criteria: { type: 'lessons_completed', count: 100 }
 		},
 		{
+			code: 'lessons_500',
 			name: 'Spanish Scholar',
 			description: 'Complete 500 lessons',
 			iconUrl: '/achievements/spanish-scholar.svg',
 			criteria: { type: 'lessons_completed', count: 500 }
 		},
 		{
+			code: 'streak_7',
 			name: 'Week Warrior',
 			description: 'Maintain a 7-day streak',
 			iconUrl: '/achievements/week-warrior.svg',
 			criteria: { type: 'streak', count: 7 }
 		},
 		{
+			code: 'streak_30',
 			name: 'Month Master',
 			description: 'Maintain a 30-day streak',
 			iconUrl: '/achievements/month-master.svg',
 			criteria: { type: 'streak', count: 30 }
 		},
 		{
+			code: 'streak_100',
 			name: 'Streak Legend',
 			description: 'Maintain a 100-day streak',
 			iconUrl: '/achievements/streak-legend.svg',
 			criteria: { type: 'streak', count: 100 }
 		},
 		{
+			code: 'xp_100',
 			name: 'Century Club',
 			description: 'Earn 100 XP',
 			iconUrl: '/achievements/century-club.svg',
 			criteria: { type: 'xp', count: 100 }
 		},
 		{
+			code: 'xp_1000',
 			name: 'XP Thousandaire',
 			description: 'Earn 1,000 XP',
 			iconUrl: '/achievements/xp-thousandaire.svg',
 			criteria: { type: 'xp', count: 1000 }
 		},
 		{
+			code: 'xp_5000',
 			name: 'XP Champion',
 			description: 'Earn 10,000 XP',
 			iconUrl: '/achievements/xp-champion.svg',
 			criteria: { type: 'xp', count: 10000 }
 		},
 		{
+			code: 'perfect_lesson',
 			name: 'Perfect Score',
 			description: 'Complete a lesson with no mistakes',
 			iconUrl: '/achievements/perfect-score.svg',
 			criteria: { type: 'perfect_lesson', count: 1 }
 		},
 		{
+			code: 'perfect_10',
 			name: 'Perfectionist',
 			description: 'Complete 10 lessons with no mistakes',
 			iconUrl: '/achievements/perfectionist.svg',
 			criteria: { type: 'perfect_lesson', count: 10 }
 		},
 		{
+			code: 'exam_1',
 			name: 'Exam Ace',
 			description: 'Pass your first unit exam',
 			iconUrl: '/achievements/exam-ace.svg',
 			criteria: { type: 'exams_passed', count: 1 }
 		},
 		{
+			code: 'exam_10',
 			name: 'Exam Expert',
 			description: 'Pass 10 unit exams',
 			iconUrl: '/achievements/exam-expert.svg',
 			criteria: { type: 'exams_passed', count: 10 }
 		},
 		{
+			code: 'level_a1',
 			name: 'A1 Complete',
 			description: 'Complete all A1 lessons',
 			iconUrl: '/achievements/a1-complete.svg',
 			criteria: { type: 'level_complete', level: 'A1' }
 		},
 		{
+			code: 'level_a2',
 			name: 'A2 Complete',
 			description: 'Complete all A2 lessons',
 			iconUrl: '/achievements/a2-complete.svg',
 			criteria: { type: 'level_complete', level: 'A2' }
 		},
 		{
+			code: 'level_b1',
 			name: 'B1 Complete',
 			description: 'Complete all B1 lessons',
 			iconUrl: '/achievements/b1-complete.svg',
 			criteria: { type: 'level_complete', level: 'B1' }
 		},
 		{
+			code: 'level_b2',
 			name: 'B2 Complete',
 			description: 'Complete all B2 lessons',
 			iconUrl: '/achievements/b2-complete.svg',
 			criteria: { type: 'level_complete', level: 'B2' }
 		},
 		{
+			code: 'level_c1',
 			name: 'C1 Complete',
 			description: 'Complete all C1 lessons',
 			iconUrl: '/achievements/c1-complete.svg',
 			criteria: { type: 'level_complete', level: 'C1' }
 		},
 		{
+			code: 'level_c2',
 			name: 'C2 Complete',
 			description: 'Complete all C2 lessons - You are a Spanish Master!',
 			iconUrl: '/achievements/c2-complete.svg',
 			criteria: { type: 'level_complete', level: 'C2' }
 		},
 		{
+			code: 'freeze_master',
 			name: 'Freeze Master',
 			description: 'Earn 5 streak freezes',
 			iconUrl: '/achievements/freeze-master.svg',
 			criteria: { type: 'freezes_earned', count: 5 }
 		},
 		{
+			code: 'correct_1000',
 			name: 'Question Crusher',
 			description: 'Answer 1,000 questions correctly',
 			iconUrl: '/achievements/question-crusher.svg',

@@ -16,7 +16,8 @@ export const load: PageServerLoad = async ({ url }) => {
 			createdAt: users.createdAt,
 			updatedAt: users.updatedAt,
 			xpTotal: userStats.xpTotal,
-			currentStreak: userStats.currentStreak
+			currentStreak: userStats.currentStreak,
+			hearts: userStats.hearts
 		})
 		.from(users)
 		.leftJoin(userStats, eq(users.id, userStats.userId));
@@ -77,6 +78,29 @@ export const actions: Actions = {
 		} catch (error) {
 			console.error('Failed to delete user:', error);
 			return fail(500, { error: 'Failed to delete user' });
+		}
+	},
+
+	restoreHearts: async ({ request }) => {
+		const data = await request.formData();
+		const userId = parseInt(data.get('userId')?.toString() || '0');
+
+		if (!userId) {
+			return fail(400, { error: 'User ID is required' });
+		}
+
+		try {
+			await db
+				.update(userStats)
+				.set({
+					hearts: 5,
+					heartsLastRefilled: new Date()
+				})
+				.where(eq(userStats.userId, userId));
+			return { success: true };
+		} catch (error) {
+			console.error('Failed to restore hearts:', error);
+			return fail(500, { error: 'Failed to restore hearts' });
 		}
 	}
 };
