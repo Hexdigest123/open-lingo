@@ -52,7 +52,7 @@
 				</div>
 				<div>
 					<p class="text-sm text-text-muted">Hearts</p>
-					<p class="text-2xl font-bold text-text-light">{data.stats.hearts}/5</p>
+					<p class="text-2xl font-bold text-text-light">{data.stats.hearts}/10</p>
 				</div>
 			</div>
 		</div>

@@ -137,7 +137,7 @@ export async function createUserWithSession(
 	// Create initial user stats
 	await db.insert(userStats).values({
 		userId: user.id,
-		hearts: 5,
+		hearts: 10,
 		xpTotal: 0,
 		currentStreak: 0,
 		longestStreak: 0

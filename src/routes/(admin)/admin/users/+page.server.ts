@@ -93,7 +93,7 @@ export const actions: Actions = {
 			await db
 				.update(userStats)
 				.set({
-					hearts: 5,
+					hearts: 10,
 					heartsLastRefilled: new Date()
 				})
 				.where(eq(userStats.userId, userId));

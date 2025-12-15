@@ -16,8 +16,8 @@ export const load: LayoutServerLoad = async ({ locals, url }) => {
 		.where(eq(userStats.userId, locals.user.id))
 		.limit(1);
 
-	// Calculate current hearts (regenerate over time - 1 heart per 30 minutes)
-	let currentHearts = stats?.hearts ?? 5;
+	// Calculate current hearts (regenerate over time - 5 hearts per 30 minutes, max 10)
+	let currentHearts = stats?.hearts ?? 10;
 	let heartsUpdated = false;
 
 	if (stats) {
@@ -25,8 +25,10 @@ export const load: LayoutServerLoad = async ({ locals, url }) => {
 		const lastRefill = new Date(stats.heartsLastRefilled);
 		const halfHoursSinceRefill = Math.floor((now.getTime() - lastRefill.getTime()) / (1000 * 60 * 30));
 
-		if (halfHoursSinceRefill > 0 && stats.hearts < 5) {
-			const newHearts = Math.min(5, stats.hearts + halfHoursSinceRefill);
+		if (halfHoursSinceRefill > 0 && stats.hearts < 10) {
+			// 5 hearts per 30-minute interval
+			const heartsToAdd = halfHoursSinceRefill * 5;
+			const newHearts = Math.min(10, stats.hearts + heartsToAdd);
 			if (newHearts > stats.hearts) {
 				// Persist the regenerated hearts to database
 				await db
@@ -54,7 +56,7 @@ export const load: LayoutServerLoad = async ({ locals, url }) => {
 					totalCorrectAnswers: stats.totalCorrectAnswers
 				}
 			: {
-					hearts: 5,
+					hearts: 10,
 					xpTotal: 0,
 					currentStreak: 0,
 					longestStreak: 0,

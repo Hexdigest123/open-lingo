@@ -111,8 +111,8 @@
 								<span class="font-medium text-yellow-dark">{user.xpTotal || 0}</span>
 							</td>
 							<td class="hidden px-4 py-3 text-center sm:table-cell">
-								<span class="font-medium {(user.hearts ?? 5) <= 1 ? 'text-error' : 'text-error'}">
-									❤️ {user.hearts ?? 5}
+								<span class="font-medium {(user.hearts ?? 10) <= 1 ? 'text-error' : 'text-error'}">
+									❤️ {user.hearts ?? 10}
 								</span>
 							</td>
 							<td class="hidden px-4 py-3 lg:table-cell">
@@ -120,7 +120,7 @@
 							</td>
 							<td class="px-4 py-3 text-right">
 								<div class="flex items-center justify-end gap-2 flex-wrap">
-									{#if (user.hearts ?? 5) < 5}
+									{#if (user.hearts ?? 10) < 10}
 										<form method="POST" action="?/restoreHearts" use:enhance class="inline">
 											<input type="hidden" name="userId" value={user.id} />
 											<button type="submit" class="text-sm text-error hover:underline">

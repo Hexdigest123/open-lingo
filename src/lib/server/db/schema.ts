@@ -160,7 +160,7 @@ export const userStats = pgTable(
 			.references(() => users.id, { onDelete: 'cascade' })
 			.notNull()
 			.unique(),
-		hearts: integer('hearts').default(5).notNull(),
+		hearts: integer('hearts').default(10).notNull(),
 		heartsLastRefilled: timestamp('hearts_last_refilled').defaultNow().notNull(),
 		xpTotal: integer('xp_total').default(0).notNull(),
 		currentStreak: integer('current_streak').default(0).notNull(),

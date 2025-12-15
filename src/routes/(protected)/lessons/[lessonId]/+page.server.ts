@@ -94,16 +94,17 @@ function getHeartsWithRegeneration(stats?: typeof userStats.$inferSelect): {
 	hearts: number;
 	regenerated: boolean;
 } {
-	let hearts = stats?.hearts ?? 5;
+	let hearts = stats?.hearts ?? 10;
 	let regenerated = false;
 
 	if (stats?.heartsLastRefilled) {
-		// Regenerate 1 heart per 30 minutes
+		// Regenerate 5 hearts per 30 minutes, max 10
 		const halfHoursSinceRefill =
 			(Date.now() - new Date(stats.heartsLastRefilled).getTime()) / (1000 * 60 * 30);
-		const heartsToAdd = Math.floor(halfHoursSinceRefill);
-		if (heartsToAdd > 0) {
-			const updatedHearts = Math.min(5, hearts + heartsToAdd);
+		const intervals = Math.floor(halfHoursSinceRefill);
+		if (intervals > 0) {
+			const heartsToAdd = intervals * 5;
+			const updatedHearts = Math.min(10, hearts + heartsToAdd);
 			regenerated = updatedHearts > hearts;
 			hearts = updatedHearts;
 		}
@@ -436,10 +437,15 @@ export const actions: Actions = {
 		const [stats] = await db.select().from(userStats).where(eq(userStats.userId, userId)).limit(1);
 
 		if (stats && passed) {
+			// Restore 5 hearts on lesson completion, capped at 10
+			const newHearts = Math.min(10, stats.hearts + 5);
+
 			await db
 				.update(userStats)
 				.set({
-					lessonsCompleted: sql`${userStats.lessonsCompleted} + 1`
+					lessonsCompleted: sql`${userStats.lessonsCompleted} + 1`,
+					hearts: newHearts,
+					heartsLastRefilled: new Date()
 				})
 				.where(eq(userStats.userId, userId));
 
