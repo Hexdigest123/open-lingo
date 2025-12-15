@@ -1,6 +1,6 @@
 <script lang="ts">
 	import type { PageData } from './$types';
-	import { t } from '$lib/i18n/index.svelte';
+	import { i18n, t } from '$lib/i18n/index.svelte';
 	import { goto } from '$app/navigation';
 
 	let { data }: { data: PageData } = $props();
@@ -15,7 +15,7 @@
 			const response = await fetch('/api/chat/sessions', {
 				method: 'POST',
 				headers: { 'Content-Type': 'application/json' },
-				body: JSON.stringify({ mode: 'text' })
+				body: JSON.stringify({ mode: 'text', locale: i18n.locale })
 			});
 
 			const result = await response.json();

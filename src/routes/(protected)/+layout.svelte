@@ -55,11 +55,11 @@
 			</a>
 
 			<!-- Desktop Navigation -->
-			<nav class="hidden items-center gap-6 md:flex">
+			<nav class="hidden items-center gap-3 lg:flex">
 				{#each navItems as item}
 					<a
 						href={item.href}
-						class="flex items-center gap-2 rounded-xl px-4 py-2 font-medium transition-colors
+						class="flex items-center gap-1.5 rounded-xl px-3 py-1.5 text-sm font-medium transition-colors
 							{isActive(item.href) ? 'bg-success/10 text-success' : 'text-text-muted hover:text-text-light'}"
 					>
 						<span>{item.icon}</span>
@@ -69,7 +69,7 @@
 				{#if isAdmin}
 					<a
 						href="/admin"
-						class="flex items-center gap-2 rounded-xl px-4 py-2 font-medium transition-colors
+						class="flex items-center gap-1.5 rounded-xl px-3 py-1.5 text-sm font-medium transition-colors
 							{isActive('/admin') ? 'bg-purple/10 text-purple' : 'text-text-muted hover:text-purple'}"
 					>
 						<span>⚙️</span>
@@ -79,48 +79,65 @@
 			</nav>
 
 			<!-- Gamification Stats -->
-			<div class="flex items-center gap-4">
+			<div class="flex items-center gap-2">
 				<!-- Hearts -->
-				<div class="flex items-center gap-1 rounded-xl bg-error/10 px-3 py-1.5" title="{t('gamification.hearts')}">
-					<span class="text-error">❤️</span>
-					<span class="font-bold text-error">{data.stats.hearts}</span>
+				<div
+					class="flex items-center gap-1 rounded-xl bg-error/10 px-2 py-1"
+					title={t('gamification.hearts')}
+				>
+					<span class="text-error text-sm">❤️</span>
+					<span class="font-bold text-error text-sm">{data.stats.hearts}</span>
 				</div>
 
 				<!-- Streak -->
-				<div class="hidden items-center gap-1 rounded-xl bg-orange/10 px-3 py-1.5 sm:flex" title="{t('gamification.streak')}">
-					<span>🔥</span>
-					<span class="font-bold text-orange">{data.stats.currentStreak}</span>
+				<div
+					class="hidden items-center gap-1 rounded-xl bg-orange/10 px-2 py-1 sm:flex"
+					title={t('gamification.streak')}
+				>
+					<span class="text-sm">🔥</span>
+					<span class="font-bold text-orange text-sm">{data.stats.currentStreak}</span>
 				</div>
 
 				<!-- Streak Freezes -->
 				{#if data.stats.streakFreezes > 0}
-					<div class="hidden items-center gap-1 rounded-xl bg-primary/10 px-3 py-1.5 sm:flex" title="{t('gamification.streakFreezes')}">
-						<span>🧊</span>
-						<span class="font-bold text-primary">{data.stats.streakFreezes}</span>
+					<div
+						class="hidden items-center gap-1 rounded-xl bg-primary/10 px-2 py-1 md:flex"
+						title={t('gamification.streakFreezes')}
+					>
+						<span class="text-sm">🧊</span>
+						<span class="font-bold text-primary text-sm">{data.stats.streakFreezes}</span>
 					</div>
 				{/if}
 
 				<!-- XP -->
-				<div class="flex items-center gap-1 rounded-xl bg-yellow/10 px-3 py-1.5" title="{t('gamification.xp')}">
-					<span>⭐</span>
-					<span class="font-bold text-yellow-dark">{data.stats.xpTotal}</span>
+				<div
+					class="flex items-center gap-1 rounded-xl bg-yellow/10 px-2 py-1"
+					title={t('gamification.xp')}
+				>
+					<span class="text-sm">⭐</span>
+					<span class="font-bold text-yellow-dark text-sm">{data.stats.xpTotal}</span>
 				</div>
 
 				<!-- Language Switcher -->
 				<div class="relative">
 					<button
 						onclick={toggleLangMenu}
-						class="flex items-center gap-1 rounded-xl bg-primary/10 px-3 py-1.5 font-medium text-primary hover:bg-primary/20"
+						class="flex items-center gap-1 rounded-xl bg-primary/10 px-2 py-1 text-sm font-medium text-primary hover:bg-primary/20"
 					>
 						<span>🌐</span>
 						<span class="hidden sm:inline">{i18n.locale === 'de' ? 'DE' : 'EN'}</span>
 					</button>
 					{#if showLangMenu}
-						<div class="absolute right-0 top-full mt-2 w-32 rounded-xl border border-border-light bg-white py-1 shadow-lg">
+						<div
+							class="absolute top-full right-0 mt-2 w-32 rounded-xl border border-border-light bg-white py-1 shadow-lg"
+						>
 							{#each i18n.availableLocales as locale}
 								<button
 									onclick={() => selectLocale(locale.code)}
-									class="w-full px-4 py-2 text-left hover:bg-bg-light-secondary {i18n.locale === locale.code ? 'font-bold text-primary' : ''}"
+									class="w-full px-4 py-2 text-left text-black hover:bg-bg-light-secondary {i18n.locale ===
+									locale.code
+										? 'font-bold text-primary'
+										: ''}"
 								>
 									{locale.name}
 								</button>
@@ -133,14 +150,16 @@
 				<div class="relative">
 					<button
 						onclick={() => (showUserMenu = !showUserMenu)}
-						class="flex h-9 w-9 items-center justify-center rounded-full bg-gradient-to-br from-success to-primary text-sm font-bold text-white hover:opacity-90"
+						class="flex h-8 w-8 items-center justify-center rounded-full bg-gradient-to-br from-success to-primary text-xs font-bold text-white hover:opacity-90"
 						title={data.user.displayName}
 					>
 						{data.user.displayName.charAt(0).toUpperCase()}
 					</button>
 					{#if showUserMenu}
-						<div class="absolute right-0 top-full mt-2 w-48 rounded-xl border border-border-light bg-white py-1 shadow-lg">
-							<div class="px-4 py-2 border-b border-border-light">
+						<div
+							class="absolute top-full right-0 mt-2 w-48 rounded-xl border border-border-light bg-white py-1 shadow-lg"
+						>
+							<div class="border-b border-border-light px-4 py-2">
 								<p class="font-medium text-text-light">{data.user.displayName}</p>
 								<p class="text-xs text-text-muted">{data.user.email}</p>
 							</div>
@@ -172,7 +191,7 @@
 	</main>
 
 	<!-- Mobile Bottom Navigation -->
-	<nav class="fixed bottom-0 left-0 right-0 z-50 border-t border-border-light bg-white md:hidden">
+	<nav class="fixed right-0 bottom-0 left-0 z-50 border-t border-border-light bg-white lg:hidden">
 		<div class="flex items-center justify-around py-2">
 			{#each navItems as item}
 				<a
@@ -198,5 +217,5 @@
 	</nav>
 
 	<!-- Spacer for mobile bottom nav -->
-	<div class="h-20 md:hidden"></div>
+	<div class="h-20 lg:hidden"></div>
 </div>

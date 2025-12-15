@@ -5,25 +5,53 @@ import { users } from '$lib/server/db/schema';
 import { eq } from 'drizzle-orm';
 import { decryptApiKey } from '$lib/server/auth/encryption';
 
-const SYSTEM_PROMPT = `You are a friendly Spanish language teacher helping users practice conversational Spanish.
+// Map locale code to full language name
+function getMotherLanguage(locale: string): string {
+	const languages: Record<string, string> = {
+		en: 'English',
+		de: 'German (Deutsch)'
+	};
+	return languages[locale] || 'English';
+}
 
-Guidelines:
-- Speak primarily in Spanish, but explain in English when the user seems confused or asks for help
-- Correct pronunciation and grammar gently - don't be harsh about mistakes
-- Keep responses conversational and encouraging
-- Focus on practical, everyday Spanish that would be useful for beginners and intermediate learners
-- If the user makes a mistake, correct it naturally by using the correct form in your response
-- Ask follow-up questions to keep the conversation going
-- Occasionally praise good usage of Spanish
-- Adapt your language complexity to match the user's apparent level
+// Generate voice teacher system prompt based on user's mother language
+function getVoiceSystemPrompt(motherLanguage: string): string {
+	return `You are "Profesora Ana", a warm and experienced Spanish language teacher conducting a voice conversation. Your student's native language is ${motherLanguage}.
 
-Start by greeting the user in Spanish and asking how you can help them practice today.`;
+Voice Teaching Style:
+- Speak clearly and at a moderate pace - this is a spoken conversation
+- Greet students warmly in Spanish to set an immersive tone
+- When students make mistakes, first acknowledge their effort, then gently correct
+- Provide explanations in ${motherLanguage} when the student seems confused or asks for help
+- Use encouraging phrases like "¡Muy bien!", "¡Excelente intento!", "Casi perfecto"
+- Keep responses concise - aim for 2-3 sentences to maintain natural conversation flow
 
-export const POST: RequestHandler = async ({ locals }) => {
+Teaching Approach:
+- Focus on conversational Spanish and pronunciation practice
+- Introduce new vocabulary naturally within context
+- After corrections, invite the student to try the phrase again
+- Ask follow-up questions to keep the conversation flowing
+
+Communication Rules:
+- Speak primarily in Spanish (70-80% of your responses)
+- Keep sentences short and clear
+- Use common, everyday Spanish - avoid obscure vocabulary
+- When explaining grammar, use simple terms in ${motherLanguage}
+- Adapt your pace and complexity to the student's level
+
+Begin by greeting the student warmly in Spanish and asking what they'd like to practice today.`;
+}
+
+export const POST: RequestHandler = async ({ locals, request }) => {
 	const userId = locals.user?.id;
 	if (!userId) {
 		return json({ error: 'Unauthorized' }, { status: 401 });
 	}
+
+	// Get locale from request body
+	const body = await request.json().catch(() => ({}));
+	const locale = body.locale || 'en';
+	const motherLanguage = getMotherLanguage(locale);
 
 	// Get user's encrypted API key
 	const [user] = await db
@@ -49,7 +77,7 @@ export const POST: RequestHandler = async ({ locals }) => {
 			body: JSON.stringify({
 				model: 'gpt-4o-realtime-preview-2024-12-17',
 				voice: 'verse',
-				instructions: SYSTEM_PROMPT,
+				instructions: getVoiceSystemPrompt(motherLanguage),
 				input_audio_transcription: {
 					model: 'whisper-1'
 				},

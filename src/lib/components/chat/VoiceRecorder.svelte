@@ -4,12 +4,13 @@
 
 	interface Props {
 		sessionId: number;
+		locale: string;
 		onTranscript: (role: 'user' | 'assistant', text: string) => void;
 		onStatusChange: (status: 'disconnected' | 'connecting' | 'connected') => void;
 		onError: (error: string) => void;
 	}
 
-	let { sessionId, onTranscript, onStatusChange, onError }: Props = $props();
+	let { sessionId, locale, onTranscript, onStatusChange, onError }: Props = $props();
 
 	let status = $state<'disconnected' | 'connecting' | 'connected'>('disconnected');
 	let isRecording = $state(false);
@@ -31,7 +32,9 @@
 		try {
 			// Get ephemeral token from our API
 			const tokenResponse = await fetch('/api/chat/realtime-token', {
-				method: 'POST'
+				method: 'POST',
+				headers: { 'Content-Type': 'application/json' },
+				body: JSON.stringify({ locale })
 			});
 
 			if (!tokenResponse.ok) {

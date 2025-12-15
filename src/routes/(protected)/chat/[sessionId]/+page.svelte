@@ -1,6 +1,6 @@
 <script lang="ts">
 	import type { PageData } from './$types';
-	import { t } from '$lib/i18n/index.svelte';
+	import { i18n, t } from '$lib/i18n/index.svelte';
 	import { goto } from '$app/navigation';
 	import ChatMessage from '$lib/components/chat/ChatMessage.svelte';
 	import ChatInput from '$lib/components/chat/ChatInput.svelte';
@@ -141,9 +141,9 @@
 	<title>{data.session.title || t('chat.title')} - OpenLingo</title>
 </svelte:head>
 
-<div class="mx-auto max-w-2xl flex flex-col h-[calc(100vh-12rem)]">
+<div class="mx-auto max-w-3xl flex flex-col h-[calc(100vh-10rem)]">
 	<!-- Header -->
-	<div class="mb-4 flex flex-col gap-3">
+	<div class="mb-2 flex flex-col gap-2">
 		<div class="flex items-center justify-between">
 			<div class="flex items-center gap-3">
 				<a href="/chat" class="text-text-muted hover:text-text-light">
@@ -221,6 +221,7 @@
 				{/if}
 				<VoiceRecorder
 					sessionId={data.session.id}
+					locale={i18n.locale}
 					onTranscript={handleVoiceTranscript}
 					onStatusChange={handleVoiceStatusChange}
 					onError={handleVoiceError}
