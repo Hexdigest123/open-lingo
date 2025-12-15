@@ -10,7 +10,9 @@ import {
 	dailyStreaks,
 	achievements,
 	userAchievements,
-	users
+	users,
+	units,
+	levels
 } from '$lib/server/db/schema';
 import { eq, and, sql } from 'drizzle-orm';
 import { isAnswerCorrect } from '$lib/server/validation/answers';
@@ -22,8 +24,11 @@ async function checkAndUnlockAchievements(
 		lessonsCompleted: number;
 		currentStreak: number;
 		xpTotal: number;
+		totalCorrectAnswers: number;
+		freezesEarnedTotal: number;
 	},
-	lessonScore?: number
+	lessonScore?: number,
+	isExamPassed?: boolean
 ) {
 	const allAchievements = await db.select().from(achievements);
 	const userAchievs = await db
@@ -33,12 +38,34 @@ async function checkAndUnlockAchievements(
 
 	const unlockedIds = new Set(userAchievs.map((a) => a.achievementId));
 
+	// Count perfect lessons (score = 100)
+	const [perfectLessonsResult] = await db
+		.select({ count: sql<number>`count(*)` })
+		.from(userLessonProgress)
+		.where(and(eq(userLessonProgress.userId, userId), eq(userLessonProgress.score, 100)));
+	const perfectLessonsCount = perfectLessonsResult?.count || 0;
+
+	// Count exams passed
+	const [examsPassedResult] = await db
+		.select({ count: sql<number>`count(*)` })
+		.from(userLessonProgress)
+		.innerJoin(lessons, eq(userLessonProgress.lessonId, lessons.id))
+		.where(
+			and(
+				eq(userLessonProgress.userId, userId),
+				eq(lessons.isExam, true),
+				eq(userLessonProgress.status, 'completed')
+			)
+		);
+	const examsPassedCount = examsPassedResult?.count || 0;
+
 	for (const achievement of allAchievements) {
 		if (unlockedIds.has(achievement.id)) continue;
 
 		let shouldUnlock = false;
 
 		switch (achievement.code) {
+			// Lessons completed achievements
 			case 'first_lesson':
 				shouldUnlock = stats.lessonsCompleted >= 1;
 				break;
@@ -54,6 +81,8 @@ async function checkAndUnlockAchievements(
 			case 'lessons_500':
 				shouldUnlock = stats.lessonsCompleted >= 500;
 				break;
+
+			// Streak achievements
 			case 'streak_7':
 				shouldUnlock = stats.currentStreak >= 7;
 				break;
@@ -63,6 +92,8 @@ async function checkAndUnlockAchievements(
 			case 'streak_100':
 				shouldUnlock = stats.currentStreak >= 100;
 				break;
+
+			// XP achievements
 			case 'xp_100':
 				shouldUnlock = stats.xpTotal >= 100;
 				break;
@@ -72,9 +103,45 @@ async function checkAndUnlockAchievements(
 			case 'xp_5000':
 				shouldUnlock = stats.xpTotal >= 5000;
 				break;
+
+			// Perfect lesson achievements
 			case 'perfect_lesson':
 				shouldUnlock = lessonScore === 100;
 				break;
+			case 'perfect_10':
+				shouldUnlock = perfectLessonsCount >= 10;
+				break;
+
+			// Exam achievements
+			case 'exam_1':
+				shouldUnlock = isExamPassed || examsPassedCount >= 1;
+				break;
+			case 'exam_10':
+				shouldUnlock = examsPassedCount >= 10;
+				break;
+
+			// Freeze achievements
+			case 'freeze_master':
+				shouldUnlock = stats.freezesEarnedTotal >= 5;
+				break;
+
+			// Correct answers achievements
+			case 'correct_1000':
+				shouldUnlock = stats.totalCorrectAnswers >= 1000;
+				break;
+
+			// Level completion achievements - check dynamically
+			case 'level_a1':
+			case 'level_a2':
+			case 'level_b1':
+			case 'level_b2':
+			case 'level_c1':
+			case 'level_c2': {
+				const levelCode = achievement.code.replace('level_', '').toUpperCase();
+				const levelComplete = await checkLevelComplete(userId, levelCode);
+				shouldUnlock = levelComplete;
+				break;
+			}
 		}
 
 		if (shouldUnlock) {
@@ -88,6 +155,36 @@ async function checkAndUnlockAchievements(
 				.onConflictDoNothing();
 		}
 	}
+}
+
+// Helper to check if a user has completed all lessons in a level
+async function checkLevelComplete(userId: number, levelCode: string): Promise<boolean> {
+	// Get all published lessons for this level
+	const levelLessons = await db
+		.select({ lessonId: lessons.id })
+		.from(lessons)
+		.innerJoin(units, eq(lessons.unitId, units.id))
+		.innerJoin(levels, eq(units.levelId, levels.id))
+		.where(and(eq(levels.code, levelCode as 'A1' | 'A2' | 'B1' | 'B2' | 'C1' | 'C2'), eq(lessons.isPublished, true)));
+
+	if (levelLessons.length === 0) return false;
+
+	// Get user's completed lessons for this level
+	const completedLessons = await db
+		.select({ lessonId: userLessonProgress.lessonId })
+		.from(userLessonProgress)
+		.where(
+			and(
+				eq(userLessonProgress.userId, userId),
+				eq(userLessonProgress.status, 'completed'),
+				sql`${userLessonProgress.lessonId} IN (${sql.join(
+					levelLessons.map((l) => sql`${l.lessonId}`),
+					sql`, `
+				)})`
+			)
+		);
+
+	return completedLessons.length >= levelLessons.length;
 }
 
 function getHeartsWithRegeneration(stats?: typeof userStats.$inferSelect): {
@@ -455,9 +552,12 @@ export const actions: Actions = {
 				{
 					lessonsCompleted: stats.lessonsCompleted + 1,
 					currentStreak: stats.currentStreak,
-					xpTotal: stats.xpTotal
+					xpTotal: stats.xpTotal,
+					totalCorrectAnswers: stats.totalCorrectAnswers,
+					freezesEarnedTotal: stats.freezesEarnedTotal
 				},
-				score
+				score,
+				isExam && passed
 			);
 		}
 
