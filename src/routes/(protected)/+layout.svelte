@@ -85,8 +85,8 @@
 					class="flex items-center gap-1 rounded-xl bg-error/10 px-2 py-1"
 					title={t('gamification.hearts')}
 				>
-					<span class="text-error text-sm">❤️</span>
-					<span class="font-bold text-error text-sm">{data.stats.hearts}</span>
+					<span class="text-sm text-error">❤️</span>
+					<span class="text-sm font-bold text-error">{data.stats.hearts}</span>
 				</div>
 
 				<!-- Streak -->
@@ -95,7 +95,7 @@
 					title={t('gamification.streak')}
 				>
 					<span class="text-sm">🔥</span>
-					<span class="font-bold text-orange text-sm">{data.stats.currentStreak}</span>
+					<span class="text-sm font-bold text-orange">{data.stats.currentStreak}</span>
 				</div>
 
 				<!-- Streak Freezes -->
@@ -105,7 +105,7 @@
 						title={t('gamification.streakFreezes')}
 					>
 						<span class="text-sm">🧊</span>
-						<span class="font-bold text-primary text-sm">{data.stats.streakFreezes}</span>
+						<span class="text-sm font-bold text-primary">{data.stats.streakFreezes}</span>
 					</div>
 				{/if}
 
@@ -115,7 +115,7 @@
 					title={t('gamification.xp')}
 				>
 					<span class="text-sm">⭐</span>
-					<span class="font-bold text-yellow-dark text-sm">{data.stats.xpTotal}</span>
+					<span class="text-sm font-bold text-yellow-dark">{data.stats.xpTotal}</span>
 				</div>
 
 				<!-- Language Switcher -->
@@ -134,10 +134,10 @@
 							{#each i18n.availableLocales as locale}
 								<button
 									onclick={() => selectLocale(locale.code)}
-									class="w-full px-4 py-2 text-left text-black hover:bg-bg-light-secondary {i18n.locale ===
+									class="w-full px-4 py-2 text-left hover:bg-bg-light-secondary {i18n.locale ===
 									locale.code
 										? 'font-bold text-primary'
-										: ''}"
+										: 'text-text-light'}"
 								>
 									{locale.name}
 								</button>
@@ -166,7 +166,7 @@
 							<a
 								href="/settings"
 								onclick={() => (showUserMenu = false)}
-								class="flex w-full items-center gap-2 px-4 py-2 text-left hover:bg-bg-light-secondary"
+								class="flex w-full items-center gap-2 px-4 py-2 text-left text-text-light hover:bg-bg-light-secondary"
 							>
 								<span>⚙️</span>
 								<span>{t('nav.settings')}</span>
