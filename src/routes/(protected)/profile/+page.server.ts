@@ -1,7 +1,11 @@
-import type { PageServerLoad } from './$types';
+import type { PageServerLoad, Actions } from './$types';
+import { fail, redirect } from '@sveltejs/kit';
 import { db } from '$lib/server/db';
-import { users, userStats, userAchievements, achievements, userLessonProgress } from '$lib/server/db/schema';
+import { users, userStats, userAchievements, achievements, userLessonProgress, refreshTokens } from '$lib/server/db/schema';
 import { eq, count } from 'drizzle-orm';
+import { verifyPassword } from '$lib/server/auth/password';
+
+const REFRESH_COOKIE_NAME = 'refresh_token';
 
 export const load: PageServerLoad = async ({ locals }) => {
 	const userId = locals.user!.id;
@@ -53,4 +57,60 @@ export const load: PageServerLoad = async ({ locals }) => {
 		earnedAchievements,
 		allAchievements
 	};
+};
+
+export const actions: Actions = {
+	deleteAccount: async ({ request, locals, cookies }) => {
+		const userId = locals.user!.id;
+		const data = await request.formData();
+		const password = data.get('password')?.toString();
+
+		if (!password) {
+			return fail(400, { deleteError: 'Password is required to delete your account' });
+		}
+
+		// Get the user's password hash
+		const [user] = await db
+			.select({ passwordHash: users.passwordHash })
+			.from(users)
+			.where(eq(users.id, userId))
+			.limit(1);
+
+		if (!user) {
+			return fail(400, { deleteError: 'User not found' });
+		}
+
+		// Verify the password
+		const isValid = await verifyPassword(password, user.passwordHash);
+		if (!isValid) {
+			return fail(400, { deleteError: 'Incorrect password' });
+		}
+
+		try {
+			// Delete related data first (most tables have CASCADE, but be explicit for safety)
+			// Delete refresh tokens
+			await db.delete(refreshTokens).where(eq(refreshTokens.userId, userId));
+
+			// Delete user stats
+			await db.delete(userStats).where(eq(userStats.userId, userId));
+
+			// Delete user achievements
+			await db.delete(userAchievements).where(eq(userAchievements.userId, userId));
+
+			// Delete lesson progress
+			await db.delete(userLessonProgress).where(eq(userLessonProgress.userId, userId));
+
+			// Finally delete the user
+			await db.delete(users).where(eq(users.id, userId));
+
+			// Clear cookies
+			cookies.delete(REFRESH_COOKIE_NAME, { path: '/' });
+
+			// Redirect to home with deleted message
+			redirect(303, '/?deleted=true');
+		} catch (error) {
+			console.error('Failed to delete account:', error);
+			return fail(500, { deleteError: 'Failed to delete account. Please try again.' });
+		}
+	}
 };

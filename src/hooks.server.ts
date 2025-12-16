@@ -1,7 +1,15 @@
-import type { Handle } from '@sveltejs/kit';
+import { redirect, type Handle } from '@sveltejs/kit';
 import { validateAccessToken, refreshSession } from '$lib/server/auth/session';
 
 const REFRESH_COOKIE_NAME = 'refresh_token';
+
+// Routes that pending users are allowed to access
+const PENDING_USER_ALLOWED_ROUTES = [
+	'/pending-approval',
+	'/logout',
+	'/api/auth/logout',
+	'/'
+];
 
 export const handle: Handle = async ({ event, resolve }) => {
 	// Initialize user as null
@@ -51,6 +59,30 @@ export const handle: Handle = async ({ event, resolve }) => {
 				// Invalid refresh token, clear the cookie
 				event.cookies.delete(REFRESH_COOKIE_NAME, { path: '/' });
 			}
+		}
+	}
+
+	// Check if user is pending approval and trying to access restricted routes
+	if (event.locals.user?.approvalStatus === 'pending') {
+		const path = event.url.pathname;
+		const isAllowed = PENDING_USER_ALLOWED_ROUTES.some(
+			(route) => path === route || path.startsWith(route + '/')
+		);
+
+		if (!isAllowed) {
+			redirect(303, '/pending-approval');
+		}
+	}
+
+	// Check if user is rejected - redirect to rejected page and clear session
+	if (event.locals.user?.approvalStatus === 'rejected') {
+		event.cookies.delete(REFRESH_COOKIE_NAME, { path: '/' });
+		event.locals.user = null;
+
+		// Only redirect if not already on the rejected page or home
+		const path = event.url.pathname;
+		if (path !== '/rejected' && path !== '/') {
+			redirect(303, '/rejected');
 		}
 	}
 

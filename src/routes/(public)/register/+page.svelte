@@ -1,10 +1,15 @@
 <script lang="ts">
 	import { enhance } from '$app/forms';
-	import type { ActionData } from './$types';
+	import type { ActionData, PageData } from './$types';
 
-	let { form }: { form: ActionData } = $props();
+	let { form, data }: { form: ActionData; data: PageData } = $props();
 
 	let loading = $state(false);
+
+	// Get signup mode from server data or form response
+	const signupMode = $derived(form?.signupMode ?? data.signupMode);
+	const requiresInvite = $derived(signupMode === 'invitation');
+	const requiresApproval = $derived(signupMode === 'approval');
 </script>
 
 <svelte:head>
@@ -17,6 +22,18 @@
 			<h1 class="text-3xl font-bold text-text-light">Create your account</h1>
 			<p class="mt-2 text-text-muted">Start learning Spanish for free</p>
 		</div>
+
+		{#if requiresApproval}
+			<div class="mt-4 rounded-xl bg-primary/10 p-4 text-center text-sm text-primary">
+				New accounts require administrator approval before you can start learning.
+			</div>
+		{/if}
+
+		{#if data.domainRestricted}
+			<div class="mt-4 rounded-xl bg-yellow/10 p-4 text-center text-sm text-yellow-dark">
+				Registration is restricted to: {data.allowedDomains.join(', ')}
+			</div>
+		{/if}
 
 		<form
 			method="POST"
@@ -63,6 +80,34 @@
 				/>
 			</div>
 
+			{#if requiresInvite}
+				<div>
+					<label for="inviteCode" class="mb-2 block font-medium text-text-light">
+						Invitation code
+						<span class="text-error">*</span>
+					</label>
+					<input
+						type="text"
+						id="inviteCode"
+						name="inviteCode"
+						required
+						class="input"
+						placeholder="Enter your invitation code"
+						value={data.inviteCode}
+						readonly={!!data.inviteCode}
+					/>
+					{#if data.inviteCode}
+						<p class="mt-1 text-sm text-success">
+							Invitation code applied
+						</p>
+					{:else}
+						<p class="mt-1 text-sm text-text-muted">
+							Contact an administrator to get an invitation code
+						</p>
+					{/if}
+				</div>
+			{/if}
+
 			<div>
 				<label for="password" class="mb-2 block font-medium text-text-light">Password</label>
 				<input
@@ -78,7 +123,9 @@
 			</div>
 
 			<div>
-				<label for="confirmPassword" class="mb-2 block font-medium text-text-light">Confirm password</label>
+				<label for="confirmPassword" class="mb-2 block font-medium text-text-light"
+					>Confirm password</label
+				>
 				<input
 					type="password"
 					id="confirmPassword"
@@ -93,6 +140,8 @@
 			<button type="submit" class="btn btn-success btn-lg w-full" disabled={loading}>
 				{#if loading}
 					Creating account...
+				{:else if requiresApproval}
+					Request account
 				{:else}
 					Create account
 				{/if}

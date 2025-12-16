@@ -1,11 +1,16 @@
 <script lang="ts">
 	import type { PageData } from './$types';
+	import { t } from '$lib/i18n/index.svelte';
 
 	let { data }: { data: PageData } = $props();
+
+	// Calculate progress to next freeze (every 50 correct answers)
+	const answersToNextFreeze = 50 - (data.stats.totalCorrectAnswers % 50);
+	const freezeProgress = ((50 - answersToNextFreeze) / 50) * 100;
 </script>
 
 <svelte:head>
-	<title>Dashboard - OpenLingo</title>
+	<title>{t('nav.dashboard')} - OpenLingo</title>
 </svelte:head>
 
 <div class="space-y-8">
@@ -15,19 +20,19 @@
 			<h1 class="text-2xl font-bold text-text-light">
 				¡Hola, {data.user?.displayName}!
 			</h1>
-			<p class="text-text-muted">Ready to continue your Spanish journey?</p>
+			<p class="text-text-muted">{t('dashboard.continueSubtitle')}</p>
 		</div>
 	</div>
 
 	<!-- Stats Overview -->
-	<div class="grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
+	<div class="grid gap-4 sm:grid-cols-2 lg:grid-cols-5">
 		<div class="card">
 			<div class="flex items-center gap-4">
 				<div class="flex h-12 w-12 items-center justify-center rounded-xl bg-yellow/10">
 					<span class="text-2xl">⭐</span>
 				</div>
 				<div>
-					<p class="text-sm text-text-muted">Total XP</p>
+					<p class="text-sm text-text-muted">{t('dashboard.stats.xp')}</p>
 					<p class="text-2xl font-bold text-text-light">{data.stats.xpTotal}</p>
 				</div>
 			</div>
@@ -39,7 +44,7 @@
 					<span class="text-2xl">🔥</span>
 				</div>
 				<div>
-					<p class="text-sm text-text-muted">Day Streak</p>
+					<p class="text-sm text-text-muted">{t('dashboard.stats.streak')}</p>
 					<p class="text-2xl font-bold text-text-light">{data.stats.currentStreak}</p>
 				</div>
 			</div>
@@ -51,8 +56,31 @@
 					<span class="text-2xl">❤️</span>
 				</div>
 				<div>
-					<p class="text-sm text-text-muted">Hearts</p>
+					<p class="text-sm text-text-muted">{t('dashboard.stats.hearts')}</p>
 					<p class="text-2xl font-bold text-text-light">{data.stats.hearts}/10</p>
+				</div>
+			</div>
+		</div>
+
+		<!-- Streak Freezes - Enhanced Display -->
+		<div class="card {data.stats.streakFreezes > 0 ? 'border-primary/30 bg-primary/5' : ''}">
+			<div class="flex items-center gap-4">
+				<div class="flex h-12 w-12 items-center justify-center rounded-xl bg-primary/10 {data.stats.streakFreezes > 0 ? 'animate-freeze-earned' : ''}">
+					<span class="text-2xl">❄️</span>
+				</div>
+				<div class="flex-1">
+					<p class="text-sm text-text-muted">{t('gamification.streakFreezes')}</p>
+					<p class="text-2xl font-bold text-primary">{data.stats.streakFreezes}</p>
+				</div>
+			</div>
+			<!-- Progress to next freeze -->
+			<div class="mt-3">
+				<div class="flex justify-between text-xs text-text-muted mb-1">
+					<span>{t('dashboard.nextFreeze')}</span>
+					<span>{50 - answersToNextFreeze}/50</span>
+				</div>
+				<div class="h-1.5 bg-border-light rounded-full overflow-hidden">
+					<div class="h-full bg-primary rounded-full transition-all" style="width: {freezeProgress}%"></div>
 				</div>
 			</div>
 		</div>
@@ -63,7 +91,7 @@
 					<span class="text-2xl">🏆</span>
 				</div>
 				<div>
-					<p class="text-sm text-text-muted">Best Streak</p>
+					<p class="text-sm text-text-muted">{t('dashboard.stats.bestStreak')}</p>
 					<p class="text-2xl font-bold text-text-light">{data.stats.longestStreak}</p>
 				</div>
 			</div>

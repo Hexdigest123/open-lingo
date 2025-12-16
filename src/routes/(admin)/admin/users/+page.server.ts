@@ -13,6 +13,8 @@ export const load: PageServerLoad = async ({ url }) => {
 			email: users.email,
 			displayName: users.displayName,
 			role: users.role,
+			heartsDisabled: users.heartsDisabled,
+			approvalStatus: users.approvalStatus,
 			createdAt: users.createdAt,
 			updatedAt: users.updatedAt,
 			xpTotal: userStats.xpTotal,
@@ -101,6 +103,30 @@ export const actions: Actions = {
 		} catch (error) {
 			console.error('Failed to restore hearts:', error);
 			return fail(500, { error: 'Failed to restore hearts' });
+		}
+	},
+
+	toggleUserHearts: async ({ request }) => {
+		const data = await request.formData();
+		const userId = parseInt(data.get('userId')?.toString() || '0');
+		const disabled = data.get('disabled')?.toString() === 'true';
+
+		if (!userId) {
+			return fail(400, { error: 'User ID is required' });
+		}
+
+		try {
+			await db
+				.update(users)
+				.set({
+					heartsDisabled: disabled,
+					updatedAt: new Date()
+				})
+				.where(eq(users.id, userId));
+			return { success: true };
+		} catch (error) {
+			console.error('Failed to toggle user hearts:', error);
+			return fail(500, { error: 'Failed to toggle hearts for user' });
 		}
 	}
 };

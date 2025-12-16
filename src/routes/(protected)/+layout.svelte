@@ -4,6 +4,7 @@
 	import { page } from '$app/stores';
 	import { goto } from '$app/navigation';
 	import { i18n, t } from '$lib/i18n/index.svelte';
+	import Toast from '$lib/components/ui/Toast.svelte';
 
 	let { children, data }: { children: Snippet; data: LayoutData } = $props();
 
@@ -219,3 +220,6 @@
 	<!-- Spacer for mobile bottom nav -->
 	<div class="h-20 lg:hidden"></div>
 </div>
+
+<!-- Toast Notifications -->
+<Toast />

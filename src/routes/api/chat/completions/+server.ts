@@ -1,9 +1,9 @@
 import { json } from '@sveltejs/kit';
 import type { RequestHandler } from './$types';
 import { db } from '$lib/server/db';
-import { chatSessions, chatMessages, users } from '$lib/server/db/schema';
+import { chatSessions, chatMessages } from '$lib/server/db/schema';
 import { eq, and, asc } from 'drizzle-orm';
-import { decryptApiKey } from '$lib/server/auth/encryption';
+import { getEffectiveApiKey } from '$lib/server/openai/getApiKey';
 
 export const POST: RequestHandler = async ({ request, locals }) => {
 	const userId = locals.user?.id;
@@ -19,15 +19,11 @@ export const POST: RequestHandler = async ({ request, locals }) => {
 		return json({ error: 'Session ID and message are required' }, { status: 400 });
 	}
 
-	// Get user's API key
-	const [user] = await db
-		.select({ apiKey: users.openaiApiKeyEncrypted })
-		.from(users)
-		.where(eq(users.id, userId))
-		.limit(1);
+	// Get effective API key (user's key or global fallback)
+	const apiKey = await getEffectiveApiKey(userId);
 
-	if (!user?.apiKey) {
-		return json({ error: 'OpenAI API key not configured' }, { status: 400 });
+	if (!apiKey) {
+		return json({ error: 'OpenAI API key not configured. Please set your API key in settings or contact an administrator.' }, { status: 400 });
 	}
 
 	// Verify session ownership
@@ -62,8 +58,6 @@ export const POST: RequestHandler = async ({ request, locals }) => {
 	}));
 
 	try {
-		const apiKey = decryptApiKey(user.apiKey);
-
 		const response = await fetch('https://api.openai.com/v1/chat/completions', {
 			method: 'POST',
 			headers: {

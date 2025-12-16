@@ -69,16 +69,24 @@
 				<thead class="bg-bg-light-secondary">
 					<tr>
 						<th class="px-4 py-3 text-left text-sm font-medium text-text-muted">User</th>
-						<th class="hidden px-4 py-3 text-left text-sm font-medium text-text-muted md:table-cell">
+						<th
+							class="hidden px-4 py-3 text-left text-sm font-medium text-text-muted md:table-cell"
+						>
 							{t('admin.users.role')}
 						</th>
-						<th class="hidden px-4 py-3 text-center text-sm font-medium text-text-muted sm:table-cell">
+						<th
+							class="hidden px-4 py-3 text-center text-sm font-medium text-text-muted sm:table-cell"
+						>
 							{t('admin.users.xp')}
 						</th>
-						<th class="hidden px-4 py-3 text-center text-sm font-medium text-text-muted sm:table-cell">
+						<th
+							class="hidden px-4 py-3 text-center text-sm font-medium text-text-muted sm:table-cell"
+						>
 							Hearts
 						</th>
-						<th class="hidden px-4 py-3 text-left text-sm font-medium text-text-muted lg:table-cell">
+						<th
+							class="hidden px-4 py-3 text-left text-sm font-medium text-text-muted lg:table-cell"
+						>
 							{t('admin.users.joined')}
 						</th>
 						<th class="px-4 py-3 text-right text-sm font-medium text-text-muted">Actions</th>
@@ -89,7 +97,9 @@
 						<tr class="hover:bg-bg-light-secondary">
 							<td class="px-4 py-3">
 								<div class="flex items-center gap-3">
-									<div class="flex h-10 w-10 items-center justify-center rounded-full bg-gradient-to-br from-success to-primary text-sm font-bold text-white">
+									<div
+										class="flex h-10 w-10 items-center justify-center rounded-full bg-gradient-to-br from-success to-primary text-sm font-bold text-white"
+									>
 										{user.displayName.charAt(0).toUpperCase()}
 									</div>
 									<div>
@@ -111,16 +121,21 @@
 								<span class="font-medium text-yellow-dark">{user.xpTotal || 0}</span>
 							</td>
 							<td class="hidden px-4 py-3 text-center sm:table-cell">
-								<span class="font-medium {(user.hearts ?? 10) <= 1 ? 'text-error' : 'text-error'}">
-									❤️ {user.hearts ?? 10}
-								</span>
+								{#if user.heartsDisabled}
+									<span class="rounded-full bg-error/10 px-2 py-1 text-xs text-error">Disabled</span
+									>
+								{:else}
+									<span class="font-medium text-error">
+										❤️ {user.hearts ?? 10}
+									</span>
+								{/if}
 							</td>
 							<td class="hidden px-4 py-3 lg:table-cell">
 								<span class="text-sm text-text-muted">{formatDate(user.createdAt)}</span>
 							</td>
 							<td class="px-4 py-3 text-right">
-								<div class="flex items-center justify-end gap-2 flex-wrap">
-									{#if (user.hearts ?? 10) < 10}
+								<div class="flex flex-wrap items-center justify-end gap-2">
+									{#if !user.heartsDisabled && (user.hearts ?? 10) < 10}
 										<form method="POST" action="?/restoreHearts" use:enhance class="inline">
 											<input type="hidden" name="userId" value={user.id} />
 											<button type="submit" class="text-sm text-error hover:underline">
@@ -128,6 +143,23 @@
 											</button>
 										</form>
 									{/if}
+
+									<form method="POST" action="?/toggleUserHearts" use:enhance class="inline">
+										<input type="hidden" name="userId" value={user.id} />
+										<input
+											type="hidden"
+											name="disabled"
+											value={user.heartsDisabled ? 'false' : 'true'}
+										/>
+										<button
+											type="submit"
+											class="text-sm text-text-light {user.heartsDisabled
+												? 'text-success'
+												: 'text-warning'} hover:underline"
+										>
+											{user.heartsDisabled ? 'Enable Hearts' : 'Disable Hearts'}
+										</button>
+									</form>
 
 									{#if user.role === 'admin'}
 										<form method="POST" action="?/changeRole" use:enhance class="inline">
@@ -150,13 +182,21 @@
 									{#if deleteConfirm === user.id}
 										<form method="POST" action="?/deleteUser" use:enhance class="inline">
 											<input type="hidden" name="userId" value={user.id} />
-											<button type="submit" class="text-sm text-error hover:underline">Confirm</button>
+											<button type="submit" class="text-sm text-error hover:underline"
+												>Confirm</button
+											>
 										</form>
-										<button onclick={() => (deleteConfirm = null)} class="text-sm text-text-muted hover:underline">
+										<button
+											onclick={() => (deleteConfirm = null)}
+											class="text-sm text-text-muted hover:underline"
+										>
 											{t('common.cancel')}
 										</button>
 									{:else}
-										<button onclick={() => (deleteConfirm = user.id)} class="text-sm text-error hover:underline">
+										<button
+											onclick={() => (deleteConfirm = user.id)}
+											class="text-sm text-error hover:underline"
+										>
 											{t('common.delete')}
 										</button>
 									{/if}

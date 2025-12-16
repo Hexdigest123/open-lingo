@@ -16,6 +16,7 @@ import {
 } from '$lib/server/db/schema';
 import { eq, and, sql } from 'drizzle-orm';
 import { isAnswerCorrect } from '$lib/server/validation/answers';
+import { isHeartsEnabledForUser } from '$lib/server/hearts/heartsEnabled';
 
 // Check and unlock achievements based on user stats
 async function checkAndUnlockAchievements(
@@ -266,8 +267,11 @@ export const load: PageServerLoad = async ({ params, locals }) => {
 
 	const isRevision = progress?.status === 'completed' || progress?.status === 'mastered';
 
-	// Guard: redirect if no hearts available AND not revising a completed lesson
-	if (hearts <= 0 && !isRevision) {
+	// Check if hearts are enabled for this user
+	const heartsEnabled = await isHeartsEnabledForUser(userId);
+
+	// Guard: redirect if no hearts available AND not revising a completed lesson AND hearts are enabled
+	if (hearts <= 0 && !isRevision && heartsEnabled) {
 		redirect(303, '/lessons?error=no_hearts');
 	}
 
@@ -284,6 +288,7 @@ export const load: PageServerLoad = async ({ params, locals }) => {
 		lesson,
 		questions: lessonQuestions,
 		hearts,
+		heartsEnabled,
 		isExam: lesson.isExam,
 		examPassThreshold: lesson.examPassThreshold || 80,
 		isRevision,
@@ -341,7 +346,10 @@ export const actions: Actions = {
 				.where(eq(userStats.userId, userId));
 		}
 
-		if (availableHearts <= 0 && !isRevision) {
+		// Check if hearts are enabled for this user
+		const heartsEnabled = await isHeartsEnabledForUser(userId);
+
+		if (availableHearts <= 0 && !isRevision && heartsEnabled) {
 			return fail(403, { error: 'No hearts remaining' });
 		}
 
@@ -450,12 +458,13 @@ export const actions: Actions = {
 				correctAnswer: question.correctAnswer,
 				freezeEarned,
 				hearts: availableHearts,
+				heartsEnabled,
 				streakFreezeUsed,
 				currentStreak: newStreak
 			};
 		} else {
-			// Only deduct hearts if not in revision mode
-			if (!isRevision) {
+			// Only deduct hearts if not in revision mode AND hearts are enabled
+			if (!isRevision && heartsEnabled) {
 				const newHearts = Math.max(0, availableHearts - 1);
 				await db
 					.update(userStats)
@@ -471,17 +480,19 @@ export const actions: Actions = {
 					isCorrect,
 					correctAnswer: question.correctAnswer,
 					freezeEarned: false,
-					hearts: newHearts
+					hearts: newHearts,
+					heartsEnabled
 				};
 			}
 
-			// Revision mode - no heart deduction
+			// Revision mode or hearts disabled - no heart deduction
 			return {
 				success: true,
 				isCorrect,
 				correctAnswer: question.correctAnswer,
 				freezeEarned: false,
-				hearts: availableHearts
+				hearts: availableHearts,
+				heartsEnabled
 			};
 		}
 	},

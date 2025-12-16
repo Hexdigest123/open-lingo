@@ -9,6 +9,7 @@ declare global {
 				email: string;
 				displayName: string;
 				role: 'user' | 'admin';
+				approvalStatus: 'pending' | 'approved' | 'rejected';
 			} | null;
 			newAccessToken?: string;
 		}

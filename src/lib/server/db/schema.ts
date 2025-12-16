@@ -42,6 +42,10 @@ export const progressStatusEnum = pgEnum('progress_status', [
 
 export const userRoleEnum = pgEnum('user_role', ['user', 'admin']);
 
+export const signupModeEnum = pgEnum('signup_mode', ['open', 'invitation', 'approval']);
+
+export const approvalStatusEnum = pgEnum('approval_status', ['pending', 'approved', 'rejected']);
+
 export const leaderboardTimeframeEnum = pgEnum('leaderboard_timeframe', [
 	'daily',
 	'weekly',
@@ -60,6 +64,8 @@ export const users = pgTable(
 		avatarUrl: varchar('avatar_url', { length: 500 }),
 		role: userRoleEnum('role').default('user').notNull(),
 		openaiApiKeyEncrypted: text('openai_api_key_encrypted'),
+		heartsDisabled: boolean('hearts_disabled').default(false).notNull(),
+		approvalStatus: approvalStatusEnum('approval_status').default('approved').notNull(),
 		createdAt: timestamp('created_at').defaultNow().notNull(),
 		updatedAt: timestamp('updated_at').defaultNow().notNull()
 	},
@@ -446,7 +452,51 @@ export const chatMessagesRelations = relations(chatMessages, ({ one }) => ({
 	})
 }));
 
+// App settings table (for global configuration)
+export const appSettings = pgTable('app_settings', {
+	id: serial('id').primaryKey(),
+	key: varchar('key', { length: 100 }).notNull().unique(),
+	value: text('value'),
+	updatedAt: timestamp('updated_at').defaultNow().notNull()
+});
+
+// Invitations table (for invitation-only signups)
+export const invitations = pgTable(
+	'invitations',
+	{
+		id: serial('id').primaryKey(),
+		email: varchar('email', { length: 255 }), // Optional - null for generic invites
+		code: varchar('code', { length: 64 }).notNull().unique(),
+		usedAt: timestamp('used_at'),
+		usedByUserId: integer('used_by_user_id').references(() => users.id, { onDelete: 'set null' }),
+		createdById: integer('created_by_id')
+			.references(() => users.id, { onDelete: 'set null' })
+			.notNull(),
+		createdAt: timestamp('created_at').defaultNow().notNull(),
+		expiresAt: timestamp('expires_at').notNull()
+	},
+	(table) => [
+		index('invitations_code_idx').on(table.code),
+		index('invitations_email_idx').on(table.email)
+	]
+);
+
+// Invitations relations
+export const invitationsRelations = relations(invitations, ({ one }) => ({
+	usedBy: one(users, {
+		fields: [invitations.usedByUserId],
+		references: [users.id],
+		relationName: 'usedByUser'
+	}),
+	createdBy: one(users, {
+		fields: [invitations.createdById],
+		references: [users.id],
+		relationName: 'createdByUser'
+	})
+}));
+
 // Type exports for use throughout the app
+export type AppSetting = typeof appSettings.$inferSelect;
 export type User = typeof users.$inferSelect;
 export type NewUser = typeof users.$inferInsert;
 export type Level = typeof levels.$inferSelect;
@@ -460,3 +510,5 @@ export type ChatSession = typeof chatSessions.$inferSelect;
 export type NewChatSession = typeof chatSessions.$inferInsert;
 export type ChatMessage = typeof chatMessages.$inferSelect;
 export type NewChatMessage = typeof chatMessages.$inferInsert;
+export type Invitation = typeof invitations.$inferSelect;
+export type NewInvitation = typeof invitations.$inferInsert;

@@ -1,9 +1,9 @@
 import type { PageServerLoad, Actions } from './$types';
-import { fail, redirect } from '@sveltejs/kit';
+import { fail } from '@sveltejs/kit';
 import { db } from '$lib/server/db';
-import { lessons, units, levels, questions, users } from '$lib/server/db/schema';
+import { lessons, units, levels, questions } from '$lib/server/db/schema';
 import { eq, desc } from 'drizzle-orm';
-import { decryptApiKey } from '$lib/server/auth/encryption';
+import { getEffectiveApiKey, hasGlobalApiKey } from '$lib/server/openai/getApiKey';
 
 interface GeneratedQuestion {
 	type: 'multiple_choice' | 'fill_blank' | 'translation' | 'matching';
@@ -26,13 +26,10 @@ interface GeneratedLesson {
 }
 
 export const load: PageServerLoad = async ({ locals }) => {
-	// Check if user has API key
+	// Check if user has API key or global key is available
 	const userId = locals.user!.id;
-	const [user] = await db
-		.select({ hasApiKey: users.openaiApiKeyEncrypted })
-		.from(users)
-		.where(eq(users.id, userId))
-		.limit(1);
+	const apiKey = await getEffectiveApiKey(userId);
+	const hasGlobal = await hasGlobalApiKey();
 
 	// Get all units for selection
 	const unitList = await db
@@ -47,7 +44,8 @@ export const load: PageServerLoad = async ({ locals }) => {
 		.orderBy(levels.order, units.order);
 
 	return {
-		hasApiKey: !!user?.hasApiKey,
+		hasApiKey: !!apiKey,
+		hasGlobalApiKey: hasGlobal,
 		units: unitList
 	};
 };
@@ -66,15 +64,11 @@ export const actions: Actions = {
 			return fail(400, { error: 'Unit and topic are required' });
 		}
 
-		// Get user's API key
-		const [user] = await db
-			.select({ apiKey: users.openaiApiKeyEncrypted })
-			.from(users)
-			.where(eq(users.id, userId))
-			.limit(1);
+		// Get effective API key (user's key or global fallback)
+		const apiKey = await getEffectiveApiKey(userId);
 
-		if (!user?.apiKey) {
-			return fail(400, { error: 'Please configure your OpenAI API key in Settings first' });
+		if (!apiKey) {
+			return fail(400, { error: 'Please configure your OpenAI API key in Settings, or ask an administrator to set a global key.' });
 		}
 
 		// Get unit info for context
@@ -93,8 +87,6 @@ export const actions: Actions = {
 		}
 
 		try {
-			const apiKey = decryptApiKey(user.apiKey);
-
 			// Generate lesson content using OpenAI
 			const generatedLesson = await generateLessonWithAI(
 				apiKey,

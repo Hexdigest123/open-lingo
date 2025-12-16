@@ -34,28 +34,52 @@
 		"loginTitle": "Willkommen zurück",
 		"loginSubtitle": "Melde dich an, um deine Lernreise fortzusetzen",
 		"registerTitle": "Erstelle dein Konto",
-		"registerSubtitle": "Schließe dich Tausenden von Lernenden an",
+		"registerSubtitle": "Lerne kostenlos Spanisch",
 		"loginButton": "Anmelden",
 		"registerButton": "Konto erstellen",
 		"noAccount": "Noch kein Konto?",
 		"hasAccount": "Bereits ein Konto?",
 		"forgotPassword": "Passwort vergessen?",
+		"invitationCode": "Einladungscode",
+		"invitationCodePlaceholder": "Gib deinen Einladungscode ein",
+		"approvalRequired": "Neue Konten erfordern die Genehmigung durch einen Administrator, bevor du mit dem Lernen beginnen kannst.",
+		"domainRestricted": "Registrierung ist beschränkt auf: {domains}",
+		"pendingApproval": {
+			"title": "Konto wartet auf Genehmigung",
+			"message": "Dein Konto wartet auf die Genehmigung durch einen Administrator. Du kannst die App nutzen, sobald dein Konto genehmigt wurde.",
+			"logout": "Abmelden"
+		},
+		"rejected": {
+			"title": "Konto nicht genehmigt",
+			"message": "Deine Registrierungsanfrage wurde von einem Administrator nicht genehmigt. Wenn du glaubst, dass dies ein Fehler war, wende dich bitte an einen Administrator.",
+			"whatNow": "Was kannst du tun?",
+			"step1": "Kontaktiere einen Administrator, um dich nach deiner Registrierung zu erkundigen",
+			"step2": "Erstelle ein neues Konto mit anderen Anmeldedaten, falls zutreffend",
+			"backHome": "Zurück zur Startseite"
+		},
 		"errors": {
 			"required": "Alle Felder sind erforderlich",
 			"invalidEmail": "Bitte gib eine gültige E-Mail-Adresse ein",
 			"passwordLength": "Das Passwort muss mindestens 8 Zeichen lang sein",
 			"passwordMismatch": "Die Passwörter stimmen nicht überein",
 			"invalidCredentials": "Ungültige E-Mail oder Passwort",
-			"emailExists": "Ein Konto mit dieser E-Mail existiert bereits"
+			"emailExists": "Ein Konto mit dieser E-Mail existiert bereits",
+			"invalidInvitationCode": "Ungültiger oder abgelaufener Einladungscode",
+			"domainNotAllowed": "Registrierung ist auf bestimmte E-Mail-Domains beschränkt"
 		}
 	},
 	"landing": {
 		"title": "Der kostenlose, unterhaltsame und effektive Weg,",
 		"titleHighlight": "Spanisch",
+		"accountDeleted": "Dein Konto wurde erfolgreich gelöscht. Schade, dass du gehst!",
 		"subtitle": "Lerne mit KI-gestützten Lektionen, übe das Sprechen mit dem Sprachmodus und bleibe motiviert durch Gamification.",
 		"getStarted": "Kostenlos starten",
 		"haveAccount": "Ich habe bereits ein Konto",
 		"whyTitle": "Warum OpenLingo?",
+		"stats": {
+			"users": "Lernende",
+			"lessons": "Lektionen"
+		},
 		"features": {
 			"gamified": {
 				"title": "Spielerisches Lernen",
@@ -68,6 +92,25 @@
 			"ai": {
 				"title": "KI-Tutor",
 				"description": "Bei einer Frage nicht weitergekommen? Frage unseren KI-Tutor nach personalisierten Erklärungen und Tipps."
+			}
+		},
+		"howItWorks": {
+			"title": "So funktioniert's",
+			"step1": {
+				"title": "Konto erstellen",
+				"description": "Melde dich in Sekunden kostenlos an"
+			},
+			"step2": {
+				"title": "Level wählen",
+				"description": "Starte bei A1 oder teste dein Level"
+			},
+			"step3": {
+				"title": "Täglich lernen",
+				"description": "Schließe Lektionen ab und sammle XP"
+			},
+			"step4": {
+				"title": "Fortschritt verfolgen",
+				"description": "Beobachte, wie deine Fähigkeiten wachsen"
 			}
 		},
 		"levelsTitle": "Vom Anfänger zum Fließend",
@@ -83,6 +126,7 @@
 		"continueSubtitle": "Mach dort weiter, wo du aufgehört hast",
 		"startButton": "Lernen starten",
 		"quickActions": "Schnellaktionen",
+		"nextFreeze": "Nächster Freeze",
 		"stats": {
 			"xp": "Gesamt-XP",
 			"streak": "Tage-Streak",
@@ -111,12 +155,27 @@
 		"comingSoon": "Demnächst verfügbar",
 		"unitsAvailable": "Einheiten verfügbar",
 		"levels": {
-			"A1": { "name": "Anfänger", "description": "Grundlegende Phrasen und Ausdrücke für alltägliche Situationen" },
+			"A1": {
+				"name": "Anfänger",
+				"description": "Grundlegende Phrasen und Ausdrücke für alltägliche Situationen"
+			},
 			"A2": { "name": "Grundstufe", "description": "Einfache Sätze zu vertrauten Themen" },
-			"B1": { "name": "Mittelstufe", "description": "Hauptpunkte zu regelmäßig auftretenden vertrauten Themen" },
-			"B2": { "name": "Obere Mittelstufe", "description": "Komplexe Texte zu konkreten und abstrakten Themen" },
-			"C1": { "name": "Fortgeschritten", "description": "Anspruchsvolle Texte und Erkennung impliziter Bedeutungen" },
-			"C2": { "name": "Meisterschaft", "description": "Fast muttersprachliche Gewandtheit und Verständnis" }
+			"B1": {
+				"name": "Mittelstufe",
+				"description": "Hauptpunkte zu regelmäßig auftretenden vertrauten Themen"
+			},
+			"B2": {
+				"name": "Obere Mittelstufe",
+				"description": "Komplexe Texte zu konkreten und abstrakten Themen"
+			},
+			"C1": {
+				"name": "Fortgeschritten",
+				"description": "Anspruchsvolle Texte und Erkennung impliziter Bedeutungen"
+			},
+			"C2": {
+				"name": "Meisterschaft",
+				"description": "Fast muttersprachliche Gewandtheit und Verständnis"
+			}
 		}
 	},
 	"lesson": {
@@ -228,6 +287,16 @@
 			"title": "Erfolge",
 			"earned": "Verdient",
 			"locked": "Gesperrt"
+		},
+		"dangerZone": {
+			"title": "Gefahrenzone",
+			"deleteAccount": "Konto löschen",
+			"deleteWarning": "Lösche dein Konto und alle deine Daten dauerhaft. Diese Aktion kann nicht rückgängig gemacht werden.",
+			"deleteButton": "Konto löschen",
+			"confirmTitle": "Konto löschen?",
+			"confirmMessage": "Dies wird dein Konto, all deinen Fortschritt, Erfolge und Daten dauerhaft löschen. Diese Aktion kann nicht rückgängig gemacht werden.",
+			"enterPassword": "Gib dein Passwort zur Bestätigung ein",
+			"confirmDelete": "Ja, mein Konto löschen"
 		}
 	},
 	"settings": {
@@ -255,7 +324,10 @@
 		"nav": {
 			"dashboard": "Übersicht",
 			"lessons": "Lektionen",
-			"users": "Benutzer"
+			"users": "Benutzer",
+			"invitations": "Einladungen",
+			"approvals": "Genehmigungen",
+			"settings": "Einstellungen"
 		},
 		"stats": {
 			"totalUsers": "Gesamtbenutzer",
@@ -320,6 +392,45 @@
 			"removeAdmin": "Admin entfernen",
 			"deleteUser": "Benutzer löschen",
 			"noUsers": "Keine Benutzer gefunden"
+		},
+		"approvals": {
+			"title": "Benutzer-Genehmigungen",
+			"pending": "ausstehend",
+			"declined": "abgelehnt",
+			"pendingTitle": "Ausstehende Genehmigungen",
+			"declinedTitle": "Abgelehnte Anfragen",
+			"allCaughtUp": "Alles erledigt!",
+			"noPending": "Es gibt keine Benutzer, die auf Genehmigung warten.",
+			"noDeclined": "Keine abgelehnten Benutzer",
+			"noDeclinedDesc": "Es gibt keine abgelehnten Registrierungsanfragen.",
+			"declinedDesc": "Diese Benutzer wurden zuvor abgelehnt. Du kannst ihnen Zugang gewähren oder ihr Konto dauerhaft löschen.",
+			"user": "Benutzer",
+			"email": "E-Mail",
+			"requested": "Angefragt",
+			"rejectedOn": "Abgelehnt",
+			"actions": "Aktionen",
+			"approve": "Genehmigen",
+			"reject": "Ablehnen",
+			"allow": "Erlauben",
+			"delete": "Löschen",
+			"confirmDelete": "Löschen bestätigen"
+		},
+		"settings": {
+			"title": "Einstellungen",
+			"globalApiKey": {
+				"title": "Globaler OpenAI API-Schlüssel",
+				"description": "Lege einen globalen OpenAI API-Schlüssel fest, der als Fallback für Benutzer verwendet wird, die keinen eigenen Schlüssel konfiguriert haben.",
+				"label": "API-Schlüssel",
+				"placeholder": "sk-...",
+				"status": {
+					"configured": "Globaler API-Schlüssel konfiguriert",
+					"notConfigured": "Kein globaler API-Schlüssel konfiguriert"
+				},
+				"note": "Hinweis",
+				"noteText": "Wenn ein Benutzer seinen eigenen API-Schlüssel konfiguriert hat, wird dieser anstelle des globalen Schlüssels verwendet. Der globale Schlüssel wird nur als Fallback verwendet.",
+				"save": "Globalen API-Schlüssel speichern",
+				"remove": "Globalen API-Schlüssel entfernen"
+			}
 		}
 	},
 	"chat": {

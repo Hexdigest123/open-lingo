@@ -34,28 +34,52 @@
 		"loginTitle": "Welcome back",
 		"loginSubtitle": "Sign in to continue your learning journey",
 		"registerTitle": "Create your account",
-		"registerSubtitle": "Join thousands of learners today",
+		"registerSubtitle": "Start learning Spanish for free",
 		"loginButton": "Sign in",
 		"registerButton": "Create account",
 		"noAccount": "Don't have an account?",
 		"hasAccount": "Already have an account?",
 		"forgotPassword": "Forgot password?",
+		"invitationCode": "Invitation Code",
+		"invitationCodePlaceholder": "Enter your invitation code",
+		"approvalRequired": "New accounts require administrator approval before you can start learning.",
+		"domainRestricted": "Registration is restricted to: {domains}",
+		"pendingApproval": {
+			"title": "Account Pending Approval",
+			"message": "Your account is waiting for administrator approval. You'll be able to access the app once your account has been approved.",
+			"logout": "Log out"
+		},
+		"rejected": {
+			"title": "Account Not Approved",
+			"message": "Your registration request was not approved by an administrator. If you believe this was a mistake, please contact an administrator.",
+			"whatNow": "What can you do?",
+			"step1": "Contact an administrator to inquire about your registration",
+			"step2": "Create a new account with different credentials if applicable",
+			"backHome": "Back to Home"
+		},
 		"errors": {
 			"required": "All fields are required",
 			"invalidEmail": "Please enter a valid email",
 			"passwordLength": "Password must be at least 8 characters",
 			"passwordMismatch": "Passwords do not match",
 			"invalidCredentials": "Invalid email or password",
-			"emailExists": "An account with this email already exists"
+			"emailExists": "An account with this email already exists",
+			"invalidInvitationCode": "Invalid or expired invitation code",
+			"domainNotAllowed": "Registration is restricted to specific email domains"
 		}
 	},
 	"landing": {
 		"title": "The free, fun, and effective way to learn",
 		"titleHighlight": "Spanish",
+		"accountDeleted": "Your account has been successfully deleted. We're sorry to see you go!",
 		"subtitle": "Learn with AI-powered lessons, practice speaking with voice mode, and stay motivated with gamification.",
 		"getStarted": "Get started for free",
 		"haveAccount": "I already have an account",
 		"whyTitle": "Why OpenLingo?",
+		"stats": {
+			"users": "Learners",
+			"lessons": "Lessons"
+		},
 		"features": {
 			"gamified": {
 				"title": "Gamified Learning",
@@ -68,6 +92,25 @@
 			"ai": {
 				"title": "AI Tutor",
 				"description": "Stuck on a question? Ask our AI tutor for personalized explanations and tips."
+			}
+		},
+		"howItWorks": {
+			"title": "How It Works",
+			"step1": {
+				"title": "Create Account",
+				"description": "Sign up for free in seconds"
+			},
+			"step2": {
+				"title": "Choose Level",
+				"description": "Start from A1 or test your level"
+			},
+			"step3": {
+				"title": "Learn Daily",
+				"description": "Complete lessons and earn XP"
+			},
+			"step4": {
+				"title": "Track Progress",
+				"description": "Watch your skills grow"
 			}
 		},
 		"levelsTitle": "From Beginner to Fluent",
@@ -83,6 +126,7 @@
 		"continueSubtitle": "Pick up where you left off",
 		"startButton": "Start Learning",
 		"quickActions": "Quick Actions",
+		"nextFreeze": "Next freeze",
 		"stats": {
 			"xp": "Total XP",
 			"streak": "Day Streak",
@@ -228,6 +272,16 @@
 			"title": "Achievements",
 			"earned": "Earned",
 			"locked": "Locked"
+		},
+		"dangerZone": {
+			"title": "Danger Zone",
+			"deleteAccount": "Delete Account",
+			"deleteWarning": "Permanently delete your account and all your data. This action cannot be undone.",
+			"deleteButton": "Delete Account",
+			"confirmTitle": "Delete Your Account?",
+			"confirmMessage": "This will permanently delete your account, all your progress, achievements, and data. This action cannot be undone.",
+			"enterPassword": "Enter your password to confirm",
+			"confirmDelete": "Yes, Delete My Account"
 		}
 	},
 	"settings": {
@@ -255,7 +309,10 @@
 		"nav": {
 			"dashboard": "Dashboard",
 			"lessons": "Lessons",
-			"users": "Users"
+			"users": "Users",
+			"invitations": "Invitations",
+			"approvals": "Approvals",
+			"settings": "Settings"
 		},
 		"stats": {
 			"totalUsers": "Total Users",
@@ -320,6 +377,45 @@
 			"removeAdmin": "Remove Admin",
 			"deleteUser": "Delete User",
 			"noUsers": "No users found"
+		},
+		"approvals": {
+			"title": "User Approvals",
+			"pending": "pending",
+			"declined": "declined",
+			"pendingTitle": "Pending Approvals",
+			"declinedTitle": "Declined Approvals",
+			"allCaughtUp": "All caught up!",
+			"noPending": "There are no users waiting for approval.",
+			"noDeclined": "No declined users",
+			"noDeclinedDesc": "There are no rejected registration requests.",
+			"declinedDesc": "These users were previously rejected. You can allow them access or permanently delete their account.",
+			"user": "User",
+			"email": "Email",
+			"requested": "Requested",
+			"rejectedOn": "Rejected",
+			"actions": "Actions",
+			"approve": "Approve",
+			"reject": "Reject",
+			"allow": "Allow",
+			"delete": "Delete",
+			"confirmDelete": "Confirm Delete"
+		},
+		"settings": {
+			"title": "Settings",
+			"globalApiKey": {
+				"title": "Global OpenAI API Key",
+				"description": "Set a global OpenAI API key that will be used as a fallback for users who haven't configured their own key.",
+				"label": "API Key",
+				"placeholder": "sk-...",
+				"status": {
+					"configured": "Global API key configured",
+					"notConfigured": "No global API key configured"
+				},
+				"note": "Note",
+				"noteText": "If a user has their own API key configured, it will be used instead of the global key. The global key is only used as a fallback.",
+				"save": "Save Global API Key",
+				"remove": "Remove Global API Key"
+			}
 		}
 	},
 	"chat": {

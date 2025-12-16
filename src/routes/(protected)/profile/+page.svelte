@@ -1,10 +1,14 @@
 <script lang="ts">
-	import type { PageData } from './$types';
+	import type { PageData, ActionData } from './$types';
 	import { t } from '$lib/i18n/index.svelte';
+	import { enhance } from '$app/forms';
 
-	let { data }: { data: PageData } = $props();
+	let { data, form }: { data: PageData; form: ActionData } = $props();
 
 	const earnedIds = new Set(data.earnedAchievements.map((a) => a.id));
+	let showDeleteModal = $state(false);
+	let deletePassword = $state('');
+	let isDeleting = $state(false);
 
 	function formatDate(date: Date | string): string {
 		return new Date(date).toLocaleDateString(undefined, {
@@ -100,4 +104,91 @@
 			{/each}
 		</div>
 	</div>
+
+	<!-- Danger Zone -->
+	<div>
+		<h2 class="mb-4 text-xl font-bold text-error">{t('profile.dangerZone.title')}</h2>
+		<div class="card border-2 border-error/30 bg-error/5">
+			<div class="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
+				<div>
+					<h3 class="font-bold text-text-light">{t('profile.dangerZone.deleteAccount')}</h3>
+					<p class="text-sm text-text-muted">{t('profile.dangerZone.deleteWarning')}</p>
+				</div>
+				<button
+					onclick={() => (showDeleteModal = true)}
+					class="btn btn-error btn-md whitespace-nowrap"
+				>
+					{t('profile.dangerZone.deleteButton')}
+				</button>
+			</div>
+		</div>
+	</div>
 </div>
+
+<!-- Delete Account Modal -->
+{#if showDeleteModal}
+	<div class="fixed inset-0 z-50 flex items-center justify-center bg-black/50 p-4">
+		<div class="card w-full max-w-md">
+			<h2 class="mb-4 text-xl font-bold text-error">{t('profile.dangerZone.confirmTitle')}</h2>
+			<p class="mb-4 text-text-muted">{t('profile.dangerZone.confirmMessage')}</p>
+
+			{#if form?.deleteError}
+				<div class="mb-4 rounded-xl bg-error/10 p-3 text-sm text-error">
+					{form.deleteError}
+				</div>
+			{/if}
+
+			<form
+				method="POST"
+				action="?/deleteAccount"
+				use:enhance={() => {
+					isDeleting = true;
+					return async ({ update }) => {
+						isDeleting = false;
+						await update();
+					};
+				}}
+			>
+				<div class="mb-4">
+					<label for="delete-password" class="mb-2 block text-sm font-medium text-text-light">
+						{t('profile.dangerZone.enterPassword')}
+					</label>
+					<input
+						type="password"
+						id="delete-password"
+						name="password"
+						bind:value={deletePassword}
+						class="input w-full"
+						placeholder={t('auth.password')}
+						required
+					/>
+				</div>
+
+				<div class="flex gap-3">
+					<button
+						type="button"
+						onclick={() => {
+							showDeleteModal = false;
+							deletePassword = '';
+						}}
+						class="btn btn-ghost btn-md flex-1"
+						disabled={isDeleting}
+					>
+						{t('common.cancel')}
+					</button>
+					<button
+						type="submit"
+						class="btn btn-error btn-md flex-1"
+						disabled={isDeleting || !deletePassword}
+					>
+						{#if isDeleting}
+							{t('common.loading')}
+						{:else}
+							{t('profile.dangerZone.confirmDelete')}
+						{/if}
+					</button>
+				</div>
+			</form>
+		</div>
+	</div>
+{/if}

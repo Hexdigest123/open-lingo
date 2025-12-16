@@ -32,6 +32,25 @@ export const actions: Actions = {
 			return fail(400, { error: 'Invalid email or password', email });
 		}
 
+		// Check if user is rejected
+		if (user.approvalStatus === 'rejected') {
+			redirect(303, '/rejected');
+		}
+
+		// Check if user is pending approval
+		if (user.approvalStatus === 'pending') {
+			// Create session so they can access the pending page
+			const tokens = await createSession(user.id, user.email, user.role);
+			cookies.set(REFRESH_COOKIE_NAME, tokens.refreshToken, {
+				path: '/',
+				httpOnly: true,
+				secure: !import.meta.env.DEV,
+				sameSite: 'lax',
+				maxAge: 60 * 60 * 24 * 7 // 7 days
+			});
+			redirect(303, '/pending-approval');
+		}
+
 		// Create session
 		const tokens = await createSession(user.id, user.email, user.role);
 

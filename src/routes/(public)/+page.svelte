@@ -1,5 +1,11 @@
 <script lang="ts">
-	// Landing page
+	import { page } from '$app/stores';
+	import { t } from '$lib/i18n/index.svelte';
+	import type { PageData } from './$types';
+
+	let { data }: { data: PageData } = $props();
+
+	const accountDeleted = $derived($page.url.searchParams.get('deleted') === 'true');
 </script>
 
 <svelte:head>
@@ -8,85 +14,167 @@
 </svelte:head>
 
 <div class="py-16 lg:py-24">
+	{#if accountDeleted}
+		<div class="mx-auto max-w-7xl px-4 mb-8">
+			<div class="rounded-xl bg-success/10 p-4 text-success text-center">
+				{t('landing.accountDeleted')}
+			</div>
+		</div>
+	{/if}
+
 	<div class="mx-auto max-w-7xl px-4">
 		<!-- Hero Section -->
 		<div class="flex flex-col items-center text-center lg:flex-row lg:text-left lg:gap-16">
 			<div class="flex-1">
 				<h1 class="text-4xl font-bold text-text-light lg:text-6xl">
-					The free, fun, and effective way to learn
-					<span class="text-success">Spanish</span>
+					{t('landing.title')}
+					<span class="text-success">{t('landing.titleHighlight')}</span>
 				</h1>
 				<p class="mt-6 text-xl text-text-muted">
-					Learn with AI-powered lessons, practice speaking with voice mode, and stay motivated with gamification.
+					{t('landing.subtitle')}
 				</p>
 				<div class="mt-8 flex flex-col gap-4 sm:flex-row sm:justify-center lg:justify-start">
 					<a href="/register" class="btn btn-success btn-lg w-full sm:w-auto">
-						Get started for free
+						{t('landing.getStarted')}
 					</a>
 					<a href="/login" class="btn btn-ghost btn-lg w-full sm:w-auto">
-						I already have an account
+						{t('landing.haveAccount')}
 					</a>
 				</div>
 			</div>
 			<div class="mt-12 flex-1 lg:mt-0">
-				<!-- Hero illustration placeholder -->
-				<div class="mx-auto aspect-square max-w-md rounded-3xl bg-gradient-to-br from-success/20 to-primary/20 p-8">
-					<div class="flex h-full flex-col items-center justify-center gap-4">
-						<div class="text-8xl">🇪🇸</div>
-						<div class="text-2xl font-bold text-text-light">¡Hola!</div>
+				<!-- Hero illustration -->
+				<div class="mx-auto aspect-square max-w-md rounded-3xl bg-gradient-to-br from-success/20 to-primary/20 p-8 relative overflow-hidden">
+					<div class="absolute inset-0 flex items-center justify-center">
+						<div class="w-72 h-72 rounded-2xl bg-white shadow-2xl p-6 transform rotate-3 animate-float">
+							<div class="flex items-center gap-3 mb-4">
+								<div class="w-10 h-10 rounded-full bg-success flex items-center justify-center text-white font-bold">A1</div>
+								<div class="flex-1">
+									<div class="h-2 bg-gray-200 rounded-full overflow-hidden">
+										<div class="h-full w-3/4 bg-success rounded-full"></div>
+									</div>
+								</div>
+							</div>
+							<div class="space-y-3 mt-6">
+								<div class="p-3 rounded-xl bg-success/10 border-2 border-success">
+									<span class="text-text-light font-medium">Hola</span>
+									<span class="text-text-muted ml-2">Hello</span>
+								</div>
+								<div class="p-3 rounded-xl bg-gray-100">
+									<span class="text-text-light font-medium">Buenos d&iacute;as</span>
+									<span class="text-text-muted ml-2">Good morning</span>
+								</div>
+								<div class="p-3 rounded-xl bg-gray-100">
+									<span class="text-text-light font-medium">Gracias</span>
+									<span class="text-text-muted ml-2">Thank you</span>
+								</div>
+							</div>
+							<div class="mt-4 flex items-center justify-between">
+								<div class="flex items-center gap-1 text-error">
+									<span>&#10084;</span>
+									<span class="font-bold">5</span>
+								</div>
+								<div class="flex items-center gap-1 text-yellow">
+									<span>&#9733;</span>
+									<span class="font-bold">150 XP</span>
+								</div>
+							</div>
+						</div>
 					</div>
 				</div>
 			</div>
 		</div>
 
+		<!-- Stats Section -->
+		{#if data.stats.totalUsers > 0 || data.stats.totalLessons > 0}
+			<div class="mt-16 flex justify-center gap-8 sm:gap-16">
+				<div class="text-center">
+					<div class="text-4xl font-bold text-success">{data.stats.totalUsers.toLocaleString()}+</div>
+					<div class="text-text-muted">{t('landing.stats.users')}</div>
+				</div>
+				<div class="text-center">
+					<div class="text-4xl font-bold text-primary">{data.stats.totalLessons.toLocaleString()}+</div>
+					<div class="text-text-muted">{t('landing.stats.lessons')}</div>
+				</div>
+			</div>
+		{/if}
+
 		<!-- Features Section -->
 		<div class="mt-24">
-			<h2 class="text-center text-3xl font-bold text-text-light">Why OpenLingo?</h2>
+			<h2 class="text-center text-3xl font-bold text-text-light">{t('landing.whyTitle')}</h2>
 			<div class="mt-12 grid gap-8 md:grid-cols-3">
-				<!-- Feature 1 -->
-				<div class="card text-center">
-					<div class="mx-auto mb-4 flex h-16 w-16 items-center justify-center rounded-full bg-success/10">
+				<!-- Feature 1: Gamified Learning -->
+				<div class="card text-center group hover:shadow-xl transition-shadow duration-300">
+					<div class="mx-auto mb-4 flex h-16 w-16 items-center justify-center rounded-full bg-success/10 group-hover:bg-success/20 transition-colors">
 						<span class="text-3xl">🎮</span>
 					</div>
-					<h3 class="text-xl font-bold text-text-light">Gamified Learning</h3>
+					<h3 class="text-xl font-bold text-text-light">{t('landing.features.gamified.title')}</h3>
 					<p class="mt-2 text-text-muted">
-						Earn XP, maintain streaks, and compete on leaderboards. Learning has never been this fun!
+						{t('landing.features.gamified.description')}
 					</p>
 				</div>
 
-				<!-- Feature 2 -->
-				<div class="card text-center">
-					<div class="mx-auto mb-4 flex h-16 w-16 items-center justify-center rounded-full bg-primary/10">
+				<!-- Feature 2: Voice Practice -->
+				<div class="card text-center group hover:shadow-xl transition-shadow duration-300">
+					<div class="mx-auto mb-4 flex h-16 w-16 items-center justify-center rounded-full bg-primary/10 group-hover:bg-primary/20 transition-colors">
 						<span class="text-3xl">🎤</span>
 					</div>
-					<h3 class="text-xl font-bold text-text-light">Voice Practice</h3>
+					<h3 class="text-xl font-bold text-text-light">{t('landing.features.voice.title')}</h3>
 					<p class="mt-2 text-text-muted">
-						Practice speaking with AI-powered voice mode and get instant feedback on your pronunciation.
+						{t('landing.features.voice.description')}
 					</p>
 				</div>
 
-				<!-- Feature 3 -->
-				<div class="card text-center">
-					<div class="mx-auto mb-4 flex h-16 w-16 items-center justify-center rounded-full bg-purple/10">
+				<!-- Feature 3: AI Tutor -->
+				<div class="card text-center group hover:shadow-xl transition-shadow duration-300">
+					<div class="mx-auto mb-4 flex h-16 w-16 items-center justify-center rounded-full bg-purple/10 group-hover:bg-purple/20 transition-colors">
 						<span class="text-3xl">🤖</span>
 					</div>
-					<h3 class="text-xl font-bold text-text-light">AI Tutor</h3>
+					<h3 class="text-xl font-bold text-text-light">{t('landing.features.ai.title')}</h3>
 					<p class="mt-2 text-text-muted">
-						Stuck on a question? Ask our AI tutor for personalized explanations and tips.
+						{t('landing.features.ai.description')}
 					</p>
+				</div>
+			</div>
+		</div>
+
+		<!-- How It Works Section -->
+		<div class="mt-24">
+			<h2 class="text-center text-3xl font-bold text-text-light">{t('landing.howItWorks.title')}</h2>
+			<div class="mt-12 grid gap-8 md:grid-cols-4">
+				<div class="text-center">
+					<div class="mx-auto mb-4 flex h-12 w-12 items-center justify-center rounded-full bg-success text-white font-bold text-xl">1</div>
+					<h3 class="font-bold text-text-light">{t('landing.howItWorks.step1.title')}</h3>
+					<p class="mt-1 text-sm text-text-muted">{t('landing.howItWorks.step1.description')}</p>
+				</div>
+				<div class="text-center">
+					<div class="mx-auto mb-4 flex h-12 w-12 items-center justify-center rounded-full bg-success text-white font-bold text-xl">2</div>
+					<h3 class="font-bold text-text-light">{t('landing.howItWorks.step2.title')}</h3>
+					<p class="mt-1 text-sm text-text-muted">{t('landing.howItWorks.step2.description')}</p>
+				</div>
+				<div class="text-center">
+					<div class="mx-auto mb-4 flex h-12 w-12 items-center justify-center rounded-full bg-success text-white font-bold text-xl">3</div>
+					<h3 class="font-bold text-text-light">{t('landing.howItWorks.step3.title')}</h3>
+					<p class="mt-1 text-sm text-text-muted">{t('landing.howItWorks.step3.description')}</p>
+				</div>
+				<div class="text-center">
+					<div class="mx-auto mb-4 flex h-12 w-12 items-center justify-center rounded-full bg-success text-white font-bold text-xl">4</div>
+					<h3 class="font-bold text-text-light">{t('landing.howItWorks.step4.title')}</h3>
+					<p class="mt-1 text-sm text-text-muted">{t('landing.howItWorks.step4.description')}</p>
 				</div>
 			</div>
 		</div>
 
 		<!-- Levels Section -->
 		<div class="mt-24">
-			<h2 class="text-center text-3xl font-bold text-text-light">From Beginner to Fluent</h2>
+			<h2 class="text-center text-3xl font-bold text-text-light">{t('landing.levelsTitle')}</h2>
 			<p class="mt-4 text-center text-text-muted">
-				Our curriculum covers all CEFR levels from A1 to C2
+				{t('landing.levelsSubtitle')}
 			</p>
 			<div class="mt-12 flex flex-wrap justify-center gap-4">
-				{#each ['A1', 'A2', 'B1', 'B2', 'C1', 'C2'] as level}
-					<div class="flex h-20 w-20 items-center justify-center rounded-2xl bg-gradient-to-br from-success to-success-dark text-white font-bold text-xl shadow-lg">
+				{#each ['A1', 'A2', 'B1', 'B2', 'C1', 'C2'] as level, i}
+					{@const colors = ['from-success to-success-dark', 'from-success to-primary', 'from-primary to-primary', 'from-primary to-purple', 'from-purple to-purple', 'from-purple to-error']}
+					<div class="flex h-20 w-20 items-center justify-center rounded-2xl bg-gradient-to-br {colors[i]} text-white font-bold text-xl shadow-lg transform hover:scale-110 transition-transform cursor-default">
 						{level}
 					</div>
 				{/each}
@@ -95,13 +183,28 @@
 
 		<!-- CTA Section -->
 		<div class="mt-24 rounded-3xl bg-gradient-to-r from-success to-success-dark p-8 text-center text-white lg:p-12">
-			<h2 class="text-3xl font-bold">Ready to start learning?</h2>
+			<h2 class="text-3xl font-bold">{t('landing.ctaTitle')}</h2>
 			<p class="mt-4 text-lg opacity-90">
-				Join thousands of learners and start your Spanish journey today.
+				{t('landing.ctaSubtitle')}
 			</p>
 			<a href="/register" class="btn btn-lg mt-8 bg-white text-success hover:bg-gray-100">
-				Create free account
+				{t('landing.ctaButton')}
 			</a>
 		</div>
 	</div>
 </div>
+
+<style>
+	@keyframes float {
+		0%, 100% {
+			transform: translateY(0px) rotate(3deg);
+		}
+		50% {
+			transform: translateY(-10px) rotate(3deg);
+		}
+	}
+
+	.animate-float {
+		animation: float 4s ease-in-out infinite;
+	}
+</style>

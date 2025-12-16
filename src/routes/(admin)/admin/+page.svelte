@@ -52,5 +52,14 @@
 				<p class="text-sm text-text-muted">View and manage users</p>
 			</div>
 		</a>
+		<a href="/admin/settings" class="card flex items-center gap-4 transition-shadow hover:shadow-lg">
+			<div class="flex h-12 w-12 items-center justify-center rounded-xl bg-purple/10 text-2xl">
+				⚙️
+			</div>
+			<div>
+				<h3 class="font-bold text-text-light">{t('admin.settings.title')}</h3>
+				<p class="text-sm text-text-muted">Global application settings</p>
+			</div>
+		</a>
 	</div>
 </div>

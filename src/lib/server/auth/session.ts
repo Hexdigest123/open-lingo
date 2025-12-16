@@ -16,6 +16,7 @@ export interface SessionUser {
 	email: string;
 	displayName: string;
 	role: 'user' | 'admin';
+	approvalStatus: 'pending' | 'approved' | 'rejected';
 }
 
 export interface SessionTokens {
@@ -62,7 +63,8 @@ export async function validateAccessToken(token: string): Promise<SessionUser | 
 		id: user.id,
 		email: user.email,
 		displayName: user.displayName,
-		role: user.role
+		role: user.role,
+		approvalStatus: user.approvalStatus
 	};
 }
 
@@ -115,13 +117,19 @@ export async function cleanupExpiredTokens(): Promise<void> {
 export async function createUserWithSession(
 	email: string,
 	password: string,
-	displayName: string
-): Promise<{ user: SessionUser; tokens: SessionTokens }> {
+	displayName: string,
+	options?: {
+		approvalStatus?: 'pending' | 'approved' | 'rejected';
+	}
+): Promise<{ user: SessionUser; tokens: SessionTokens; userId: number }> {
 	const passwordHash = await hashPassword(password);
 
 	// Check if this is the first user (make them admin)
 	const [{ userCount }] = await db.select({ userCount: count() }).from(users);
 	const isFirstUser = userCount === 0;
+
+	// First user is always approved, otherwise use the provided status or default to approved
+	const approvalStatus = isFirstUser ? 'approved' : (options?.approvalStatus || 'approved');
 
 	// Create user
 	const [user] = await db
@@ -130,7 +138,8 @@ export async function createUserWithSession(
 			email,
 			passwordHash,
 			displayName,
-			role: isFirstUser ? 'admin' : 'user'
+			role: isFirstUser ? 'admin' : 'user',
+			approvalStatus
 		})
 		.returning();
 
@@ -151,8 +160,10 @@ export async function createUserWithSession(
 			id: user.id,
 			email: user.email,
 			displayName: user.displayName,
-			role: user.role
+			role: user.role,
+			approvalStatus: user.approvalStatus
 		},
-		tokens
+		tokens,
+		userId: user.id
 	};
 }

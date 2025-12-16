@@ -9,7 +9,10 @@
 	const navItems = [
 		{ href: '/admin', label: 'admin.nav.dashboard', icon: '📊' },
 		{ href: '/admin/lessons', label: 'admin.nav.lessons', icon: '📚' },
-		{ href: '/admin/users', label: 'admin.nav.users', icon: '👥' }
+		{ href: '/admin/users', label: 'admin.nav.users', icon: '👥' },
+		{ href: '/admin/invitations', label: 'admin.nav.invitations', icon: '✉️' },
+		{ href: '/admin/approvals', label: 'admin.nav.approvals', icon: '✓' },
+		{ href: '/admin/settings', label: 'admin.nav.settings', icon: '⚙️' }
 	];
 
 	function isActive(href: string): boolean {
