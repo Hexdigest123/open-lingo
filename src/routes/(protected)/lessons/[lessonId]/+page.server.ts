@@ -17,6 +17,7 @@ import {
 import { eq, and, sql } from 'drizzle-orm';
 import { isAnswerCorrect } from '$lib/server/validation/answers';
 import { isHeartsEnabledForUser } from '$lib/server/hearts/heartsEnabled';
+import { hasGlobalApiKey } from '$lib/server/openai/getApiKey';
 
 // Check and unlock achievements based on user stats
 async function checkAndUnlockAchievements(
@@ -275,14 +276,15 @@ export const load: PageServerLoad = async ({ params, locals }) => {
 		redirect(303, '/lessons?error=no_hearts');
 	}
 
-	// Check if user has OpenAI API key configured
+	// Check if user has OpenAI API key configured (personal or global)
 	const [user] = await db
 		.select({ openaiApiKeyEncrypted: users.openaiApiKeyEncrypted })
 		.from(users)
 		.where(eq(users.id, userId))
 		.limit(1);
 
-	const hasApiKey = !!user?.openaiApiKeyEncrypted;
+	const hasGlobalKey = await hasGlobalApiKey();
+	const hasApiKey = !!user?.openaiApiKeyEncrypted || hasGlobalKey;
 
 	return {
 		lesson,

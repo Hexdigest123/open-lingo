@@ -2,6 +2,7 @@ import type { PageServerLoad } from './$types';
 import { db } from '$lib/server/db';
 import { chatSessions, users } from '$lib/server/db/schema';
 import { eq, desc } from 'drizzle-orm';
+import { hasGlobalApiKey } from '$lib/server/openai/getApiKey';
 
 export const load: PageServerLoad = async ({ locals }) => {
 	const userId = locals.user!.id;
@@ -13,15 +14,18 @@ export const load: PageServerLoad = async ({ locals }) => {
 		.where(eq(chatSessions.userId, userId))
 		.orderBy(desc(chatSessions.updatedAt));
 
-	// Check if user has API key configured
+	// Check if user has API key configured (personal or global)
 	const [user] = await db
-		.select({ hasApiKey: users.openaiApiKeyEncrypted })
+		.select({ hasPersonalApiKey: users.openaiApiKeyEncrypted })
 		.from(users)
 		.where(eq(users.id, userId))
 		.limit(1);
 
+	const hasGlobalKey = await hasGlobalApiKey();
+	const hasApiKey = !!user?.hasPersonalApiKey || hasGlobalKey;
+
 	return {
 		sessions,
-		hasApiKey: !!user?.hasApiKey
+		hasApiKey
 	};
 };

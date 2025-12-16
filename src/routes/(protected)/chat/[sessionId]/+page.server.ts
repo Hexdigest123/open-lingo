@@ -3,6 +3,7 @@ import { error } from '@sveltejs/kit';
 import { db } from '$lib/server/db';
 import { chatSessions, chatMessages, users } from '$lib/server/db/schema';
 import { eq, and, asc } from 'drizzle-orm';
+import { hasGlobalApiKey } from '$lib/server/openai/getApiKey';
 
 export const load: PageServerLoad = async ({ params, locals }) => {
 	const userId = locals.user!.id;
@@ -30,16 +31,19 @@ export const load: PageServerLoad = async ({ params, locals }) => {
 		.where(eq(chatMessages.sessionId, sessionId))
 		.orderBy(asc(chatMessages.createdAt));
 
-	// Check if user has API key configured
+	// Check if user has API key configured (personal or global)
 	const [user] = await db
-		.select({ hasApiKey: users.openaiApiKeyEncrypted })
+		.select({ hasPersonalApiKey: users.openaiApiKeyEncrypted })
 		.from(users)
 		.where(eq(users.id, userId))
 		.limit(1);
 
+	const hasGlobalKey = await hasGlobalApiKey();
+	const hasApiKey = !!user?.hasPersonalApiKey || hasGlobalKey;
+
 	return {
 		session,
 		messages,
-		hasApiKey: !!user?.hasApiKey
+		hasApiKey
 	};
 };
