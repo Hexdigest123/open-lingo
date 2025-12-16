@@ -3,7 +3,16 @@ import type { RequestHandler } from './$types';
 import { db } from '$lib/server/db';
 import { questions, userQuestionAttempts } from '$lib/server/db/schema';
 import { eq, and, desc } from 'drizzle-orm';
-import { getEffectiveApiKey } from '$lib/server/openai/getApiKey';
+import { getEffectiveApiKeyWithSource } from '$lib/server/openai/getApiKey';
+import { logApiUsage, extractTokenUsage } from '$lib/server/audit/apiUsage';
+import { z } from 'zod';
+
+// Input validation schema
+const explainRequestSchema = z.object({
+	questionId: z.number().int().positive(),
+	userAnswer: z.string().min(1).max(1000),
+	locale: z.enum(['en', 'de']).default('en')
+});
 
 export const POST: RequestHandler = async ({ request, locals }) => {
 	const userId = locals.user?.id;
@@ -12,18 +21,39 @@ export const POST: RequestHandler = async ({ request, locals }) => {
 		return json({ error: 'Unauthorized' }, { status: 401 });
 	}
 
-	const body = await request.json();
-	const { questionId, userAnswer, locale = 'en' } = body;
-
-	if (!questionId || !userAnswer) {
-		return json({ error: 'Question ID and user answer are required' }, { status: 400 });
+	let body: unknown;
+	try {
+		body = await request.json();
+	} catch {
+		return json({ error: 'Invalid JSON' }, { status: 400 });
 	}
 
+	const parseResult = explainRequestSchema.safeParse(body);
+	if (!parseResult.success) {
+		return json(
+			{ error: 'Invalid request', details: parseResult.error.flatten().fieldErrors },
+			{ status: 400 }
+		);
+	}
+
+	const { questionId, userAnswer, locale } = parseResult.data;
+
 	// Get effective API key (user's key or global fallback)
-	const apiKey = await getEffectiveApiKey(userId);
+	const { key: apiKey, isGlobalKey } = await getEffectiveApiKeyWithSource(userId);
 
 	if (!apiKey) {
 		return json({ error: 'OpenAI API key not configured. Please set your API key in settings or contact an administrator.' }, { status: 400 });
+	}
+
+	// Verify user has attempted this question (prevents information disclosure)
+	const [hasAttempted] = await db
+		.select({ id: userQuestionAttempts.id })
+		.from(userQuestionAttempts)
+		.where(and(eq(userQuestionAttempts.userId, userId), eq(userQuestionAttempts.questionId, questionId)))
+		.limit(1);
+
+	if (!hasAttempted) {
+		return json({ error: 'You must attempt this question before requesting an explanation' }, { status: 403 });
 	}
 
 	// Build locale-specific system prompt
@@ -111,6 +141,16 @@ ${locale === 'de' ? 'Bitte erkläre, warum das falsch war und hilf mir, die rich
 
 		const data = await response.json();
 		const explanation = data.choices?.[0]?.message?.content || 'Unable to generate explanation.';
+
+		// Log usage if global key was used
+		if (isGlobalKey) {
+			const tokenUsage = extractTokenUsage(data);
+			await logApiUsage({
+				userId,
+				usageType: 'explain',
+				...tokenUsage
+			});
+		}
 
 		// Store the explanation in the most recent attempt for this question
 		const [latestAttempt] = await db

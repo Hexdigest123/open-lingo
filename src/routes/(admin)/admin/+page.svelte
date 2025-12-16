@@ -61,5 +61,14 @@
 				<p class="text-sm text-text-muted">Global application settings</p>
 			</div>
 		</a>
+		<a href="/admin/api-usage" class="card flex items-center gap-4 transition-shadow hover:shadow-lg">
+			<div class="flex h-12 w-12 items-center justify-center rounded-xl bg-yellow/10 text-2xl">
+				📊
+			</div>
+			<div>
+				<h3 class="font-bold text-text-light">API Usage</h3>
+				<p class="text-sm text-text-muted">Monitor global API key usage</p>
+			</div>
+		</a>
 	</div>
 </div>

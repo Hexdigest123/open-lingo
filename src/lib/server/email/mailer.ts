@@ -9,6 +9,18 @@ const SMTP_PASS = process.env.SMTP_PASS;
 const SMTP_FROM = process.env.SMTP_FROM || 'OpenLingo <noreply@openlingo.app>';
 const APP_URL = process.env.PUBLIC_APP_URL || 'http://localhost:5173';
 
+/**
+ * Escape HTML entities to prevent XSS in email templates
+ */
+function escapeHtml(unsafe: string): string {
+	return unsafe
+		.replace(/&/g, '&amp;')
+		.replace(/</g, '&lt;')
+		.replace(/>/g, '&gt;')
+		.replace(/"/g, '&quot;')
+		.replace(/'/g, '&#039;');
+}
+
 let transporter: Transporter | null = null;
 
 /**
@@ -90,7 +102,7 @@ export async function sendInvitationEmail(to: string, code: string, inviterName?
 
 			<div style="background: #f7f7f7; border-radius: 12px; padding: 30px; margin-bottom: 20px;">
 				<h2 style="margin-top: 0; color: #3c3c3c;">You're Invited!</h2>
-				<p>${inviterName ? `<strong>${inviterName}</strong> has invited you to join OpenLingo.` : 'You\'ve been invited to join OpenLingo.'}</p>
+				<p>${inviterName ? `<strong>${escapeHtml(inviterName)}</strong> has invited you to join OpenLingo.` : 'You\'ve been invited to join OpenLingo.'}</p>
 				<p>Start learning Spanish today with AI-powered lessons, voice practice, and gamification.</p>
 
 				<div style="text-align: center; margin: 30px 0;">
@@ -133,7 +145,7 @@ export async function sendApprovalNotificationEmail(to: string, displayName: str
 			</div>
 
 			<div style="background: #f7f7f7; border-radius: 12px; padding: 30px; margin-bottom: 20px;">
-				<h2 style="margin-top: 0; color: #3c3c3c;">Welcome, ${displayName}!</h2>
+				<h2 style="margin-top: 0; color: #3c3c3c;">Welcome, ${escapeHtml(displayName)}!</h2>
 				<p>Great news! Your OpenLingo account has been approved by an administrator.</p>
 				<p>You can now log in and start your Spanish learning journey.</p>
 
@@ -173,7 +185,7 @@ export async function sendRejectionNotificationEmail(to: string, displayName: st
 			</div>
 
 			<div style="background: #f7f7f7; border-radius: 12px; padding: 30px; margin-bottom: 20px;">
-				<h2 style="margin-top: 0; color: #3c3c3c;">Hello, ${displayName}</h2>
+				<h2 style="margin-top: 0; color: #3c3c3c;">Hello, ${escapeHtml(displayName)}</h2>
 				<p>We're sorry to inform you that your account registration request was not approved at this time.</p>
 				<p>If you believe this was a mistake or have questions, please contact the administrator.</p>
 			</div>

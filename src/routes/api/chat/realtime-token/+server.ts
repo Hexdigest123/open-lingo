@@ -1,9 +1,7 @@
 import { json } from '@sveltejs/kit';
 import type { RequestHandler } from './$types';
-import { db } from '$lib/server/db';
-import { users } from '$lib/server/db/schema';
-import { eq } from 'drizzle-orm';
-import { decryptApiKey } from '$lib/server/auth/encryption';
+import { getEffectiveApiKeyWithSource } from '$lib/server/openai/getApiKey';
+import { logApiUsage } from '$lib/server/audit/apiUsage';
 
 // Map locale code to full language name
 function getMotherLanguage(locale: string): string {
@@ -53,18 +51,12 @@ export const POST: RequestHandler = async ({ locals, request }) => {
 	const locale = body.locale || 'en';
 	const motherLanguage = getMotherLanguage(locale);
 
-	// Get user's encrypted API key
-	const [user] = await db
-		.select({ openaiApiKeyEncrypted: users.openaiApiKeyEncrypted })
-		.from(users)
-		.where(eq(users.id, userId))
-		.limit(1);
+	// Get effective API key (user's key or global fallback)
+	const { key: apiKey, isGlobalKey } = await getEffectiveApiKeyWithSource(userId);
 
-	if (!user?.openaiApiKeyEncrypted) {
-		return json({ error: 'OpenAI API key not configured' }, { status: 400 });
+	if (!apiKey) {
+		return json({ error: 'OpenAI API key not configured. Please set your API key in settings or contact an administrator.' }, { status: 400 });
 	}
-
-	const apiKey = decryptApiKey(user.openaiApiKeyEncrypted);
 
 	try {
 		// Create ephemeral token via OpenAI REST API
@@ -100,6 +92,16 @@ export const POST: RequestHandler = async ({ locals, request }) => {
 		}
 
 		const session = await response.json();
+
+		// Log voice session if global key was used
+		// Note: We can't track actual token usage for realtime sessions
+		if (isGlobalKey) {
+			await logApiUsage({
+				userId,
+				usageType: 'voice',
+				model: 'gpt-4o-realtime-preview'
+			});
+		}
 
 		return json({
 			client_secret: session.client_secret,

@@ -3,6 +3,13 @@ import type { RequestHandler } from './$types';
 import { db } from '$lib/server/db';
 import { chatSessions, chatMessages } from '$lib/server/db/schema';
 import { eq, desc } from 'drizzle-orm';
+import { z } from 'zod';
+
+// Input validation schema for session creation
+const createSessionSchema = z.object({
+	mode: z.enum(['text', 'voice']).default('text'),
+	locale: z.enum(['en', 'de']).default('en')
+});
 
 // Map locale code to full language name
 function getMotherLanguage(locale: string): string {
@@ -65,9 +72,22 @@ export const POST: RequestHandler = async ({ request, locals }) => {
 		return json({ error: 'Unauthorized' }, { status: 401 });
 	}
 
-	const body = await request.json();
-	const mode = body.mode || 'text';
-	const locale = body.locale || 'en';
+	let body: unknown;
+	try {
+		body = await request.json();
+	} catch {
+		return json({ error: 'Invalid JSON' }, { status: 400 });
+	}
+
+	const parseResult = createSessionSchema.safeParse(body);
+	if (!parseResult.success) {
+		return json(
+			{ error: 'Invalid request', details: parseResult.error.flatten().fieldErrors },
+			{ status: 400 }
+		);
+	}
+
+	const { mode, locale } = parseResult.data;
 
 	const [session] = await db
 		.insert(chatSessions)

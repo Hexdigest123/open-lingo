@@ -1,7 +1,15 @@
-import { redirect, type Handle } from '@sveltejs/kit';
+import { json, redirect, type Handle } from '@sveltejs/kit';
 import { validateAccessToken, refreshSession } from '$lib/server/auth/session';
+import { checkRateLimit, RATE_LIMITS } from '$lib/server/security/rateLimit';
 
 const REFRESH_COOKIE_NAME = 'refresh_token';
+
+// Rate limited API paths and their configurations
+const RATE_LIMITED_PATHS: Array<{ pattern: RegExp; config: keyof typeof RATE_LIMITS }> = [
+	{ pattern: /^\/api\/ai\//, config: 'ai' },
+	{ pattern: /^\/api\/chat\/completions/, config: 'chatCompletions' },
+	{ pattern: /^\/api\/chat\/realtime-token/, config: 'realtimeToken' }
+];
 
 // Routes that pending users are allowed to access
 const PENDING_USER_ALLOWED_ROUTES = [
@@ -83,6 +91,40 @@ export const handle: Handle = async ({ event, resolve }) => {
 		const path = event.url.pathname;
 		if (path !== '/rejected' && path !== '/') {
 			redirect(303, '/rejected');
+		}
+	}
+
+	// Rate limiting for API endpoints
+	const pathname = event.url.pathname;
+	for (const { pattern, config } of RATE_LIMITED_PATHS) {
+		if (pattern.test(pathname)) {
+			// Use userId if authenticated, otherwise fall back to IP
+			const identifier =
+				event.locals.user?.id?.toString() ||
+				event.request.headers.get('x-forwarded-for')?.split(',')[0]?.trim() ||
+				event.getClientAddress();
+
+			const rateLimitConfig = RATE_LIMITS[config];
+			const result = checkRateLimit(identifier, config, rateLimitConfig);
+
+			if (!result.allowed) {
+				return json(
+					{
+						error: 'Too many requests. Please try again later.',
+						retryAfter: Math.ceil(result.resetIn / 1000)
+					},
+					{
+						status: 429,
+						headers: {
+							'Retry-After': Math.ceil(result.resetIn / 1000).toString(),
+							'X-RateLimit-Limit': rateLimitConfig.limit.toString(),
+							'X-RateLimit-Remaining': '0',
+							'X-RateLimit-Reset': Math.ceil(result.resetIn / 1000).toString()
+						}
+					}
+				);
+			}
+			break;
 		}
 	}
 

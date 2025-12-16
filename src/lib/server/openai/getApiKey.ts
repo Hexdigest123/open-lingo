@@ -5,13 +5,18 @@ import { decryptApiKey } from '$lib/server/auth/encryption';
 
 const GLOBAL_OPENAI_API_KEY_SETTING = 'global_openai_api_key';
 
+export interface ApiKeyResult {
+	key: string | null;
+	isGlobalKey: boolean;
+}
+
 /**
- * Get the effective OpenAI API key for a user.
+ * Get the effective OpenAI API key for a user with source information.
  * Priority: User's personal key > Global admin key
  * @param userId The user ID to get the API key for
- * @returns The decrypted API key or null if none is available
+ * @returns Object containing the decrypted API key and whether it's the global key
  */
-export async function getEffectiveApiKey(userId: number): Promise<string | null> {
+export async function getEffectiveApiKeyWithSource(userId: number): Promise<ApiKeyResult> {
 	// First, try to get the user's personal API key
 	const [user] = await db
 		.select({ openaiApiKeyEncrypted: users.openaiApiKeyEncrypted })
@@ -21,9 +26,11 @@ export async function getEffectiveApiKey(userId: number): Promise<string | null>
 
 	if (user?.openaiApiKeyEncrypted) {
 		try {
-			return decryptApiKey(user.openaiApiKeyEncrypted);
-		} catch {
-			// If decryption fails, fall through to global key
+			const key = decryptApiKey(user.openaiApiKeyEncrypted);
+			return { key, isGlobalKey: false };
+		} catch (error) {
+			console.error(`[Security] Failed to decrypt API key for user ${userId}:`, error);
+			// Fall through to global key
 		}
 	}
 
@@ -36,13 +43,26 @@ export async function getEffectiveApiKey(userId: number): Promise<string | null>
 
 	if (globalSetting?.value) {
 		try {
-			return decryptApiKey(globalSetting.value);
-		} catch {
-			return null;
+			const key = decryptApiKey(globalSetting.value);
+			return { key, isGlobalKey: true };
+		} catch (error) {
+			console.error('[Security] Failed to decrypt global API key:', error);
+			return { key: null, isGlobalKey: false };
 		}
 	}
 
-	return null;
+	return { key: null, isGlobalKey: false };
+}
+
+/**
+ * Get the effective OpenAI API key for a user.
+ * Priority: User's personal key > Global admin key
+ * @param userId The user ID to get the API key for
+ * @returns The decrypted API key or null if none is available
+ */
+export async function getEffectiveApiKey(userId: number): Promise<string | null> {
+	const result = await getEffectiveApiKeyWithSource(userId);
+	return result.key;
 }
 
 /**

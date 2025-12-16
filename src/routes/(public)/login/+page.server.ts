@@ -1,5 +1,5 @@
 import { fail, redirect } from '@sveltejs/kit';
-import type { Actions } from './$types';
+import type { Actions, PageServerLoad } from './$types';
 import { db } from '$lib/server/db';
 import { users } from '$lib/server/db/schema';
 import { eq } from 'drizzle-orm';
@@ -8,11 +8,44 @@ import { createSession } from '$lib/server/auth/session';
 
 const REFRESH_COOKIE_NAME = 'refresh_token';
 
+/**
+ * Validate redirect URL to prevent open redirects
+ * Only allows relative paths within the same origin
+ */
+function isValidRedirect(redirectUrl: string | null): string | null {
+	if (!redirectUrl) return null;
+
+	// Must start with / (relative path)
+	if (!redirectUrl.startsWith('/')) return null;
+
+	// Must not start with // (protocol-relative URL)
+	if (redirectUrl.startsWith('//')) return null;
+
+	// Must not contain protocol indicator
+	if (redirectUrl.includes(':')) return null;
+
+	// Basic path validation - only allow alphanumeric, /, -, _, and query strings
+	if (!/^\/[a-zA-Z0-9\-_\/]*(\?[a-zA-Z0-9\-_=&%]*)?$/.test(redirectUrl)) return null;
+
+	return redirectUrl;
+}
+
+export const load: PageServerLoad = async ({ url }) => {
+	const redirectParam = url.searchParams.get('redirect');
+	const validatedRedirect = isValidRedirect(redirectParam);
+
+	return {
+		redirect: validatedRedirect
+	};
+};
+
 export const actions: Actions = {
-	default: async ({ request, cookies }) => {
+	default: async ({ request, cookies, url }) => {
 		const data = await request.formData();
 		const email = data.get('email')?.toString().toLowerCase().trim();
 		const password = data.get('password')?.toString();
+		const redirectParam = data.get('redirect')?.toString() || url.searchParams.get('redirect');
+		const validatedRedirect = isValidRedirect(redirectParam);
 
 		if (!email || !password) {
 			return fail(400, { error: 'Email and password are required', email });
@@ -63,7 +96,7 @@ export const actions: Actions = {
 			maxAge: 60 * 60 * 24 * 7 // 7 days
 		});
 
-		// Redirect to dashboard
-		redirect(303, '/dashboard');
+		// Redirect to requested page or dashboard
+		redirect(303, validatedRedirect || '/dashboard');
 	}
 };

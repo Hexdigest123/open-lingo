@@ -1,8 +1,8 @@
 <script lang="ts">
 	import { enhance } from '$app/forms';
-	import type { ActionData } from './$types';
+	import type { ActionData, PageData } from './$types';
 
-	let { form }: { form: ActionData } = $props();
+	let { form, data }: { form: ActionData; data: PageData } = $props();
 
 	let loading = $state(false);
 </script>
@@ -29,6 +29,10 @@
 				};
 			}}
 		>
+			{#if data.redirect}
+				<input type="hidden" name="redirect" value={data.redirect} />
+			{/if}
+
 			{#if form?.error}
 				<div class="rounded-xl bg-error/10 p-4 text-center text-error">
 					{form.error}

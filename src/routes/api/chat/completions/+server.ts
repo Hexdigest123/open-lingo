@@ -3,7 +3,15 @@ import type { RequestHandler } from './$types';
 import { db } from '$lib/server/db';
 import { chatSessions, chatMessages } from '$lib/server/db/schema';
 import { eq, and, asc } from 'drizzle-orm';
-import { getEffectiveApiKey } from '$lib/server/openai/getApiKey';
+import { getEffectiveApiKeyWithSource } from '$lib/server/openai/getApiKey';
+import { logApiUsage, extractTokenUsage } from '$lib/server/audit/apiUsage';
+import { z } from 'zod';
+
+// Input validation schema
+const completionRequestSchema = z.object({
+	sessionId: z.number().int().positive(),
+	message: z.string().min(1).max(4000)
+});
 
 export const POST: RequestHandler = async ({ request, locals }) => {
 	const userId = locals.user?.id;
@@ -12,15 +20,25 @@ export const POST: RequestHandler = async ({ request, locals }) => {
 		return json({ error: 'Unauthorized' }, { status: 401 });
 	}
 
-	const body = await request.json();
-	const { sessionId, message } = body;
-
-	if (!sessionId || !message) {
-		return json({ error: 'Session ID and message are required' }, { status: 400 });
+	let body: unknown;
+	try {
+		body = await request.json();
+	} catch {
+		return json({ error: 'Invalid JSON' }, { status: 400 });
 	}
 
+	const parseResult = completionRequestSchema.safeParse(body);
+	if (!parseResult.success) {
+		return json(
+			{ error: 'Invalid request', details: parseResult.error.flatten().fieldErrors },
+			{ status: 400 }
+		);
+	}
+
+	const { sessionId, message } = parseResult.data;
+
 	// Get effective API key (user's key or global fallback)
-	const apiKey = await getEffectiveApiKey(userId);
+	const { key: apiKey, isGlobalKey } = await getEffectiveApiKeyWithSource(userId);
 
 	if (!apiKey) {
 		return json({ error: 'OpenAI API key not configured. Please set your API key in settings or contact an administrator.' }, { status: 400 });
@@ -80,6 +98,17 @@ export const POST: RequestHandler = async ({ request, locals }) => {
 
 		const data = await response.json();
 		const assistantMessage = data.choices?.[0]?.message?.content || 'Lo siento, no pude responder.';
+
+		// Log usage if global key was used
+		if (isGlobalKey) {
+			const tokenUsage = extractTokenUsage(data);
+			await logApiUsage({
+				userId,
+				usageType: 'chat',
+				sessionId,
+				...tokenUsage
+			});
+		}
 
 		// Save assistant message
 		const [savedMessage] = await db

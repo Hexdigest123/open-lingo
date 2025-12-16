@@ -328,6 +328,31 @@ export const chatMessages = pgTable(
 	(table) => [index('chat_messages_session_id_idx').on(table.sessionId)]
 );
 
+// API usage type enum
+export const apiUsageTypeEnum = pgEnum('api_usage_type', ['chat', 'voice', 'explain']);
+
+// API usage logs table (for global key usage auditing)
+export const apiUsageLogs = pgTable(
+	'api_usage_logs',
+	{
+		id: serial('id').primaryKey(),
+		userId: integer('user_id')
+			.references(() => users.id, { onDelete: 'cascade' })
+			.notNull(),
+		usageType: apiUsageTypeEnum('usage_type').notNull(),
+		sessionId: integer('session_id').references(() => chatSessions.id, { onDelete: 'set null' }),
+		promptTokens: integer('prompt_tokens').default(0).notNull(),
+		completionTokens: integer('completion_tokens').default(0).notNull(),
+		totalTokens: integer('total_tokens').default(0).notNull(),
+		model: varchar('model', { length: 100 }),
+		createdAt: timestamp('created_at').defaultNow().notNull()
+	},
+	(table) => [
+		index('api_usage_logs_user_id_idx').on(table.userId),
+		index('api_usage_logs_created_at_idx').on(table.createdAt)
+	]
+);
+
 // Relations
 export const usersRelations = relations(users, ({ one, many }) => ({
 	stats: one(userStats, {
@@ -337,6 +362,7 @@ export const usersRelations = relations(users, ({ one, many }) => ({
 	refreshTokens: many(refreshTokens),
 	lessonProgress: many(userLessonProgress),
 	questionAttempts: many(userQuestionAttempts),
+	apiUsageLogs: many(apiUsageLogs),
 	dailyStreaks: many(dailyStreaks),
 	achievements: many(userAchievements),
 	leaderboardEntries: many(leaderboardCache),
@@ -448,6 +474,17 @@ export const chatSessionsRelations = relations(chatSessions, ({ one, many }) => 
 export const chatMessagesRelations = relations(chatMessages, ({ one }) => ({
 	session: one(chatSessions, {
 		fields: [chatMessages.sessionId],
+		references: [chatSessions.id]
+	})
+}));
+
+export const apiUsageLogsRelations = relations(apiUsageLogs, ({ one }) => ({
+	user: one(users, {
+		fields: [apiUsageLogs.userId],
+		references: [users.id]
+	}),
+	session: one(chatSessions, {
+		fields: [apiUsageLogs.sessionId],
 		references: [chatSessions.id]
 	})
 }));

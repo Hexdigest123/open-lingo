@@ -12,6 +12,7 @@
 		{ href: '/admin/users', label: 'admin.nav.users', icon: '👥' },
 		{ href: '/admin/invitations', label: 'admin.nav.invitations', icon: '✉️' },
 		{ href: '/admin/approvals', label: 'admin.nav.approvals', icon: '✓' },
+		{ href: '/admin/api-usage', label: 'API Usage', icon: '📈' },
 		{ href: '/admin/settings', label: 'admin.nav.settings', icon: '⚙️' }
 	];
 
