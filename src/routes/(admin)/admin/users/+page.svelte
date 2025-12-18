@@ -118,12 +118,12 @@
 
 	<!-- Users Tab -->
 	{#if data.tab === 'users'}
-		<form onsubmit={handleSearch} class="flex gap-2">
+		<form onsubmit={handleSearch} class="flex flex-col gap-2 sm:flex-row">
 			<input
 				type="text"
 				bind:value={searchInput}
 				placeholder={t('admin.users.search')}
-				class="input w-64"
+				class="input w-full sm:w-64"
 			/>
 			<button type="submit" class="btn btn-primary btn-md">
 				{t('common.search')}

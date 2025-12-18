@@ -380,6 +380,8 @@
 	},
 	"admin": {
 		"title": "Admin-Übersicht",
+		"desktopRecommended": "Desktop empfohlen",
+		"desktopRecommendedDesc": "Dieser Bereich funktioniert am besten auf einem größeren Bildschirm für die Verwaltung von Tabellen und Daten.",
 		"nav": {
 			"dashboard": "Übersicht",
 			"lessons": "Lektionen",

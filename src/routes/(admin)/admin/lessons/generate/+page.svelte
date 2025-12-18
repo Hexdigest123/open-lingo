@@ -40,7 +40,20 @@
 	<title>{t('admin.lessons.aiGenerate')} - OpenLingo</title>
 </svelte:head>
 
-<div class="mx-auto max-w-2xl space-y-6">
+<!-- Mobile: Show only desktop recommendation -->
+<div class="flex min-h-[60vh] flex-col items-center justify-center gap-4 text-center md:hidden">
+	<span class="text-6xl">💻</span>
+	<div>
+		<h1 class="text-xl font-bold text-text-light">{t('admin.desktopRecommended')}</h1>
+		<p class="mt-2 text-text-muted">{t('admin.desktopRecommendedDesc')}</p>
+	</div>
+	<a href="/admin" class="btn btn-primary btn-md mt-4">
+		{t('common.back')}
+	</a>
+</div>
+
+<!-- Desktop: Show full content -->
+<div class="mx-auto hidden max-w-2xl space-y-6 md:block">
 	<div class="flex items-center gap-4">
 		<a href="/admin/lessons" class="text-text-muted hover:text-text-light">
 			&larr; {t('common.back')}
