@@ -22,10 +22,18 @@ services:
     ports:
       - 3000:3000
     environment:
-      - DATABASE_URL=postgres://root:mysecretpassword@db:5432/local
-      - JWT_ACCESS_SECRET=${JWT_ACCESS_SECRET}
-      - JWT_REFRESH_SECRET=${JWT_REFRESH_SECRET}
-      - ENCRYPTION_KEY=${ENCRYPTION_KEY}
+      # Always use 'db' hostname inside Docker network, ignore host's DATABASE_URL
+      DATABASE_URL: postgres://root:mysecretpassword@db:5432/local
+      JWT_ACCESS_SECRET: ${JWT_ACCESS_SECRET}
+      JWT_REFRESH_SECRET: ${JWT_REFRESH_SECRET}
+      ENCRYPTION_KEY: ${ENCRYPTION_KEY}
+      ORIGIN: ${ORIGIN:-http://localhost:3000}
+      SMTP_HOST: ${SMTP_HOST:-}
+      SMTP_PORT: ${SMTP_PORT:-}
+      SMTP_USER: ${SMTP_USER:-}
+      SMTP_PASS: ${SMTP_PASS:-}
+      SMTP_FROM: ${SMTP_FROM:-}
+      PUBLIC_APP_URL: ${PUBLIC_APP_URL:-}
     depends_on:
       db:
         condition: service_healthy
