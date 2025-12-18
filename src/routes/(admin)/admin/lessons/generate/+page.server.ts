@@ -6,22 +6,42 @@ import { eq, desc } from 'drizzle-orm';
 import { getEffectiveApiKey, hasGlobalApiKey } from '$lib/server/openai/getApiKey';
 
 interface GeneratedQuestion {
-	type: 'multiple_choice' | 'fill_blank' | 'translation' | 'matching';
+	type: 'multiple_choice' | 'fill_blank' | 'translation' | 'matching' | 'word_order' | 'speaking' | 'listening';
 	content: {
-		question?: string;
+		// Multiple choice
+		questionEn?: string;
+		questionDe?: string;
 		options?: string[];
-		sentence?: string;
-		hint?: string;
+		// Fill blank
+		sentenceEn?: string;
+		sentenceDe?: string;
+		hintEn?: string;
+		hintDe?: string;
+		// Translation
+		textEn?: string;
+		textDe?: string;
 		text?: string;
-		direction?: string;
-		pairs?: { spanish: string; english: string }[];
+		direction?: 'native_to_es' | 'es_to_native';
+		// Matching
+		pairs?: { spanish: string; english: string; german?: string }[];
+		// Word order
+		words?: string[];
+		instructionEn?: string;
+		instructionDe?: string;
+		// Speaking
+		textToSpeak?: string;
+		// Listening
+		textToHear?: string;
+		answerType?: 'type' | 'multiple_choice';
 	};
 	correctAnswer: string;
 }
 
 interface GeneratedLesson {
 	title: string;
+	titleDe?: string;
 	description: string;
+	descriptionDe?: string;
 	questions: GeneratedQuestion[];
 }
 
@@ -106,14 +126,25 @@ export const actions: Actions = {
 
 			const order = (maxOrder?.maxOrder || 0) + 1;
 
+			// Build JSON objects for translations
+			const title = JSON.stringify({
+				en: generatedLesson.title,
+				de: generatedLesson.titleDe || generatedLesson.title
+			});
+			const description = generatedLesson.description
+				? JSON.stringify({
+						en: generatedLesson.description,
+						de: generatedLesson.descriptionDe || generatedLesson.description
+					})
+				: null;
+
 			// Insert the lesson
 			const [newLesson] = await db
 				.insert(lessons)
 				.values({
-					title: generatedLesson.title,
-					description: generatedLesson.description,
+					title,
+					description,
 					unitId,
-					type: 'vocabulary',
 					xpReward: Math.ceil(questionCount / 5) * 5, // 10 XP per 5 questions
 					order,
 					isPublished: false // Start as draft
@@ -151,39 +182,51 @@ async function generateLessonWithAI(
 	questionCount: number,
 	difficulty: string
 ): Promise<GeneratedLesson> {
-	const mcCount = Math.floor(questionCount * 0.3); // 30% multiple choice
-	const fillCount = Math.floor(questionCount * 0.3); // 30% fill in blank
-	const transCount = Math.floor(questionCount * 0.2); // 20% translation
-	const matchCount = questionCount - mcCount - fillCount - transCount; // Rest matching
+	// Distribution for all 7 question types
+	const mcCount = Math.floor(questionCount * 0.2); // 20% multiple choice
+	const fillCount = Math.floor(questionCount * 0.2); // 20% fill in blank
+	const transCount = Math.floor(questionCount * 0.15); // 15% translation
+	const matchCount = Math.floor(questionCount * 0.15); // 15% matching
+	const wordOrderCount = Math.floor(questionCount * 0.15); // 15% word order
+	const speakingCount = Math.floor(questionCount * 0.08); // 8% speaking
+	const listeningCount = questionCount - mcCount - fillCount - transCount - matchCount - wordOrderCount - speakingCount; // Rest listening
 
 	const prompt = `You are a Spanish language teacher creating a lesson about "${topic}" for CEFR level ${level} (${difficulty} difficulty).
 
 Generate a complete Spanish lesson in JSON format with:
-1. A lesson title (in English)
-2. A brief description (in English)
-3. ${questionCount} questions distributed as follows:
-   - ${mcCount} multiple choice questions (asking how to say English words in Spanish)
-   - ${fillCount} fill in the blank questions (Spanish sentences with one word blanked out)
-   - ${transCount} translation questions (mix of English to Spanish and Spanish to English)
-   - ${matchCount} matching questions (groups of 4 Spanish-English word pairs each)
+1. A lesson title in English (short and descriptive)
+2. A lesson title in German (translation of the English title)
+3. A brief description in English (1-2 sentences)
+4. A brief description in German (translation of the English description)
+5. ${questionCount} questions distributed as follows:
+   - ${mcCount} multiple_choice questions
+   - ${fillCount} fill_blank questions
+   - ${transCount} translation questions
+   - ${matchCount} matching questions (4 pairs each)
+   - ${wordOrderCount} word_order questions
+   - ${speakingCount} speaking questions
+   - ${listeningCount} listening questions
 
 For level ${level}:
-- A1: Use very basic vocabulary (greetings, numbers, colors, family)
-- A2: Use elementary vocabulary (travel, shopping, daily routines)
-- B1: Use intermediate vocabulary (opinions, experiences, plans)
-- B2: Use upper-intermediate vocabulary (abstract topics, nuanced expressions)
-- C1: Use advanced vocabulary (academic, professional, idiomatic)
-- C2: Use mastery-level vocabulary (idioms, nuances, literary expressions)
+- A1: Very basic vocabulary (greetings, numbers, colors, family)
+- A2: Elementary vocabulary (travel, shopping, daily routines)
+- B1: Intermediate vocabulary (opinions, experiences, plans)
+- B2: Upper-intermediate vocabulary (abstract topics, nuanced expressions)
+- C1: Advanced vocabulary (academic, professional, idiomatic)
+- C2: Mastery-level vocabulary (idioms, nuances, literary expressions)
 
-Return ONLY valid JSON in this exact format:
+Return ONLY valid JSON in this exact format (note the En/De suffixes for bilingual support):
 {
   "title": "Lesson Title Here",
+  "titleDe": "Lektionstitel hier",
   "description": "Brief description of what students will learn",
+  "descriptionDe": "Kurze Beschreibung dessen, was die Schüler lernen werden",
   "questions": [
     {
       "type": "multiple_choice",
       "content": {
-        "question": "How do you say 'hello' in Spanish?",
+        "questionEn": "How do you say 'hello' in Spanish?",
+        "questionDe": "Wie sagt man 'Hallo' auf Spanisch?",
         "options": ["Hola", "Adiós", "Gracias", "Por favor"]
       },
       "correctAnswer": "Hola"
@@ -191,41 +234,83 @@ Return ONLY valid JSON in this exact format:
     {
       "type": "fill_blank",
       "content": {
-        "sentence": "_____ días, señor.",
-        "hint": "Good morning"
+        "sentenceEn": "Complete: _____ días, señor.",
+        "sentenceDe": "Vervollständige: _____ días, señor.",
+        "hintEn": "Good morning",
+        "hintDe": "Guten Morgen"
       },
       "correctAnswer": "Buenos"
     },
     {
       "type": "translation",
       "content": {
-        "text": "Good night",
-        "direction": "en_to_es"
+        "textEn": "Good night",
+        "textDe": "Gute Nacht",
+        "direction": "native_to_es"
       },
       "correctAnswer": "Buenas noches"
+    },
+    {
+      "type": "translation",
+      "content": {
+        "text": "Buenas noches",
+        "direction": "es_to_native"
+      },
+      "correctAnswer": "Good night|Gute Nacht"
     },
     {
       "type": "matching",
       "content": {
         "pairs": [
-          {"spanish": "Hola", "english": "Hello"},
-          {"spanish": "Adiós", "english": "Goodbye"},
-          {"spanish": "Gracias", "english": "Thank you"},
-          {"spanish": "Por favor", "english": "Please"}
+          {"spanish": "Hola", "english": "Hello", "german": "Hallo"},
+          {"spanish": "Adiós", "english": "Goodbye", "german": "Auf Wiedersehen"},
+          {"spanish": "Gracias", "english": "Thank you", "german": "Danke"},
+          {"spanish": "Por favor", "english": "Please", "german": "Bitte"}
         ]
       },
       "correctAnswer": "all_matched"
+    },
+    {
+      "type": "word_order",
+      "content": {
+        "words": ["Hola", "cómo", "estás"],
+        "instructionEn": "Arrange to say: 'Hello, how are you?'",
+        "instructionDe": "Ordne: 'Hallo, wie geht es dir?'"
+      },
+      "correctAnswer": "Hola cómo estás"
+    },
+    {
+      "type": "speaking",
+      "content": {
+        "textToSpeak": "Buenos días",
+        "hintEn": "Good morning",
+        "hintDe": "Guten Morgen"
+      },
+      "correctAnswer": "Buenos días"
+    },
+    {
+      "type": "listening",
+      "content": {
+        "textToHear": "Gracias",
+        "answerType": "type"
+      },
+      "correctAnswer": "Gracias"
     }
   ]
 }
 
-Important:
-- All multiple choice questions must have exactly 4 options
-- Fill in blank sentences should use "_____" for the blank
-- Translation questions should have "direction" as either "en_to_es" or "es_to_en"
-- Matching questions should have exactly 4 pairs each
-- Make the content educational and appropriate for the ${level} level
-- Use vocabulary related to "${topic}"`;
+IMPORTANT RULES:
+- All multiple_choice questions must have exactly 4 options
+- Fill_blank sentences MUST contain "_____" (5 underscores) for the blank
+- Translation direction: use "native_to_es" (English/German to Spanish) or "es_to_native" (Spanish to English/German)
+- For es_to_native translations, correctAnswer can have alternatives separated by | (e.g., "Hello|Hallo")
+- Matching questions must have exactly 4 pairs with spanish, english, and german fields
+- Word_order: provide words array and both English and German instructions
+- Speaking: textToSpeak is the Spanish text to pronounce, with English/German hints
+- Listening: textToHear is Spanish, answerType is always "type"
+- Make content educational and appropriate for ${level} level
+- Use vocabulary related to "${topic}"
+- Ensure German translations are accurate and natural`;
 
 	const response = await fetch('https://api.openai.com/v1/chat/completions', {
 		method: 'POST',
@@ -244,7 +329,7 @@ Important:
 				{ role: 'user', content: prompt }
 			],
 			temperature: 0.7,
-			max_tokens: 4000
+			max_tokens: 8000
 		})
 	});
 
@@ -281,5 +366,75 @@ Important:
 		throw new Error('Invalid response format from OpenAI');
 	}
 
-	return parsed;
+	// Transform questions to ensure they match the expected schema
+	const transformedQuestions = parsed.questions.map(transformQuestion);
+
+	return {
+		title: parsed.title,
+		titleDe: parsed.titleDe,
+		description: parsed.description,
+		descriptionDe: parsed.descriptionDe,
+		questions: transformedQuestions
+	};
+}
+
+/**
+ * Transform a question to ensure it matches the expected schema.
+ * Handles cases where AI returns old format fields.
+ */
+function transformQuestion(q: GeneratedQuestion): GeneratedQuestion {
+	const content = { ...q.content };
+
+	switch (q.type) {
+		case 'multiple_choice':
+			// Convert old 'question' field to 'questionEn'
+			if ('question' in content && !content.questionEn) {
+				content.questionEn = (content as Record<string, unknown>).question as string;
+				delete (content as Record<string, unknown>).question;
+			}
+			break;
+
+		case 'fill_blank':
+			// Convert old 'sentence' and 'hint' fields
+			if ('sentence' in content && !content.sentenceEn) {
+				content.sentenceEn = (content as Record<string, unknown>).sentence as string;
+				delete (content as Record<string, unknown>).sentence;
+			}
+			if ('hint' in content && !content.hintEn) {
+				content.hintEn = (content as Record<string, unknown>).hint as string;
+				delete (content as Record<string, unknown>).hint;
+			}
+			break;
+
+		case 'translation':
+			// Convert old direction values (cast to string for comparison with old format)
+			if ((content.direction as string) === 'en_to_es') {
+				content.direction = 'native_to_es';
+			} else if ((content.direction as string) === 'es_to_en') {
+				content.direction = 'es_to_native';
+			}
+			// Convert old 'text' field for native_to_es direction
+			if (content.direction === 'native_to_es' && 'text' in content && !content.textEn) {
+				content.textEn = content.text as string;
+				delete content.text;
+			}
+			break;
+
+		case 'matching':
+			// Ensure pairs have german field (even if empty)
+			if (content.pairs) {
+				content.pairs = content.pairs.map(p => ({
+					spanish: p.spanish,
+					english: p.english,
+					german: p.german || ''
+				}));
+			}
+			break;
+	}
+
+	return {
+		type: q.type,
+		content,
+		correctAnswer: q.correctAnswer
+	};
 }

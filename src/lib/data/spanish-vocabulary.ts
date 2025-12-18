@@ -1,5 +1,5 @@
 // Spanish vocabulary data organized by level and topic
-// Each entry has Spanish word, English translation, and category
+// Each entry has Spanish word, English translation, German translation
 
 export interface VocabItem {
 	es: string;
@@ -8,17 +8,21 @@ export interface VocabItem {
 }
 
 export interface UnitVocab {
-	title: string;
-	description: string;
+	titleEn: string;
+	titleDe: string;
+	descriptionEn: string;
+	descriptionDe: string;
 	themeColor: string;
 	vocab: VocabItem[];
-	sentences: { es: string; en: string }[];
+	sentences: { es: string; en: string; de: string }[];
 }
 
 export const A1_UNITS: UnitVocab[] = [
 	{
-		title: 'Greetings & Introductions',
-		description: 'Learn basic greetings and how to introduce yourself',
+		titleEn: 'Greetings & Introductions',
+		titleDe: 'Begrüßungen & Vorstellungen',
+		descriptionEn: 'Learn basic greetings and how to introduce yourself',
+		descriptionDe: 'Lerne grundlegende Begrüßungen und stelle dich vor',
 		themeColor: '#58CC02',
 		vocab: [
 			{ es: 'hola', en: 'hello', de: 'hallo' },
@@ -43,16 +47,18 @@ export const A1_UNITS: UnitVocab[] = [
 			{ es: 'señorita', en: 'miss', de: 'Fräulein' }
 		],
 		sentences: [
-			{ es: 'Hola, ¿cómo estás?', en: 'Hello, how are you?' },
-			{ es: 'Me llamo Juan.', en: 'My name is Juan.' },
-			{ es: 'Mucho gusto.', en: 'Nice to meet you.' },
-			{ es: '¿Cómo te llamas?', en: 'What is your name?' },
-			{ es: 'Buenos días, señor.', en: 'Good morning, sir.' }
+			{ es: 'Hola, ¿cómo estás?', en: 'Hello, how are you?', de: 'Hallo, wie geht es dir?' },
+			{ es: 'Me llamo Juan.', en: 'My name is Juan.', de: 'Ich heiße Juan.' },
+			{ es: 'Mucho gusto.', en: 'Nice to meet you.', de: 'Freut mich.' },
+			{ es: '¿Cómo te llamas?', en: 'What is your name?', de: 'Wie heißt du?' },
+			{ es: 'Buenos días, señor.', en: 'Good morning, sir.', de: 'Guten Morgen, mein Herr.' }
 		]
 	},
 	{
-		title: 'Numbers 1-100',
-		description: 'Learn to count and use numbers in Spanish',
+		titleEn: 'Numbers 1-100',
+		titleDe: 'Zahlen 1-100',
+		descriptionEn: 'Learn to count and use numbers in Spanish',
+		descriptionDe: 'Lerne auf Spanisch zu zählen und Zahlen zu benutzen',
 		themeColor: '#1CB0F6',
 		vocab: [
 			{ es: 'uno', en: 'one', de: 'eins' },
@@ -77,16 +83,18 @@ export const A1_UNITS: UnitVocab[] = [
 			{ es: 'tercero', en: 'third', de: 'dritte' }
 		],
 		sentences: [
-			{ es: 'Tengo tres hermanos.', en: 'I have three siblings.' },
-			{ es: '¿Cuántos años tienes?', en: 'How old are you?' },
-			{ es: 'Son las cinco.', en: 'It is five o clock.' },
-			{ es: 'Hay diez manzanas.', en: 'There are ten apples.' },
-			{ es: 'El número es veinte.', en: 'The number is twenty.' }
+			{ es: 'Tengo tres hermanos.', en: 'I have three siblings.', de: 'Ich habe drei Geschwister.' },
+			{ es: '¿Cuántos años tienes?', en: 'How old are you?', de: 'Wie alt bist du?' },
+			{ es: 'Son las cinco.', en: 'It is five o clock.', de: 'Es ist fünf Uhr.' },
+			{ es: 'Hay diez manzanas.', en: 'There are ten apples.', de: 'Es gibt zehn Äpfel.' },
+			{ es: 'El número es veinte.', en: 'The number is twenty.', de: 'Die Zahl ist zwanzig.' }
 		]
 	},
 	{
-		title: 'Family',
-		description: 'Talk about your family members',
+		titleEn: 'Family',
+		titleDe: 'Familie',
+		descriptionEn: 'Talk about your family members',
+		descriptionDe: 'Sprich über deine Familienmitglieder',
 		themeColor: '#CE82FF',
 		vocab: [
 			{ es: 'familia', en: 'family', de: 'Familie' },
@@ -111,16 +119,18 @@ export const A1_UNITS: UnitVocab[] = [
 			{ es: 'hijos', en: 'children', de: 'Kinder' }
 		],
 		sentences: [
-			{ es: 'Mi madre es doctora.', en: 'My mother is a doctor.' },
-			{ es: 'Tengo dos hermanas.', en: 'I have two sisters.' },
-			{ es: 'Mi familia es grande.', en: 'My family is big.' },
-			{ es: 'El abuelo está en casa.', en: 'Grandfather is at home.' },
-			{ es: 'Ella es mi tía.', en: 'She is my aunt.' }
+			{ es: 'Mi madre es doctora.', en: 'My mother is a doctor.', de: 'Meine Mutter ist Ärztin.' },
+			{ es: 'Tengo dos hermanas.', en: 'I have two sisters.', de: 'Ich habe zwei Schwestern.' },
+			{ es: 'Mi familia es grande.', en: 'My family is big.', de: 'Meine Familie ist groß.' },
+			{ es: 'El abuelo está en casa.', en: 'Grandfather is at home.', de: 'Der Großvater ist zu Hause.' },
+			{ es: 'Ella es mi tía.', en: 'She is my aunt.', de: 'Sie ist meine Tante.' }
 		]
 	},
 	{
-		title: 'Colors',
-		description: 'Learn the colors in Spanish',
+		titleEn: 'Colors',
+		titleDe: 'Farben',
+		descriptionEn: 'Learn the colors in Spanish',
+		descriptionDe: 'Lerne die Farben auf Spanisch',
 		themeColor: '#FF9600',
 		vocab: [
 			{ es: 'rojo', en: 'red', de: 'rot' },
@@ -145,16 +155,18 @@ export const A1_UNITS: UnitVocab[] = [
 			{ es: 'vivo', en: 'vivid', de: 'lebhaft' }
 		],
 		sentences: [
-			{ es: 'El cielo es azul.', en: 'The sky is blue.' },
-			{ es: 'La manzana es roja.', en: 'The apple is red.' },
-			{ es: 'Mi carro es negro.', en: 'My car is black.' },
-			{ es: 'Las flores son amarillas.', en: 'The flowers are yellow.' },
-			{ es: '¿De qué color es?', en: 'What color is it?' }
+			{ es: 'El cielo es azul.', en: 'The sky is blue.', de: 'Der Himmel ist blau.' },
+			{ es: 'La manzana es roja.', en: 'The apple is red.', de: 'Der Apfel ist rot.' },
+			{ es: 'Mi carro es negro.', en: 'My car is black.', de: 'Mein Auto ist schwarz.' },
+			{ es: 'Las flores son amarillas.', en: 'The flowers are yellow.', de: 'Die Blumen sind gelb.' },
+			{ es: '¿De qué color es?', en: 'What color is it?', de: 'Welche Farbe hat es?' }
 		]
 	},
 	{
-		title: 'Food & Drink',
-		description: 'Order food and describe meals',
+		titleEn: 'Food & Drink',
+		titleDe: 'Essen & Trinken',
+		descriptionEn: 'Order food and describe meals',
+		descriptionDe: 'Bestelle Essen und beschreibe Mahlzeiten',
 		themeColor: '#FF4B4B',
 		vocab: [
 			{ es: 'agua', en: 'water', de: 'Wasser' },
@@ -179,16 +191,18 @@ export const A1_UNITS: UnitVocab[] = [
 			{ es: 'postre', en: 'dessert', de: 'Nachtisch' }
 		],
 		sentences: [
-			{ es: 'Quiero agua, por favor.', en: 'I want water, please.' },
-			{ es: 'El desayuno está listo.', en: 'Breakfast is ready.' },
-			{ es: 'Me gusta el pollo.', en: 'I like chicken.' },
-			{ es: '¿Qué quieres comer?', en: 'What do you want to eat?' },
-			{ es: 'La sopa está caliente.', en: 'The soup is hot.' }
+			{ es: 'Quiero agua, por favor.', en: 'I want water, please.', de: 'Ich möchte Wasser, bitte.' },
+			{ es: 'El desayuno está listo.', en: 'Breakfast is ready.', de: 'Das Frühstück ist fertig.' },
+			{ es: 'Me gusta el pollo.', en: 'I like chicken.', de: 'Ich mag Hähnchen.' },
+			{ es: '¿Qué quieres comer?', en: 'What do you want to eat?', de: 'Was möchtest du essen?' },
+			{ es: 'La sopa está caliente.', en: 'The soup is hot.', de: 'Die Suppe ist heiß.' }
 		]
 	},
 	{
-		title: 'Days & Time',
-		description: 'Learn days of the week and tell time',
+		titleEn: 'Days & Time',
+		titleDe: 'Tage & Zeit',
+		descriptionEn: 'Learn days of the week and tell time',
+		descriptionDe: 'Lerne die Wochentage und die Uhrzeit',
 		themeColor: '#00CD9C',
 		vocab: [
 			{ es: 'lunes', en: 'Monday', de: 'Montag' },
@@ -213,16 +227,18 @@ export const A1_UNITS: UnitVocab[] = [
 			{ es: 'tarde', en: 'late', de: 'spät' }
 		],
 		sentences: [
-			{ es: 'Hoy es lunes.', en: 'Today is Monday.' },
-			{ es: '¿Qué hora es?', en: 'What time is it?' },
-			{ es: 'Son las tres.', en: 'It is three o clock.' },
-			{ es: 'Mañana es viernes.', en: 'Tomorrow is Friday.' },
-			{ es: 'La semana tiene siete días.', en: 'The week has seven days.' }
+			{ es: 'Hoy es lunes.', en: 'Today is Monday.', de: 'Heute ist Montag.' },
+			{ es: '¿Qué hora es?', en: 'What time is it?', de: 'Wie spät ist es?' },
+			{ es: 'Son las tres.', en: 'It is three o clock.', de: 'Es ist drei Uhr.' },
+			{ es: 'Mañana es viernes.', en: 'Tomorrow is Friday.', de: 'Morgen ist Freitag.' },
+			{ es: 'La semana tiene siete días.', en: 'The week has seven days.', de: 'Die Woche hat sieben Tage.' }
 		]
 	},
 	{
-		title: 'Body Parts',
-		description: 'Learn the parts of the body',
+		titleEn: 'Body Parts',
+		titleDe: 'Körperteile',
+		descriptionEn: 'Learn the parts of the body',
+		descriptionDe: 'Lerne die Körperteile',
 		themeColor: '#FF86D0',
 		vocab: [
 			{ es: 'cabeza', en: 'head', de: 'Kopf' },
@@ -247,16 +263,18 @@ export const A1_UNITS: UnitVocab[] = [
 			{ es: 'cuerpo', en: 'body', de: 'Körper' }
 		],
 		sentences: [
-			{ es: 'Me duele la cabeza.', en: 'My head hurts.' },
-			{ es: 'Tengo dos ojos.', en: 'I have two eyes.' },
-			{ es: 'Ella tiene pelo largo.', en: 'She has long hair.' },
-			{ es: 'Lávate las manos.', en: 'Wash your hands.' },
-			{ es: 'El corazón late rápido.', en: 'The heart beats fast.' }
+			{ es: 'Me duele la cabeza.', en: 'My head hurts.', de: 'Mir tut der Kopf weh.' },
+			{ es: 'Tengo dos ojos.', en: 'I have two eyes.', de: 'Ich habe zwei Augen.' },
+			{ es: 'Ella tiene pelo largo.', en: 'She has long hair.', de: 'Sie hat lange Haare.' },
+			{ es: 'Lávate las manos.', en: 'Wash your hands.', de: 'Wasch dir die Hände.' },
+			{ es: 'El corazón late rápido.', en: 'The heart beats fast.', de: 'Das Herz schlägt schnell.' }
 		]
 	},
 	{
-		title: 'Clothing',
-		description: 'Learn about clothes and what to wear',
+		titleEn: 'Clothing',
+		titleDe: 'Kleidung',
+		descriptionEn: 'Learn about clothes and what to wear',
+		descriptionDe: 'Lerne über Kleidung und was man trägt',
 		themeColor: '#9069FF',
 		vocab: [
 			{ es: 'camisa', en: 'shirt', de: 'Hemd' },
@@ -281,16 +299,18 @@ export const A1_UNITS: UnitVocab[] = [
 			{ es: 'pijama', en: 'pajamas', de: 'Schlafanzug' }
 		],
 		sentences: [
-			{ es: 'Ella lleva un vestido rojo.', en: 'She wears a red dress.' },
-			{ es: 'Necesito comprar zapatos.', en: 'I need to buy shoes.' },
-			{ es: 'Hace frío, ponte la chaqueta.', en: 'It is cold, put on your jacket.' },
-			{ es: '¿Dónde está mi camisa?', en: 'Where is my shirt?' },
-			{ es: 'Los calcetines son blancos.', en: 'The socks are white.' }
+			{ es: 'Ella lleva un vestido rojo.', en: 'She wears a red dress.', de: 'Sie trägt ein rotes Kleid.' },
+			{ es: 'Necesito comprar zapatos.', en: 'I need to buy shoes.', de: 'Ich muss Schuhe kaufen.' },
+			{ es: 'Hace frío, ponte la chaqueta.', en: 'It is cold, put on your jacket.', de: 'Es ist kalt, zieh deine Jacke an.' },
+			{ es: '¿Dónde está mi camisa?', en: 'Where is my shirt?', de: 'Wo ist mein Hemd?' },
+			{ es: 'Los calcetines son blancos.', en: 'The socks are white.', de: 'Die Socken sind weiß.' }
 		]
 	},
 	{
-		title: 'House & Home',
-		description: 'Learn about rooms and furniture',
+		titleEn: 'House & Home',
+		titleDe: 'Haus & Zuhause',
+		descriptionEn: 'Learn about rooms and furniture',
+		descriptionDe: 'Lerne über Räume und Möbel',
 		themeColor: '#4B87FF',
 		vocab: [
 			{ es: 'casa', en: 'house', de: 'Haus' },
@@ -315,16 +335,18 @@ export const A1_UNITS: UnitVocab[] = [
 			{ es: 'techo', en: 'roof', de: 'Dach' }
 		],
 		sentences: [
-			{ es: 'Mi casa es grande.', en: 'My house is big.' },
-			{ es: 'La cocina está limpia.', en: 'The kitchen is clean.' },
-			{ es: 'Hay una mesa en el comedor.', en: 'There is a table in the dining room.' },
-			{ es: 'Duermo en mi cama.', en: 'I sleep in my bed.' },
-			{ es: 'El jardín tiene flores.', en: 'The garden has flowers.' }
+			{ es: 'Mi casa es grande.', en: 'My house is big.', de: 'Mein Haus ist groß.' },
+			{ es: 'La cocina está limpia.', en: 'The kitchen is clean.', de: 'Die Küche ist sauber.' },
+			{ es: 'Hay una mesa en el comedor.', en: 'There is a table in the dining room.', de: 'Es gibt einen Tisch im Esszimmer.' },
+			{ es: 'Duermo en mi cama.', en: 'I sleep in my bed.', de: 'Ich schlafe in meinem Bett.' },
+			{ es: 'El jardín tiene flores.', en: 'The garden has flowers.', de: 'Der Garten hat Blumen.' }
 		]
 	},
 	{
-		title: 'Common Verbs',
-		description: 'Learn essential action words',
+		titleEn: 'Common Verbs',
+		titleDe: 'Häufige Verben',
+		descriptionEn: 'Learn essential action words',
+		descriptionDe: 'Lerne wichtige Tätigkeitswörter',
 		themeColor: '#FF6B6B',
 		vocab: [
 			{ es: 'ser', en: 'to be', de: 'sein' },
@@ -349,19 +371,21 @@ export const A1_UNITS: UnitVocab[] = [
 			{ es: 'jugar', en: 'to play', de: 'spielen' }
 		],
 		sentences: [
-			{ es: 'Yo soy estudiante.', en: 'I am a student.' },
-			{ es: 'Ella tiene un perro.', en: 'She has a dog.' },
-			{ es: 'Nosotros vamos al parque.', en: 'We go to the park.' },
-			{ es: 'Quiero aprender español.', en: 'I want to learn Spanish.' },
-			{ es: 'Ellos trabajan mucho.', en: 'They work a lot.' }
+			{ es: 'Yo soy estudiante.', en: 'I am a student.', de: 'Ich bin Student.' },
+			{ es: 'Ella tiene un perro.', en: 'She has a dog.', de: 'Sie hat einen Hund.' },
+			{ es: 'Nosotros vamos al parque.', en: 'We go to the park.', de: 'Wir gehen in den Park.' },
+			{ es: 'Quiero aprender español.', en: 'I want to learn Spanish.', de: 'Ich möchte Spanisch lernen.' },
+			{ es: 'Ellos trabajan mucho.', en: 'They work a lot.', de: 'Sie arbeiten viel.' }
 		]
 	}
 ];
 
 export const A2_UNITS: UnitVocab[] = [
 	{
-		title: 'Weather & Seasons',
-		description: 'Talk about the weather and seasons',
+		titleEn: 'Weather & Seasons',
+		titleDe: 'Wetter & Jahreszeiten',
+		descriptionEn: 'Talk about the weather and seasons',
+		descriptionDe: 'Sprich über das Wetter und die Jahreszeiten',
 		themeColor: '#00BCD4',
 		vocab: [
 			{ es: 'tiempo', en: 'weather', de: 'Wetter' },
@@ -386,16 +410,18 @@ export const A2_UNITS: UnitVocab[] = [
 			{ es: 'lluvioso', en: 'rainy', de: 'regnerisch' }
 		],
 		sentences: [
-			{ es: 'Hoy hace calor.', en: 'It is hot today.' },
-			{ es: 'Está lloviendo.', en: 'It is raining.' },
-			{ es: 'El invierno es frío.', en: 'Winter is cold.' },
-			{ es: '¿Qué tiempo hace?', en: 'What is the weather like?' },
-			{ es: 'Me gusta la primavera.', en: 'I like spring.' }
+			{ es: 'Hoy hace calor.', en: 'It is hot today.', de: 'Heute ist es heiß.' },
+			{ es: 'Está lloviendo.', en: 'It is raining.', de: 'Es regnet.' },
+			{ es: 'El invierno es frío.', en: 'Winter is cold.', de: 'Der Winter ist kalt.' },
+			{ es: '¿Qué tiempo hace?', en: 'What is the weather like?', de: 'Wie ist das Wetter?' },
+			{ es: 'Me gusta la primavera.', en: 'I like spring.', de: 'Ich mag den Frühling.' }
 		]
 	},
 	{
-		title: 'Travel & Transport',
-		description: 'Learn vocabulary for traveling',
+		titleEn: 'Travel & Transport',
+		titleDe: 'Reisen & Verkehr',
+		descriptionEn: 'Learn vocabulary for traveling',
+		descriptionDe: 'Lerne Vokabeln zum Reisen',
 		themeColor: '#FF5722',
 		vocab: [
 			{ es: 'avión', en: 'airplane', de: 'Flugzeug' },
@@ -420,16 +446,18 @@ export const A2_UNITS: UnitVocab[] = [
 			{ es: 'turista', en: 'tourist', de: 'Tourist' }
 		],
 		sentences: [
-			{ es: 'El tren sale a las ocho.', en: 'The train leaves at eight.' },
-			{ es: 'Necesito un boleto.', en: 'I need a ticket.' },
-			{ es: 'El aeropuerto está lejos.', en: 'The airport is far.' },
-			{ es: '¿Dónde está la estación?', en: 'Where is the station?' },
-			{ es: 'Viajo en avión.', en: 'I travel by plane.' }
+			{ es: 'El tren sale a las ocho.', en: 'The train leaves at eight.', de: 'Der Zug fährt um acht ab.' },
+			{ es: 'Necesito un boleto.', en: 'I need a ticket.', de: 'Ich brauche eine Fahrkarte.' },
+			{ es: 'El aeropuerto está lejos.', en: 'The airport is far.', de: 'Der Flughafen ist weit weg.' },
+			{ es: '¿Dónde está la estación?', en: 'Where is the station?', de: 'Wo ist der Bahnhof?' },
+			{ es: 'Viajo en avión.', en: 'I travel by plane.', de: 'Ich reise mit dem Flugzeug.' }
 		]
 	},
 	{
-		title: 'Shopping',
-		description: 'Learn to shop and talk about prices',
+		titleEn: 'Shopping',
+		titleDe: 'Einkaufen',
+		descriptionEn: 'Learn to shop and talk about prices',
+		descriptionDe: 'Lerne einzukaufen und über Preise zu sprechen',
 		themeColor: '#E91E63',
 		vocab: [
 			{ es: 'tienda', en: 'store', de: 'Geschäft' },
@@ -454,16 +482,18 @@ export const A2_UNITS: UnitVocab[] = [
 			{ es: 'bolsa', en: 'bag', de: 'Tüte' }
 		],
 		sentences: [
-			{ es: '¿Cuánto cuesta?', en: 'How much does it cost?' },
-			{ es: 'Es muy caro.', en: 'It is very expensive.' },
-			{ es: '¿Aceptan tarjeta?', en: 'Do you accept cards?' },
-			{ es: 'Quiero comprar esto.', en: 'I want to buy this.' },
-			{ es: 'Hay un descuento del veinte por ciento.', en: 'There is a twenty percent discount.' }
+			{ es: '¿Cuánto cuesta?', en: 'How much does it cost?', de: 'Wie viel kostet das?' },
+			{ es: 'Es muy caro.', en: 'It is very expensive.', de: 'Es ist sehr teuer.' },
+			{ es: '¿Aceptan tarjeta?', en: 'Do you accept cards?', de: 'Akzeptieren Sie Karten?' },
+			{ es: 'Quiero comprar esto.', en: 'I want to buy this.', de: 'Ich möchte das kaufen.' },
+			{ es: 'Hay un descuento del veinte por ciento.', en: 'There is a twenty percent discount.', de: 'Es gibt zwanzig Prozent Rabatt.' }
 		]
 	},
 	{
-		title: 'Health & Body',
-		description: 'Talk about health and medical needs',
+		titleEn: 'Health & Body',
+		titleDe: 'Gesundheit & Körper',
+		descriptionEn: 'Talk about health and medical needs',
+		descriptionDe: 'Sprich über Gesundheit und medizinische Bedürfnisse',
 		themeColor: '#4CAF50',
 		vocab: [
 			{ es: 'médico', en: 'doctor', de: 'Arzt' },
@@ -488,16 +518,18 @@ export const A2_UNITS: UnitVocab[] = [
 			{ es: 'herida', en: 'wound', de: 'Wunde' }
 		],
 		sentences: [
-			{ es: 'Me siento enfermo.', en: 'I feel sick.' },
-			{ es: 'Necesito ver al médico.', en: 'I need to see the doctor.' },
-			{ es: 'Tengo dolor de cabeza.', en: 'I have a headache.' },
-			{ es: '¿Dónde está la farmacia?', en: 'Where is the pharmacy?' },
-			{ es: 'Toma esta medicina.', en: 'Take this medicine.' }
+			{ es: 'Me siento enfermo.', en: 'I feel sick.', de: 'Ich fühle mich krank.' },
+			{ es: 'Necesito ver al médico.', en: 'I need to see the doctor.', de: 'Ich muss zum Arzt.' },
+			{ es: 'Tengo dolor de cabeza.', en: 'I have a headache.', de: 'Ich habe Kopfschmerzen.' },
+			{ es: '¿Dónde está la farmacia?', en: 'Where is the pharmacy?', de: 'Wo ist die Apotheke?' },
+			{ es: 'Toma esta medicina.', en: 'Take this medicine.', de: 'Nimm diese Medizin.' }
 		]
 	},
 	{
-		title: 'Work & Professions',
-		description: 'Learn about jobs and the workplace',
+		titleEn: 'Work & Professions',
+		titleDe: 'Arbeit & Berufe',
+		descriptionEn: 'Learn about jobs and the workplace',
+		descriptionDe: 'Lerne über Berufe und den Arbeitsplatz',
 		themeColor: '#795548',
 		vocab: [
 			{ es: 'trabajo', en: 'work/job', de: 'Arbeit' },
@@ -522,16 +554,18 @@ export const A2_UNITS: UnitVocab[] = [
 			{ es: 'carrera', en: 'career', de: 'Karriere' }
 		],
 		sentences: [
-			{ es: 'Trabajo en una oficina.', en: 'I work in an office.' },
-			{ es: 'Mi hermano es ingeniero.', en: 'My brother is an engineer.' },
-			{ es: 'Tengo una reunión mañana.', en: 'I have a meeting tomorrow.' },
-			{ es: '¿Cuál es tu profesión?', en: 'What is your profession?' },
-			{ es: 'El jefe está ocupado.', en: 'The boss is busy.' }
+			{ es: 'Trabajo en una oficina.', en: 'I work in an office.', de: 'Ich arbeite in einem Büro.' },
+			{ es: 'Mi hermano es ingeniero.', en: 'My brother is an engineer.', de: 'Mein Bruder ist Ingenieur.' },
+			{ es: 'Tengo una reunión mañana.', en: 'I have a meeting tomorrow.', de: 'Ich habe morgen eine Besprechung.' },
+			{ es: '¿Cuál es tu profesión?', en: 'What is your profession?', de: 'Was ist dein Beruf?' },
+			{ es: 'El jefe está ocupado.', en: 'The boss is busy.', de: 'Der Chef ist beschäftigt.' }
 		]
 	},
 	{
-		title: 'Education',
-		description: 'School and learning vocabulary',
+		titleEn: 'Education',
+		titleDe: 'Bildung',
+		descriptionEn: 'School and learning vocabulary',
+		descriptionDe: 'Schul- und Lernvokabular',
 		themeColor: '#3F51B5',
 		vocab: [
 			{ es: 'escuela', en: 'school', de: 'Schule' },
@@ -556,16 +590,18 @@ export const A2_UNITS: UnitVocab[] = [
 			{ es: 'arte', en: 'art', de: 'Kunst' }
 		],
 		sentences: [
-			{ es: 'Estudio español.', en: 'I study Spanish.' },
-			{ es: 'La clase empieza a las nueve.', en: 'The class starts at nine.' },
-			{ es: 'Tengo mucha tarea.', en: 'I have a lot of homework.' },
-			{ es: '¿Dónde está la biblioteca?', en: 'Where is the library?' },
-			{ es: 'El examen es difícil.', en: 'The exam is difficult.' }
+			{ es: 'Estudio español.', en: 'I study Spanish.', de: 'Ich lerne Spanisch.' },
+			{ es: 'La clase empieza a las nueve.', en: 'The class starts at nine.', de: 'Der Unterricht beginnt um neun.' },
+			{ es: 'Tengo mucha tarea.', en: 'I have a lot of homework.', de: 'Ich habe viele Hausaufgaben.' },
+			{ es: '¿Dónde está la biblioteca?', en: 'Where is the library?', de: 'Wo ist die Bibliothek?' },
+			{ es: 'El examen es difícil.', en: 'The exam is difficult.', de: 'Die Prüfung ist schwer.' }
 		]
 	},
 	{
-		title: 'Sports & Hobbies',
-		description: 'Learn about sports and free time activities',
+		titleEn: 'Sports & Hobbies',
+		titleDe: 'Sport & Hobbys',
+		descriptionEn: 'Learn about sports and free time activities',
+		descriptionDe: 'Lerne über Sport und Freizeitaktivitäten',
 		themeColor: '#009688',
 		vocab: [
 			{ es: 'deporte', en: 'sport', de: 'Sport' },
@@ -590,16 +626,18 @@ export const A2_UNITS: UnitVocab[] = [
 			{ es: 'fotografía', en: 'photography', de: 'Fotografie' }
 		],
 		sentences: [
-			{ es: 'Me gusta jugar fútbol.', en: 'I like to play soccer.' },
-			{ es: 'Ella nada muy bien.', en: 'She swims very well.' },
-			{ es: 'El equipo ganó el partido.', en: 'The team won the game.' },
-			{ es: '¿Cuál es tu hobby?', en: 'What is your hobby?' },
-			{ es: 'Leo libros todos los días.', en: 'I read books every day.' }
+			{ es: 'Me gusta jugar fútbol.', en: 'I like to play soccer.', de: 'Ich spiele gern Fußball.' },
+			{ es: 'Ella nada muy bien.', en: 'She swims very well.', de: 'Sie schwimmt sehr gut.' },
+			{ es: 'El equipo ganó el partido.', en: 'The team won the game.', de: 'Die Mannschaft hat das Spiel gewonnen.' },
+			{ es: '¿Cuál es tu hobby?', en: 'What is your hobby?', de: 'Was ist dein Hobby?' },
+			{ es: 'Leo libros todos los días.', en: 'I read books every day.', de: 'Ich lese jeden Tag Bücher.' }
 		]
 	},
 	{
-		title: 'City & Places',
-		description: 'Navigate the city and describe places',
+		titleEn: 'City & Places',
+		titleDe: 'Stadt & Orte',
+		descriptionEn: 'Navigate the city and describe places',
+		descriptionDe: 'Navigiere durch die Stadt und beschreibe Orte',
 		themeColor: '#607D8B',
 		vocab: [
 			{ es: 'ciudad', en: 'city', de: 'Stadt' },
@@ -624,16 +662,18 @@ export const A2_UNITS: UnitVocab[] = [
 			{ es: 'dirección', en: 'direction', de: 'Richtung' }
 		],
 		sentences: [
-			{ es: 'El banco está a la derecha.', en: 'The bank is on the right.' },
-			{ es: 'Vamos al centro.', en: 'Let us go downtown.' },
-			{ es: 'El museo está cerca.', en: 'The museum is nearby.' },
-			{ es: '¿Cómo llego al parque?', en: 'How do I get to the park?' },
-			{ es: 'Sigue recto dos calles.', en: 'Go straight two blocks.' }
+			{ es: 'El banco está a la derecha.', en: 'The bank is on the right.', de: 'Die Bank ist rechts.' },
+			{ es: 'Vamos al centro.', en: 'Let us go downtown.', de: 'Lass uns in die Innenstadt gehen.' },
+			{ es: 'El museo está cerca.', en: 'The museum is nearby.', de: 'Das Museum ist in der Nähe.' },
+			{ es: '¿Cómo llego al parque?', en: 'How do I get to the park?', de: 'Wie komme ich zum Park?' },
+			{ es: 'Sigue recto dos calles.', en: 'Go straight two blocks.', de: 'Geh zwei Straßen geradeaus.' }
 		]
 	},
 	{
-		title: 'Nature & Animals',
-		description: 'Learn about nature and animals',
+		titleEn: 'Nature & Animals',
+		titleDe: 'Natur & Tiere',
+		descriptionEn: 'Learn about nature and animals',
+		descriptionDe: 'Lerne über Natur und Tiere',
 		themeColor: '#8BC34A',
 		vocab: [
 			{ es: 'perro', en: 'dog', de: 'Hund' },
@@ -658,16 +698,18 @@ export const A2_UNITS: UnitVocab[] = [
 			{ es: 'tierra', en: 'earth', de: 'Erde' }
 		],
 		sentences: [
-			{ es: 'Mi perro es muy amigable.', en: 'My dog is very friendly.' },
-			{ es: 'Las flores son hermosas.', en: 'The flowers are beautiful.' },
-			{ es: 'El río está limpio.', en: 'The river is clean.' },
-			{ es: 'Hay muchos árboles en el bosque.', en: 'There are many trees in the forest.' },
-			{ es: 'Las estrellas brillan en el cielo.', en: 'The stars shine in the sky.' }
+			{ es: 'Mi perro es muy amigable.', en: 'My dog is very friendly.', de: 'Mein Hund ist sehr freundlich.' },
+			{ es: 'Las flores son hermosas.', en: 'The flowers are beautiful.', de: 'Die Blumen sind wunderschön.' },
+			{ es: 'El río está limpio.', en: 'The river is clean.', de: 'Der Fluss ist sauber.' },
+			{ es: 'Hay muchos árboles en el bosque.', en: 'There are many trees in the forest.', de: 'Es gibt viele Bäume im Wald.' },
+			{ es: 'Las estrellas brillan en el cielo.', en: 'The stars shine in the sky.', de: 'Die Sterne leuchten am Himmel.' }
 		]
 	},
 	{
-		title: 'Emotions & Feelings',
-		description: 'Express how you feel',
+		titleEn: 'Emotions & Feelings',
+		titleDe: 'Emotionen & Gefühle',
+		descriptionEn: 'Express how you feel',
+		descriptionDe: 'Drücke aus, wie du dich fühlst',
 		themeColor: '#FF6B6B',
 		vocab: [
 			{ es: 'feliz', en: 'happy', de: 'glücklich' },
@@ -692,11 +734,11 @@ export const A2_UNITS: UnitVocab[] = [
 			{ es: 'orgullo', en: 'pride', de: 'Stolz' }
 		],
 		sentences: [
-			{ es: 'Estoy muy feliz hoy.', en: 'I am very happy today.' },
-			{ es: 'Ella está triste.', en: 'She is sad.' },
-			{ es: 'Me siento cansado.', en: 'I feel tired.' },
-			{ es: 'No estés nervioso.', en: 'Do not be nervous.' },
-			{ es: 'Tengo miedo de la oscuridad.', en: 'I am afraid of the dark.' }
+			{ es: 'Estoy muy feliz hoy.', en: 'I am very happy today.', de: 'Ich bin heute sehr glücklich.' },
+			{ es: 'Ella está triste.', en: 'She is sad.', de: 'Sie ist traurig.' },
+			{ es: 'Me siento cansado.', en: 'I feel tired.', de: 'Ich fühle mich müde.' },
+			{ es: 'No estés nervioso.', en: 'Do not be nervous.', de: 'Sei nicht nervös.' },
+			{ es: 'Tengo miedo de la oscuridad.', en: 'I am afraid of the dark.', de: 'Ich habe Angst vor der Dunkelheit.' }
 		]
 	}
 ];
@@ -704,8 +746,10 @@ export const A2_UNITS: UnitVocab[] = [
 // Additional units for B1, B2, C1, C2 (abbreviated for brevity but following same pattern)
 export const B1_UNITS: UnitVocab[] = [
 	{
-		title: 'Past Tense Verbs',
-		description: 'Learn to talk about past events',
+		titleEn: 'Past Tense Verbs',
+		titleDe: 'Vergangenheitsformen',
+		descriptionEn: 'Learn to talk about past events',
+		descriptionDe: 'Lerne über vergangene Ereignisse zu sprechen',
 		themeColor: '#673AB7',
 		vocab: [
 			{ es: 'fue', en: 'was/went', de: 'war/ging' },
@@ -730,16 +774,18 @@ export const B1_UNITS: UnitVocab[] = [
 			{ es: 'murió', en: 'died', de: 'starb' }
 		],
 		sentences: [
-			{ es: 'Ayer fui al cine.', en: 'Yesterday I went to the movies.' },
-			{ es: 'Ella comió pizza.', en: 'She ate pizza.' },
-			{ es: 'Él me dijo la verdad.', en: 'He told me the truth.' },
-			{ es: '¿Qué hiciste ayer?', en: 'What did you do yesterday?' },
-			{ es: 'No pude dormir anoche.', en: 'I could not sleep last night.' }
+			{ es: 'Ayer fui al cine.', en: 'Yesterday I went to the movies.', de: 'Gestern ging ich ins Kino.' },
+			{ es: 'Ella comió pizza.', en: 'She ate pizza.', de: 'Sie aß Pizza.' },
+			{ es: 'Él me dijo la verdad.', en: 'He told me the truth.', de: 'Er sagte mir die Wahrheit.' },
+			{ es: '¿Qué hiciste ayer?', en: 'What did you do yesterday?', de: 'Was hast du gestern gemacht?' },
+			{ es: 'No pude dormir anoche.', en: 'I could not sleep last night.', de: 'Ich konnte letzte Nacht nicht schlafen.' }
 		]
 	},
 	{
-		title: 'Future Plans',
-		description: 'Talk about what will happen',
+		titleEn: 'Future Plans',
+		titleDe: 'Zukunftspläne',
+		descriptionEn: 'Talk about what will happen',
+		descriptionDe: 'Sprich über das, was passieren wird',
 		themeColor: '#2196F3',
 		vocab: [
 			{ es: 'será', en: 'will be', de: 'wird sein' },
@@ -764,16 +810,18 @@ export const B1_UNITS: UnitVocab[] = [
 			{ es: 'decidir', en: 'to decide', de: 'entscheiden' }
 		],
 		sentences: [
-			{ es: 'Mañana iré al doctor.', en: 'Tomorrow I will go to the doctor.' },
-			{ es: 'El próximo año viajaré a España.', en: 'Next year I will travel to Spain.' },
-			{ es: '¿Qué harás este fin de semana?', en: 'What will you do this weekend?' },
-			{ es: 'Ella vendrá a la fiesta.', en: 'She will come to the party.' },
-			{ es: 'Pronto sabremos los resultados.', en: 'Soon we will know the results.' }
+			{ es: 'Mañana iré al doctor.', en: 'Tomorrow I will go to the doctor.', de: 'Morgen werde ich zum Arzt gehen.' },
+			{ es: 'El próximo año viajaré a España.', en: 'Next year I will travel to Spain.', de: 'Nächstes Jahr werde ich nach Spanien reisen.' },
+			{ es: '¿Qué harás este fin de semana?', en: 'What will you do this weekend?', de: 'Was wirst du dieses Wochenende machen?' },
+			{ es: 'Ella vendrá a la fiesta.', en: 'She will come to the party.', de: 'Sie wird zur Party kommen.' },
+			{ es: 'Pronto sabremos los resultados.', en: 'Soon we will know the results.', de: 'Bald werden wir die Ergebnisse wissen.' }
 		]
 	},
 	{
-		title: 'Technology',
-		description: 'Digital world vocabulary',
+		titleEn: 'Technology',
+		titleDe: 'Technologie',
+		descriptionEn: 'Digital world vocabulary',
+		descriptionDe: 'Vokabular der digitalen Welt',
 		themeColor: '#00BCD4',
 		vocab: [
 			{ es: 'internet', en: 'internet', de: 'Internet' },
@@ -798,17 +846,18 @@ export const B1_UNITS: UnitVocab[] = [
 			{ es: 'datos', en: 'data', de: 'Daten' }
 		],
 		sentences: [
-			{ es: 'No tengo internet.', en: 'I do not have internet.' },
-			{ es: 'Descarga esta aplicación.', en: 'Download this app.' },
-			{ es: 'Mi batería está baja.', en: 'My battery is low.' },
-			{ es: '¿Cuál es la contraseña?', en: 'What is the password?' },
-			{ es: 'Subí una foto nueva.', en: 'I uploaded a new photo.' }
+			{ es: 'No tengo internet.', en: 'I do not have internet.', de: 'Ich habe kein Internet.' },
+			{ es: 'Descarga esta aplicación.', en: 'Download this app.', de: 'Lade diese App herunter.' },
+			{ es: 'Mi batería está baja.', en: 'My battery is low.', de: 'Meine Batterie ist schwach.' },
+			{ es: '¿Cuál es la contraseña?', en: 'What is the password?', de: 'Wie lautet das Passwort?' },
+			{ es: 'Subí una foto nueva.', en: 'I uploaded a new photo.', de: 'Ich habe ein neues Foto hochgeladen.' }
 		]
 	},
-	// Add more B1 units...
 	{
-		title: 'Environment',
-		description: 'Talk about environmental topics',
+		titleEn: 'Environment',
+		titleDe: 'Umwelt',
+		descriptionEn: 'Talk about environmental topics',
+		descriptionDe: 'Sprich über Umweltthemen',
 		themeColor: '#4CAF50',
 		vocab: [
 			{ es: 'ambiente', en: 'environment', de: 'Umwelt' },
@@ -833,19 +882,21 @@ export const B1_UNITS: UnitVocab[] = [
 			{ es: 'planeta', en: 'planet', de: 'Planet' }
 		],
 		sentences: [
-			{ es: 'Debemos reciclar más.', en: 'We should recycle more.' },
-			{ es: 'La contaminación es un problema grave.', en: 'Pollution is a serious problem.' },
-			{ es: 'El clima está cambiando.', en: 'The climate is changing.' },
-			{ es: 'Hay que proteger el planeta.', en: 'We must protect the planet.' },
-			{ es: 'Muchas especies están en peligro.', en: 'Many species are in danger.' }
+			{ es: 'Debemos reciclar más.', en: 'We should recycle more.', de: 'Wir sollten mehr recyceln.' },
+			{ es: 'La contaminación es un problema grave.', en: 'Pollution is a serious problem.', de: 'Verschmutzung ist ein ernstes Problem.' },
+			{ es: 'El clima está cambiando.', en: 'The climate is changing.', de: 'Das Klima verändert sich.' },
+			{ es: 'Hay que proteger el planeta.', en: 'We must protect the planet.', de: 'Wir müssen den Planeten schützen.' },
+			{ es: 'Muchas especies están en peligro.', en: 'Many species are in danger.', de: 'Viele Arten sind in Gefahr.' }
 		]
 	}
 ];
 
 export const B2_UNITS: UnitVocab[] = [
 	{
-		title: 'Politics & Society',
-		description: 'Discuss political and social issues',
+		titleEn: 'Politics & Society',
+		titleDe: 'Politik & Gesellschaft',
+		descriptionEn: 'Discuss political and social issues',
+		descriptionDe: 'Diskutiere politische und gesellschaftliche Themen',
 		themeColor: '#9C27B0',
 		vocab: [
 			{ es: 'gobierno', en: 'government', de: 'Regierung' },
@@ -870,16 +921,18 @@ export const B2_UNITS: UnitVocab[] = [
 			{ es: 'economía', en: 'economy', de: 'Wirtschaft' }
 		],
 		sentences: [
-			{ es: 'Las elecciones son el próximo mes.', en: 'Elections are next month.' },
-			{ es: 'Todos tenemos el derecho de votar.', en: 'We all have the right to vote.' },
-			{ es: 'El gobierno anunció nuevas reformas.', en: 'The government announced new reforms.' },
-			{ es: 'La democracia es importante.', en: 'Democracy is important.' },
-			{ es: 'Hay una manifestación en la plaza.', en: 'There is a demonstration in the square.' }
+			{ es: 'Las elecciones son el próximo mes.', en: 'Elections are next month.', de: 'Die Wahlen sind nächsten Monat.' },
+			{ es: 'Todos tenemos el derecho de votar.', en: 'We all have the right to vote.', de: 'Wir alle haben das Recht zu wählen.' },
+			{ es: 'El gobierno anunció nuevas reformas.', en: 'The government announced new reforms.', de: 'Die Regierung hat neue Reformen angekündigt.' },
+			{ es: 'La democracia es importante.', en: 'Democracy is important.', de: 'Demokratie ist wichtig.' },
+			{ es: 'Hay una manifestación en la plaza.', en: 'There is a demonstration in the square.', de: 'Es gibt eine Demonstration auf dem Platz.' }
 		]
 	},
 	{
-		title: 'Business & Finance',
-		description: 'Professional business vocabulary',
+		titleEn: 'Business & Finance',
+		titleDe: 'Wirtschaft & Finanzen',
+		descriptionEn: 'Professional business vocabulary',
+		descriptionDe: 'Professionelles Geschäftsvokabular',
 		themeColor: '#FF9800',
 		vocab: [
 			{ es: 'negocio', en: 'business', de: 'Geschäft' },
@@ -904,19 +957,21 @@ export const B2_UNITS: UnitVocab[] = [
 			{ es: 'éxito', en: 'success', de: 'Erfolg' }
 		],
 		sentences: [
-			{ es: 'El negocio está creciendo.', en: 'The business is growing.' },
-			{ es: 'Necesitamos revisar el presupuesto.', en: 'We need to review the budget.' },
-			{ es: 'La inversión fue exitosa.', en: 'The investment was successful.' },
-			{ es: 'Firmamos el contrato ayer.', en: 'We signed the contract yesterday.' },
-			{ es: 'La competencia es muy fuerte.', en: 'The competition is very strong.' }
+			{ es: 'El negocio está creciendo.', en: 'The business is growing.', de: 'Das Geschäft wächst.' },
+			{ es: 'Necesitamos revisar el presupuesto.', en: 'We need to review the budget.', de: 'Wir müssen das Budget überprüfen.' },
+			{ es: 'La inversión fue exitosa.', en: 'The investment was successful.', de: 'Die Investition war erfolgreich.' },
+			{ es: 'Firmamos el contrato ayer.', en: 'We signed the contract yesterday.', de: 'Wir haben gestern den Vertrag unterschrieben.' },
+			{ es: 'La competencia es muy fuerte.', en: 'The competition is very strong.', de: 'Der Wettbewerb ist sehr stark.' }
 		]
 	}
 ];
 
 export const C1_UNITS: UnitVocab[] = [
 	{
-		title: 'Academic Writing',
-		description: 'Formal and academic expressions',
+		titleEn: 'Academic Writing',
+		titleDe: 'Akademisches Schreiben',
+		descriptionEn: 'Formal and academic expressions',
+		descriptionDe: 'Formelle und akademische Ausdrücke',
 		themeColor: '#3F51B5',
 		vocab: [
 			{ es: 'hipótesis', en: 'hypothesis', de: 'Hypothese' },
@@ -941,19 +996,21 @@ export const C1_UNITS: UnitVocab[] = [
 			{ es: 'implicar', en: 'to imply', de: 'implizieren' }
 		],
 		sentences: [
-			{ es: 'La hipótesis fue confirmada.', en: 'The hypothesis was confirmed.' },
-			{ es: 'Según la investigación...', en: 'According to the research...' },
-			{ es: 'La evidencia sugiere que...', en: 'The evidence suggests that...' },
-			{ es: 'En conclusión, podemos afirmar...', en: 'In conclusion, we can affirm...' },
-			{ es: 'Es necesario analizar el contexto.', en: 'It is necessary to analyze the context.' }
+			{ es: 'La hipótesis fue confirmada.', en: 'The hypothesis was confirmed.', de: 'Die Hypothese wurde bestätigt.' },
+			{ es: 'Según la investigación...', en: 'According to the research...', de: 'Laut der Forschung...' },
+			{ es: 'La evidencia sugiere que...', en: 'The evidence suggests that...', de: 'Die Beweise deuten darauf hin, dass...' },
+			{ es: 'En conclusión, podemos afirmar...', en: 'In conclusion, we can affirm...', de: 'Abschließend können wir feststellen...' },
+			{ es: 'Es necesario analizar el contexto.', en: 'It is necessary to analyze the context.', de: 'Es ist notwendig, den Kontext zu analysieren.' }
 		]
 	}
 ];
 
 export const C2_UNITS: UnitVocab[] = [
 	{
-		title: 'Idiomatic Expressions',
-		description: 'Advanced idioms and expressions',
+		titleEn: 'Idiomatic Expressions',
+		titleDe: 'Idiomatische Ausdrücke',
+		descriptionEn: 'Advanced idioms and expressions',
+		descriptionDe: 'Fortgeschrittene Redewendungen und Ausdrücke',
 		themeColor: '#E91E63',
 		vocab: [
 			{ es: 'pan comido', en: 'piece of cake', de: 'ein Kinderspiel' },
@@ -978,11 +1035,11 @@ export const C2_UNITS: UnitVocab[] = [
 			{ es: 'pillar el toro', en: 'to be too late', de: 'zu spät kommen' }
 		],
 		sentences: [
-			{ es: 'Este examen fue pan comido.', en: 'This exam was a piece of cake.' },
-			{ es: 'Metí la pata en la reunión.', en: 'I put my foot in it at the meeting.' },
-			{ es: 'No me tomes el pelo.', en: 'Don\'t pull my leg.' },
-			{ es: 'Siempre estás en las nubes.', en: 'You always have your head in the clouds.' },
-			{ es: 'El carro me costó un ojo de la cara.', en: 'The car cost me an arm and a leg.' }
+			{ es: 'Este examen fue pan comido.', en: 'This exam was a piece of cake.', de: 'Diese Prüfung war ein Kinderspiel.' },
+			{ es: 'Metí la pata en la reunión.', en: 'I put my foot in it at the meeting.', de: 'Ich bin bei der Besprechung ins Fettnäpfchen getreten.' },
+			{ es: 'No me tomes el pelo.', en: 'Don\'t pull my leg.', de: 'Nimm mich nicht auf den Arm.' },
+			{ es: 'Siempre estás en las nubes.', en: 'You always have your head in the clouds.', de: 'Du bist immer mit den Gedanken woanders.' },
+			{ es: 'El carro me costó un ojo de la cara.', en: 'The car cost me an arm and a leg.', de: 'Das Auto hat mich ein Vermögen gekostet.' }
 		]
 	}
 ];

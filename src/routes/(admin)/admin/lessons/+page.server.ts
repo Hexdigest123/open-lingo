@@ -11,7 +11,6 @@ export const load: PageServerLoad = async () => {
 			id: lessons.id,
 			title: lessons.title,
 			description: lessons.description,
-			type: lessons.type,
 			xpReward: lessons.xpReward,
 			order: lessons.order,
 			isPublished: lessons.isPublished,
@@ -59,16 +58,21 @@ export const load: PageServerLoad = async () => {
 export const actions: Actions = {
 	create: async ({ request }) => {
 		const data = await request.formData();
-		const title = data.get('title')?.toString().trim();
-		const description = data.get('description')?.toString().trim();
+		const titleEn = data.get('title')?.toString().trim();
+		const titleDe = data.get('titleDe')?.toString().trim();
+		const descEn = data.get('description')?.toString().trim();
+		const descDe = data.get('descriptionDe')?.toString().trim();
 		const unitId = parseInt(data.get('unitId')?.toString() || '0');
-		const type = data.get('type')?.toString() as 'fill_in_blank' | 'multiple_choice' | 'vocabulary' | 'voice_answer';
 		const xpReward = parseInt(data.get('xpReward')?.toString() || '10');
 		const isPublished = data.get('isPublished') === 'on';
 
-		if (!title || !unitId || !type) {
-			return fail(400, { error: 'Title, unit, and type are required' });
+		if (!titleEn || !unitId) {
+			return fail(400, { error: 'Title (English) and unit are required' });
 		}
+
+		// Build JSON objects for translations
+		const title = JSON.stringify({ en: titleEn, de: titleDe || titleEn });
+		const description = descEn ? JSON.stringify({ en: descEn, de: descDe || descEn }) : null;
 
 		// Get the highest order for this unit
 		const [maxOrder] = await db
@@ -83,9 +87,8 @@ export const actions: Actions = {
 		try {
 			await db.insert(lessons).values({
 				title,
-				description: description || null,
+				description,
 				unitId,
-				type,
 				xpReward,
 				order,
 				isPublished

@@ -1,0 +1,485 @@
+<script lang="ts">
+	import { enhance } from '$app/forms';
+	import type { QuestionType } from '$lib/server/db/schema';
+
+	type Question = {
+		id: number;
+		type: QuestionType;
+		content: Record<string, unknown>;
+		correctAnswer: string;
+	};
+
+	interface Props {
+		mode: 'add' | 'edit';
+		question?: Question | null;
+		lessonId: number;
+		onClose: () => void;
+	}
+
+	const QUESTION_TYPES: { value: QuestionType; label: string }[] = [
+		{ value: 'multiple_choice', label: 'Multiple Choice' },
+		{ value: 'fill_blank', label: 'Fill in the Blank' },
+		{ value: 'translation', label: 'Translation' },
+		{ value: 'matching', label: 'Matching' },
+		{ value: 'word_order', label: 'Word Order' },
+		{ value: 'speaking', label: 'Speaking' },
+		{ value: 'listening', label: 'Listening' }
+	];
+
+	let { mode, question, lessonId, onClose }: Props = $props();
+
+	// Form state
+	let selectedType = $state<QuestionType>(question?.type || 'multiple_choice');
+	let correctAnswer = $state(question?.correctAnswer || '');
+	let isSubmitting = $state(false);
+	let formError = $state<string | null>(null);
+
+	// Multiple choice
+	let mcQuestionEn = $state((question?.content?.questionEn as string) || '');
+	let mcQuestionDe = $state((question?.content?.questionDe as string) || '');
+	let mcOptions = $state<string[]>((question?.content?.options as string[]) || ['', '', '', '']);
+
+	// Fill blank
+	let fbSentenceEn = $state((question?.content?.sentenceEn as string) || (question?.content?.sentence as string) || '');
+	let fbSentenceDe = $state((question?.content?.sentenceDe as string) || '');
+	let fbHintEn = $state((question?.content?.hintEn as string) || (question?.content?.hint as string) || '');
+	let fbHintDe = $state((question?.content?.hintDe as string) || '');
+
+	// Translation
+	let transDirection = $state<'native_to_es' | 'es_to_native'>((question?.content?.direction as 'native_to_es' | 'es_to_native') || 'native_to_es');
+	let transTextEn = $state((question?.content?.textEn as string) || '');
+	let transTextDe = $state((question?.content?.textDe as string) || '');
+	let transText = $state((question?.content?.text as string) || '');
+
+	// Matching
+	let matchingPairs = $state<Array<{ spanish: string; english: string; german: string }>>(
+		(question?.content?.pairs as Array<{ spanish: string; english: string; german?: string }>)?.map(p => ({
+			spanish: p.spanish || '',
+			english: p.english || '',
+			german: p.german || ''
+		})) || [
+			{ spanish: '', english: '', german: '' },
+			{ spanish: '', english: '', german: '' },
+			{ spanish: '', english: '', german: '' },
+			{ spanish: '', english: '', german: '' }
+		]
+	);
+
+	// Word order
+	let woWords = $state<string[]>((question?.content?.words as string[]) || ['', '', '', '']);
+	let woInstructionEn = $state((question?.content?.instructionEn as string) || '');
+	let woInstructionDe = $state((question?.content?.instructionDe as string) || '');
+
+	// Speaking
+	let spTextToSpeak = $state((question?.content?.textToSpeak as string) || '');
+	let spHintEn = $state((question?.content?.hintEn as string) || '');
+	let spHintDe = $state((question?.content?.hintDe as string) || '');
+
+	// Listening
+	let liTextToHear = $state((question?.content?.textToHear as string) || '');
+	let liAnswerType = $state<'type' | 'multiple_choice'>((question?.content?.answerType as 'type' | 'multiple_choice') || 'type');
+	let liOptions = $state<string[]>((question?.content?.options as string[]) || ['', '', '', '']);
+
+	function buildContent(): Record<string, unknown> {
+		switch (selectedType) {
+			case 'multiple_choice':
+				return {
+					questionEn: mcQuestionEn,
+					questionDe: mcQuestionDe || undefined,
+					options: mcOptions.filter(o => o.trim())
+				};
+
+			case 'fill_blank':
+				return {
+					sentenceEn: fbSentenceEn,
+					sentenceDe: fbSentenceDe || undefined,
+					hintEn: fbHintEn || undefined,
+					hintDe: fbHintDe || undefined
+				};
+
+			case 'translation':
+				if (transDirection === 'native_to_es') {
+					return {
+						textEn: transTextEn,
+						textDe: transTextDe || undefined,
+						direction: transDirection
+					};
+				} else {
+					return {
+						text: transText,
+						direction: transDirection
+					};
+				}
+
+			case 'matching':
+				return {
+					pairs: matchingPairs
+						.filter(p => p.spanish.trim() && p.english.trim())
+						.map(p => ({
+							spanish: p.spanish,
+							english: p.english,
+							german: p.german || undefined
+						}))
+				};
+
+			case 'word_order':
+				return {
+					words: woWords.filter(w => w.trim()),
+					instructionEn: woInstructionEn,
+					instructionDe: woInstructionDe || undefined
+				};
+
+			case 'speaking':
+				return {
+					textToSpeak: spTextToSpeak,
+					hintEn: spHintEn || undefined,
+					hintDe: spHintDe || undefined
+				};
+
+			case 'listening':
+				return {
+					textToHear: liTextToHear,
+					answerType: liAnswerType,
+					options: liAnswerType === 'multiple_choice' ? liOptions.filter(o => o.trim()) : undefined
+				};
+
+			default:
+				return {};
+		}
+	}
+
+	function addOption(arr: string[], setter: (v: string[]) => void) {
+		setter([...arr, '']);
+	}
+
+	function removeOption(arr: string[], index: number, setter: (v: string[]) => void) {
+		setter(arr.filter((_, i) => i !== index));
+	}
+
+	function addPair() {
+		matchingPairs = [...matchingPairs, { spanish: '', english: '', german: '' }];
+	}
+
+	function removePair(index: number) {
+		matchingPairs = matchingPairs.filter((_, i) => i !== index);
+	}
+
+	function handleSubmit(e: SubmitEvent) {
+		e.preventDefault();
+		formError = null;
+
+		const content = buildContent();
+		const form = e.target as HTMLFormElement;
+		const formData = new FormData(form);
+
+		// For matching questions, always use 'all_matched' as correct answer
+		const finalCorrectAnswer = selectedType === 'matching' ? 'all_matched' : correctAnswer;
+
+		formData.set('type', selectedType);
+		formData.set('content', JSON.stringify(content));
+		formData.set('correctAnswer', finalCorrectAnswer);
+
+		if (mode === 'edit' && question) {
+			formData.set('questionId', question.id.toString());
+		}
+
+		isSubmitting = true;
+
+		fetch(form.action, {
+			method: 'POST',
+			body: formData
+		})
+			.then(res => res.text())
+			.then(text => {
+				// Check for success
+				if (text.includes('"success":true') || text.includes('success')) {
+					onClose();
+					window.location.reload();
+				} else {
+					// Try to extract error
+					const match = text.match(/"error":"([^"]+)"/);
+					formError = match ? match[1] : 'An error occurred';
+				}
+			})
+			.catch(() => {
+				formError = 'Network error. Please try again.';
+			})
+			.finally(() => {
+				isSubmitting = false;
+			});
+	}
+</script>
+
+<div class="fixed inset-0 z-50 flex items-center justify-center bg-black/50 p-4">
+	<div class="card w-full max-w-2xl max-h-[90vh] overflow-y-auto">
+		<div class="flex items-center justify-between mb-4">
+			<h2 class="text-xl font-bold text-text-light">
+				{mode === 'add' ? 'Add Question' : 'Edit Question'}
+			</h2>
+			<button onclick={onClose} class="text-text-muted hover:text-text-light text-2xl">
+				&times;
+			</button>
+		</div>
+
+		{#if formError}
+			<div class="mb-4 rounded-xl bg-error/10 p-3 text-error text-sm">{formError}</div>
+		{/if}
+
+		<form
+			method="POST"
+			action={mode === 'add' ? '?/addQuestion' : '?/updateQuestion'}
+			onsubmit={handleSubmit}
+			class="space-y-4"
+		>
+			<!-- Question Type Selector -->
+			<div>
+				<label for="questionType" class="block text-sm font-medium text-text-light mb-1">
+					Question Type
+				</label>
+				<select
+					id="questionType"
+					bind:value={selectedType}
+					disabled={mode === 'edit'}
+					class="input"
+				>
+					{#each QUESTION_TYPES as qtype}
+						<option value={qtype.value}>{qtype.label}</option>
+					{/each}
+				</select>
+			</div>
+
+			<!-- Type-specific content -->
+			{#if selectedType === 'multiple_choice'}
+				<div class="space-y-3 p-3 rounded-xl bg-bg-light-secondary">
+					<h3 class="font-medium text-text-light">Multiple Choice Content</h3>
+					<div>
+						<label class="block text-sm text-text-muted mb-1">Question (English)</label>
+						<input type="text" bind:value={mcQuestionEn} class="input" placeholder="How do you say 'hello' in Spanish?" />
+					</div>
+					<div>
+						<label class="block text-sm text-text-muted mb-1">Question (German) - optional</label>
+						<input type="text" bind:value={mcQuestionDe} class="input" placeholder="Wie sagt man 'Hallo' auf Spanisch?" />
+					</div>
+					<div>
+						<label class="block text-sm text-text-muted mb-1">Options</label>
+						{#each mcOptions as option, i}
+							<div class="flex gap-2 mb-2">
+								<input
+									type="text"
+									bind:value={mcOptions[i]}
+									class="input flex-1"
+									placeholder="Option {i + 1}"
+								/>
+								{#if mcOptions.length > 2}
+									<button
+										type="button"
+										onclick={() => removeOption(mcOptions, i, v => mcOptions = v)}
+										class="text-error hover:text-error/80"
+									>
+										&times;
+									</button>
+								{/if}
+							</div>
+						{/each}
+						{#if mcOptions.length < 6}
+							<button
+								type="button"
+								onclick={() => addOption(mcOptions, v => mcOptions = v)}
+								class="text-primary text-sm hover:underline"
+							>
+								+ Add Option
+							</button>
+						{/if}
+					</div>
+				</div>
+
+			{:else if selectedType === 'fill_blank'}
+				<div class="space-y-3 p-3 rounded-xl bg-bg-light-secondary">
+					<h3 class="font-medium text-text-light">Fill in the Blank Content</h3>
+					<div>
+						<label class="block text-sm text-text-muted mb-1">Sentence (English) - use _____ for blank</label>
+						<input type="text" bind:value={fbSentenceEn} class="input" placeholder="The Spanish word for 'hello' is _____." />
+					</div>
+					<div>
+						<label class="block text-sm text-text-muted mb-1">Sentence (German) - optional</label>
+						<input type="text" bind:value={fbSentenceDe} class="input" placeholder="Das spanische Wort für 'Hallo' ist _____." />
+					</div>
+					<div class="grid grid-cols-2 gap-3">
+						<div>
+							<label class="block text-sm text-text-muted mb-1">Hint (English)</label>
+							<input type="text" bind:value={fbHintEn} class="input" placeholder="Starts with 'H'" />
+						</div>
+						<div>
+							<label class="block text-sm text-text-muted mb-1">Hint (German)</label>
+							<input type="text" bind:value={fbHintDe} class="input" placeholder="Beginnt mit 'H'" />
+						</div>
+					</div>
+				</div>
+
+			{:else if selectedType === 'translation'}
+				<div class="space-y-3 p-3 rounded-xl bg-bg-light-secondary">
+					<h3 class="font-medium text-text-light">Translation Content</h3>
+					<div>
+						<label class="block text-sm text-text-muted mb-1">Direction</label>
+						<select bind:value={transDirection} class="input">
+							<option value="native_to_es">Native Language to Spanish</option>
+							<option value="es_to_native">Spanish to Native Language</option>
+						</select>
+					</div>
+					{#if transDirection === 'native_to_es'}
+						<div>
+							<label class="block text-sm text-text-muted mb-1">Source Text (English)</label>
+							<input type="text" bind:value={transTextEn} class="input" placeholder="Hello" />
+						</div>
+						<div>
+							<label class="block text-sm text-text-muted mb-1">Source Text (German) - optional</label>
+							<input type="text" bind:value={transTextDe} class="input" placeholder="Hallo" />
+						</div>
+					{:else}
+						<div>
+							<label class="block text-sm text-text-muted mb-1">Spanish Text</label>
+							<input type="text" bind:value={transText} class="input" placeholder="Hola" />
+						</div>
+					{/if}
+				</div>
+
+			{:else if selectedType === 'matching'}
+				<div class="space-y-3 p-3 rounded-xl bg-bg-light-secondary">
+					<h3 class="font-medium text-text-light">Matching Pairs</h3>
+					{#each matchingPairs as pair, i}
+						<div class="flex gap-2 items-start">
+							<div class="flex-1 grid grid-cols-3 gap-2">
+								<input type="text" bind:value={matchingPairs[i].spanish} class="input" placeholder="Spanish" />
+								<input type="text" bind:value={matchingPairs[i].english} class="input" placeholder="English" />
+								<input type="text" bind:value={matchingPairs[i].german} class="input" placeholder="German (opt)" />
+							</div>
+							{#if matchingPairs.length > 2}
+								<button type="button" onclick={() => removePair(i)} class="text-error hover:text-error/80 mt-2">
+									&times;
+								</button>
+							{/if}
+						</div>
+					{/each}
+					{#if matchingPairs.length < 6}
+						<button type="button" onclick={addPair} class="text-primary text-sm hover:underline">
+							+ Add Pair
+						</button>
+					{/if}
+				</div>
+
+			{:else if selectedType === 'word_order'}
+				<div class="space-y-3 p-3 rounded-xl bg-bg-light-secondary">
+					<h3 class="font-medium text-text-light">Word Order Content</h3>
+					<div>
+						<label class="block text-sm text-text-muted mb-1">Words (will be scrambled)</label>
+						{#each woWords as word, i}
+							<div class="flex gap-2 mb-2">
+								<input type="text" bind:value={woWords[i]} class="input flex-1" placeholder="Word {i + 1}" />
+								{#if woWords.length > 2}
+									<button type="button" onclick={() => removeOption(woWords, i, v => woWords = v)} class="text-error hover:text-error/80">
+										&times;
+									</button>
+								{/if}
+							</div>
+						{/each}
+						{#if woWords.length < 10}
+							<button type="button" onclick={() => addOption(woWords, v => woWords = v)} class="text-primary text-sm hover:underline">
+								+ Add Word
+							</button>
+						{/if}
+					</div>
+					<div>
+						<label class="block text-sm text-text-muted mb-1">Instruction (English)</label>
+						<input type="text" bind:value={woInstructionEn} class="input" placeholder="Arrange: 'Hello, how are you?'" />
+					</div>
+					<div>
+						<label class="block text-sm text-text-muted mb-1">Instruction (German) - optional</label>
+						<input type="text" bind:value={woInstructionDe} class="input" placeholder="Ordne: 'Hallo, wie geht es dir?'" />
+					</div>
+				</div>
+
+			{:else if selectedType === 'speaking'}
+				<div class="space-y-3 p-3 rounded-xl bg-bg-light-secondary">
+					<h3 class="font-medium text-text-light">Speaking Content</h3>
+					<div>
+						<label class="block text-sm text-text-muted mb-1">Text to Speak (Spanish)</label>
+						<input type="text" bind:value={spTextToSpeak} class="input" placeholder="Hola" />
+					</div>
+					<div class="grid grid-cols-2 gap-3">
+						<div>
+							<label class="block text-sm text-text-muted mb-1">Hint (English)</label>
+							<input type="text" bind:value={spHintEn} class="input" placeholder="Hello" />
+						</div>
+						<div>
+							<label class="block text-sm text-text-muted mb-1">Hint (German)</label>
+							<input type="text" bind:value={spHintDe} class="input" placeholder="Hallo" />
+						</div>
+					</div>
+				</div>
+
+			{:else if selectedType === 'listening'}
+				<div class="space-y-3 p-3 rounded-xl bg-bg-light-secondary">
+					<h3 class="font-medium text-text-light">Listening Content</h3>
+					<div>
+						<label class="block text-sm text-text-muted mb-1">Text to Hear (Spanish)</label>
+						<input type="text" bind:value={liTextToHear} class="input" placeholder="Hola" />
+					</div>
+					<div>
+						<label class="block text-sm text-text-muted mb-1">Answer Type</label>
+						<select bind:value={liAnswerType} class="input">
+							<option value="type">Type Answer</option>
+							<option value="multiple_choice">Multiple Choice</option>
+						</select>
+					</div>
+					{#if liAnswerType === 'multiple_choice'}
+						<div>
+							<label class="block text-sm text-text-muted mb-1">Options</label>
+							{#each liOptions as option, i}
+								<div class="flex gap-2 mb-2">
+									<input type="text" bind:value={liOptions[i]} class="input flex-1" placeholder="Option {i + 1}" />
+									{#if liOptions.length > 2}
+										<button type="button" onclick={() => removeOption(liOptions, i, v => liOptions = v)} class="text-error hover:text-error/80">
+											&times;
+										</button>
+									{/if}
+								</div>
+							{/each}
+							{#if liOptions.length < 6}
+								<button type="button" onclick={() => addOption(liOptions, v => liOptions = v)} class="text-primary text-sm hover:underline">
+									+ Add Option
+								</button>
+							{/if}
+						</div>
+					{/if}
+				</div>
+			{/if}
+
+			<!-- Correct Answer -->
+			<div>
+				<label for="correctAnswer" class="block text-sm font-medium text-text-light mb-1">
+					Correct Answer
+					{#if selectedType === 'matching'}
+						<span class="text-text-muted font-normal">(auto-set to "all_matched")</span>
+					{:else if selectedType === 'translation' && transDirection === 'es_to_native'}
+						<span class="text-text-muted font-normal">(use | to separate multiple valid answers: "Hello|Hallo")</span>
+					{/if}
+				</label>
+				{#if selectedType === 'matching'}
+					<input type="text" class="input bg-bg-light-secondary" value="all_matched" readonly />
+				{:else}
+					<input type="text" bind:value={correctAnswer} class="input" placeholder="The correct answer" />
+				{/if}
+			</div>
+
+			<!-- Form Actions -->
+			<div class="flex justify-end gap-3 pt-4 border-t border-border-light">
+				<button type="button" onclick={onClose} class="btn btn-ghost btn-md">
+					Cancel
+				</button>
+				<button type="submit" disabled={isSubmitting} class="btn btn-success btn-md">
+					{isSubmitting ? 'Saving...' : mode === 'add' ? 'Add Question' : 'Save Changes'}
+				</button>
+			</div>
+		</form>
+	</div>
+</div>

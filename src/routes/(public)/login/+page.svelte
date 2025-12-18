@@ -1,5 +1,6 @@
 <script lang="ts">
 	import { enhance } from '$app/forms';
+	import { t } from '$lib/i18n/index.svelte';
 	import type { ActionData, PageData } from './$types';
 
 	let { form, data }: { form: ActionData; data: PageData } = $props();
@@ -8,14 +9,14 @@
 </script>
 
 <svelte:head>
-	<title>Log in - OpenLingo</title>
+	<title>{t('nav.login')} - OpenLingo</title>
 </svelte:head>
 
 <div class="flex min-h-[calc(100vh-200px)] items-center justify-center px-4 py-12">
 	<div class="w-full max-w-md">
 		<div class="text-center">
-			<h1 class="text-3xl font-bold text-text-light">Welcome back!</h1>
-			<p class="mt-2 text-text-muted">Log in to continue your learning journey</p>
+			<h1 class="text-3xl font-bold text-text-light">{t('auth.loginTitle')}</h1>
+			<p class="mt-2 text-text-muted">{t('auth.loginSubtitle')}</p>
 		</div>
 
 		<form
@@ -40,43 +41,43 @@
 			{/if}
 
 			<div>
-				<label for="email" class="mb-2 block font-medium text-text-light">Email</label>
+				<label for="email" class="mb-2 block font-medium text-text-light">{t('auth.email')}</label>
 				<input
 					type="email"
 					id="email"
 					name="email"
 					required
 					class="input"
-					placeholder="you@example.com"
+					placeholder={t('auth.emailPlaceholder')}
 					value={form?.email ?? ''}
 				/>
 			</div>
 
 			<div>
-				<label for="password" class="mb-2 block font-medium text-text-light">Password</label>
+				<label for="password" class="mb-2 block font-medium text-text-light">{t('auth.password')}</label>
 				<input
 					type="password"
 					id="password"
 					name="password"
 					required
 					class="input"
-					placeholder="Your password"
+					placeholder={t('auth.passwordPlaceholder')}
 					minlength="8"
 				/>
 			</div>
 
 			<button type="submit" class="btn btn-success btn-lg w-full" disabled={loading}>
 				{#if loading}
-					Logging in...
+					{t('auth.loggingIn')}
 				{:else}
-					Log in
+					{t('auth.loginButton')}
 				{/if}
 			</button>
 		</form>
 
 		<p class="mt-6 text-center text-text-muted">
-			Don't have an account?
-			<a href="/register" class="font-medium text-primary hover:underline">Sign up</a>
+			{t('auth.noAccount')}
+			<a href="/register" class="font-medium text-primary hover:underline">{t('auth.signUp')}</a>
 		</p>
 	</div>
 </div>

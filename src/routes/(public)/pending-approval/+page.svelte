@@ -1,9 +1,9 @@
 <script lang="ts">
-	// No imports needed
+	import { t } from '$lib/i18n/index.svelte';
 </script>
 
 <svelte:head>
-	<title>Pending Approval - OpenLingo</title>
+	<title>{t('auth.pendingApproval.title')} - OpenLingo</title>
 </svelte:head>
 
 <div class="flex min-h-[calc(100vh-200px)] items-center justify-center px-4 py-12">
@@ -27,34 +27,33 @@
 			</span>
 		</div>
 
-		<h1 class="mt-6 text-3xl font-bold text-text-light">Account Pending Approval</h1>
+		<h1 class="mt-6 text-3xl font-bold text-text-light">{t('auth.pendingApproval.title')}</h1>
 
 		<p class="mt-4 text-text-muted">
-			Your account has been created and is waiting for administrator approval. You will be able to
-			access the platform once an administrator approves your account.
+			{t('auth.pendingApproval.message')}
 		</p>
 
 		<div class="mt-8 rounded-xl bg-border-light/50 p-6">
-			<h2 class="font-semibold text-text-light">What happens next?</h2>
+			<h2 class="font-semibold text-text-light">{t('auth.pendingApproval.whatNext')}</h2>
 			<ul class="mt-4 space-y-2 text-left text-sm text-text-muted">
 				<li class="flex items-start gap-2">
 					<span class="text-primary">1.</span>
-					<span>An administrator will review your registration request</span>
+					<span>{t('auth.pendingApproval.step1')}</span>
 				</li>
 				<li class="flex items-start gap-2">
 					<span class="text-primary">2.</span>
-					<span>Once approved, you can log in and start learning</span>
+					<span>{t('auth.pendingApproval.step2')}</span>
 				</li>
 				<li class="flex items-start gap-2">
 					<span class="text-primary">3.</span>
-					<span>Check back later or contact an administrator for status updates</span>
+					<span>{t('auth.pendingApproval.step3')}</span>
 				</li>
 			</ul>
 		</div>
 
 		<div class="mt-8 space-y-4">
-			<a href="/login" class="btn btn-primary btn-lg w-full">Try logging in</a>
-			<a href="/" class="btn btn-secondary btn-md w-full">Back to home</a>
+			<a href="/login" class="btn btn-primary btn-lg w-full">{t('auth.pendingApproval.tryLogin')}</a>
+			<a href="/" class="btn btn-secondary btn-md w-full">{t('auth.pendingApproval.backToHome')}</a>
 		</div>
 	</div>
 </div>

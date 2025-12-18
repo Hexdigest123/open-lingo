@@ -3,6 +3,7 @@
 	import { t } from '$lib/i18n/index.svelte';
 	import { enhance } from '$app/forms';
 	import { goto } from '$app/navigation';
+	import { getBilingualText } from '$lib/utils/bilingual';
 
 	type LevelWithCount = {
 		id: number;
@@ -70,7 +71,7 @@
 </script>
 
 <svelte:head>
-	<title>{data.selectedLevel ? `${data.selectedLevel.name} - ` : ''}{t('nav.learn')} - OpenLingo</title>
+	<title>{data.selectedLevel ? `${getBilingualText(data.selectedLevel.name)} - ` : ''}{t('nav.learn')} - OpenLingo</title>
 </svelte:head>
 
 {#if showError && data.error === 'no_hearts'}
@@ -97,9 +98,9 @@
 			</a>
 			<div>
 				<h1 class="text-2xl font-bold text-text-light">
-					{data.selectedLevel.code}: {data.selectedLevel.name}
+					{data.selectedLevel.code}: {getBilingualText(data.selectedLevel.name)}
 				</h1>
-				<p class="text-text-muted">{data.selectedLevel.description}</p>
+				<p class="text-text-muted">{getBilingualText(data.selectedLevel.description)}</p>
 			</div>
 		</div>
 
@@ -120,9 +121,9 @@
 									{unit.order}
 								</div>
 								<div>
-									<h3 class="font-bold text-text-light">{unit.title}</h3>
+									<h3 class="font-bold text-text-light">{getBilingualText(unit.title)}</h3>
 									{#if unit.description}
-										<p class="text-sm text-text-muted">{unit.description}</p>
+										<p class="text-sm text-text-muted">{getBilingualText(unit.description)}</p>
 									{/if}
 									<p class="text-xs text-text-muted mt-1">
 										{unit.lessons.length} {unit.lessons.length === 1 ? 'lesson' : 'lessons'}
@@ -146,9 +147,9 @@
 												{getStatusIcon(status)}
 											</span>
 											<div>
-												<p class="font-medium text-text-light">{lesson.title}</p>
+												<p class="font-medium text-text-light">{getBilingualText(lesson.title)}</p>
 												{#if lesson.description}
-													<p class="text-xs text-text-muted">{lesson.description}</p>
+													<p class="text-xs text-text-muted">{getBilingualText(lesson.description)}</p>
 												{/if}
 											</div>
 										</div>
@@ -216,8 +217,8 @@
 							{level.code}
 						</div>
 						<div class="flex-1">
-							<h3 class="font-bold text-text-light">{level.name}</h3>
-							<p class="mt-1 text-sm text-text-muted">{level.description}</p>
+							<h3 class="font-bold text-text-light">{getBilingualText(level.name)}</h3>
+							<p class="mt-1 text-sm text-text-muted">{getBilingualText(level.description)}</p>
 							<p class="mt-1 text-xs text-text-muted">
 								{level.unitCount || 0} {(level.unitCount || 0) === 1 ? 'unit' : 'units'}
 							</p>

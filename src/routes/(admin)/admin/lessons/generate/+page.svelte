@@ -12,6 +12,22 @@
 	let difficulty = $state('intermediate');
 	let selectedUnit = $state('');
 
+	/**
+	 * Parse translation JSON and extract value for language
+	 */
+	function getTranslation(value: string | null, lang: 'en' | 'de'): string {
+		if (!value) return '';
+		if (value.startsWith('{')) {
+			try {
+				const parsed = JSON.parse(value);
+				return parsed[lang] || parsed.en || '';
+			} catch {
+				return value;
+			}
+		}
+		return value;
+	}
+
 	// Redirect to the generated lesson if successful
 	$effect(() => {
 		if (form?.success && form?.lessonId) {
@@ -85,7 +101,7 @@
 					>
 						<option value="">{t('admin.lessons.selectUnit')}</option>
 						{#each data.units as unit}
-							<option value={unit.id}>[{unit.levelCode}] {unit.title}</option>
+							<option value={unit.id}>[{unit.levelCode}] {getTranslation(unit.title, 'en')}</option>
 						{/each}
 					</select>
 				</div>
@@ -149,16 +165,13 @@
 				<div class="rounded-xl bg-bg-light-secondary p-4">
 					<h3 class="text-sm font-medium text-text-light">{t('admin.lessons.willGenerate')}</h3>
 					<ul class="mt-2 space-y-1 text-sm text-text-muted">
-						<li>&#x2022; {Math.floor(questionCount * 0.3)} {t('admin.lessons.multipleChoice')}</li>
-						<li>&#x2022; {Math.floor(questionCount * 0.3)} {t('admin.lessons.fillBlank')}</li>
-						<li>&#x2022; {Math.floor(questionCount * 0.2)} {t('admin.lessons.translation')}</li>
-						<li>
-							&#x2022; {questionCount -
-								Math.floor(questionCount * 0.3) -
-								Math.floor(questionCount * 0.3) -
-								Math.floor(questionCount * 0.2)}
-							{t('admin.lessons.matching')}
-						</li>
+						<li>&#x2022; {Math.floor(questionCount * 0.2)} {t('admin.lessons.multipleChoice')}</li>
+						<li>&#x2022; {Math.floor(questionCount * 0.2)} {t('admin.lessons.fillBlank')}</li>
+						<li>&#x2022; {Math.floor(questionCount * 0.15)} {t('admin.lessons.translation')}</li>
+						<li>&#x2022; {Math.floor(questionCount * 0.15)} {t('admin.lessons.matching')}</li>
+						<li>&#x2022; {Math.floor(questionCount * 0.15)} Word Order</li>
+						<li>&#x2022; {Math.floor(questionCount * 0.08)} Speaking</li>
+						<li>&#x2022; {questionCount - Math.floor(questionCount * 0.2) - Math.floor(questionCount * 0.2) - Math.floor(questionCount * 0.15) - Math.floor(questionCount * 0.15) - Math.floor(questionCount * 0.15) - Math.floor(questionCount * 0.08)} Listening</li>
 					</ul>
 				</div>
 

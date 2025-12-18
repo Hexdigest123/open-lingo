@@ -70,7 +70,7 @@ function generateMultipleChoiceQuestions(
 // Generate fill in the blank questions (bilingual - store both English and German)
 function generateFillBlankQuestions(
 	vocabItems: VocabItem[],
-	sentences: { es: string; en: string }[],
+	sentences: { es: string; en: string; de: string }[],
 	lessonId: number,
 	startOrder: number,
 	count: number
@@ -137,28 +137,29 @@ function generateFillBlankQuestions(
 	return questions;
 }
 
-// Generate translation questions (bilingual - includes English and German directions)
+// Generate translation questions (unified directions - adapts to user's locale)
 function generateTranslationQuestions(
 	vocabItems: VocabItem[],
-	sentences: { es: string; en: string }[],
+	sentences: { es: string; en: string; de: string }[],
 	lessonId: number,
 	startOrder: number,
 	count: number
 ): schema.Question[] {
 	const questions: schema.Question[] = [];
-	const quarterCount = Math.ceil(count / 4);
+	const halfCount = Math.ceil(count / 2);
 
-	// English to Spanish translations
-	const enToEsItems = getRandomItems(vocabItems, quarterCount);
-	for (let i = 0; i < enToEsItems.length; i++) {
-		const item = enToEsItems[i];
+	// Native to Spanish translations (store both English and German source text)
+	const nativeToEsItems = getRandomItems(vocabItems, halfCount);
+	for (let i = 0; i < nativeToEsItems.length; i++) {
+		const item = nativeToEsItems[i];
 		questions.push({
 			id: 0,
 			lessonId,
 			type: 'translation' as const,
 			content: {
-				text: item.en,
-				direction: 'en_to_es'
+				textEn: item.en,
+				textDe: item.de,
+				direction: 'native_to_es'
 			},
 			correctAnswer: item.es,
 			audioUrl: null,
@@ -167,62 +168,23 @@ function generateTranslationQuestions(
 		});
 	}
 
-	// Spanish to English translations
-	const remainingVocab1 = vocabItems.filter((v) => !enToEsItems.includes(v));
-	const esToEnItems = getRandomItems(remainingVocab1, quarterCount);
-	for (let i = 0; i < esToEnItems.length; i++) {
-		const item = esToEnItems[i];
+	// Spanish to Native translations (store pipe-separated correct answers)
+	const remainingVocab = vocabItems.filter((v) => !nativeToEsItems.includes(v));
+	const esToNativeItems = getRandomItems(remainingVocab, count - halfCount);
+	for (let i = 0; i < esToNativeItems.length; i++) {
+		const item = esToNativeItems[i];
 		questions.push({
 			id: 0,
 			lessonId,
 			type: 'translation' as const,
 			content: {
 				text: item.es,
-				direction: 'es_to_en'
+				direction: 'es_to_native'
 			},
-			correctAnswer: item.en,
+			// Store both valid answers separated by pipe
+			correctAnswer: `${item.en}|${item.de}`,
 			audioUrl: null,
-			order: startOrder + quarterCount + i,
-			createdAt: new Date()
-		});
-	}
-
-	// German to Spanish translations
-	const remainingVocab2 = remainingVocab1.filter((v) => !esToEnItems.includes(v));
-	const deToEsItems = getRandomItems(remainingVocab2, quarterCount);
-	for (let i = 0; i < deToEsItems.length; i++) {
-		const item = deToEsItems[i];
-		questions.push({
-			id: 0,
-			lessonId,
-			type: 'translation' as const,
-			content: {
-				text: item.de,
-				direction: 'de_to_es'
-			},
-			correctAnswer: item.es,
-			audioUrl: null,
-			order: startOrder + quarterCount * 2 + i,
-			createdAt: new Date()
-		});
-	}
-
-	// Spanish to German translations
-	const remainingVocab3 = remainingVocab2.filter((v) => !deToEsItems.includes(v));
-	const esToDeItems = getRandomItems(remainingVocab3, count - quarterCount * 3);
-	for (let i = 0; i < esToDeItems.length; i++) {
-		const item = esToDeItems[i];
-		questions.push({
-			id: 0,
-			lessonId,
-			type: 'translation' as const,
-			content: {
-				text: item.es,
-				direction: 'es_to_de'
-			},
-			correctAnswer: item.de,
-			audioUrl: null,
-			order: startOrder + quarterCount * 3 + i,
+			order: startOrder + halfCount + i,
 			createdAt: new Date()
 		});
 	}
@@ -273,7 +235,120 @@ function generateMatchingQuestions(
 	return questions;
 }
 
-// Generate all 50 questions for a lesson
+// Generate word order questions (bilingual - arrange words to form sentences)
+function generateWordOrderQuestions(
+	vocabItems: VocabItem[],
+	sentences: { es: string; en: string; de: string }[],
+	lessonId: number,
+	startOrder: number,
+	count: number
+): schema.Question[] {
+	const questions: schema.Question[] = [];
+	const shuffledSentences = shuffle(sentences);
+
+	for (let i = 0; i < count && i < shuffledSentences.length; i++) {
+		const sentence = shuffledSentences[i];
+
+		// Split sentence into words and shuffle them
+		const words = sentence.es.split(/\s+/).filter(Boolean);
+		if (words.length < 3) continue; // Skip very short sentences
+
+		const scrambledWords = shuffle(words);
+
+		questions.push({
+			id: 0,
+			lessonId,
+			type: 'word_order' as const,
+			content: {
+				words: scrambledWords,
+				instructionEn: `Arrange the words to form: "${sentence.en}"`,
+				instructionDe: `Ordne die Wörter, um zu bilden: "${sentence.de}"`
+			},
+			correctAnswer: sentence.es,
+			audioUrl: null,
+			order: startOrder + i,
+			createdAt: new Date()
+		});
+	}
+
+	return questions;
+}
+
+// Generate speaking questions (pronunciation practice)
+function generateSpeakingQuestions(
+	vocabItems: VocabItem[],
+	lessonId: number,
+	startOrder: number,
+	count: number
+): schema.Question[] {
+	const questions: schema.Question[] = [];
+	const shuffledVocab = shuffle(vocabItems);
+
+	for (let i = 0; i < count && i < shuffledVocab.length; i++) {
+		const item = shuffledVocab[i];
+
+		questions.push({
+			id: 0,
+			lessonId,
+			type: 'speaking' as const,
+			content: {
+				textToSpeak: item.es,
+				hintEn: item.en,
+				hintDe: item.de
+			},
+			correctAnswer: item.es,
+			audioUrl: null,
+			order: startOrder + i,
+			createdAt: new Date()
+		});
+	}
+
+	return questions;
+}
+
+// Generate listening questions (hear and identify)
+function generateListeningQuestions(
+	vocabItems: VocabItem[],
+	lessonId: number,
+	startOrder: number,
+	count: number
+): schema.Question[] {
+	const questions: schema.Question[] = [];
+	const shuffledVocab = shuffle(vocabItems);
+
+	for (let i = 0; i < count && i < shuffledVocab.length; i++) {
+		const item = shuffledVocab[i];
+
+		// Alternate between type and multiple choice
+		const answerType = i % 2 === 0 ? 'type' : 'multiple_choice';
+
+		let options: string[] | undefined;
+		if (answerType === 'multiple_choice') {
+			const otherItems = vocabItems.filter((v) => v.es !== item.es);
+			const wrongAnswers = getRandomItems(otherItems, 3).map((v) => v.en);
+			options = shuffle([item.en, ...wrongAnswers]);
+		}
+
+		questions.push({
+			id: 0,
+			lessonId,
+			type: 'listening' as const,
+			content: {
+				textToHear: item.es,
+				answerType,
+				options
+			},
+			correctAnswer: item.en,
+			audioUrl: null,
+			order: startOrder + i,
+			createdAt: new Date()
+		});
+	}
+
+	return questions;
+}
+
+// Generate all 50 questions for a lesson (always includes voice tasks)
 function generateLessonQuestions(
 	unitVocab: UnitVocab,
 	lessonId: number,
@@ -287,58 +362,33 @@ function generateLessonQuestions(
 	const rotatedVocab = [...vocab.slice(offset % vocab.length), ...vocab.slice(0, offset % vocab.length)];
 
 	const allQuestions: Omit<schema.Question, 'id' | 'createdAt'>[] = [];
+	let currentOrder = 1;
 
-	// 15 Multiple Choice questions
-	const mcQuestions = generateMultipleChoiceQuestions(rotatedVocab, lessonId, 1, 15);
-	allQuestions.push(
-		...mcQuestions.map((q) => ({
-			lessonId: q.lessonId,
-			type: q.type,
-			content: q.content,
-			correctAnswer: q.correctAnswer,
-			audioUrl: q.audioUrl,
-			order: q.order
-		}))
-	);
+	// Helper to add questions
+	const addQuestions = (qs: schema.Question[]) => {
+		allQuestions.push(
+			...qs.map((q) => ({
+				lessonId: q.lessonId,
+				type: q.type,
+				content: q.content,
+				correctAnswer: q.correctAnswer,
+				audioUrl: q.audioUrl,
+				order: q.order
+			}))
+		);
+		currentOrder += qs.length;
+	};
 
-	// 15 Fill in the Blank questions
-	const fillQuestions = generateFillBlankQuestions(rotatedVocab, sentences, lessonId, 16, 15);
-	allQuestions.push(
-		...fillQuestions.map((q) => ({
-			lessonId: q.lessonId,
-			type: q.type,
-			content: q.content,
-			correctAnswer: q.correctAnswer,
-			audioUrl: q.audioUrl,
-			order: q.order
-		}))
-	);
-
-	// 10 Translation questions
-	const transQuestions = generateTranslationQuestions(rotatedVocab, sentences, lessonId, 31, 10);
-	allQuestions.push(
-		...transQuestions.map((q) => ({
-			lessonId: q.lessonId,
-			type: q.type,
-			content: q.content,
-			correctAnswer: q.correctAnswer,
-			audioUrl: q.audioUrl,
-			order: q.order
-		}))
-	);
-
-	// 10 Matching questions
-	const matchQuestions = generateMatchingQuestions(rotatedVocab, lessonId, 41, 10);
-	allQuestions.push(
-		...matchQuestions.map((q) => ({
-			lessonId: q.lessonId,
-			type: q.type,
-			content: q.content,
-			correctAnswer: q.correctAnswer,
-			audioUrl: q.audioUrl,
-			order: q.order
-		}))
-	);
+	// Distribution (50 total):
+	// 10 MC, 10 Fill, 8 Trans, 6 Match, 6 WordOrder, 5 Speaking, 5 Listening
+	// Voice tasks are always included - users without API key can skip them
+	addQuestions(generateMultipleChoiceQuestions(rotatedVocab, lessonId, currentOrder, 10));
+	addQuestions(generateFillBlankQuestions(rotatedVocab, sentences, lessonId, currentOrder, 10));
+	addQuestions(generateTranslationQuestions(rotatedVocab, sentences, lessonId, currentOrder, 8));
+	addQuestions(generateMatchingQuestions(rotatedVocab, lessonId, currentOrder, 6));
+	addQuestions(generateWordOrderQuestions(rotatedVocab, sentences, lessonId, currentOrder, 6));
+	addQuestions(generateSpeakingQuestions(rotatedVocab, lessonId, currentOrder, 5));
+	addQuestions(generateListeningQuestions(rotatedVocab, lessonId, currentOrder, 5));
 
 	return allQuestions;
 }
@@ -352,91 +402,59 @@ function generateExamQuestions(
 	const sentences = unitVocab.sentences;
 	const allQuestions: Omit<schema.Question, 'id' | 'createdAt'>[] = [];
 
-	// 3 Multiple Choice
-	const mcQuestions = generateMultipleChoiceQuestions(shuffle(vocab), lessonId, 1, 3);
-	allQuestions.push(
-		...mcQuestions.map((q) => ({
-			lessonId: q.lessonId,
-			type: q.type,
-			content: q.content,
-			correctAnswer: q.correctAnswer,
-			audioUrl: q.audioUrl,
-			order: q.order
-		}))
-	);
+	// Helper to add questions
+	const addQuestions = (qs: schema.Question[]) => {
+		allQuestions.push(
+			...qs.map((q) => ({
+				lessonId: q.lessonId,
+				type: q.type,
+				content: q.content,
+				correctAnswer: q.correctAnswer,
+				audioUrl: q.audioUrl,
+				order: q.order
+			}))
+		);
+	};
 
-	// 3 Fill in the Blank
-	const fillQuestions = generateFillBlankQuestions(shuffle(vocab), sentences, lessonId, 4, 3);
-	allQuestions.push(
-		...fillQuestions.map((q) => ({
-			lessonId: q.lessonId,
-			type: q.type,
-			content: q.content,
-			correctAnswer: q.correctAnswer,
-			audioUrl: q.audioUrl,
-			order: q.order
-		}))
-	);
-
-	// 2 Translation
-	const transQuestions = generateTranslationQuestions(shuffle(vocab), sentences, lessonId, 7, 2);
-	allQuestions.push(
-		...transQuestions.map((q) => ({
-			lessonId: q.lessonId,
-			type: q.type,
-			content: q.content,
-			correctAnswer: q.correctAnswer,
-			audioUrl: q.audioUrl,
-			order: q.order
-		}))
-	);
-
-	// 2 Matching
-	const matchQuestions = generateMatchingQuestions(shuffle(vocab), lessonId, 9, 2);
-	allQuestions.push(
-		...matchQuestions.map((q) => ({
-			lessonId: q.lessonId,
-			type: q.type,
-			content: q.content,
-			correctAnswer: q.correctAnswer,
-			audioUrl: q.audioUrl,
-			order: q.order
-		}))
-	);
+	// Exam distribution (10 questions):
+	// 2 MC, 2 Fill, 2 Trans, 2 Match, 2 WordOrder
+	addQuestions(generateMultipleChoiceQuestions(shuffle(vocab), lessonId, 1, 2));
+	addQuestions(generateFillBlankQuestions(shuffle(vocab), sentences, lessonId, 3, 2));
+	addQuestions(generateTranslationQuestions(shuffle(vocab), sentences, lessonId, 5, 2));
+	addQuestions(generateMatchingQuestions(shuffle(vocab), lessonId, 7, 2));
+	addQuestions(generateWordOrderQuestions(shuffle(vocab), sentences, lessonId, 9, 2));
 
 	return allQuestions;
 }
 
-// Lesson title templates
+// Lesson title templates (English and German pairs)
 const LESSON_TITLES = [
-	'Introduction to {topic}',
-	'Basic {topic}',
-	'{topic} Practice',
-	'Learning {topic}',
-	'{topic} Vocabulary',
-	'{topic} Essentials',
-	'{topic} Fundamentals',
-	'Mastering {topic}',
-	'{topic} Review',
-	'{topic} Challenge',
-	'Advanced {topic}',
-	'{topic} in Context',
-	'{topic} Phrases',
-	'{topic} Expressions',
-	'{topic} Drill',
-	'{topic} Builder',
-	'{topic} Workshop',
-	'{topic} Deep Dive',
-	'{topic} Skills',
-	'{topic} Mastery'
+	{ en: 'Introduction to {topic}', de: 'Einführung in {topic}' },
+	{ en: 'Basic {topic}', de: 'Grundlagen {topic}' },
+	{ en: '{topic} Practice', de: '{topic} Übung' },
+	{ en: 'Learning {topic}', de: '{topic} Lernen' },
+	{ en: '{topic} Vocabulary', de: '{topic} Vokabeln' },
+	{ en: '{topic} Essentials', de: '{topic} Grundlagen' },
+	{ en: '{topic} Fundamentals', de: '{topic} Grundprinzipien' },
+	{ en: 'Mastering {topic}', de: '{topic} Meistern' },
+	{ en: '{topic} Review', de: '{topic} Wiederholung' },
+	{ en: '{topic} Challenge', de: '{topic} Herausforderung' },
+	{ en: 'Advanced {topic}', de: 'Fortgeschrittene {topic}' },
+	{ en: '{topic} in Context', de: '{topic} im Kontext' },
+	{ en: '{topic} Phrases', de: '{topic} Ausdrücke' },
+	{ en: '{topic} Expressions', de: '{topic} Redewendungen' },
+	{ en: '{topic} Drill', de: '{topic} Training' },
+	{ en: '{topic} Builder', de: '{topic} Aufbau' },
+	{ en: '{topic} Workshop', de: '{topic} Workshop' },
+	{ en: '{topic} Deep Dive', de: '{topic} Vertiefung' },
+	{ en: '{topic} Skills', de: '{topic} Fähigkeiten' },
+	{ en: '{topic} Mastery', de: '{topic} Beherrschung' }
 ];
 
-// Lesson type rotation
-const LESSON_TYPES: ('vocabulary' | 'fill_in_blank' | 'multiple_choice')[] = [
-	'vocabulary',
-	'multiple_choice',
-	'fill_in_blank'
-];
+// Helper to create bilingual JSON strings
+function bilingual(en: string, de: string): string {
+	return JSON.stringify({ en, de });
+}
 
 async function seed() {
 	const databaseUrl = process.env.DATABASE_URL;
@@ -457,43 +475,61 @@ async function seed() {
 	await db.delete(levels);
 	await db.delete(achievements);
 
-	// Seed CEFR Levels
+	// Seed CEFR Levels (bilingual names and descriptions)
 	console.log('📚 Creating CEFR levels...');
 	const levelData = [
 		{
 			code: 'A1' as const,
-			name: 'Beginner',
-			description: 'Basic phrases and expressions for everyday situations',
+			name: bilingual('Beginner', 'Anfänger'),
+			description: bilingual(
+				'Basic phrases and expressions for everyday situations',
+				'Grundlegende Ausdrücke und Phrasen für alltägliche Situationen'
+			),
 			order: 1
 		},
 		{
 			code: 'A2' as const,
-			name: 'Elementary',
-			description: 'Simple sentences about familiar topics',
+			name: bilingual('Elementary', 'Grundlegend'),
+			description: bilingual(
+				'Simple sentences about familiar topics',
+				'Einfache Sätze zu vertrauten Themen'
+			),
 			order: 2
 		},
 		{
 			code: 'B1' as const,
-			name: 'Intermediate',
-			description: 'Main points on familiar matters regularly encountered',
+			name: bilingual('Intermediate', 'Mittelstufe'),
+			description: bilingual(
+				'Main points on familiar matters regularly encountered',
+				'Hauptpunkte zu vertrauten Themen, denen man regelmäßig begegnet'
+			),
 			order: 3
 		},
 		{
 			code: 'B2' as const,
-			name: 'Upper Intermediate',
-			description: 'Complex texts on both concrete and abstract topics',
+			name: bilingual('Upper Intermediate', 'Obere Mittelstufe'),
+			description: bilingual(
+				'Complex texts on both concrete and abstract topics',
+				'Komplexe Texte zu konkreten und abstrakten Themen'
+			),
 			order: 4
 		},
 		{
 			code: 'C1' as const,
-			name: 'Advanced',
-			description: 'Demanding texts and implicit meaning recognition',
+			name: bilingual('Advanced', 'Fortgeschritten'),
+			description: bilingual(
+				'Demanding texts and implicit meaning recognition',
+				'Anspruchsvolle Texte und Erkennung impliziter Bedeutungen'
+			),
 			order: 5
 		},
 		{
 			code: 'C2' as const,
-			name: 'Mastery',
-			description: 'Near-native fluency and understanding',
+			name: bilingual('Mastery', 'Beherrschung'),
+			description: bilingual(
+				'Near-native fluency and understanding',
+				'Fast muttersprachliche Sprachgewandtheit und Verständnis'
+			),
 			order: 6
 		}
 	];
@@ -533,14 +569,14 @@ async function seed() {
 				.insert(units)
 				.values({
 					levelId: level.id,
-					title: unitVocab.title,
-					description: unitVocab.description,
+					title: bilingual(unitVocab.titleEn, unitVocab.titleDe),
+					description: bilingual(unitVocab.descriptionEn, unitVocab.descriptionDe),
 					order: unitIndex + 1,
 					themeColor: unitVocab.themeColor
 				})
 				.returning();
 
-			console.log(`   📁 Unit ${unitIndex + 1}: ${unitVocab.title}`);
+			console.log(`   📁 Unit ${unitIndex + 1}: ${unitVocab.titleEn}`);
 
 			// Create 20 lessons per unit
 			const lessonsPerUnit = 20;
@@ -548,13 +584,16 @@ async function seed() {
 
 			for (let lessonNum = 1; lessonNum <= lessonsPerUnit; lessonNum++) {
 				const titleTemplate = LESSON_TITLES[(lessonNum - 1) % LESSON_TITLES.length];
-				const title = titleTemplate.replace('{topic}', unitVocab.title);
+				const titleEn = titleTemplate.en.replace('{topic}', unitVocab.titleEn);
+				const titleDe = titleTemplate.de.replace('{topic}', unitVocab.titleDe);
 
 				lessonInserts.push({
 					unitId: insertedUnit.id,
-					title: `${lessonNum}. ${title}`,
-					description: `Lesson ${lessonNum} of ${unitVocab.title}`,
-					type: LESSON_TYPES[(lessonNum - 1) % LESSON_TYPES.length],
+					title: bilingual(`${lessonNum}. ${titleEn}`, `${lessonNum}. ${titleDe}`),
+					description: bilingual(
+						`Lesson ${lessonNum} of ${unitVocab.titleEn}`,
+						`Lektion ${lessonNum} von ${unitVocab.titleDe}`
+					),
 					xpReward: 10 + Math.floor(lessonNum / 5) * 5, // XP increases every 5 lessons
 					order: lessonNum,
 					isPublished: true,
@@ -567,9 +606,14 @@ async function seed() {
 			// Add exam at the end
 			lessonInserts.push({
 				unitId: insertedUnit.id,
-				title: `${unitVocab.title} - Unit Exam`,
-				description: `Final exam for ${unitVocab.title}. Score 80% to pass.`,
-				type: 'multiple_choice' as const,
+				title: bilingual(
+					`${unitVocab.titleEn} - Unit Exam`,
+					`${unitVocab.titleDe} - Prüfung`
+				),
+				description: bilingual(
+					`Final exam for ${unitVocab.titleEn}. Score 80% to pass.`,
+					`Abschlussprüfung für ${unitVocab.titleDe}. 80% zum Bestehen.`
+				),
 				xpReward: 50, // Higher XP for exam
 				order: lessonsPerUnit + 1,
 				isPublished: true,

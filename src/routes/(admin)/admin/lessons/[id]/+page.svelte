@@ -2,15 +2,58 @@
 	import type { PageData, ActionData } from './$types';
 	import { t } from '$lib/i18n/index.svelte';
 	import { enhance } from '$app/forms';
+	import QuestionModal from '$lib/components/admin/questions/QuestionModal.svelte';
+	import type { QuestionType } from '$lib/server/db/schema';
+
+	type Question = {
+		id: number;
+		type: QuestionType;
+		content: Record<string, unknown>;
+		correctAnswer: string;
+	};
 
 	let { data, form }: { data: PageData; form: ActionData } = $props();
 
 	let deleteConfirm = $state(false);
 	let deleteQuestionId = $state<number | null>(null);
+	let showQuestionModal = $state(false);
+	let editingQuestion = $state<Question | null>(null);
+
+	/**
+	 * Parse translation JSON and extract value for language
+	 * Handles: {"en":"...", "de":"..."} or plain strings
+	 */
+	function getTranslation(value: string | null, lang: 'en' | 'de'): string {
+		if (!value) return '';
+		if (value.startsWith('{')) {
+			try {
+				const parsed = JSON.parse(value);
+				return parsed[lang] || parsed.en || '';
+			} catch {
+				return value;
+			}
+		}
+		return value;
+	}
+
+	function openAddModal() {
+		editingQuestion = null;
+		showQuestionModal = true;
+	}
+
+	function openEditModal(question: Question) {
+		editingQuestion = question;
+		showQuestionModal = true;
+	}
+
+	function closeModal() {
+		showQuestionModal = false;
+		editingQuestion = null;
+	}
 </script>
 
 <svelte:head>
-	<title>Edit: {data.lesson.title} - OpenLingo Admin</title>
+	<title>Edit: {getTranslation(data.lesson.title, 'en') || 'Untitled'} - OpenLingo Admin</title>
 </svelte:head>
 
 <div class="space-y-6">
@@ -33,30 +76,58 @@
 
 	<!-- Lesson Edit Form -->
 	<form method="POST" action="?/update" use:enhance class="card space-y-4">
+		<!-- Title (English and German) -->
 		<div class="grid gap-4 md:grid-cols-2">
-			<div class="md:col-span-2">
+			<div>
 				<label for="title" class="block text-sm font-medium text-text-light">
-					{t('admin.lessons.form.title')} *
+					{t('admin.lessons.form.title')} (EN) *
 				</label>
 				<input
 					type="text"
 					id="title"
 					name="title"
-					value={data.lesson.title}
+					value={getTranslation(data.lesson.title, 'en')}
 					required
 					class="input mt-1"
+					placeholder="English title"
 				/>
 			</div>
-
-			<div class="md:col-span-2">
-				<label for="description" class="block text-sm font-medium text-text-light">
-					{t('admin.lessons.form.description')}
+			<div>
+				<label for="titleDe" class="block text-sm font-medium text-text-light">
+					{t('admin.lessons.form.title')} (DE)
 				</label>
-				<textarea id="description" name="description" rows="2" class="input mt-1"
-					>{data.lesson.description || ''}</textarea
+				<input
+					type="text"
+					id="titleDe"
+					name="titleDe"
+					value={getTranslation(data.lesson.title, 'de')}
+					class="input mt-1"
+					placeholder="German title (optional)"
+				/>
+			</div>
+		</div>
+
+		<!-- Description (English and German) -->
+		<div class="grid gap-4 md:grid-cols-2">
+			<div>
+				<label for="description" class="block text-sm font-medium text-text-light">
+					{t('admin.lessons.form.description')} (EN)
+				</label>
+				<textarea id="description" name="description" rows="2" class="input mt-1" placeholder="English description"
+					>{getTranslation(data.lesson.description, 'en')}</textarea
 				>
 			</div>
+			<div>
+				<label for="descriptionDe" class="block text-sm font-medium text-text-light">
+					{t('admin.lessons.form.description')} (DE)
+				</label>
+				<textarea id="descriptionDe" name="descriptionDe" rows="2" class="input mt-1" placeholder="German description (optional)"
+					>{getTranslation(data.lesson.description, 'de')}</textarea
+				>
+			</div>
+		</div>
 
+		<div class="grid gap-4 md:grid-cols-2">
 			<div>
 				<label for="unitId" class="block text-sm font-medium text-text-light">
 					{t('admin.lessons.form.unit')} *
@@ -64,29 +135,9 @@
 				<select id="unitId" name="unitId" required class="input mt-1">
 					{#each data.units as unit}
 						<option value={unit.id} selected={unit.id === data.lesson.unitId}>
-							[{unit.levelCode}] {unit.title}
+							[{unit.levelCode}] {getTranslation(unit.title, 'en')}
 						</option>
 					{/each}
-				</select>
-			</div>
-
-			<div>
-				<label for="type" class="block text-sm font-medium text-text-light">
-					{t('admin.lessons.form.type')} *
-				</label>
-				<select id="type" name="type" required class="input mt-1">
-					<option value="multiple_choice" selected={data.lesson.type === 'multiple_choice'}>
-						Multiple Choice
-					</option>
-					<option value="fill_in_blank" selected={data.lesson.type === 'fill_in_blank'}>
-						Fill in Blank
-					</option>
-					<option value="vocabulary" selected={data.lesson.type === 'vocabulary'}>
-						Vocabulary
-					</option>
-					<option value="voice_answer" selected={data.lesson.type === 'voice_answer'}>
-						Voice Answer
-					</option>
 				</select>
 			</div>
 
@@ -179,6 +230,9 @@
 			<h2 class="text-xl font-bold text-text-light">
 				Questions ({data.questions.length})
 			</h2>
+			<button onclick={openAddModal} class="btn btn-success btn-sm">
+				+ Add Question
+			</button>
 		</div>
 
 		{#if data.questions.length === 0}
@@ -203,12 +257,18 @@
 										{question.type}
 									</span>
 								</div>
-								<p class="font-medium text-text-light">{(question.content as Record<string, unknown>).question || (question.content as Record<string, unknown>).sentence || (question.content as Record<string, unknown>).text || 'Matching pairs'}</p>
+								<p class="font-medium text-text-light">{(question.content as Record<string, unknown>).questionEn || (question.content as Record<string, unknown>).question || (question.content as Record<string, unknown>).sentenceEn || (question.content as Record<string, unknown>).sentence || (question.content as Record<string, unknown>).textEn || (question.content as Record<string, unknown>).text || (question.content as Record<string, unknown>).textToSpeak || (question.content as Record<string, unknown>).textToHear || 'Matching pairs'}</p>
 								<p class="text-sm text-text-muted mt-1">
 									Answer: <span class="text-success">{question.correctAnswer}</span>
 								</p>
 							</div>
-							<div>
+							<div class="flex items-center gap-2">
+								<button
+									onclick={() => openEditModal(question as Question)}
+									class="text-primary text-sm hover:underline"
+								>
+									{t('common.edit')}
+								</button>
 								{#if deleteQuestionId === question.id}
 									<form method="POST" action="?/deleteQuestion" use:enhance class="inline">
 										<input type="hidden" name="questionId" value={question.id} />
@@ -216,7 +276,7 @@
 									</form>
 									<button
 										onclick={() => (deleteQuestionId = null)}
-										class="text-text-muted text-sm hover:underline ml-2"
+										class="text-text-muted text-sm hover:underline"
 									>
 										{t('common.cancel')}
 									</button>
@@ -236,3 +296,13 @@
 		{/if}
 	</div>
 </div>
+
+<!-- Question Modal -->
+{#if showQuestionModal}
+	<QuestionModal
+		mode={editingQuestion ? 'edit' : 'add'}
+		question={editingQuestion}
+		lessonId={data.lesson.id}
+		onClose={closeModal}
+	/>
+{/if}

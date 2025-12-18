@@ -16,21 +16,17 @@ import { relations } from 'drizzle-orm';
 // Enums
 export const levelCodeEnum = pgEnum('level_code', ['A1', 'A2', 'B1', 'B2', 'C1', 'C2']);
 
-export const lessonTypeEnum = pgEnum('lesson_type', [
-	'fill_in_blank',
-	'multiple_choice',
-	'vocabulary',
-	'voice_answer'
-]);
-
 export const questionTypeEnum = pgEnum('question_type', [
 	'fill_blank',
 	'multiple_choice',
 	'translation',
 	'matching',
 	'speaking',
-	'listening'
+	'listening',
+	'word_order'
 ]);
+
+export type QuestionType = (typeof questionTypeEnum.enumValues)[number];
 
 export const progressStatusEnum = pgEnum('progress_status', [
 	'not_started',
@@ -123,9 +119,8 @@ export const lessons = pgTable(
 		unitId: integer('unit_id')
 			.references(() => units.id, { onDelete: 'cascade' })
 			.notNull(),
-		title: varchar('title', { length: 200 }).notNull(),
-		description: text('description'),
-		type: lessonTypeEnum('type').notNull(),
+		title: varchar('title', { length: 200 }).notNull(), // JSON: {"en":"...","de":"..."}
+		description: text('description'), // JSON: {"en":"...","de":"..."}
 		xpReward: integer('xp_reward').default(10).notNull(),
 		order: integer('order').notNull(),
 		isPublished: boolean('is_published').default(false).notNull(),

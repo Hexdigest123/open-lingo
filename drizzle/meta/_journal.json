@@ -8,6 +8,27 @@
       "when": 1765647004841,
       "tag": "0000_high_nico_minoru",
       "breakpoints": true
+    },
+    {
+      "idx": 1,
+      "version": "7",
+      "when": 1765850678585,
+      "tag": "0001_complete_mother_askani",
+      "breakpoints": true
+    },
+    {
+      "idx": 2,
+      "version": "7",
+      "when": 1765853351791,
+      "tag": "0002_fresh_mantis",
+      "breakpoints": true
+    },
+    {
+      "idx": 3,
+      "version": "7",
+      "when": 1766084245486,
+      "tag": "0003_condemned_daredevil",
+      "breakpoints": true
     }
   ]
 }

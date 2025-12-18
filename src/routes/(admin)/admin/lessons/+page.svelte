@@ -7,6 +7,23 @@
 
 	let showCreateModal = $state(false);
 	let deleteConfirm = $state<number | null>(null);
+
+	/**
+	 * Parse translation JSON and extract value for language
+	 * Handles: {"en":"...", "de":"..."} or plain strings
+	 */
+	function getTranslation(value: string | null, lang: 'en' | 'de'): string {
+		if (!value) return '';
+		if (value.startsWith('{')) {
+			try {
+				const parsed = JSON.parse(value);
+				return parsed[lang] || parsed.en || '';
+			} catch {
+				return value;
+			}
+		}
+		return value;
+	}
 </script>
 
 <svelte:head>
@@ -44,9 +61,9 @@
 			<table class="w-full">
 				<thead class="bg-bg-light-secondary">
 					<tr>
-						<th class="px-4 py-3 text-left text-sm font-medium text-text-muted">{t('admin.lessons.form.title')}</th>
+						<th class="px-4 py-3 text-left text-sm font-medium text-text-muted">{t('admin.lessons.form.title')} (EN)</th>
+						<th class="hidden px-4 py-3 text-left text-sm font-medium text-text-muted lg:table-cell">{t('admin.lessons.form.title')} (DE)</th>
 						<th class="hidden px-4 py-3 text-left text-sm font-medium text-text-muted md:table-cell">Level</th>
-						<th class="hidden px-4 py-3 text-left text-sm font-medium text-text-muted sm:table-cell">{t('admin.lessons.form.type')}</th>
 						<th class="px-4 py-3 text-center text-sm font-medium text-text-muted">{t('admin.lessons.questions')}</th>
 						<th class="px-4 py-3 text-center text-sm font-medium text-text-muted">Status</th>
 						<th class="px-4 py-3 text-right text-sm font-medium text-text-muted">Actions</th>
@@ -57,17 +74,19 @@
 						<tr class="hover:bg-bg-light-secondary">
 							<td class="px-4 py-3">
 								<div>
-									<div class="font-medium text-text-light">{lesson.title}</div>
+									<div class="font-medium text-text-light">{getTranslation(lesson.title, 'en') || 'Untitled'}</div>
 									<div class="text-xs text-text-muted">{lesson.unitTitle}</div>
+								</div>
+							</td>
+							<td class="hidden px-4 py-3 lg:table-cell">
+								<div class="font-medium text-text-light">
+									{getTranslation(lesson.title, 'de') || '—'}
 								</div>
 							</td>
 							<td class="hidden px-4 py-3 md:table-cell">
 								<span class="rounded-lg bg-success/10 px-2 py-1 text-sm font-medium text-success">
 									{lesson.levelCode}
 								</span>
-							</td>
-							<td class="hidden px-4 py-3 sm:table-cell">
-								<span class="text-sm text-text-muted">{lesson.type}</span>
 							</td>
 							<td class="px-4 py-3 text-center">
 								<span class="font-medium">{lesson.questionCount}</span>
@@ -121,18 +140,36 @@
 			<h2 class="text-xl font-bold text-text-light">{t('admin.lessons.create')}</h2>
 
 			<form method="POST" action="?/create" use:enhance class="mt-4 space-y-4">
-				<div>
-					<label for="title" class="block text-sm font-medium text-text-light">
-						{t('admin.lessons.form.title')} *
-					</label>
-					<input type="text" id="title" name="title" required class="input mt-1" />
+				<!-- Title (English and German) -->
+				<div class="grid gap-4 md:grid-cols-2">
+					<div>
+						<label for="title" class="block text-sm font-medium text-text-light">
+							{t('admin.lessons.form.title')} (EN) *
+						</label>
+						<input type="text" id="title" name="title" required class="input mt-1" placeholder="English title" />
+					</div>
+					<div>
+						<label for="titleDe" class="block text-sm font-medium text-text-light">
+							{t('admin.lessons.form.title')} (DE)
+						</label>
+						<input type="text" id="titleDe" name="titleDe" class="input mt-1" placeholder="German title (optional)" />
+					</div>
 				</div>
 
-				<div>
-					<label for="description" class="block text-sm font-medium text-text-light">
-						{t('admin.lessons.form.description')}
-					</label>
-					<textarea id="description" name="description" rows="2" class="input mt-1"></textarea>
+				<!-- Description (English and German) -->
+				<div class="grid gap-4 md:grid-cols-2">
+					<div>
+						<label for="description" class="block text-sm font-medium text-text-light">
+							{t('admin.lessons.form.description')} (EN)
+						</label>
+						<textarea id="description" name="description" rows="2" class="input mt-1" placeholder="English description"></textarea>
+					</div>
+					<div>
+						<label for="descriptionDe" class="block text-sm font-medium text-text-light">
+							{t('admin.lessons.form.description')} (DE)
+						</label>
+						<textarea id="descriptionDe" name="descriptionDe" rows="2" class="input mt-1" placeholder="German description (optional)"></textarea>
+					</div>
 				</div>
 
 				<div>
@@ -142,29 +179,16 @@
 					<select id="unitId" name="unitId" required class="input mt-1">
 						<option value="">Select a unit...</option>
 						{#each data.units as unit}
-							<option value={unit.id}>[{unit.levelCode}] {unit.title}</option>
+							<option value={unit.id}>[{unit.levelCode}] {getTranslation(unit.title, 'en')}</option>
 						{/each}
 					</select>
 				</div>
 
-				<div class="grid grid-cols-2 gap-4">
-					<div>
-						<label for="type" class="block text-sm font-medium text-text-light">
-							{t('admin.lessons.form.type')} *
-						</label>
-						<select id="type" name="type" required class="input mt-1">
-							<option value="multiple_choice">Multiple Choice</option>
-							<option value="fill_in_blank">Fill in Blank</option>
-							<option value="vocabulary">Vocabulary</option>
-							<option value="voice_answer">Voice Answer</option>
-						</select>
-					</div>
-					<div>
-						<label for="xpReward" class="block text-sm font-medium text-text-light">
-							{t('admin.lessons.form.xpReward')}
-						</label>
-						<input type="number" id="xpReward" name="xpReward" value="10" min="1" class="input mt-1" />
-					</div>
+				<div>
+					<label for="xpReward" class="block text-sm font-medium text-text-light">
+						{t('admin.lessons.form.xpReward')}
+					</label>
+					<input type="number" id="xpReward" name="xpReward" value="10" min="1" class="input mt-1" />
 				</div>
 
 				<div class="flex items-center gap-2">

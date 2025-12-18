@@ -10,8 +10,6 @@
 		{ href: '/admin', label: 'admin.nav.dashboard', icon: '📊' },
 		{ href: '/admin/lessons', label: 'admin.nav.lessons', icon: '📚' },
 		{ href: '/admin/users', label: 'admin.nav.users', icon: '👥' },
-		{ href: '/admin/invitations', label: 'admin.nav.invitations', icon: '✉️' },
-		{ href: '/admin/approvals', label: 'admin.nav.approvals', icon: '✓' },
 		{ href: '/admin/api-usage', label: 'API Usage', icon: '📈' },
 		{ href: '/admin/settings', label: 'admin.nav.settings', icon: '⚙️' }
 	];
@@ -39,7 +37,7 @@
 				{#each navItems as item}
 					<a
 						href={item.href}
-						class="flex items-center gap-2 rounded-xl px-4 py-2 font-medium transition-colors
+						class="flex items-center gap-2 whitespace-nowrap rounded-xl px-4 py-2 font-medium transition-colors
 							{isActive(item.href) ? 'bg-white/20 text-white' : 'text-white/70 hover:text-white'}"
 					>
 						<span>{item.icon}</span>
@@ -67,7 +65,7 @@
 			{#each navItems as item}
 				<a
 					href={item.href}
-					class="flex flex-col items-center gap-1 rounded-xl px-4 py-2 transition-colors
+					class="flex flex-col items-center gap-1 whitespace-nowrap rounded-xl px-4 py-2 transition-colors
 						{isActive(item.href) ? 'text-purple' : 'text-text-muted'}"
 				>
 					<span class="text-xl">{item.icon}</span>

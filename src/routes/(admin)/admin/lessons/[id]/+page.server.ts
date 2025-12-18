@@ -1,8 +1,9 @@
 import type { PageServerLoad, Actions } from './$types';
 import { fail, redirect } from '@sveltejs/kit';
 import { db } from '$lib/server/db';
-import { lessons, units, levels, questions } from '$lib/server/db/schema';
-import { eq } from 'drizzle-orm';
+import { lessons, units, levels, questions, type QuestionType } from '$lib/server/db/schema';
+import { eq, desc } from 'drizzle-orm';
+import { validateQuestionContent, validateCorrectAnswer } from '$lib/server/validation/question-validation';
 
 export const load: PageServerLoad = async ({ params }) => {
 	const lessonId = parseInt(params.id);
@@ -48,22 +49,23 @@ export const actions: Actions = {
 		const lessonId = parseInt(params.id);
 		const data = await request.formData();
 
-		const title = data.get('title')?.toString().trim();
-		const description = data.get('description')?.toString().trim() || null;
+		const titleEn = data.get('title')?.toString().trim();
+		const titleDe = data.get('titleDe')?.toString().trim();
+		const descEn = data.get('description')?.toString().trim();
+		const descDe = data.get('descriptionDe')?.toString().trim();
 		const unitId = parseInt(data.get('unitId')?.toString() || '0');
-		const type = data.get('type')?.toString() as
-			| 'fill_in_blank'
-			| 'multiple_choice'
-			| 'vocabulary'
-			| 'voice_answer';
 		const xpReward = parseInt(data.get('xpReward')?.toString() || '10');
 		const isPublished = data.get('isPublished') === 'on';
 		const isExam = data.get('isExam') === 'on';
 		const examPassThreshold = parseInt(data.get('examPassThreshold')?.toString() || '80');
 
-		if (!title || !unitId) {
-			return fail(400, { error: 'Title and unit are required' });
+		if (!titleEn || !unitId) {
+			return fail(400, { error: 'Title (English) and unit are required' });
 		}
+
+		// Build JSON objects for translations
+		const title = JSON.stringify({ en: titleEn, de: titleDe || titleEn });
+		const description = descEn ? JSON.stringify({ en: descEn, de: descDe || descEn }) : null;
 
 		try {
 			await db
@@ -72,7 +74,6 @@ export const actions: Actions = {
 					title,
 					description,
 					unitId,
-					type,
 					xpReward,
 					isPublished,
 					isExam,
@@ -118,6 +119,111 @@ export const actions: Actions = {
 		} catch (error) {
 			console.error('Failed to delete question:', error);
 			return fail(500, { error: 'Failed to delete question' });
+		}
+	},
+
+	addQuestion: async ({ request, params }) => {
+		const lessonId = parseInt(params.id);
+		const data = await request.formData();
+
+		const type = data.get('type')?.toString() as QuestionType;
+		const contentStr = data.get('content')?.toString();
+		const correctAnswer = data.get('correctAnswer')?.toString().trim() || '';
+
+		if (!type || !contentStr) {
+			return fail(400, { error: 'Type and content are required' });
+		}
+
+		let content: unknown;
+		try {
+			content = JSON.parse(contentStr);
+		} catch {
+			return fail(400, { error: 'Invalid content JSON' });
+		}
+
+		// Validate content structure
+		const contentError = validateQuestionContent(type, content);
+		if (contentError) {
+			return fail(400, { error: contentError });
+		}
+
+		// Validate correct answer
+		const answerError = validateCorrectAnswer(type, content, correctAnswer);
+		if (answerError) {
+			return fail(400, { error: answerError });
+		}
+
+		// Get the highest order for this lesson
+		const [maxOrder] = await db
+			.select({ maxOrder: questions.order })
+			.from(questions)
+			.where(eq(questions.lessonId, lessonId))
+			.orderBy(desc(questions.order))
+			.limit(1);
+
+		const order = (maxOrder?.maxOrder || 0) + 1;
+
+		try {
+			await db.insert(questions).values({
+				lessonId,
+				type,
+				content,
+				correctAnswer,
+				order
+			});
+
+			return { success: true, message: 'Question added successfully' };
+		} catch (error) {
+			console.error('Failed to add question:', error);
+			return fail(500, { error: 'Failed to add question' });
+		}
+	},
+
+	updateQuestion: async ({ request }) => {
+		const data = await request.formData();
+
+		const questionId = parseInt(data.get('questionId')?.toString() || '0');
+		const type = data.get('type')?.toString() as QuestionType;
+		const contentStr = data.get('content')?.toString();
+		const correctAnswer = data.get('correctAnswer')?.toString().trim() || '';
+
+		if (!questionId || !type || !contentStr) {
+			return fail(400, { error: 'Question ID, type, and content are required' });
+		}
+
+		let content: unknown;
+		try {
+			content = JSON.parse(contentStr);
+		} catch {
+			return fail(400, { error: 'Invalid content JSON' });
+		}
+
+		// Validate content structure
+		const contentError = validateQuestionContent(type, content);
+		if (contentError) {
+			return fail(400, { error: contentError });
+		}
+
+		// Validate correct answer
+		const answerError = validateCorrectAnswer(type, content, correctAnswer);
+		if (answerError) {
+			return fail(400, { error: answerError });
+		}
+
+		try {
+			await db
+				.update(questions)
+				.set({
+					type,
+					content,
+					correctAnswer
+				})
+				.where(eq(questions.id, questionId));
+
+			return { success: true, message: 'Question updated successfully' };
+		} catch (error) {
+			console.error('Failed to update question:', error);
+			return fail(500, { error: 'Failed to update question' });
 		}
 	}
 };

@@ -7,6 +7,9 @@
 	import FillBlankQuestion from '$lib/components/lessons/FillBlankQuestion.svelte';
 	import TranslationQuestion from '$lib/components/lessons/TranslationQuestion.svelte';
 	import MatchingQuestion from '$lib/components/lessons/MatchingQuestion.svelte';
+	import WordOrderQuestion from '$lib/components/lessons/WordOrderQuestion.svelte';
+	import SpeakingQuestion from '$lib/components/lessons/SpeakingQuestion.svelte';
+	import ListeningQuestion from '$lib/components/lessons/ListeningQuestion.svelte';
 	import AiExplanation from '$lib/components/lessons/AiExplanation.svelte';
 
 	type SubmitActionData = {
@@ -185,6 +188,15 @@
 		}
 	}
 
+	function handleSkip() {
+		// Skip voice questions when no API key - doesn't count as correct or incorrect
+		if (currentIndex < totalQuestions - 1) {
+			currentIndex++;
+		} else {
+			completeLesson();
+		}
+	}
+
 	async function completeLesson() {
 		isComplete = true;
 
@@ -312,6 +324,8 @@
 			{:else if currentQuestion.type === 'translation'}
 				<TranslationQuestion
 					text={questionContent.text as string}
+					textEn={questionContent.textEn as string}
+					textDe={questionContent.textDe as string}
 					direction={questionContent.direction as string}
 					disabled={showFeedback || isSubmitting}
 					onAnswer={handleAnswer}
@@ -321,6 +335,34 @@
 					pairs={localizedPairs}
 					disabled={showFeedback || isSubmitting}
 					onAnswer={handleAnswer}
+				/>
+			{:else if currentQuestion.type === 'word_order'}
+				<WordOrderQuestion
+					words={questionContent.words as string[]}
+					instructionEn={questionContent.instructionEn as string | undefined}
+					instructionDe={questionContent.instructionDe as string | undefined}
+					disabled={showFeedback || isSubmitting}
+					onAnswer={handleAnswer}
+				/>
+			{:else if currentQuestion.type === 'speaking'}
+				<SpeakingQuestion
+					textToSpeak={questionContent.textToSpeak as string}
+					hintEn={questionContent.hintEn as string | undefined}
+					hintDe={questionContent.hintDe as string | undefined}
+					disabled={showFeedback || isSubmitting}
+					hasApiKey={data.hasApiKey}
+					onAnswer={handleAnswer}
+					onSkip={handleSkip}
+				/>
+			{:else if currentQuestion.type === 'listening'}
+				<ListeningQuestion
+					textToHear={questionContent.textToHear as string}
+					answerType={(questionContent.answerType as 'type' | 'multiple_choice') || 'type'}
+					options={questionContent.options as string[] | undefined}
+					disabled={showFeedback || isSubmitting}
+					hasApiKey={data.hasApiKey}
+					onAnswer={handleAnswer}
+					onSkip={handleSkip}
 				/>
 			{:else}
 				<div class="card text-center">

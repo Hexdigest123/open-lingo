@@ -1,5 +1,6 @@
 <script lang="ts">
 	import type { Snippet } from 'svelte';
+	import { t } from '$lib/i18n/index.svelte';
 
 	let { children }: { children: Snippet } = $props();
 </script>
@@ -12,8 +13,8 @@
 				<span class="text-2xl font-bold text-success">OpenLingo</span>
 			</a>
 			<nav class="flex items-center gap-4">
-				<a href="/login" class="btn btn-ghost btn-sm">Log in</a>
-				<a href="/register" class="btn btn-success btn-sm">Get started</a>
+				<a href="/login" class="btn btn-ghost btn-sm">{t('nav.login')}</a>
+				<a href="/register" class="btn btn-success btn-sm">{t('nav.register')}</a>
 			</nav>
 		</div>
 	</header>
@@ -26,7 +27,7 @@
 	<!-- Footer -->
 	<footer class="border-t border-border-light bg-white py-8">
 		<div class="mx-auto max-w-7xl px-4 text-center text-text-muted">
-			<p>OpenLingo - Learn Spanish the fun way</p>
+			<p>{t('landing.footer')}</p>
 		</div>
 	</footer>
 </div>
