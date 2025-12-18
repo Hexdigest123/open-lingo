@@ -1,4 +1,5 @@
 services:
+  runs-on: self-hosted
   db:
     image: postgres:17-alpine
     restart: always
