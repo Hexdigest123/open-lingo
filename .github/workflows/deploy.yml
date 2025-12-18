@@ -49,7 +49,7 @@ jobs:
         run: docker compose run --rm migrate npm ci
 
       - name: Run database migrations
-        run: docker compose run --rm migrate npm run db:push
+        run: docker compose run --rm migrate npx drizzle-kit push --force
 
       - name: Check if seeding is needed
         id: check-seed
