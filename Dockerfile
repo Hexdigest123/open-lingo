@@ -12,7 +12,11 @@ RUN npm ci
 # Copy source code
 COPY . .
 
-# Build the application
+# Build the application (dummy env vars for SvelteKit build analysis)
+ENV DATABASE_URL="postgres://build:build@localhost:5432/build"
+ENV JWT_ACCESS_SECRET="build-placeholder"
+ENV JWT_REFRESH_SECRET="build-placeholder"
+ENV ENCRYPTION_KEY="0000000000000000000000000000000000000000000000000000000000000000"
 RUN npm run build
 
 # Production stage
