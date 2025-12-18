@@ -25,12 +25,13 @@ jobs:
       PUBLIC_APP_URL: ${{ vars.PUBLIC_APP_URL }}
 
     steps:
-      - name: Clean workspace
-        run: |
-          sudo rm -rf $GITHUB_WORKSPACE/* $GITHUB_WORKSPACE/.* 2>/dev/null || true
-
       - name: Checkout code
         uses: actions/checkout@v4
+        with:
+          clean: false
+
+      - name: Clean build artifacts
+        run: sudo rm -rf .svelte-kit node_modules/.vite 2>/dev/null || true
 
       - name: Stop existing app container
         run: docker compose stop app || true
