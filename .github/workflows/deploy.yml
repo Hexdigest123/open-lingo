@@ -1,0 +1,97 @@
+name: Deploy
+
+on:
+  push:
+    branches: [main]
+  workflow_dispatch:
+
+jobs:
+  deploy:
+    runs-on: self-hosted
+
+    env:
+      JWT_ACCESS_SECRET: ${{ secrets.JWT_ACCESS_SECRET }}
+      JWT_REFRESH_SECRET: ${{ secrets.JWT_REFRESH_SECRET }}
+      ENCRYPTION_KEY: ${{ secrets.ENCRYPTION_KEY }}
+      ORIGIN: ${{ vars.ORIGIN }}
+      SMTP_HOST: ${{ secrets.SMTP_HOST }}
+      SMTP_PORT: ${{ secrets.SMTP_PORT }}
+      SMTP_USER: ${{ secrets.SMTP_USER }}
+      SMTP_PASS: ${{ secrets.SMTP_PASS }}
+      SMTP_FROM: ${{ secrets.SMTP_FROM }}
+      PUBLIC_APP_URL: ${{ vars.PUBLIC_APP_URL }}
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Set up Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+          cache: 'npm'
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Stop existing app container
+        run: docker compose stop app || true
+
+      - name: Build and start database
+        run: docker compose up -d db
+
+      - name: Wait for database to be healthy
+        run: |
+          echo "Waiting for database to be healthy..."
+          timeout 60 bash -c 'until docker compose exec -T db pg_isready -U root -d local; do sleep 2; done'
+          echo "Database is ready"
+
+      - name: Run database migrations
+        env:
+          DATABASE_URL: postgres://root:mysecretpassword@localhost:5432/local
+        run: npm run db:push
+
+      - name: Check if seeding is needed
+        id: check-seed
+        env:
+          DATABASE_URL: postgres://root:mysecretpassword@localhost:5432/local
+        run: |
+          LEVEL_COUNT=$(docker compose exec -T db psql -U root -d local -t -c "SELECT COUNT(*) FROM levels;" 2>/dev/null | tr -d ' ' || echo "0")
+          echo "Level count: $LEVEL_COUNT"
+          if [ "$LEVEL_COUNT" = "0" ] || [ -z "$LEVEL_COUNT" ]; then
+            echo "needs_seed=true" >> $GITHUB_OUTPUT
+            echo "Database needs seeding"
+          else
+            echo "needs_seed=false" >> $GITHUB_OUTPUT
+            echo "Database already seeded ($LEVEL_COUNT levels)"
+          fi
+
+      - name: Seed database
+        if: steps.check-seed.outputs.needs_seed == 'true'
+        env:
+          DATABASE_URL: postgres://root:mysecretpassword@localhost:5432/local
+        run: npm run db:seed
+
+      - name: Build and start app
+        run: docker compose up -d --build app
+
+      - name: Wait for app to be ready
+        run: |
+          echo "Waiting for app to start..."
+          sleep 5
+          timeout 30 bash -c 'until curl -sf http://localhost:3000/ > /dev/null; do sleep 2; done'
+          echo "App is ready"
+
+      - name: Verify deployment
+        run: |
+          HTTP_STATUS=$(curl -s -o /dev/null -w "%{http_code}" http://localhost:3000/)
+          if [ "$HTTP_STATUS" = "200" ]; then
+            echo "Deployment successful - HTTP $HTTP_STATUS"
+          else
+            echo "Deployment verification failed - HTTP $HTTP_STATUS"
+            docker compose logs app --tail=50
+            exit 1
+          fi
+
+      - name: Clean up old Docker images
+        run: docker image prune -f || true
