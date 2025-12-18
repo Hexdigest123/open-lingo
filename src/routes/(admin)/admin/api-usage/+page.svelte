@@ -1,5 +1,6 @@
 <script lang="ts">
 	import type { PageData } from './$types';
+	import { t } from '$lib/i18n/index.svelte';
 
 	let { data }: { data: PageData } = $props();
 
@@ -16,11 +17,24 @@
 	<title>API Usage - Admin - OpenLingo</title>
 </svelte:head>
 
-<div class="mx-auto max-w-7xl p-4">
+<!-- Mobile: Show only desktop recommendation -->
+<div class="flex min-h-[60vh] flex-col items-center justify-center gap-4 text-center md:hidden">
+	<span class="text-6xl">💻</span>
+	<div>
+		<h1 class="text-xl font-bold text-text-light">{t('admin.desktopRecommended')}</h1>
+		<p class="mt-2 text-text-muted">{t('admin.desktopRecommendedDesc')}</p>
+	</div>
+	<a href="/admin" class="btn btn-primary btn-md mt-4">
+		{t('common.back')}
+	</a>
+</div>
+
+<!-- Desktop: Show full content -->
+<div class="mx-auto hidden max-w-7xl p-4 md:block">
 	<h1 class="mb-6 text-2xl font-bold text-text-light">API Usage Audit</h1>
 
 	<!-- Summary Stats -->
-	<div class="mb-8 grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-5">
+	<div class="mb-8 grid grid-cols-2 gap-4 lg:grid-cols-5">
 		<div class="rounded-xl bg-card-bg p-4">
 			<p class="text-sm text-text-muted">Total Requests (30d)</p>
 			<p class="text-2xl font-bold text-text-light">{formatNumber(data.stats.totalRequests)}</p>

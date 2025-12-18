@@ -365,6 +365,8 @@
 	},
 	"admin": {
 		"title": "Admin Dashboard",
+		"desktopRecommended": "Desktop Recommended",
+		"desktopRecommendedDesc": "This section works best on a larger screen for managing tables and data.",
 		"nav": {
 			"dashboard": "Dashboard",
 			"lessons": "Lessons",

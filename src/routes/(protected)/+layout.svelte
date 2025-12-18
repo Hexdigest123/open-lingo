@@ -172,6 +172,16 @@
 								<span>⚙️</span>
 								<span>{t('nav.settings')}</span>
 							</a>
+							{#if isAdmin}
+								<a
+									href="/admin"
+									onclick={() => (showUserMenu = false)}
+									class="flex w-full items-center gap-2 px-4 py-2 text-left text-purple hover:bg-purple/10 lg:hidden"
+								>
+									<span>🛠️</span>
+									<span>{t('nav.admin')}</span>
+								</a>
+							{/if}
 							<button
 								onclick={handleLogout}
 								class="flex w-full items-center gap-2 px-4 py-2 text-left text-error hover:bg-error/10"
@@ -204,16 +214,6 @@
 					<span class="text-xs font-medium">{t(item.labelKey)}</span>
 				</a>
 			{/each}
-			{#if isAdmin}
-				<a
-					href="/admin"
-					class="flex flex-col items-center gap-1 rounded-xl px-4 py-2 transition-colors
-						{isActive('/admin') ? 'text-purple' : 'text-text-muted'}"
-				>
-					<span class="text-xl">⚙️</span>
-					<span class="text-xs font-medium">{t('nav.admin')}</span>
-				</a>
-			{/if}
 		</div>
 	</nav>
 

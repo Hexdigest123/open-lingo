@@ -30,7 +30,20 @@
 	<title>{t('admin.lessons.title')} - OpenLingo</title>
 </svelte:head>
 
-<div class="space-y-6">
+<!-- Mobile: Show only desktop recommendation -->
+<div class="flex min-h-[60vh] flex-col items-center justify-center gap-4 text-center md:hidden">
+	<span class="text-6xl">💻</span>
+	<div>
+		<h1 class="text-xl font-bold text-text-light">{t('admin.desktopRecommended')}</h1>
+		<p class="mt-2 text-text-muted">{t('admin.desktopRecommendedDesc')}</p>
+	</div>
+	<a href="/admin" class="btn btn-primary btn-md mt-4">
+		{t('common.back')}
+	</a>
+</div>
+
+<!-- Desktop: Show full content -->
+<div class="hidden space-y-6 md:block">
 	<div class="flex items-center justify-between">
 		<h1 class="text-2xl font-bold text-text-light">{t('admin.lessons.title')}</h1>
 		<div class="flex gap-2">
@@ -62,8 +75,8 @@
 				<thead class="bg-bg-light-secondary">
 					<tr>
 						<th class="px-4 py-3 text-left text-sm font-medium text-text-muted">{t('admin.lessons.form.title')} (EN)</th>
-						<th class="hidden px-4 py-3 text-left text-sm font-medium text-text-muted lg:table-cell">{t('admin.lessons.form.title')} (DE)</th>
-						<th class="hidden px-4 py-3 text-left text-sm font-medium text-text-muted md:table-cell">Level</th>
+						<th class="px-4 py-3 text-left text-sm font-medium text-text-muted lg:table-cell">{t('admin.lessons.form.title')} (DE)</th>
+						<th class="px-4 py-3 text-left text-sm font-medium text-text-muted">Level</th>
 						<th class="px-4 py-3 text-center text-sm font-medium text-text-muted">{t('admin.lessons.questions')}</th>
 						<th class="px-4 py-3 text-center text-sm font-medium text-text-muted">Status</th>
 						<th class="px-4 py-3 text-right text-sm font-medium text-text-muted">Actions</th>
@@ -78,12 +91,12 @@
 									<div class="text-xs text-text-muted">{lesson.unitTitle}</div>
 								</div>
 							</td>
-							<td class="hidden px-4 py-3 lg:table-cell">
+							<td class="px-4 py-3 lg:table-cell">
 								<div class="font-medium text-text-light">
 									{getTranslation(lesson.title, 'de') || '—'}
 								</div>
 							</td>
-							<td class="hidden px-4 py-3 md:table-cell">
+							<td class="px-4 py-3">
 								<span class="rounded-lg bg-success/10 px-2 py-1 text-sm font-medium text-success">
 									{lesson.levelCode}
 								</span>
