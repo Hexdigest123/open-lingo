@@ -1,13 +1,7 @@
 import nodemailer from 'nodemailer';
 import type { Transporter } from 'nodemailer';
-
-// Email configuration from environment variables
-const SMTP_HOST = process.env.SMTP_HOST;
-const SMTP_PORT = parseInt(process.env.SMTP_PORT || '587');
-const SMTP_USER = process.env.SMTP_USER;
-const SMTP_PASS = process.env.SMTP_PASS;
-const SMTP_FROM = process.env.SMTP_FROM || 'OpenLingo <noreply@openlingo.app>';
-const APP_URL = process.env.PUBLIC_APP_URL || 'http://localhost:5173';
+import { env } from '$env/dynamic/private';
+import { env as publicEnv } from '$env/dynamic/public';
 
 /**
  * Escape HTML entities to prevent XSS in email templates
@@ -27,7 +21,7 @@ let transporter: Transporter | null = null;
  * Check if email is configured
  */
 export function isEmailConfigured(): boolean {
-	return !!(SMTP_HOST && SMTP_USER && SMTP_PASS);
+	return !!(env.SMTP_HOST && env.SMTP_USER && env.SMTP_PASS);
 }
 
 /**
@@ -39,14 +33,16 @@ function getTransporter(): Transporter | null {
 		return null;
 	}
 
+	const smtpPort = parseInt(env.SMTP_PORT || '587');
+
 	if (!transporter) {
 		transporter = nodemailer.createTransport({
-			host: SMTP_HOST,
-			port: SMTP_PORT,
-			secure: SMTP_PORT === 465,
+			host: env.SMTP_HOST,
+			port: smtpPort,
+			secure: smtpPort === 465,
 			auth: {
-				user: SMTP_USER,
-				pass: SMTP_PASS
+				user: env.SMTP_USER,
+				pass: env.SMTP_PASS
 			}
 		});
 	}
@@ -65,8 +61,9 @@ async function sendEmail(to: string, subject: string, html: string, text?: strin
 	}
 
 	try {
+		const smtpFrom = env.SMTP_FROM || 'OpenLingo <noreply@openlingo.app>';
 		await transport.sendMail({
-			from: SMTP_FROM,
+			from: smtpFrom,
 			to,
 			subject,
 			html,
@@ -84,7 +81,8 @@ async function sendEmail(to: string, subject: string, html: string, text?: strin
  * Send an invitation email
  */
 export async function sendInvitationEmail(to: string, code: string, inviterName?: string): Promise<boolean> {
-	const inviteUrl = `${APP_URL}/register?invite=${code}`;
+	const appUrl = publicEnv.PUBLIC_APP_URL || 'http://localhost:5173';
+	const inviteUrl = `${appUrl}/register?invite=${code}`;
 
 	const subject = 'You\'ve been invited to OpenLingo!';
 	const html = `
@@ -128,7 +126,8 @@ export async function sendInvitationEmail(to: string, code: string, inviterName?
  * Send approval notification email
  */
 export async function sendApprovalNotificationEmail(to: string, displayName: string): Promise<boolean> {
-	const loginUrl = `${APP_URL}/login`;
+	const appUrl = publicEnv.PUBLIC_APP_URL || 'http://localhost:5173';
+	const loginUrl = `${appUrl}/login`;
 
 	const subject = 'Your OpenLingo account has been approved!';
 	const html = `
@@ -204,7 +203,8 @@ export async function sendRejectionNotificationEmail(to: string, displayName: st
  * Send password reset email
  */
 export async function sendPasswordResetEmail(to: string, resetToken: string): Promise<boolean> {
-	const resetUrl = `${APP_URL}/reset-password?token=${resetToken}`;
+	const appUrl = publicEnv.PUBLIC_APP_URL || 'http://localhost:5173';
+	const resetUrl = `${appUrl}/reset-password?token=${resetToken}`;
 
 	const subject = 'Reset your OpenLingo password';
 	const html = `
