@@ -307,6 +307,7 @@ function generateSpeakingQuestions(
 }
 
 // Generate listening questions (hear and identify)
+// Supports bilingual answers - both English and German correct answers
 function generateListeningQuestions(
 	vocabItems: VocabItem[],
 	lessonId: number,
@@ -322,11 +323,15 @@ function generateListeningQuestions(
 		// Alternate between type and multiple choice
 		const answerType = i % 2 === 0 ? 'type' : 'multiple_choice';
 
-		let options: string[] | undefined;
+		let optionsEn: string[] | undefined;
+		let optionsDe: string[] | undefined;
 		if (answerType === 'multiple_choice') {
 			const otherItems = vocabItems.filter((v) => v.es !== item.es);
-			const wrongAnswers = getRandomItems(otherItems, 3).map((v) => v.en);
-			options = shuffle([item.en, ...wrongAnswers]);
+			const wrongItems = getRandomItems(otherItems, 3);
+			const wrongAnswersEn = wrongItems.map((v) => v.en);
+			const wrongAnswersDe = wrongItems.map((v) => v.de);
+			optionsEn = shuffle([item.en, ...wrongAnswersEn]);
+			optionsDe = shuffle([item.de, ...wrongAnswersDe]);
 		}
 
 		questions.push({
@@ -336,9 +341,12 @@ function generateListeningQuestions(
 			content: {
 				textToHear: item.es,
 				answerType,
-				options
+				optionsEn,
+				optionsDe,
+				correctAnswerEn: item.en,
+				correctAnswerDe: item.de
 			},
-			correctAnswer: item.en,
+			correctAnswer: `${item.en}|${item.de}`,
 			audioUrl: null,
 			order: startOrder + i,
 			createdAt: new Date()

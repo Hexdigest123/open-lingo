@@ -9,7 +9,8 @@ import {
 	timestamp,
 	jsonb,
 	unique,
-	index
+	index,
+	uuid
 } from 'drizzle-orm/pg-core';
 import { relations } from 'drizzle-orm';
 
@@ -62,6 +63,7 @@ export const users = pgTable(
 		openaiApiKeyEncrypted: text('openai_api_key_encrypted'),
 		heartsDisabled: boolean('hearts_disabled').default(false).notNull(),
 		approvalStatus: approvalStatusEnum('approval_status').default('approved').notNull(),
+		locale: varchar('locale', { length: 10 }),
 		createdAt: timestamp('created_at').defaultNow().notNull(),
 		updatedAt: timestamp('updated_at').defaultNow().notNull()
 	},
@@ -296,7 +298,7 @@ export const chatRoleEnum = pgEnum('chat_role', ['user', 'assistant', 'system'])
 export const chatSessions = pgTable(
 	'chat_sessions',
 	{
-		id: serial('id').primaryKey(),
+		id: uuid('id').defaultRandom().primaryKey(),
 		userId: integer('user_id')
 			.references(() => users.id, { onDelete: 'cascade' })
 			.notNull(),
@@ -313,7 +315,7 @@ export const chatMessages = pgTable(
 	'chat_messages',
 	{
 		id: serial('id').primaryKey(),
-		sessionId: integer('session_id')
+		sessionId: uuid('session_id')
 			.references(() => chatSessions.id, { onDelete: 'cascade' })
 			.notNull(),
 		role: chatRoleEnum('role').notNull(),
@@ -335,7 +337,7 @@ export const apiUsageLogs = pgTable(
 			.references(() => users.id, { onDelete: 'cascade' })
 			.notNull(),
 		usageType: apiUsageTypeEnum('usage_type').notNull(),
-		sessionId: integer('session_id').references(() => chatSessions.id, { onDelete: 'set null' }),
+		sessionId: uuid('session_id').references(() => chatSessions.id, { onDelete: 'set null' }),
 		promptTokens: integer('prompt_tokens').default(0).notNull(),
 		completionTokens: integer('completion_tokens').default(0).notNull(),
 		totalTokens: integer('total_tokens').default(0).notNull(),

@@ -1,7 +1,7 @@
 import { redirect } from '@sveltejs/kit';
 import type { LayoutServerLoad } from './$types';
 import { db } from '$lib/server/db';
-import { userStats } from '$lib/server/db/schema';
+import { userStats, users } from '$lib/server/db/schema';
 import { eq } from 'drizzle-orm';
 
 export const load: LayoutServerLoad = async ({ locals, url }) => {
@@ -14,6 +14,13 @@ export const load: LayoutServerLoad = async ({ locals, url }) => {
 		.select()
 		.from(userStats)
 		.where(eq(userStats.userId, locals.user.id))
+		.limit(1);
+
+	// Fetch user's locale preference
+	const [user] = await db
+		.select({ locale: users.locale })
+		.from(users)
+		.where(eq(users.id, locals.user.id))
 		.limit(1);
 
 	// Calculate current hearts (regenerate over time - 5 hearts per 30 minutes, max 10)
@@ -46,6 +53,7 @@ export const load: LayoutServerLoad = async ({ locals, url }) => {
 
 	return {
 		user: locals.user,
+		userLocale: user?.locale || null,
 		stats: stats
 			? {
 					hearts: currentHearts,

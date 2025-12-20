@@ -6,7 +6,7 @@ export type ApiUsageType = 'chat' | 'voice' | 'explain';
 export interface ApiUsageData {
 	userId: number;
 	usageType: ApiUsageType;
-	sessionId?: number | null;
+	sessionId?: string | null;
 	promptTokens?: number;
 	completionTokens?: number;
 	totalTokens?: number;

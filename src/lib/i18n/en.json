@@ -9,7 +9,8 @@
 		"admin": "Admin",
 		"logout": "Log out",
 		"login": "Log in",
-		"register": "Get started"
+		"register": "Get started",
+		"menu": "Menu"
 	},
 	"common": {
 		"loading": "Loading...",
@@ -84,7 +85,8 @@
 			"invalidCredentials": "Invalid email or password",
 			"emailExists": "An account with this email already exists",
 			"invalidInvitationCode": "Invalid or expired invitation code",
-			"domainNotAllowed": "Registration is restricted to specific email domains"
+			"domainNotAllowed": "Registration is restricted to specific email domains",
+			"invitationRequired": "An invitation code is required to register"
 		}
 	},
 	"landing": {
@@ -498,6 +500,7 @@
 		"disconnected": "Disconnected",
 		"startVoiceChat": "Start Voice Chat",
 		"endCall": "End Call",
+		"deleteTitle": "Delete Conversation",
 		"confirmDelete": "Are you sure you want to delete this conversation?",
 		"error": {
 			"microphoneAccess": "Microphone access denied",
@@ -512,6 +515,18 @@
 		"unauthorizedMessage": "You don't have permission to access this page.",
 		"serverError": "Server Error",
 		"serverErrorMessage": "Something went wrong. Please try again later.",
-		"goHome": "Go Home"
+		"goHome": "Go Home",
+		"passwordRequired": "Password is required to delete your account",
+		"userNotFound": "User not found",
+		"incorrectPassword": "Incorrect password",
+		"deleteFailed": "Failed to delete account. Please try again.",
+		"invalidCharacters": "Only letters, numbers, and symbols (!@#$%^&*()-_./) are allowed",
+		"displayNameLength": "Display name must be between 2 and 50 characters",
+		"displayNameRequired": "Display name is required",
+		"passwordMinLength": "Password must be at least 8 characters",
+		"currentPasswordRequired": "Current password is required",
+		"newPasswordRequired": "New password is required",
+		"confirmPasswordRequired": "Please confirm your new password",
+		"currentPasswordIncorrect": "Current password is incorrect"
 	}
 }

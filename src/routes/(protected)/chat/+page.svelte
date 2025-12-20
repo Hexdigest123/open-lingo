@@ -1,11 +1,14 @@
 <script lang="ts">
 	import type { PageData } from './$types';
 	import { i18n, t } from '$lib/i18n/index.svelte';
-	import { goto } from '$app/navigation';
+	import { goto, invalidateAll } from '$app/navigation';
+	import ConfirmModal from '$lib/components/ConfirmModal.svelte';
 
 	let { data }: { data: PageData } = $props();
 
 	let isCreating = $state(false);
+	let deletingSessionId = $state<string | null>(null);
+	let pendingDeleteSessionId = $state<string | null>(null);
 
 	async function createSession() {
 		if (isCreating) return;
@@ -28,6 +31,38 @@
 		} finally {
 			isCreating = false;
 		}
+	}
+
+	function promptDeleteSession(event: MouseEvent, sessionId: string) {
+		event.preventDefault();
+		event.stopPropagation();
+		pendingDeleteSessionId = sessionId;
+	}
+
+	async function confirmDeleteSession() {
+		if (!pendingDeleteSessionId) return;
+
+		const sessionId = pendingDeleteSessionId;
+		pendingDeleteSessionId = null;
+		deletingSessionId = sessionId;
+
+		try {
+			const response = await fetch(`/api/chat/sessions/${sessionId}`, {
+				method: 'DELETE'
+			});
+
+			if (response.ok) {
+				await invalidateAll();
+			}
+		} catch (error) {
+			console.error('Failed to delete session:', error);
+		} finally {
+			deletingSessionId = null;
+		}
+	}
+
+	function cancelDeleteSession() {
+		pendingDeleteSessionId = null;
 	}
 
 	function formatDate(date: Date | string): string {
@@ -92,6 +127,20 @@
 							</div>
 							<div class="ml-4 flex items-center gap-2">
 								<span class="text-lg">{session.mode === 'voice' ? '🎤' : '💬'}</span>
+								<button
+									onclick={(e) => promptDeleteSession(e, session.id)}
+									disabled={deletingSessionId === session.id}
+									class="rounded-lg p-1 text-text-muted hover:bg-error/10 hover:text-error transition-colors {deletingSessionId === session.id ? 'opacity-50' : ''}"
+									title={t('common.delete')}
+								>
+									{#if deletingSessionId === session.id}
+										<span class="inline-block h-4 w-4 animate-spin rounded-full border-2 border-error border-t-transparent"></span>
+									{:else}
+										<svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" class="h-4 w-4">
+											<path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12" />
+										</svg>
+									{/if}
+								</button>
 							</div>
 						</div>
 					</a>
@@ -100,3 +149,12 @@
 		{/if}
 	{/if}
 </div>
+
+<ConfirmModal
+	open={pendingDeleteSessionId !== null}
+	title={t('chat.deleteTitle')}
+	message={t('chat.confirmDelete')}
+	confirmText={t('common.delete')}
+	onConfirm={confirmDeleteSession}
+	onCancel={cancelDeleteSession}
+/>

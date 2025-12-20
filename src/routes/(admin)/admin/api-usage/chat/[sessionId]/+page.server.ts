@@ -4,10 +4,13 @@ import { db } from '$lib/server/db';
 import { chatSessions, chatMessages, users } from '$lib/server/db/schema';
 import { eq, asc } from 'drizzle-orm';
 
-export const load: PageServerLoad = async ({ params }) => {
-	const sessionId = parseInt(params.sessionId);
+// UUID validation regex
+const UUID_REGEX = /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i;
 
-	if (isNaN(sessionId)) {
+export const load: PageServerLoad = async ({ params }) => {
+	const sessionId = params.sessionId;
+
+	if (!UUID_REGEX.test(sessionId)) {
 		error(400, 'Invalid session ID');
 	}
 

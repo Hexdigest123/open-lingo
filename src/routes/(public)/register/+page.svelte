@@ -49,7 +49,7 @@
 		>
 			{#if form?.error}
 				<div class="rounded-xl bg-error/10 p-4 text-center text-error">
-					{form.error}
+					{t(form.error)}
 				</div>
 			{/if}
 

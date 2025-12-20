@@ -4,16 +4,23 @@ import { db } from '$lib/server/db';
 import { chatSessions, chatMessages } from '$lib/server/db/schema';
 import { eq, and, asc } from 'drizzle-orm';
 
+// UUID validation regex
+const UUID_REGEX = /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i;
+
+function isValidUuid(value: string): boolean {
+	return UUID_REGEX.test(value);
+}
+
 // GET: Get a specific session with its messages
 export const GET: RequestHandler = async ({ params, locals }) => {
 	const userId = locals.user?.id;
-	const sessionId = parseInt(params.sessionId);
+	const sessionId = params.sessionId;
 
 	if (!userId) {
 		return json({ error: 'Unauthorized' }, { status: 401 });
 	}
 
-	if (isNaN(sessionId)) {
+	if (!isValidUuid(sessionId)) {
 		return json({ error: 'Invalid session ID' }, { status: 400 });
 	}
 
@@ -41,13 +48,13 @@ export const GET: RequestHandler = async ({ params, locals }) => {
 // POST: Add a message to a session
 export const POST: RequestHandler = async ({ params, locals, request }) => {
 	const userId = locals.user?.id;
-	const sessionId = parseInt(params.sessionId);
+	const sessionId = params.sessionId;
 
 	if (!userId) {
 		return json({ error: 'Unauthorized' }, { status: 401 });
 	}
 
-	if (isNaN(sessionId)) {
+	if (!isValidUuid(sessionId)) {
 		return json({ error: 'Invalid session ID' }, { status: 400 });
 	}
 
@@ -94,13 +101,13 @@ export const POST: RequestHandler = async ({ params, locals, request }) => {
 // DELETE: Delete a session
 export const DELETE: RequestHandler = async ({ params, locals }) => {
 	const userId = locals.user?.id;
-	const sessionId = parseInt(params.sessionId);
+	const sessionId = params.sessionId;
 
 	if (!userId) {
 		return json({ error: 'Unauthorized' }, { status: 401 });
 	}
 
-	if (isNaN(sessionId)) {
+	if (!isValidUuid(sessionId)) {
 		return json({ error: 'Invalid session ID' }, { status: 400 });
 	}
 

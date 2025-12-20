@@ -48,21 +48,21 @@ export const actions: Actions = {
 		const validatedRedirect = isValidRedirect(redirectParam);
 
 		if (!email || !password) {
-			return fail(400, { error: 'Email and password are required', email });
+			return fail(400, { error: 'auth.errors.required', email });
 		}
 
 		// Find user by email
 		const [user] = await db.select().from(users).where(eq(users.email, email)).limit(1);
 
 		if (!user) {
-			return fail(400, { error: 'Invalid email or password', email });
+			return fail(400, { error: 'auth.errors.invalidCredentials', email });
 		}
 
 		// Verify password
 		const isValid = await verifyPassword(password, user.passwordHash);
 
 		if (!isValid) {
-			return fail(400, { error: 'Invalid email or password', email });
+			return fail(400, { error: 'auth.errors.invalidCredentials', email });
 		}
 
 		// Check if user is rejected

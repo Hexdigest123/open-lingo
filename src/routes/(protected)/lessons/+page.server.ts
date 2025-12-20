@@ -1,7 +1,7 @@
 import type { PageServerLoad, Actions } from './$types';
 import { db } from '$lib/server/db';
 import { levels, units, lessons, userLessonProgress } from '$lib/server/db/schema';
-import { asc, eq, inArray } from 'drizzle-orm';
+import { and, asc, eq, inArray } from 'drizzle-orm';
 
 export const load: PageServerLoad = async ({ url, locals }) => {
 	const levelCode = url.searchParams.get('level');
@@ -105,11 +105,16 @@ export const actions: Actions = {
 			return { success: false, error: 'Invalid lesson ID' };
 		}
 
-		// Check if progress exists
+		// Check if progress exists for this specific lesson
 		const [existing] = await db
 			.select()
 			.from(userLessonProgress)
-			.where(eq(userLessonProgress.userId, locals.user.id))
+			.where(
+				and(
+					eq(userLessonProgress.userId, locals.user.id),
+					eq(userLessonProgress.lessonId, lessonId)
+				)
+			)
 			.limit(1);
 
 		if (existing) {

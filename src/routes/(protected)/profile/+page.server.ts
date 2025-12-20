@@ -66,7 +66,7 @@ export const actions: Actions = {
 		const password = data.get('password')?.toString();
 
 		if (!password) {
-			return fail(400, { deleteError: 'Password is required to delete your account' });
+			return fail(400, { deleteError: 'errors.passwordRequired' });
 		}
 
 		// Get the user's password hash
@@ -77,13 +77,13 @@ export const actions: Actions = {
 			.limit(1);
 
 		if (!user) {
-			return fail(400, { deleteError: 'User not found' });
+			return fail(400, { deleteError: 'errors.userNotFound' });
 		}
 
 		// Verify the password
 		const isValid = await verifyPassword(password, user.passwordHash);
 		if (!isValid) {
-			return fail(400, { deleteError: 'Incorrect password' });
+			return fail(400, { deleteError: 'errors.incorrectPassword' });
 		}
 
 		try {
@@ -110,7 +110,7 @@ export const actions: Actions = {
 			redirect(303, '/?deleted=true');
 		} catch (error) {
 			console.error('Failed to delete account:', error);
-			return fail(500, { deleteError: 'Failed to delete account. Please try again.' });
+			return fail(500, { deleteError: 'errors.deleteFailed' });
 		}
 	}
 };

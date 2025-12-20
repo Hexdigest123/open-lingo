@@ -4,6 +4,7 @@ import { db } from '$lib/server/db';
 import { users } from '$lib/server/db/schema';
 import { eq } from 'drizzle-orm';
 import { verifyPassword, hashPassword } from '$lib/server/auth/password';
+import { isValidInputWithSpaces, isValidInput } from '$lib/server/validation/input';
 
 export const load: PageServerLoad = async ({ locals }) => {
 	const userId = locals.user!.id;
@@ -30,11 +31,15 @@ export const actions: Actions = {
 		const displayName = data.get('displayName')?.toString().trim();
 
 		if (!displayName) {
-			return fail(400, { profileError: 'Display name is required' });
+			return fail(400, { profileError: 'errors.displayNameRequired' });
 		}
 
 		if (displayName.length < 2 || displayName.length > 50) {
-			return fail(400, { profileError: 'Display name must be between 2 and 50 characters' });
+			return fail(400, { profileError: 'errors.displayNameLength' });
+		}
+
+		if (!isValidInputWithSpaces(displayName)) {
+			return fail(400, { profileError: 'errors.invalidCharacters' });
 		}
 
 		try {
@@ -53,6 +58,31 @@ export const actions: Actions = {
 		}
 	},
 
+	updateLocale: async ({ request, locals }) => {
+		const userId = locals.user!.id;
+		const data = await request.formData();
+		const locale = data.get('locale')?.toString();
+
+		if (!locale || (locale !== 'en' && locale !== 'de')) {
+			return fail(400, { localeError: 'Invalid locale' });
+		}
+
+		try {
+			await db
+				.update(users)
+				.set({
+					locale,
+					updatedAt: new Date()
+				})
+				.where(eq(users.id, userId));
+
+			return { localeSuccess: true };
+		} catch (error) {
+			console.error('Failed to update locale:', error);
+			return fail(500, { localeError: 'Failed to update locale' });
+		}
+	},
+
 	changePassword: async ({ request, locals }) => {
 		const userId = locals.user!.id;
 		const data = await request.formData();
@@ -60,16 +90,28 @@ export const actions: Actions = {
 		const newPassword = data.get('newPassword')?.toString();
 		const confirmPassword = data.get('confirmPassword')?.toString();
 
-		if (!currentPassword || !newPassword || !confirmPassword) {
-			return fail(400, { passwordError: 'All password fields are required' });
+		if (!currentPassword) {
+			return fail(400, { passwordError: 'errors.currentPasswordRequired' });
+		}
+
+		if (!newPassword) {
+			return fail(400, { passwordError: 'errors.newPasswordRequired' });
+		}
+
+		if (!confirmPassword) {
+			return fail(400, { passwordError: 'errors.confirmPasswordRequired' });
+		}
+
+		if (!isValidInput(newPassword)) {
+			return fail(400, { passwordError: 'errors.invalidCharacters' });
 		}
 
 		if (newPassword.length < 8) {
-			return fail(400, { passwordError: 'New password must be at least 8 characters' });
+			return fail(400, { passwordError: 'errors.passwordMinLength' });
 		}
 
 		if (newPassword !== confirmPassword) {
-			return fail(400, { passwordError: 'New passwords do not match' });
+			return fail(400, { passwordError: 'auth.errors.passwordMismatch' });
 		}
 
 		// Get current password hash
@@ -86,7 +128,7 @@ export const actions: Actions = {
 		// Verify current password
 		const isValid = await verifyPassword(currentPassword, user.passwordHash);
 		if (!isValid) {
-			return fail(400, { passwordError: 'Current password is incorrect' });
+			return fail(400, { passwordError: 'errors.currentPasswordIncorrect' });
 		}
 
 		try {

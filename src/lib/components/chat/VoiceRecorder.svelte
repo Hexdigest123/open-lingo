@@ -3,7 +3,7 @@
 	import { onDestroy } from 'svelte';
 
 	interface Props {
-		sessionId: number;
+		sessionId: string;
 		locale: string;
 		onTranscript: (role: 'user' | 'assistant', text: string) => void;
 		onStatusChange: (status: 'disconnected' | 'connecting' | 'connected') => void;
