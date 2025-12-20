@@ -47,9 +47,7 @@
 				<button
 					onclick={() => selectTimeframe(tf)}
 					class="rounded-lg px-4 py-2 text-sm font-medium transition-colors
-						{data.timeframe === tf
-							? 'bg-white text-primary shadow'
-							: 'text-text-muted hover:text-text-light'}"
+						{data.timeframe === tf ? 'bg-white text-primary shadow' : 'text-text-muted hover:text-text-light'}"
 				>
 					{t(`leaderboard.tabs.${tf === 'all_time' ? 'allTime' : tf}`)}
 				</button>
@@ -63,14 +61,47 @@
 			<p class="text-text-muted">{t('leaderboard.noData')}</p>
 		</div>
 	{:else}
-		<div class="card overflow-hidden p-0">
+		<!-- Mobile View (< sm: 640px) -->
+		<div class="space-y-3 sm:hidden">
+			{#each data.leaderboard as entry}
+				<div class="card flex items-center gap-3 p-3 {entry.isCurrentUser ? 'border-primary border-2' : ''} {getRankClass(entry.rank)}">
+					<span class="text-lg font-bold w-8 text-center">{getRankEmoji(entry.rank) || entry.rank}</span>
+					<div class="flex h-10 w-10 flex-shrink-0 items-center justify-center rounded-full bg-gradient-to-br from-success to-primary text-sm font-bold text-white">
+						{entry.displayName.charAt(0).toUpperCase()}
+					</div>
+					<div class="flex-1 min-w-0">
+						<p class="font-medium text-text-light truncate">
+							{entry.displayName}
+							{#if entry.isCurrentUser}
+								<span class="text-xs text-primary">({t('leaderboard.you')})</span>
+							{/if}
+						</p>
+						<div class="flex items-center gap-3 text-sm">
+							<span class="text-yellow-dark font-bold">{entry.xp} XP</span>
+							<span class="flex items-center gap-1 text-orange">🔥 {entry.streak || 0}</span>
+						</div>
+					</div>
+				</div>
+			{/each}
+		</div>
+
+		<!-- Desktop View (>= sm: 640px) -->
+		<div class="hidden sm:block card overflow-hidden p-0">
 			<table class="w-full">
 				<thead class="bg-bg-light-secondary">
 					<tr>
-						<th class="px-4 py-3 text-left text-sm font-medium text-text-muted">{t('leaderboard.rank')}</th>
-						<th class="px-4 py-3 text-left text-sm font-medium text-text-muted">{t('leaderboard.player')}</th>
-						<th class="px-4 py-3 text-right text-sm font-medium text-text-muted">{t('leaderboard.xp')}</th>
-						<th class="hidden px-4 py-3 text-right text-sm font-medium text-text-muted sm:table-cell">
+						<th class="px-4 py-3 text-left text-sm font-medium text-text-muted"
+							>{t('leaderboard.rank')}</th
+						>
+						<th class="px-4 py-3 text-left text-sm font-medium text-text-muted"
+							>{t('leaderboard.player')}</th
+						>
+						<th class="px-4 py-3 text-right text-sm font-medium text-text-muted"
+							>{t('leaderboard.xp')}</th
+						>
+						<th
+							class="hidden px-4 py-3 text-right text-sm font-medium text-text-muted sm:table-cell"
+						>
 							{t('gamification.streak')}
 						</th>
 					</tr>
@@ -79,17 +110,25 @@
 					{#each data.leaderboard as entry}
 						<tr class="{entry.isCurrentUser ? 'bg-primary/5' : ''} {getRankClass(entry.rank)}">
 							<td class="px-4 py-3">
-								<span class="flex items-center gap-2 font-bold {entry.rank <= 3 ? 'text-lg' : ''}">
+								<span
+									class="flex items-center gap-2 font-bold text-text-light {entry.rank <= 3
+										? 'text-lg'
+										: ''}"
+								>
 									{getRankEmoji(entry.rank)}
 									{entry.rank}
 								</span>
 							</td>
 							<td class="px-4 py-3">
 								<div class="flex items-center gap-3">
-									<div class="flex h-10 w-10 items-center justify-center rounded-full bg-gradient-to-br from-success to-primary text-sm font-bold text-white">
+									<div
+										class="flex h-10 w-10 items-center justify-center rounded-full bg-gradient-to-br from-success to-primary text-sm font-bold text-white"
+									>
 										{entry.displayName.charAt(0).toUpperCase()}
 									</div>
-									<span class="font-medium {entry.isCurrentUser ? 'text-primary' : 'text-text-light'}">
+									<span
+										class="font-medium {entry.isCurrentUser ? 'text-primary' : 'text-text-light'}"
+									>
 										{entry.displayName}
 										{#if entry.isCurrentUser}
 											<span class="ml-2 text-xs text-primary">({t('leaderboard.you')})</span>
@@ -118,7 +157,9 @@
 				<div class="flex items-center justify-between">
 					<div class="flex items-center gap-3">
 						<span class="font-bold text-text-muted">{data.currentUser.rank}</span>
-						<div class="flex h-10 w-10 items-center justify-center rounded-full bg-gradient-to-br from-success to-primary text-sm font-bold text-white">
+						<div
+							class="flex h-10 w-10 items-center justify-center rounded-full bg-gradient-to-br from-success to-primary text-sm font-bold text-white"
+						>
 							{data.currentUser?.displayName?.charAt(0).toUpperCase() || '?'}
 						</div>
 						<span class="font-medium text-primary">

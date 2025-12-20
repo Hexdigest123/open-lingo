@@ -14,6 +14,7 @@ import {
 	validateInvitationCode,
 	markInvitationUsed
 } from '$lib/server/invitations/invitations';
+import { isValidInputWithSpaces, isValidInput, isValidEmail, MAX_INPUT_LENGTH } from '$lib/server/validation/input';
 
 const REFRESH_COOKIE_NAME = 'refresh_token';
 
@@ -44,12 +45,39 @@ export const actions: Actions = {
 
 		// Validation
 		if (!displayName || !email || !password || !confirmPassword) {
-			return fail(400, { error: 'All fields are required', displayName, email, signupMode });
+			return fail(400, { error: 'auth.errors.required', displayName, email, signupMode });
 		}
 
 		if (displayName.length < 2 || displayName.length > 50) {
 			return fail(400, {
-				error: 'Display name must be between 2 and 50 characters',
+				error: 'errors.displayNameLength',
+				displayName,
+				email,
+				signupMode
+			});
+		}
+
+		if (!isValidInputWithSpaces(displayName)) {
+			return fail(400, {
+				error: 'errors.invalidCharacters',
+				displayName,
+				email,
+				signupMode
+			});
+		}
+
+		if (!isValidEmail(email)) {
+			return fail(400, {
+				error: 'errors.invalidEmail',
+				displayName,
+				email,
+				signupMode
+			});
+		}
+
+		if (!isValidInput(password)) {
+			return fail(400, {
+				error: 'errors.invalidCharacters',
 				displayName,
 				email,
 				signupMode
@@ -58,7 +86,16 @@ export const actions: Actions = {
 
 		if (password.length < 8) {
 			return fail(400, {
-				error: 'Password must be at least 8 characters',
+				error: 'errors.passwordMinLength',
+				displayName,
+				email,
+				signupMode
+			});
+		}
+
+		if (password.length > MAX_INPUT_LENGTH) {
+			return fail(400, {
+				error: 'errors.passwordMaxLength',
 				displayName,
 				email,
 				signupMode
@@ -66,15 +103,14 @@ export const actions: Actions = {
 		}
 
 		if (password !== confirmPassword) {
-			return fail(400, { error: 'Passwords do not match', displayName, email, signupMode });
+			return fail(400, { error: 'auth.errors.passwordMismatch', displayName, email, signupMode });
 		}
 
 		// Check domain restriction
 		const domainAllowed = await isEmailDomainAllowed(email);
 		if (!domainAllowed) {
-			const allowedDomains = await getAllowedDomains();
 			return fail(400, {
-				error: `Registration is restricted to the following domains: ${allowedDomains.join(', ')}`,
+				error: 'auth.errors.domainNotAllowed',
 				displayName,
 				email,
 				signupMode
@@ -86,7 +122,7 @@ export const actions: Actions = {
 		if (signupMode === 'invitation') {
 			if (!inviteCode) {
 				return fail(400, {
-					error: 'An invitation code is required to register',
+					error: 'auth.errors.invitationRequired',
 					displayName,
 					email,
 					signupMode
@@ -96,7 +132,7 @@ export const actions: Actions = {
 			const validation = await validateInvitationCode(inviteCode, email);
 			if (!validation.valid) {
 				return fail(400, {
-					error: validation.error || 'Invalid invitation code',
+					error: 'auth.errors.invalidInvitationCode',
 					displayName,
 					email,
 					signupMode
@@ -110,7 +146,7 @@ export const actions: Actions = {
 
 		if (existingUser) {
 			return fail(400, {
-				error: 'An account with this email already exists',
+				error: 'auth.errors.emailExists',
 				displayName,
 				email,
 				signupMode
@@ -127,7 +163,7 @@ export const actions: Actions = {
 		} catch (error) {
 			console.error('Registration error:', error);
 			return fail(500, {
-				error: 'Something went wrong. Please try again.',
+				error: 'common.error',
 				displayName,
 				email,
 				signupMode

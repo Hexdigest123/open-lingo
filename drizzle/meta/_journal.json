@@ -29,6 +29,13 @@
       "when": 1766084245486,
       "tag": "0003_condemned_daredevil",
       "breakpoints": true
+    },
+    {
+      "idx": 4,
+      "version": "7",
+      "when": 1766184127007,
+      "tag": "0004_silent_joseph",
+      "breakpoints": true
     }
   ]
 }

@@ -7,9 +7,12 @@ import { getEffectiveApiKeyWithSource } from '$lib/server/openai/getApiKey';
 import { logApiUsage, extractTokenUsage } from '$lib/server/audit/apiUsage';
 import { z } from 'zod';
 
+// UUID validation regex
+const UUID_REGEX = /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i;
+
 // Input validation schema
 const completionRequestSchema = z.object({
-	sessionId: z.number().int().positive(),
+	sessionId: z.string().regex(UUID_REGEX, 'Invalid session ID format'),
 	message: z.string().min(1).max(4000)
 });
 

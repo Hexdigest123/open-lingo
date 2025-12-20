@@ -1,14 +1,14 @@
 <script lang="ts">
-	import type { PageData, ActionData } from './$types';
+	import type { PageData } from './$types';
 	import { t } from '$lib/i18n/index.svelte';
-	import { enhance } from '$app/forms';
 
-	let { data, form }: { data: PageData; form: ActionData } = $props();
+	let { data }: { data: PageData } = $props();
 
 	const earnedIds = new Set(data.earnedAchievements.map((a) => a.id));
 	let showDeleteModal = $state(false);
 	let deletePassword = $state('');
 	let isDeleting = $state(false);
+	let deleteError = $state<string | null>(null);
 
 	function formatDate(date: Date | string): string {
 		return new Date(date).toLocaleDateString(undefined, {
@@ -16,6 +16,51 @@
 			month: 'long',
 			day: 'numeric'
 		});
+	}
+
+	async function handleDeleteAccount() {
+		if (!deletePassword || isDeleting) return;
+
+		isDeleting = true;
+		deleteError = null;
+
+		try {
+			const formData = new FormData();
+			formData.append('password', deletePassword);
+
+			const response = await fetch('?/deleteAccount', {
+				method: 'POST',
+				body: formData
+			});
+
+			// Check if the response is a redirect (account deleted successfully)
+			if (response.redirected || response.ok) {
+				// Clear any local storage/session data
+				// Navigate to landing page with success message
+				window.location.href = '/?deleted=true';
+				return;
+			}
+
+			// Try to parse error response
+			const text = await response.text();
+			try {
+				const result = JSON.parse(text);
+				if (result.data?.deleteError) {
+					deleteError = result.data.deleteError;
+				} else {
+					deleteError = 'errors.deleteFailed';
+				}
+			} catch {
+				// If we can't parse, assume success and redirect
+				window.location.href = '/?deleted=true';
+				return;
+			}
+		} catch (error) {
+			console.error('Delete account error:', error);
+			deleteError = 'errors.deleteFailed';
+		} finally {
+			isDeleting = false;
+		}
 	}
 </script>
 
@@ -115,7 +160,11 @@
 					<p class="text-sm text-text-muted">{t('profile.dangerZone.deleteWarning')}</p>
 				</div>
 				<button
-					onclick={() => (showDeleteModal = true)}
+					onclick={() => {
+						deleteError = null;
+						deletePassword = '';
+						showDeleteModal = true;
+					}}
 					class="btn btn-error btn-md whitespace-nowrap"
 				>
 					{t('profile.dangerZone.deleteButton')}
@@ -132,21 +181,16 @@
 			<h2 class="mb-4 text-xl font-bold text-error">{t('profile.dangerZone.confirmTitle')}</h2>
 			<p class="mb-4 text-text-muted">{t('profile.dangerZone.confirmMessage')}</p>
 
-			{#if form?.deleteError}
+			{#if deleteError && !isDeleting}
 				<div class="mb-4 rounded-xl bg-error/10 p-3 text-sm text-error">
-					{form.deleteError}
+					{t(deleteError)}
 				</div>
 			{/if}
 
 			<form
-				method="POST"
-				action="?/deleteAccount"
-				use:enhance={() => {
-					isDeleting = true;
-					return async ({ update }) => {
-						isDeleting = false;
-						await update();
-					};
+				onsubmit={(e) => {
+					e.preventDefault();
+					handleDeleteAccount();
 				}}
 			>
 				<div class="mb-4">

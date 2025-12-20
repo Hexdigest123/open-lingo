@@ -5,6 +5,7 @@ import { users } from '$lib/server/db/schema';
 import { eq } from 'drizzle-orm';
 import { verifyPassword } from '$lib/server/auth/password';
 import { createSession } from '$lib/server/auth/session';
+import { isValidEmail, isValidInput, MAX_INPUT_LENGTH } from '$lib/server/validation/input';
 
 const REFRESH_COOKIE_NAME = 'refresh_token';
 
@@ -48,21 +49,33 @@ export const actions: Actions = {
 		const validatedRedirect = isValidRedirect(redirectParam);
 
 		if (!email || !password) {
-			return fail(400, { error: 'Email and password are required', email });
+			return fail(400, { error: 'auth.errors.required', email });
+		}
+
+		if (!isValidEmail(email)) {
+			return fail(400, { error: 'errors.invalidEmail', email });
+		}
+
+		if (!isValidInput(password)) {
+			return fail(400, { error: 'errors.invalidCharacters', email });
+		}
+
+		if (password.length < 8 || password.length > MAX_INPUT_LENGTH) {
+			return fail(400, { error: 'auth.errors.invalidCredentials', email });
 		}
 
 		// Find user by email
 		const [user] = await db.select().from(users).where(eq(users.email, email)).limit(1);
 
 		if (!user) {
-			return fail(400, { error: 'Invalid email or password', email });
+			return fail(400, { error: 'auth.errors.invalidCredentials', email });
 		}
 
 		// Verify password
 		const isValid = await verifyPassword(password, user.passwordHash);
 
 		if (!isValid) {
-			return fail(400, { error: 'Invalid email or password', email });
+			return fail(400, { error: 'auth.errors.invalidCredentials', email });
 		}
 
 		// Check if user is rejected

@@ -49,7 +49,7 @@
 		>
 			{#if form?.error}
 				<div class="rounded-xl bg-error/10 p-4 text-center text-error">
-					{form.error}
+					{t(form.error)}
 				</div>
 			{/if}
 
@@ -78,6 +78,7 @@
 					class="input"
 					placeholder={t('auth.emailPlaceholder')}
 					value={form?.email ?? ''}
+					maxlength="50"
 				/>
 			</div>
 
@@ -119,6 +120,9 @@
 					class="input"
 					placeholder={t('auth.passwordMinChars')}
 					minlength="8"
+					maxlength="50"
+					pattern="[a-zA-Z0-9!@#$%^&*()\-_./]+"
+					title="Only ASCII characters allowed: letters, numbers, and !@#$%^&*()-_./"
 				/>
 				<p class="mt-1 text-sm text-text-muted">{t('auth.passwordHint')}</p>
 			</div>
@@ -133,6 +137,9 @@
 					class="input"
 					placeholder={t('auth.confirmPasswordPlaceholder')}
 					minlength="8"
+					maxlength="50"
+					pattern="[a-zA-Z0-9!@#$%^&*()\-_./]+"
+					title="Only ASCII characters allowed: letters, numbers, and !@#$%^&*()-_./"
 				/>
 			</div>
 

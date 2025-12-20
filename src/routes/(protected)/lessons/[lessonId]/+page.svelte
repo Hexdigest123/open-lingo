@@ -2,6 +2,7 @@
 	import type { PageData } from './$types';
 	import { i18n, t } from '$lib/i18n/index.svelte';
 	import { goto, invalidateAll } from '$app/navigation';
+	import { getBilingualText } from '$lib/utils/bilingual';
 	import { deserialize } from '$app/forms';
 	import MultipleChoiceQuestion from '$lib/components/lessons/MultipleChoiceQuestion.svelte';
 	import FillBlankQuestion from '$lib/components/lessons/FillBlankQuestion.svelte';
@@ -18,6 +19,7 @@
 		correctAnswer: string;
 		freezeEarned?: boolean;
 		hearts?: number;
+		xpAwarded?: number;
 	};
 
 	let { data }: { data: PageData } = $props();
@@ -34,6 +36,7 @@
 	let aiExplanation = $state<string | null>(null);
 	let isLoadingExplanation = $state(false);
 	let explanationError = $state<string | null>(null);
+	let showOutOfHeartsModal = $state(data.hearts <= 0 && !data.isRevision && data.heartsEnabled);
 
 	const questions = data.questions;
 	const totalQuestions = questions.length;
@@ -83,11 +86,21 @@
 	}
 	const localizedPairs = $derived(getLocalizedPairs());
 
-	$effect(() => {
-		if (hearts <= 0 && !isComplete && !data.isRevision) {
-			// Out of hearts - could show modal or redirect
+	// Locale-aware options for listening questions (and other multiple choice)
+	function getLocalizedOptions(): string[] | undefined {
+		// Check for locale-specific options first
+		if (i18n.locale === 'de' && questionContent?.optionsDe) {
+			return questionContent.optionsDe as string[];
 		}
-	});
+		if (questionContent?.optionsEn) {
+			return questionContent.optionsEn as string[];
+		}
+		// Fallback to legacy single 'options' field
+		return questionContent?.options as string[] | undefined;
+	}
+	const localizedOptions = $derived(getLocalizedOptions());
+
+	// Modal is shown directly when hearts hit 0, not via effect (to avoid timing issues)
 
 	async function fetchExplanation() {
 		if (isLoadingExplanation || !lastUserAnswer) return;
@@ -132,6 +145,7 @@
 		formData.append('questionId', question.id.toString());
 		formData.append('answer', answer);
 		formData.append('isRevision', data.isRevision ? 'true' : 'false');
+		formData.append('locale', i18n.locale);
 
 		try {
 			const response = await fetch(`?/submit`, {
@@ -155,14 +169,25 @@
 			// Sync hearts from server if provided
 			if (actionData.hearts !== undefined) {
 				hearts = actionData.hearts;
-				// Refresh layout data to sync header hearts display
-				invalidateAll();
 			} else if (!lastAnswer.isCorrect) {
 				hearts = Math.max(0, hearts - 1);
 			}
 
+			// Check if out of hearts immediately after updating
+			if (hearts <= 0 && !data.isRevision && data.heartsEnabled) {
+				showOutOfHeartsModal = true;
+				isSubmitting = false;
+				return; // Don't show feedback, show out-of-hearts modal instead
+			}
+
+			// Only refresh layout data if we still have hearts
+			if (actionData.hearts !== undefined && hearts > 0) {
+				invalidateAll();
+			}
+
 			if (lastAnswer.isCorrect) {
-				xpEarned += 10;
+				// Use server-provided XP value (0 if already answered or in revision mode)
+				xpEarned += actionData.xpAwarded ?? 0;
 				correctCount++;
 			}
 
@@ -194,6 +219,34 @@
 			currentIndex++;
 		} else {
 			completeLesson();
+		}
+	}
+
+	async function handleWrongMatch() {
+		// Deduct heart for wrong match in matching questions (unless in revision mode or hearts disabled)
+		if (!data.isRevision && data.heartsEnabled && hearts > 0) {
+			hearts = hearts - 1;
+
+			// Persist heart deduction to server
+			try {
+				await fetch('/api/lessons/wrong-match', {
+					method: 'POST',
+					headers: { 'Content-Type': 'application/json' },
+					body: JSON.stringify({ lessonId: data.lesson.id })
+				});
+
+				// Refresh layout data to sync header hearts display
+				if (hearts > 0) {
+					invalidateAll();
+				}
+			} catch (error) {
+				console.error('Failed to persist heart deduction:', error);
+			}
+
+			// Check if out of hearts
+			if (hearts <= 0) {
+				showOutOfHeartsModal = true;
+			}
 		}
 	}
 
@@ -231,7 +284,7 @@
 </script>
 
 <svelte:head>
-	<title>{data.lesson.title} - OpenLingo</title>
+	<title>{getBilingualText(data.lesson.title)} - OpenLingo</title>
 </svelte:head>
 
 {#if isComplete}
@@ -262,7 +315,7 @@
 			</button>
 		</div>
 	</div>
-{:else if hearts <= 0 && !data.isRevision}
+{:else if showOutOfHeartsModal}
 	<!-- Out of Hearts Screen -->
 	<div class="fixed inset-0 z-50 flex items-center justify-center bg-black/50 p-4">
 		<div class="card w-full max-w-md text-center">
@@ -270,7 +323,7 @@
 			<h2 class="mt-4 text-2xl font-bold text-error">{t('lesson.outOfHearts.title')}</h2>
 			<p class="mt-2 text-text-muted">{t('lesson.outOfHearts.message')}</p>
 
-			<button onclick={exitLesson} class="btn btn-primary btn-lg mt-6 w-full">
+			<button onclick={() => window.location.href = '/dashboard'} class="btn btn-primary btn-lg mt-6 w-full">
 				{t('common.back')}
 			</button>
 		</div>
@@ -335,6 +388,7 @@
 					pairs={localizedPairs}
 					disabled={showFeedback || isSubmitting}
 					onAnswer={handleAnswer}
+					onWrongMatch={handleWrongMatch}
 				/>
 			{:else if currentQuestion.type === 'word_order'}
 				<WordOrderQuestion
@@ -358,7 +412,7 @@
 				<ListeningQuestion
 					textToHear={questionContent.textToHear as string}
 					answerType={(questionContent.answerType as 'type' | 'multiple_choice') || 'type'}
-					options={questionContent.options as string[] | undefined}
+					options={localizedOptions}
 					disabled={showFeedback || isSubmitting}
 					hasApiKey={data.hasApiKey}
 					onAnswer={handleAnswer}

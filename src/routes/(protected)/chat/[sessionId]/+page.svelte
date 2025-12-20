@@ -1,7 +1,6 @@
 <script lang="ts">
 	import type { PageData } from './$types';
 	import { i18n, t } from '$lib/i18n/index.svelte';
-	import { goto } from '$app/navigation';
 	import ChatMessage from '$lib/components/chat/ChatMessage.svelte';
 	import ChatInput from '$lib/components/chat/ChatInput.svelte';
 	import ModeToggle from '$lib/components/chat/ModeToggle.svelte';
@@ -85,22 +84,6 @@
 		}, 100);
 	}
 
-	async function deleteSession() {
-		if (!confirm('Are you sure you want to delete this conversation?')) return;
-
-		try {
-			const response = await fetch(`/api/chat/sessions/${data.session.id}`, {
-				method: 'DELETE'
-			});
-
-			if (response.ok) {
-				goto('/chat');
-			}
-		} catch (error) {
-			console.error('Failed to delete session:', error);
-		}
-	}
-
 	// Scroll to bottom on mount
 	$effect(() => {
 		scrollToBottom();
@@ -144,22 +127,14 @@
 <div class="mx-auto max-w-3xl flex flex-col h-[calc(100vh-10rem)]">
 	<!-- Header -->
 	<div class="mb-2 flex flex-col gap-2">
-		<div class="flex items-center justify-between">
-			<div class="flex items-center gap-3">
-				<a href="/chat" class="text-text-muted hover:text-text-light">
-					← {t('common.back')}
-				</a>
-				<span class="text-text-muted">|</span>
-				<h1 class="font-medium text-text-light truncate max-w-xs">
-					{data.session.title || t('chat.newSession')}
-				</h1>
-			</div>
-			<button
-				onclick={deleteSession}
-				class="text-sm text-error hover:underline"
-			>
-				{t('common.delete')}
-			</button>
+		<div class="flex items-center gap-3">
+			<a href="/chat" class="text-text-muted hover:text-text-light">
+				← {t('common.back')}
+			</a>
+			<span class="text-text-muted">|</span>
+			<h1 class="font-medium text-text-light truncate max-w-xs">
+				{data.session.title || t('chat.newSession')}
+			</h1>
 		</div>
 
 		<!-- Mode Toggle -->

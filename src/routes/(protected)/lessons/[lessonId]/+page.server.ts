@@ -307,6 +307,7 @@ export const actions: Actions = {
 		const questionId = parseInt(data.get('questionId')?.toString() || '0');
 		const answer = data.get('answer')?.toString().trim() || '';
 		const isRevision = data.get('isRevision')?.toString() === 'true';
+		const locale = data.get('locale')?.toString() || 'en';
 
 		if (!questionId || !answer) {
 			return fail(400, { error: 'Question ID and answer are required' });
@@ -355,8 +356,34 @@ export const actions: Actions = {
 			return fail(403, { error: 'No hearts remaining' });
 		}
 
+		// Get locale-specific correct answer if available (for listening/multiple choice questions)
+		const questionContent = question.content as Record<string, unknown> | null;
+		let correctAnswerToCheck = question.correctAnswer;
+
+		// For listening and multiple_choice questions, check for locale-specific correct answer
+		if (questionContent && (question.type === 'listening' || question.type === 'multiple_choice')) {
+			if (locale === 'de' && questionContent.correctAnswerDe) {
+				correctAnswerToCheck = questionContent.correctAnswerDe as string;
+			} else if (questionContent.correctAnswerEn) {
+				correctAnswerToCheck = questionContent.correctAnswerEn as string;
+			}
+		}
+
 		// Check if answer is correct with normalization support
-		const isCorrect = isAnswerCorrect(answer, question.correctAnswer);
+		const isCorrect = isAnswerCorrect(answer, correctAnswerToCheck);
+
+		// Check if user has already answered this question correctly before
+		const [previousCorrect] = await db
+			.select()
+			.from(userQuestionAttempts)
+			.where(
+				and(
+					eq(userQuestionAttempts.userId, userId),
+					eq(userQuestionAttempts.questionId, questionId),
+					eq(userQuestionAttempts.isCorrect, true)
+				)
+			)
+			.limit(1);
 
 		// Record the attempt
 		await db.insert(userQuestionAttempts).values({
@@ -367,11 +394,16 @@ export const actions: Actions = {
 		});
 
 		let freezeEarned = false;
+		// Only award XP if: answer is correct AND not in revision mode AND not already answered correctly before
+		const shouldAwardXp = isCorrect && !isRevision && !previousCorrect;
 
 		if (isCorrect) {
-			// Award XP and track correct answers for freeze earning
-			const xpGain = 10;
-			const newCorrectTotal = (stats?.totalCorrectAnswers || 0) + 1;
+			// Award XP only if eligible (not revision and not previously correct)
+			const xpGain = shouldAwardXp ? 10 : 0;
+			// Only count toward freeze progress if XP was awarded (prevents exploit)
+			const newCorrectTotal = shouldAwardXp
+				? (stats?.totalCorrectAnswers || 0) + 1
+				: stats?.totalCorrectAnswers || 0;
 			const freezesFromAnswers = Math.floor(newCorrectTotal / 50);
 			const currentFreezes = stats?.freezesEarnedTotal || 0;
 
@@ -457,12 +489,13 @@ export const actions: Actions = {
 			return {
 				success: true,
 				isCorrect,
-				correctAnswer: question.correctAnswer,
+				correctAnswer: correctAnswerToCheck,
 				freezeEarned,
 				hearts: availableHearts,
 				heartsEnabled,
 				streakFreezeUsed,
-				currentStreak: newStreak
+				currentStreak: newStreak,
+				xpAwarded: xpGain
 			};
 		} else {
 			// Only deduct hearts if not in revision mode AND hearts are enabled
@@ -480,7 +513,7 @@ export const actions: Actions = {
 				return {
 					success: true,
 					isCorrect,
-					correctAnswer: question.correctAnswer,
+					correctAnswer: correctAnswerToCheck,
 					freezeEarned: false,
 					hearts: newHearts,
 					heartsEnabled
@@ -491,7 +524,7 @@ export const actions: Actions = {
 			return {
 				success: true,
 				isCorrect,
-				correctAnswer: question.correctAnswer,
+				correctAnswer: correctAnswerToCheck,
 				freezeEarned: false,
 				hearts: availableHearts,
 				heartsEnabled

@@ -1,0 +1,6 @@
+# Local development overrides - automatically loaded by docker compose
+# Not used in production (deploy with: docker compose -f compose.yaml up)
+services:
+  db:
+    ports:
+      - 5432:5432

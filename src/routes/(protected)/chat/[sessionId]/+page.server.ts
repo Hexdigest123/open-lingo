@@ -5,11 +5,14 @@ import { chatSessions, chatMessages, users } from '$lib/server/db/schema';
 import { eq, and, asc } from 'drizzle-orm';
 import { hasGlobalApiKey } from '$lib/server/openai/getApiKey';
 
+// UUID validation regex
+const UUID_REGEX = /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i;
+
 export const load: PageServerLoad = async ({ params, locals }) => {
 	const userId = locals.user!.id;
-	const sessionId = parseInt(params.sessionId);
+	const sessionId = params.sessionId;
 
-	if (isNaN(sessionId)) {
+	if (!UUID_REGEX.test(sessionId)) {
 		error(404, 'Session not found');
 	}
 

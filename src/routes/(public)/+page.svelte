@@ -44,32 +44,32 @@
 			</div>
 			<div class="mt-12 flex-1 lg:mt-0">
 				<!-- Hero illustration -->
-				<div class="mx-auto aspect-square max-w-md rounded-3xl bg-gradient-to-br from-success/20 to-primary/20 p-8 relative overflow-hidden">
+				<div class="mx-auto aspect-square max-w-xs sm:max-w-md rounded-3xl bg-gradient-to-br from-success/20 to-primary/20 p-4 sm:p-8 relative overflow-hidden">
 					<div class="absolute inset-0 flex items-center justify-center">
-						<div class="w-72 h-72 rounded-2xl bg-white shadow-2xl p-6 transform rotate-3 animate-float">
-							<div class="flex items-center gap-3 mb-4">
-								<div class="w-10 h-10 rounded-full bg-success flex items-center justify-center text-white font-bold">A1</div>
+						<div class="w-48 h-48 sm:w-72 sm:h-72 rounded-2xl bg-white shadow-2xl p-3 sm:p-6 transform rotate-3 animate-float">
+							<div class="flex items-center gap-2 sm:gap-3 mb-2 sm:mb-4">
+								<div class="w-7 h-7 sm:w-10 sm:h-10 rounded-full bg-success flex items-center justify-center text-white font-bold text-xs sm:text-base">A1</div>
 								<div class="flex-1">
 									<div class="h-2 bg-gray-200 rounded-full overflow-hidden">
 										<div class="h-full w-3/4 bg-success rounded-full"></div>
 									</div>
 								</div>
 							</div>
-							<div class="space-y-3 mt-6">
-								<div class="p-3 rounded-xl bg-success/10 border-2 border-success">
+							<div class="space-y-1 sm:space-y-3 mt-2 sm:mt-6">
+								<div class="p-1.5 sm:p-3 rounded-lg sm:rounded-xl bg-success/10 border-2 border-success text-xs sm:text-base">
 									<span class="text-text-light font-medium">Hola</span>
-									<span class="text-text-muted ml-2">Hello</span>
+									<span class="text-text-muted ml-1 sm:ml-2">Hello</span>
 								</div>
-								<div class="p-3 rounded-xl bg-gray-100">
+								<div class="p-1.5 sm:p-3 rounded-lg sm:rounded-xl bg-gray-100 text-xs sm:text-base">
 									<span class="text-text-light font-medium">Buenos d&iacute;as</span>
-									<span class="text-text-muted ml-2">Good morning</span>
+									<span class="text-text-muted ml-1 sm:ml-2">Good morning</span>
 								</div>
-								<div class="p-3 rounded-xl bg-gray-100">
+								<div class="p-1.5 sm:p-3 rounded-lg sm:rounded-xl bg-gray-100 text-xs sm:text-base">
 									<span class="text-text-light font-medium">Gracias</span>
-									<span class="text-text-muted ml-2">Thank you</span>
+									<span class="text-text-muted ml-1 sm:ml-2">Thank you</span>
 								</div>
 							</div>
-							<div class="mt-4 flex items-center justify-between">
+							<div class="mt-2 sm:mt-4 flex items-center justify-between text-xs sm:text-base">
 								<div class="flex items-center gap-1 text-error">
 									<span>&#10084;</span>
 									<span class="font-bold">5</span>

@@ -10,9 +10,10 @@
 		pairs: Pair[];
 		disabled: boolean;
 		onAnswer: (answer: string) => void;
+		onWrongMatch?: () => void;
 	}
 
-	let { pairs, disabled, onAnswer }: Props = $props();
+	let { pairs, disabled, onAnswer, onWrongMatch }: Props = $props();
 
 	// Show "German" or "English" based on locale
 	const targetLanguageLabel = $derived(
@@ -22,6 +23,7 @@
 	let selectedSpanish = $state<string | null>(null);
 	let selectedEnglish = $state<string | null>(null);
 	let matchedPairs = $state<Set<string>>(new Set());
+	let wrongMatchPair = $state<{ spanish: string; english: string } | null>(null);
 
 	// Shuffle arrays for display
 	const spanishWords = $derived(pairs.map((p) => p.spanish).sort(() => Math.random() - 0.5));
@@ -44,12 +46,22 @@
 			const pair = pairs.find((p) => p.spanish === selectedSpanish && p.english === selectedEnglish);
 			if (pair) {
 				matchedPairs = new Set([...matchedPairs, selectedSpanish, selectedEnglish]);
+				// Reset selections after a short delay
+				setTimeout(() => {
+					selectedSpanish = null;
+					selectedEnglish = null;
+				}, 300);
+			} else {
+				// Wrong match - show feedback and deduct heart
+				wrongMatchPair = { spanish: selectedSpanish, english: selectedEnglish };
+				onWrongMatch?.();
+				// Reset selections after showing error feedback
+				setTimeout(() => {
+					wrongMatchPair = null;
+					selectedSpanish = null;
+					selectedEnglish = null;
+				}, 600);
 			}
-			// Reset selections after a short delay
-			setTimeout(() => {
-				selectedSpanish = null;
-				selectedEnglish = null;
-			}, 300);
 		}
 	}
 
@@ -76,9 +88,11 @@
 					class="w-full rounded-xl border-2 p-3 text-center font-medium transition-all
 						{matchedPairs.has(word)
 							? 'border-success/50 bg-success/10 text-success opacity-50'
-							: selectedSpanish === word
-								? 'border-primary bg-primary/10 text-primary'
-								: 'border-border-light text-text-light hover:border-primary/50'}
+							: wrongMatchPair?.spanish === word
+								? 'border-error bg-error/10 text-error animate-shake'
+								: selectedSpanish === word
+									? 'border-primary bg-primary/10 text-primary'
+									: 'border-border-light text-text-light hover:border-primary/50'}
 						{disabled ? 'cursor-not-allowed' : 'cursor-pointer'}"
 				>
 					{word}
@@ -96,9 +110,11 @@
 					class="w-full rounded-xl border-2 p-3 text-center font-medium transition-all
 						{matchedPairs.has(word)
 							? 'border-success/50 bg-success/10 text-success opacity-50'
-							: selectedEnglish === word
-								? 'border-success bg-success/10 text-success'
-								: 'border-border-light text-text-light hover:border-success/50'}
+							: wrongMatchPair?.english === word
+								? 'border-error bg-error/10 text-error animate-shake'
+								: selectedEnglish === word
+									? 'border-success bg-success/10 text-success'
+									: 'border-border-light text-text-light hover:border-success/50'}
 						{disabled ? 'cursor-not-allowed' : 'cursor-pointer'}"
 				>
 					{word}

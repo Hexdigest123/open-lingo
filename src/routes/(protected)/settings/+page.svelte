@@ -13,8 +13,20 @@
 	let isUpdatingProfile = $state(false);
 	let isChangingPassword = $state(false);
 
-	function setLocale(locale: Locale) {
+	async function setLocale(locale: Locale) {
 		i18n.setLocale(locale);
+
+		// Persist locale to database
+		const formData = new FormData();
+		formData.append('locale', locale);
+		try {
+			await fetch('?/updateLocale', {
+				method: 'POST',
+				body: formData
+			});
+		} catch (error) {
+			console.error('Failed to save locale preference:', error);
+		}
 	}
 
 	function resetPasswordForm() {
@@ -44,7 +56,7 @@
 
 		{#if form?.profileError}
 			<div class="mt-4 rounded-xl bg-error/10 p-3 text-error">
-				{form.profileError}
+				{t(form.profileError)}
 			</div>
 		{/if}
 
@@ -117,7 +129,7 @@
 
 		{#if form?.passwordError}
 			<div class="mt-4 rounded-xl bg-error/10 p-3 text-error">
-				{form.passwordError}
+				{t(form.passwordError)}
 			</div>
 		{/if}
 
@@ -146,6 +158,9 @@
 					name="currentPassword"
 					bind:value={currentPassword}
 					required
+					maxlength="50"
+					pattern="[a-zA-Z0-9!@#$%^&*()\-_./]+"
+					title="Only ASCII characters allowed: letters, numbers, and !@#$%^&*()-_./"
 					class="input mt-1"
 				/>
 			</div>
@@ -161,6 +176,9 @@
 					bind:value={newPassword}
 					required
 					minlength="8"
+					maxlength="50"
+					pattern="[a-zA-Z0-9!@#$%^&*()\-_./]+"
+					title="Only ASCII characters allowed: letters, numbers, and !@#$%^&*()-_./"
 					class="input mt-1"
 				/>
 				<p class="mt-1 text-xs text-text-muted">{t('auth.passwordHint') || 'Minimum 8 characters'}</p>
@@ -177,6 +195,9 @@
 					bind:value={confirmPassword}
 					required
 					minlength="8"
+					maxlength="50"
+					pattern="[a-zA-Z0-9!@#$%^&*()\-_./]+"
+					title="Only ASCII characters allowed: letters, numbers, and !@#$%^&*()-_./"
 					class="input mt-1"
 				/>
 			</div>
@@ -199,7 +220,7 @@
 	<div class="card">
 		<h2 class="text-xl font-bold text-text-light">{t('settings.language')}</h2>
 		<p class="mt-1 text-text-muted">{t('settings.languageDescription')}</p>
-		<div class="mt-4 flex gap-4">
+		<div class="mt-4 flex flex-col gap-3 sm:flex-row sm:gap-4">
 			{#each i18n.availableLocales as locale}
 				<button
 					onclick={() => setLocale(locale.code)}

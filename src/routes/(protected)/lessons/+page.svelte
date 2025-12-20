@@ -2,7 +2,7 @@
 	import type { PageData } from './$types';
 	import { t } from '$lib/i18n/index.svelte';
 	import { enhance } from '$app/forms';
-	import { goto } from '$app/navigation';
+	import { goto, invalidateAll } from '$app/navigation';
 	import { getBilingualText } from '$lib/utils/bilingual';
 
 	type LevelWithCount = {
@@ -16,12 +16,11 @@
 
 	let { data }: { data: PageData } = $props();
 
-	// Handle error messages
-	let showError = $state(!!data.error);
+	// Handle error messages - use $derived to react to data.error changes from navigation
+	let showError = $derived(!!data.error);
 
 	function dismissError() {
-		showError = false;
-		// Remove error from URL
+		// Remove error from URL - this will clear data.error and showError will become false via $derived
 		goto('/lessons', { replaceState: true });
 	}
 
@@ -75,17 +74,17 @@
 </svelte:head>
 
 {#if showError && data.error === 'no_hearts'}
-	<div class="mb-6 rounded-xl bg-error/10 p-4 flex items-center justify-between">
-		<div class="flex items-center gap-3">
-			<span class="text-2xl">💔</span>
-			<div>
-				<p class="font-bold text-error">{t('lesson.outOfHearts.title')}</p>
-				<p class="text-sm text-text-muted">{t('lesson.outOfHearts.message')}</p>
-			</div>
+	<!-- Out of Hearts Modal -->
+	<div class="fixed inset-0 z-50 flex items-center justify-center bg-black/50 p-4">
+		<div class="card w-full max-w-md text-center">
+			<div class="text-6xl">💔</div>
+			<h2 class="mt-4 text-2xl font-bold text-error">{t('lesson.outOfHearts.title')}</h2>
+			<p class="mt-2 text-text-muted">{t('lesson.outOfHearts.message')}</p>
+
+			<button onclick={dismissError} class="btn btn-primary btn-lg mt-6 w-full">
+				{t('common.back')}
+			</button>
 		</div>
-		<button onclick={dismissError} class="text-text-muted hover:text-text-light text-xl">
-			✕
-		</button>
 	</div>
 {/if}
 
@@ -141,7 +140,7 @@
 								{#each unit.lessons as lesson}
 									{@const progress = getLessonProgress(lesson.id)}
 									{@const status = progress?.status}
-									<div class="flex items-center justify-between rounded-xl bg-bg-light-secondary p-3">
+									<div class="flex flex-col gap-2 sm:flex-row sm:items-center sm:justify-between rounded-xl bg-bg-light-secondary p-3">
 										<div class="flex items-center gap-3">
 											<span class="text-lg {getStatusColor(status)}">
 												{getStatusIcon(status)}
@@ -153,7 +152,7 @@
 												{/if}
 											</div>
 										</div>
-										<div class="flex items-center gap-2">
+										<div class="flex items-center gap-2 flex-wrap">
 											{#if status === 'completed' || status === 'mastered'}
 												<span class="text-xs text-success font-medium">
 													{progress?.score}%
@@ -166,9 +165,14 @@
 												{status === 'completed' || status === 'mastered' ? t('lesson.practice') : t('lesson.start')}
 											</a>
 											{#if status !== 'completed' && status !== 'mastered'}
-												<form method="POST" action="?/skip" use:enhance class="inline">
+												<form method="POST" action="?/skip" use:enhance={() => {
+													return async ({ update }) => {
+														await update();
+														await invalidateAll();
+													};
+												}} class="inline">
 													<input type="hidden" name="lessonId" value={lesson.id} />
-													<button type="submit" class="btn btn-sm btn-ghost text-text-muted">
+													<button type="submit" class="btn btn-sm btn-ghost text-text-muted cursor-pointer">
 														{t('lesson.skip')}
 													</button>
 												</form>

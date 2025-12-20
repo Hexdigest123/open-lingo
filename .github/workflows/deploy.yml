@@ -34,27 +34,27 @@ jobs:
         run: sudo rm -rf .svelte-kit node_modules/.vite 2>/dev/null || true
 
       - name: Stop existing app container
-        run: docker compose stop app || true
+        run: docker compose -f compose.yaml stop app || true
 
       - name: Build and start database
-        run: docker compose up -d db
+        run: docker compose -f compose.yaml up -d db
 
       - name: Wait for database to be healthy
         run: |
           echo "Waiting for database to be healthy..."
-          timeout 60 bash -c 'until docker compose exec -T db pg_isready -U "$POSTGRES_USER" -d "$POSTGRES_DB"; do sleep 2; done'
+          timeout 60 bash -c 'until docker compose -f compose.yaml exec -T db pg_isready -U "$POSTGRES_USER" -d "$POSTGRES_DB"; do sleep 2; done'
           echo "Database is ready"
 
       - name: Install dependencies
-        run: docker compose run --rm migrate npm ci
+        run: docker compose -f compose.yaml run --rm migrate npm ci
 
       - name: Run database migrations
-        run: docker compose run --rm migrate npx drizzle-kit push --force
+        run: docker compose -f compose.yaml run --rm migrate npx drizzle-kit push --force
 
       - name: Check if seeding is needed
         id: check-seed
         run: |
-          LEVEL_COUNT=$(docker compose exec -T db psql -U "$POSTGRES_USER" -d "$POSTGRES_DB" -t -c "SELECT COUNT(*) FROM levels;" 2>/dev/null | tr -d ' ' || echo "0")
+          LEVEL_COUNT=$(docker compose -f compose.yaml exec -T db psql -U "$POSTGRES_USER" -d "$POSTGRES_DB" -t -c "SELECT COUNT(*) FROM levels;" 2>/dev/null | tr -d ' ' || echo "0")
           echo "Level count: $LEVEL_COUNT"
           if [ "$LEVEL_COUNT" = "0" ] || [ -z "$LEVEL_COUNT" ]; then
             echo "needs_seed=true" >> $GITHUB_OUTPUT
@@ -66,10 +66,10 @@ jobs:
 
       - name: Seed database
         if: steps.check-seed.outputs.needs_seed == 'true'
-        run: docker compose run --rm migrate npm run db:seed
+        run: docker compose -f compose.yaml run --rm migrate npm run db:seed
 
       - name: Build and start app
-        run: docker compose up -d --build app
+        run: docker compose -f compose.yaml up -d --build app
 
       - name: Wait for app to be ready
         run: |
@@ -85,7 +85,7 @@ jobs:
             echo "Deployment successful - HTTP $HTTP_STATUS"
           else
             echo "Deployment verification failed - HTTP $HTTP_STATUS"
-            docker compose logs app --tail=50
+            docker compose -f compose.yaml logs app --tail=50
             exit 1
           fi
 
