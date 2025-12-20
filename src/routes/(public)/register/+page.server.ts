@@ -14,7 +14,7 @@ import {
 	validateInvitationCode,
 	markInvitationUsed
 } from '$lib/server/invitations/invitations';
-import { isValidInputWithSpaces, isValidInput } from '$lib/server/validation/input';
+import { isValidInputWithSpaces, isValidInput, isValidEmail, MAX_INPUT_LENGTH } from '$lib/server/validation/input';
 
 const REFRESH_COOKIE_NAME = 'refresh_token';
 
@@ -66,6 +66,15 @@ export const actions: Actions = {
 			});
 		}
 
+		if (!isValidEmail(email)) {
+			return fail(400, {
+				error: 'errors.invalidEmail',
+				displayName,
+				email,
+				signupMode
+			});
+		}
+
 		if (!isValidInput(password)) {
 			return fail(400, {
 				error: 'errors.invalidCharacters',
@@ -78,6 +87,15 @@ export const actions: Actions = {
 		if (password.length < 8) {
 			return fail(400, {
 				error: 'errors.passwordMinLength',
+				displayName,
+				email,
+				signupMode
+			});
+		}
+
+		if (password.length > MAX_INPUT_LENGTH) {
+			return fail(400, {
+				error: 'errors.passwordMaxLength',
 				displayName,
 				email,
 				signupMode

@@ -5,6 +5,7 @@ import { users } from '$lib/server/db/schema';
 import { eq } from 'drizzle-orm';
 import { verifyPassword } from '$lib/server/auth/password';
 import { createSession } from '$lib/server/auth/session';
+import { isValidEmail, isValidInput, MAX_INPUT_LENGTH } from '$lib/server/validation/input';
 
 const REFRESH_COOKIE_NAME = 'refresh_token';
 
@@ -49,6 +50,18 @@ export const actions: Actions = {
 
 		if (!email || !password) {
 			return fail(400, { error: 'auth.errors.required', email });
+		}
+
+		if (!isValidEmail(email)) {
+			return fail(400, { error: 'errors.invalidEmail', email });
+		}
+
+		if (!isValidInput(password)) {
+			return fail(400, { error: 'errors.invalidCharacters', email });
+		}
+
+		if (password.length < 8 || password.length > MAX_INPUT_LENGTH) {
+			return fail(400, { error: 'auth.errors.invalidCredentials', email });
 		}
 
 		// Find user by email

@@ -4,7 +4,7 @@ import { db } from '$lib/server/db';
 import { users } from '$lib/server/db/schema';
 import { eq } from 'drizzle-orm';
 import { verifyPassword, hashPassword } from '$lib/server/auth/password';
-import { isValidInputWithSpaces, isValidInput } from '$lib/server/validation/input';
+import { isValidInputWithSpaces, isValidInput, MAX_INPUT_LENGTH } from '$lib/server/validation/input';
 
 export const load: PageServerLoad = async ({ locals }) => {
 	const userId = locals.user!.id;
@@ -108,6 +108,10 @@ export const actions: Actions = {
 
 		if (newPassword.length < 8) {
 			return fail(400, { passwordError: 'errors.passwordMinLength' });
+		}
+
+		if (newPassword.length > MAX_INPUT_LENGTH) {
+			return fail(400, { passwordError: 'errors.passwordMaxLength' });
 		}
 
 		if (newPassword !== confirmPassword) {

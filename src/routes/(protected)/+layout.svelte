@@ -150,7 +150,7 @@
 					<div class="relative" use:clickOutside={() => (showLangMenu = false)}>
 						<button
 							onclick={toggleLangMenu}
-							class="flex items-center gap-1 rounded-xl bg-primary/10 px-2 py-1 text-sm font-medium text-primary hover:bg-primary/20"
+							class="flex items-center gap-1 rounded-xl bg-primary/10 px-2 py-1 text-sm font-medium text-primary hover:bg-primary/20 cursor-pointer"
 						>
 							<span>🌐</span>
 							<span class="hidden sm:inline">{i18n.locale === 'de' ? 'DE' : 'EN'}</span>
@@ -175,7 +175,7 @@
 					<div class="relative">
 						<button
 							onclick={toggleLangMenu}
-							class="flex items-center gap-1 rounded-xl bg-primary/10 px-2 py-1 text-sm font-medium text-primary hover:bg-primary/20"
+							class="flex items-center gap-1 rounded-xl bg-primary/10 px-2 py-1 text-sm font-medium text-primary hover:bg-primary/20 cursor-pointer"
 						>
 							<span>🌐</span>
 							<span class="hidden sm:inline">{i18n.locale === 'de' ? 'DE' : 'EN'}</span>
@@ -188,7 +188,7 @@
 					<div class="relative" use:clickOutside={() => (showUserMenu = false)}>
 						<button
 							onclick={() => (showUserMenu = !showUserMenu)}
-							class="flex h-8 w-8 items-center justify-center rounded-full bg-gradient-to-br from-success to-primary text-xs font-bold text-white hover:opacity-90"
+							class="flex h-8 w-8 items-center justify-center rounded-full bg-gradient-to-br from-success to-primary text-xs font-bold text-white hover:opacity-90 cursor-pointer"
 							title={data.user.displayName}
 						>
 							{data.user.displayName.charAt(0).toUpperCase()}
@@ -231,7 +231,7 @@
 					<div class="relative">
 						<button
 							onclick={() => (showUserMenu = !showUserMenu)}
-							class="flex h-8 w-8 items-center justify-center rounded-full bg-gradient-to-br from-success to-primary text-xs font-bold text-white hover:opacity-90"
+							class="flex h-8 w-8 items-center justify-center rounded-full bg-gradient-to-br from-success to-primary text-xs font-bold text-white hover:opacity-90 cursor-pointer"
 							title={data.user.displayName}
 						>
 							{data.user.displayName.charAt(0).toUpperCase()}

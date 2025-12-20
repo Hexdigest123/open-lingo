@@ -158,6 +158,9 @@
 					name="currentPassword"
 					bind:value={currentPassword}
 					required
+					maxlength="50"
+					pattern="[a-zA-Z0-9!@#$%^&*()\-_./]+"
+					title="Only ASCII characters allowed: letters, numbers, and !@#$%^&*()-_./"
 					class="input mt-1"
 				/>
 			</div>
@@ -173,6 +176,9 @@
 					bind:value={newPassword}
 					required
 					minlength="8"
+					maxlength="50"
+					pattern="[a-zA-Z0-9!@#$%^&*()\-_./]+"
+					title="Only ASCII characters allowed: letters, numbers, and !@#$%^&*()-_./"
 					class="input mt-1"
 				/>
 				<p class="mt-1 text-xs text-text-muted">{t('auth.passwordHint') || 'Minimum 8 characters'}</p>
@@ -189,6 +195,9 @@
 					bind:value={confirmPassword}
 					required
 					minlength="8"
+					maxlength="50"
+					pattern="[a-zA-Z0-9!@#$%^&*()\-_./]+"
+					title="Only ASCII characters allowed: letters, numbers, and !@#$%^&*()-_./"
 					class="input mt-1"
 				/>
 			</div>

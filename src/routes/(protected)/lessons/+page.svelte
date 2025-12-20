@@ -172,7 +172,7 @@
 													};
 												}} class="inline">
 													<input type="hidden" name="lessonId" value={lesson.id} />
-													<button type="submit" class="btn btn-sm btn-ghost text-text-muted">
+													<button type="submit" class="btn btn-sm btn-ghost text-text-muted cursor-pointer">
 														{t('lesson.skip')}
 													</button>
 												</form>
