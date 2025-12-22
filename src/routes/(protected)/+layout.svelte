@@ -58,6 +58,9 @@
 
 	const isAdmin = $derived(data.user.role === 'admin');
 
+	// Detect if user is in an active lesson (hide mobile nav to avoid blocking vision)
+	const isInLesson = $derived($page.url.pathname.match(/^\/lessons\/[^/]+$/));
+
 	function isActive(href: string): boolean {
 		return $page.url.pathname === href || $page.url.pathname.startsWith(href + '/');
 	}
@@ -296,38 +299,40 @@
 		</div>
 	{/if}
 
-	<!-- Mobile Bottom Navigation with Burger (< 400px) -->
-	<nav class="fixed right-0 bottom-0 left-0 z-50 border-t border-border-light bg-white min-[400px]:hidden lg:hidden">
-		<div class="flex items-center justify-center py-3">
-			<!-- Burger Menu Button (centered) -->
-			<button
-				onclick={() => showMobileMenu = !showMobileMenu}
-				class="flex items-center justify-center rounded-xl p-3 transition-colors text-text-muted hover:text-text-light"
-				aria-label="Toggle menu"
-			>
-				<span class="text-4xl">{showMobileMenu ? '✕' : '☰'}</span>
-			</button>
-		</div>
-	</nav>
-
-	<!-- Mobile Bottom Navigation (400px - lg) -->
-	<nav class="fixed right-0 bottom-0 left-0 z-50 border-t border-border-light bg-white hidden min-[400px]:block lg:hidden">
-		<div class="flex items-center justify-around py-2">
-			{#each navItems as item}
-				<a
-					href={item.href}
-					class="flex flex-col items-center gap-1 rounded-xl px-4 py-2 transition-colors
-						{isActive(item.href) ? 'text-success' : 'text-text-muted'}"
+	{#if !isInLesson}
+		<!-- Mobile Bottom Navigation with Burger (< 400px) -->
+		<nav class="fixed right-0 bottom-0 left-0 z-50 h-16 border-t border-border-light bg-white min-[400px]:hidden lg:hidden">
+			<div class="flex h-full items-center justify-center">
+				<!-- Burger Menu Button (centered) -->
+				<button
+					onclick={() => showMobileMenu = !showMobileMenu}
+					class="flex items-center justify-center rounded-xl p-3 transition-colors text-text-muted hover:text-text-light"
+					aria-label="Toggle menu"
 				>
-					<span class="text-xl">{item.icon}</span>
-					<span class="text-xs font-medium">{t(item.labelKey)}</span>
-				</a>
-			{/each}
-		</div>
-	</nav>
+					<span class="text-4xl">{showMobileMenu ? '✕' : '☰'}</span>
+				</button>
+			</div>
+		</nav>
 
-	<!-- Spacer for mobile bottom nav -->
-	<div class="h-20 lg:hidden"></div>
+		<!-- Mobile Bottom Navigation (400px - lg) -->
+		<nav class="fixed right-0 bottom-0 left-0 z-50 border-t border-border-light bg-white hidden min-[400px]:block lg:hidden">
+			<div class="flex items-center justify-around py-2">
+				{#each navItems as item}
+					<a
+						href={item.href}
+						class="flex flex-col items-center gap-1 rounded-xl px-4 py-2 transition-colors
+							{isActive(item.href) ? 'text-success' : 'text-text-muted'}"
+					>
+						<span class="text-xl">{item.icon}</span>
+						<span class="text-xs font-medium">{t(item.labelKey)}</span>
+					</a>
+				{/each}
+			</div>
+		</nav>
+
+		<!-- Spacer for mobile bottom nav -->
+		<div class="h-20 lg:hidden"></div>
+	{/if}
 </div>
 
 <!-- Toast Notifications -->

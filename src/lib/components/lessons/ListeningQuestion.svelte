@@ -30,8 +30,23 @@
 		// If we already have the audio, just play it
 		if (audioUrl && audioElement) {
 			audioElement.playbackRate = playbackSpeed;
-			audioElement.play();
-			isPlaying = true;
+			try {
+				await audioElement.play();
+				isPlaying = true;
+			} catch (e) {
+				// Safari/iOS fallback: recreate audio element
+				console.warn('Audio replay failed, recreating element:', e);
+				const newAudio = new Audio(audioUrl);
+				newAudio.playbackRate = playbackSpeed;
+				setupAudioEvents(newAudio);
+				audioElement = newAudio;
+				try {
+					await newAudio.play();
+				} catch (e2) {
+					console.error('Audio playback failed:', e2);
+					error = t('common.error');
+				}
+			}
 			return;
 		}
 
@@ -62,26 +77,44 @@
 			// Create and play audio element
 			const audio = new Audio(audioData);
 			audio.playbackRate = playbackSpeed;
+			setupAudioEvents(audio);
 			audioElement = audio;
 
-			audio.onplay = () => {
-				isPlaying = true;
-			};
-			audio.onended = () => {
-				isPlaying = false;
-			};
-			audio.onerror = () => {
-				isPlaying = false;
-				error = t('common.error');
-			};
-
-			audio.play();
+			// Safari/iOS: Use promise-based play with fallback
+			try {
+				await audio.play();
+			} catch (e) {
+				// Safari autoplay restriction - try once more after user gesture is confirmed
+				console.warn('Initial audio play failed (likely Safari restriction):', e);
+				// The audio element is ready, next click should work
+				// For iOS Safari, we need to ensure the audio is loaded
+				audio.load();
+				try {
+					await audio.play();
+				} catch (e2) {
+					console.error('Audio playback failed after retry:', e2);
+					error = t('common.error');
+				}
+			}
 		} catch (err) {
 			console.error('Failed to generate audio:', err);
 			error = t('common.error');
 		} finally {
 			isLoading = false;
 		}
+	}
+
+	function setupAudioEvents(audio: HTMLAudioElement) {
+		audio.onplay = () => {
+			isPlaying = true;
+		};
+		audio.onended = () => {
+			isPlaying = false;
+		};
+		audio.onerror = () => {
+			isPlaying = false;
+			error = t('common.error');
+		};
 	}
 
 	function setSpeed(speed: number) {

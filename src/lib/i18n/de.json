@@ -545,5 +545,64 @@
 		"newPasswordRequired": "Neues Passwort ist erforderlich",
 		"confirmPasswordRequired": "Bitte bestätige dein neues Passwort",
 		"currentPasswordIncorrect": "Aktuelles Passwort ist falsch"
+	},
+	"legal": {
+		"imprint": {
+			"title": "Impressum",
+			"companyName": "Firmenname",
+			"representative": "Vertreten durch",
+			"address": "Adresse",
+			"contact": "Kontakt",
+			"email": "E-Mail",
+			"phone": "Telefon",
+			"vatId": "USt-IdNr.",
+			"notConfigured": "Impressumsinformationen sind nicht konfiguriert. Bitte kontaktiere den Administrator."
+		},
+		"privacy": {
+			"title": "Datenschutzerklärung",
+			"intro": {
+				"title": "Einleitung",
+				"text": "Wir nehmen den Schutz deiner Daten ernst. Diese Richtlinie beschreibt, wie wir deine persönlichen Daten erheben, verwenden und schützen."
+			},
+			"dataCollection": {
+				"title": "Welche Daten wir erheben",
+				"text": "Wir erheben folgende Arten von Informationen:",
+				"item1": "Kontoinformationen (E-Mail, Anzeigename, Passwort)",
+				"item2": "Lernfortschritt und Statistiken",
+				"item3": "Nutzungsdaten zur Verbesserung unseres Services"
+			},
+			"dataUse": {
+				"title": "Wie wir deine Daten verwenden",
+				"text": "Deine Daten werden verwendet, um unseren Sprachlern-Service bereitzustellen und zu verbessern, deinen Fortschritt zu verfolgen und dein Lernerlebnis zu personalisieren."
+			},
+			"security": {
+				"title": "Datensicherheit",
+				"text": "Wir setzen branchenübliche Sicherheitsmaßnahmen zum Schutz deiner Daten ein:",
+				"item1": "Passwörter werden mit dem bcrypt-Algorithmus sicher gehasht und niemals im Klartext gespeichert",
+				"item2": "OpenAI API-Schlüssel werden vor der Speicherung mit AES-256-GCM verschlüsselt",
+				"item3": "Die Authentifizierung verwendet sichere JWT-Tokens mit kurzen Ablaufzeiten und Refresh-Token-Rotation",
+				"item4": "Alle Datenübertragungen sind über HTTPS/TLS verschlüsselt"
+			},
+			"cookies": {
+				"title": "Cookies",
+				"text": "Wir verwenden notwendige Cookies, um deine Sitzung aufrechtzuerhalten und deine Einstellungen zu speichern. Wir verwenden keine Tracking-Cookies zu Werbezwecken."
+			},
+			"thirdParty": {
+				"title": "Drittanbieter-Dienste",
+				"text": "Wir können Drittanbieter-Dienste wie OpenAI für KI-gestützte Funktionen nutzen. Wenn du diese Funktionen verwendest, können deine Daten von diesen Diensten gemäß deren Datenschutzrichtlinien verarbeitet werden."
+			},
+			"rights": {
+				"title": "Deine Rechte",
+				"text": "Du hast das Recht, auf deine persönlichen Daten zuzugreifen, sie zu korrigieren oder zu löschen. Du kannst dein Konto jederzeit in deinen Profileinstellungen löschen."
+			},
+			"contact": {
+				"title": "Kontakt",
+				"text": "Wenn du Fragen zu dieser Datenschutzerklärung hast, kontaktiere uns bitte:"
+			}
+		},
+		"footer": {
+			"imprint": "Impressum",
+			"privacy": "Datenschutz"
+		}
 	}
 }
