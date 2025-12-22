@@ -67,7 +67,7 @@ export const POST: RequestHandler = async ({ locals, request }) => {
 				'Content-Type': 'application/json'
 			},
 			body: JSON.stringify({
-				model: 'gpt-4o-realtime-preview-2024-12-17',
+				model: 'gpt-4o-mini-realtime-preview-2024-12-17',
 				voice: 'verse',
 				instructions: getVoiceSystemPrompt(motherLanguage),
 				input_audio_transcription: {
@@ -99,7 +99,7 @@ export const POST: RequestHandler = async ({ locals, request }) => {
 			await logApiUsage({
 				userId,
 				usageType: 'voice',
-				model: 'gpt-4o-realtime-preview'
+				model: 'gpt-4o-mini-realtime-preview'
 			});
 		}
 
