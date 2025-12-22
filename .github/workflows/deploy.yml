@@ -23,6 +23,12 @@ jobs:
       SMTP_PASS: ${{ secrets.SMTP_PASS }}
       SMTP_FROM: ${{ secrets.SMTP_FROM }}
       PUBLIC_APP_URL: ${{ vars.PUBLIC_APP_URL }}
+      LEGAL_COMPANY_NAME: ${{ vars.LEGAL_COMPANY_NAME }}
+      LEGAL_ADDRESS: ${{ vars.LEGAL_ADDRESS }}
+      LEGAL_EMAIL: ${{ vars.LEGAL_EMAIL }}
+      LEGAL_PHONE: ${{ vars.LEGAL_PHONE }}
+      LEGAL_REPRESENTATIVE: ${{ vars.LEGAL_REPRESENTATIVE }}
+      LEGAL_VAT_ID: ${{ vars.LEGAL_VAT_ID }}
 
     steps:
       - name: Checkout code
