@@ -31,6 +31,12 @@ services:
       SMTP_PASS: ${SMTP_PASS:-}
       SMTP_FROM: ${SMTP_FROM:-}
       PUBLIC_APP_URL: ${PUBLIC_APP_URL:-}
+      LEGAL_COMPANY_NAME: ${LEGAL_COMPANY_NAME:-}
+      LEGAL_ADDRESS: ${LEGAL_ADDRESS:-}
+      LEGAL_EMAIL: ${LEGAL_EMAIL:-}
+      LEGAL_PHONE: ${LEGAL_PHONE:-}
+      LEGAL_REPRESENTATIVE: ${LEGAL_REPRESENTATIVE:-}
+      LEGAL_VAT_ID: ${LEGAL_VAT_ID:-}
     depends_on:
       db:
         condition: service_healthy
