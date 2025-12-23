@@ -13,7 +13,9 @@
 {#if isLoading}
 	<div class="mt-4 rounded-xl bg-primary/10 p-4">
 		<div class="flex items-center gap-3">
-			<div class="h-5 w-5 animate-spin rounded-full border-2 border-primary border-t-transparent"></div>
+			<div
+				class="h-5 w-5 animate-spin rounded-full border-2 border-primary border-t-transparent"
+			></div>
 			<span class="text-sm text-primary">{t('lesson.explaining')}</span>
 		</div>
 	</div>
@@ -27,6 +29,6 @@
 			<span class="text-lg">🤖</span>
 			<span class="font-medium text-primary">{t('lesson.explanation.title')}</span>
 		</div>
-		<p class="text-sm text-text-light leading-relaxed">{explanation}</p>
+		<p class="text-sm leading-relaxed text-text-light">{explanation}</p>
 	</div>
 {/if}

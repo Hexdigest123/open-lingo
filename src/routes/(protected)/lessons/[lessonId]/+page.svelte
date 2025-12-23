@@ -63,23 +63,21 @@
 	}
 
 	// Locale-aware question text for multiple choice
-	const localizedQuestionText = $derived(
-		getLocalizedText('questionEn', 'questionDe', 'question')
-	);
+	const localizedQuestionText = $derived(getLocalizedText('questionEn', 'questionDe', 'question'));
 
 	// Locale-aware sentence and hint for fill blank
-	const localizedSentence = $derived(
-		getLocalizedText('sentenceEn', 'sentenceDe', 'sentence')
-	);
-	const localizedHint = $derived(
-		getLocalizedText('hintEn', 'hintDe', 'hint')
-	);
+	const localizedSentence = $derived(getLocalizedText('sentenceEn', 'sentenceDe', 'sentence'));
+	const localizedHint = $derived(getLocalizedText('hintEn', 'hintDe', 'hint'));
 
 	// Locale-aware pairs for matching (transform to use correct language)
 	function getLocalizedPairs(): Array<{ spanish: string; english: string }> {
 		if (!questionContent?.pairs) return [];
-		const pairs = questionContent.pairs as Array<{ spanish: string; english: string; german?: string }>;
-		return pairs.map(p => ({
+		const pairs = questionContent.pairs as Array<{
+			spanish: string;
+			english: string;
+			german?: string;
+		}>;
+		return pairs.map((p) => ({
 			spanish: p.spanish,
 			english: i18n.locale === 'de' && p.german ? p.german : p.english
 		}));
@@ -323,7 +321,10 @@
 			<h2 class="mt-4 text-2xl font-bold text-error">{t('lesson.outOfHearts.title')}</h2>
 			<p class="mt-2 text-text-muted">{t('lesson.outOfHearts.message')}</p>
 
-			<button onclick={() => window.location.href = '/dashboard'} class="btn btn-primary btn-lg mt-6 w-full">
+			<button
+				onclick={() => (window.location.href = '/dashboard')}
+				class="btn btn-primary btn-lg mt-6 w-full"
+			>
 				{t('common.back')}
 			</button>
 		</div>
@@ -332,12 +333,10 @@
 	<div class="mx-auto max-w-2xl">
 		<!-- Header -->
 		<div class="mb-6 flex items-center justify-between">
-			<button onclick={exitLesson} class="text-text-muted hover:text-text-light">
-				✕
-			</button>
+			<button onclick={exitLesson} class="text-text-muted hover:text-text-light"> ✕ </button>
 
 			<!-- Progress Bar -->
-			<div class="flex-1 mx-4">
+			<div class="mx-4 flex-1">
 				<div class="progress-bar">
 					<div
 						class="progress-bar-fill"
@@ -355,7 +354,10 @@
 
 		<!-- Question Counter -->
 		<div class="mb-4 text-center text-sm text-text-muted">
-			{t('lesson.question')} {currentIndex + 1} {t('lesson.of')} {totalQuestions}
+			{t('lesson.question')}
+			{currentIndex + 1}
+			{t('lesson.of')}
+			{totalQuestions}
 		</div>
 
 		<!-- Question Content -->
@@ -427,9 +429,7 @@
 
 		<!-- Feedback -->
 		{#if showFeedback && lastAnswer}
-			<div
-				class="mt-6 rounded-xl p-4 {lastAnswer.isCorrect ? 'bg-success/10' : 'bg-error/10'}"
-			>
+			<div class="mt-6 rounded-xl p-4 {lastAnswer.isCorrect ? 'bg-success/10' : 'bg-error/10'}">
 				<div class="flex items-start gap-3">
 					<span class="text-2xl">{lastAnswer.isCorrect ? '✅' : '❌'}</span>
 					<div class="flex-1">
@@ -438,12 +438,13 @@
 						</p>
 						{#if !lastAnswer.isCorrect}
 							<p class="text-sm text-text-muted">
-								{t('lesson.correctAnswer')}: <span class="font-medium">{lastAnswer.correctAnswer}</span>
+								{t('lesson.correctAnswer')}:
+								<span class="font-medium">{lastAnswer.correctAnswer}</span>
 							</p>
 							{#if data.hasApiKey && !aiExplanation && !isLoadingExplanation}
 								<button
 									onclick={fetchExplanation}
-									class="btn btn-ghost text-sm text-primary hover:bg-primary/10 mt-3 -ml-2"
+									class="btn btn-ghost mt-3 -ml-2 px-2 text-sm text-primary hover:bg-primary/10"
 								>
 									🤖 {t('lesson.explain')}
 								</button>
