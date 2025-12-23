@@ -46,7 +46,9 @@
 	<!-- Profile Settings -->
 	<div class="card">
 		<h2 class="text-xl font-bold text-text-light">{t('profile.editProfile')}</h2>
-		<p class="mt-1 text-text-muted">{t('settings.profileDescription') || 'Update your display name and profile information.'}</p>
+		<p class="mt-1 text-text-muted">
+			{t('settings.profileDescription') || 'Update your display name and profile information.'}
+		</p>
 
 		{#if form?.profileSuccess}
 			<div class="mt-4 rounded-xl bg-success/10 p-3 text-success">
@@ -81,9 +83,11 @@
 					id="email"
 					value={data.profile.email}
 					disabled
-					class="input mt-1 bg-bg-light-secondary text-text-muted cursor-not-allowed"
+					class="input mt-1 cursor-not-allowed bg-bg-light-secondary text-text-muted"
 				/>
-				<p class="mt-1 text-xs text-text-muted">{t('settings.emailCannotChange') || 'Email cannot be changed.'}</p>
+				<p class="mt-1 text-xs text-text-muted">
+					{t('settings.emailCannotChange') || 'Email cannot be changed.'}
+				</p>
 			</div>
 
 			<div>
@@ -118,8 +122,12 @@
 
 	<!-- Password Change -->
 	<div class="card">
-		<h2 class="text-xl font-bold text-text-light">{t('settings.changePassword') || 'Change Password'}</h2>
-		<p class="mt-1 text-text-muted">{t('settings.passwordDescription') || 'Update your account password.'}</p>
+		<h2 class="text-xl font-bold text-text-light">
+			{t('settings.changePassword') || 'Change Password'}
+		</h2>
+		<p class="mt-1 text-text-muted">
+			{t('settings.passwordDescription') || 'Update your account password.'}
+		</p>
 
 		{#if form?.passwordSuccess}
 			<div class="mt-4 rounded-xl bg-success/10 p-3 text-success">
@@ -181,7 +189,9 @@
 					title="Only ASCII characters allowed: letters, numbers, and !@#$%^&*()-_./"
 					class="input mt-1"
 				/>
-				<p class="mt-1 text-xs text-text-muted">{t('auth.passwordHint') || 'Minimum 8 characters'}</p>
+				<p class="mt-1 text-xs text-text-muted">
+					{t('auth.passwordHint') || 'Minimum 8 characters'}
+				</p>
 			</div>
 
 			<div>
@@ -224,7 +234,7 @@
 			{#each i18n.availableLocales as locale}
 				<button
 					onclick={() => setLocale(locale.code)}
-					class="flex items-center gap-2 rounded-xl border-2 px-4 py-3 font-medium transition-colors
+					class="flex cursor-pointer items-center gap-2 rounded-xl border-2 px-4 py-3 font-medium transition-colors
 						{i18n.locale === locale.code
 						? 'border-primary bg-primary/10 text-primary'
 						: 'border-border-light text-text-light hover:border-primary/50'}"
