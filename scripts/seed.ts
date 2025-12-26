@@ -15,6 +15,54 @@ import 'dotenv/config';
 
 const { levels, units, lessons, questions, achievements } = schema;
 
+// Validation warnings tracker
+const validationWarnings: string[] = [];
+
+function warnValidation(message: string) {
+	validationWarnings.push(message);
+}
+
+// Validate bilingual content for a question
+function validateBilingualContent(
+	questionType: string,
+	content: Record<string, unknown>,
+	lessonId: number
+): void {
+	switch (questionType) {
+		case 'multiple_choice':
+			if (!content.questionEn) warnValidation(`MC question in lesson ${lessonId}: missing questionEn`);
+			if (!content.questionDe) warnValidation(`MC question in lesson ${lessonId}: missing questionDe`);
+			break;
+		case 'translation':
+			if (content.direction === 'native_to_es') {
+				if (!content.textEn && !content.textDe) {
+					warnValidation(`Translation in lesson ${lessonId}: native_to_es missing both textEn and textDe`);
+				}
+			}
+			break;
+		case 'matching':
+			const pairs = content.pairs as Array<{ german?: string }> | undefined;
+			if (pairs) {
+				const missingGerman = pairs.filter((p) => !p.german).length;
+				if (missingGerman > 0) {
+					warnValidation(`Matching in lesson ${lessonId}: ${missingGerman}/${pairs.length} pairs missing German`);
+				}
+			}
+			break;
+		case 'listening':
+			const textToHear = content.textToHear as string;
+			if (textToHear && textToHear.split(/\s+/).length < 3) {
+				warnValidation(`Listening in lesson ${lessonId}: textToHear too short (${textToHear})`);
+			}
+			break;
+		case 'word_order':
+			if (content.instructionEn && !content.instructionDe) {
+				warnValidation(`WordOrder in lesson ${lessonId}: missing instructionDe`);
+			}
+			break;
+	}
+}
+
 // Helper to shuffle an array
 function shuffle<T>(array: T[]): T[] {
 	const arr = [...array];
@@ -307,26 +355,76 @@ function generateSpeakingQuestions(
 }
 
 // Generate listening questions (hear and identify)
+// Uses sentences for better audio comprehension (single words are too short to understand)
 // Supports bilingual answers - both English and German correct answers
 function generateListeningQuestions(
 	vocabItems: VocabItem[],
+	sentences: { es: string; en: string; de: string }[],
 	lessonId: number,
 	startOrder: number,
 	count: number
 ): schema.Question[] {
 	const questions: schema.Question[] = [];
+
+	// Filter sentences to only use those with 3+ words (short phrases are hard to hear)
+	const validSentences = sentences.filter((s) => s.es.split(/\s+/).length >= 3);
+
+	// Use sentences primarily - they're longer and easier to understand as audio
+	const shuffledSentences = shuffle(validSentences);
 	const shuffledVocab = shuffle(vocabItems);
 
-	for (let i = 0; i < count && i < shuffledVocab.length; i++) {
-		const item = shuffledVocab[i];
+	let added = 0;
+
+	// First, use sentences (preferred - longer audio is easier to understand)
+	for (let i = 0; i < shuffledSentences.length && added < count; i++) {
+		const sentence = shuffledSentences[i];
 
 		// Alternate between type and multiple choice
-		const answerType = i % 2 === 0 ? 'type' : 'multiple_choice';
+		const answerType = added % 2 === 0 ? 'type' : 'multiple_choice';
 
 		let optionsEn: string[] | undefined;
 		let optionsDe: string[] | undefined;
 		if (answerType === 'multiple_choice') {
-			const otherItems = vocabItems.filter((v) => v.es !== item.es);
+			const otherSentences = validSentences.filter((s) => s.es !== sentence.es);
+			const wrongSentences = getRandomItems(otherSentences, 3);
+			const wrongAnswersEn = wrongSentences.map((s) => s.en);
+			const wrongAnswersDe = wrongSentences.map((s) => s.de);
+			optionsEn = shuffle([sentence.en, ...wrongAnswersEn]);
+			optionsDe = shuffle([sentence.de, ...wrongAnswersDe]);
+		}
+
+		questions.push({
+			id: 0,
+			lessonId,
+			type: 'listening' as const,
+			content: {
+				textToHear: sentence.es,
+				answerType,
+				optionsEn,
+				optionsDe,
+				correctAnswerEn: sentence.en,
+				correctAnswerDe: sentence.de
+			},
+			correctAnswer: `${sentence.en}|${sentence.de}`,
+			audioUrl: null,
+			order: startOrder + added,
+			createdAt: new Date()
+		});
+		added++;
+	}
+
+	// Fall back to longer vocab phrases if we need more questions
+	// Only use vocab items that are at least 3 words (multi-word phrases)
+	const longVocab = shuffledVocab.filter((v) => v.es.split(/\s+/).length >= 3);
+	for (let i = 0; i < longVocab.length && added < count; i++) {
+		const item = longVocab[i];
+
+		const answerType = added % 2 === 0 ? 'type' : 'multiple_choice';
+
+		let optionsEn: string[] | undefined;
+		let optionsDe: string[] | undefined;
+		if (answerType === 'multiple_choice') {
+			const otherItems = longVocab.filter((v) => v.es !== item.es);
 			const wrongItems = getRandomItems(otherItems, 3);
 			const wrongAnswersEn = wrongItems.map((v) => v.en);
 			const wrongAnswersDe = wrongItems.map((v) => v.de);
@@ -348,9 +446,10 @@ function generateListeningQuestions(
 			},
 			correctAnswer: `${item.en}|${item.de}`,
 			audioUrl: null,
-			order: startOrder + i,
+			order: startOrder + added,
 			createdAt: new Date()
 		});
+		added++;
 	}
 
 	return questions;
@@ -396,7 +495,7 @@ function generateLessonQuestions(
 	addQuestions(generateMatchingQuestions(rotatedVocab, lessonId, currentOrder, 6));
 	addQuestions(generateWordOrderQuestions(rotatedVocab, sentences, lessonId, currentOrder, 6));
 	addQuestions(generateSpeakingQuestions(rotatedVocab, lessonId, currentOrder, 5));
-	addQuestions(generateListeningQuestions(rotatedVocab, lessonId, currentOrder, 5));
+	addQuestions(generateListeningQuestions(rotatedVocab, sentences, lessonId, currentOrder, 5));
 
 	return allQuestions;
 }
@@ -647,6 +746,11 @@ async function seed() {
 					questionInserts = generateLessonQuestions(unitVocab, lesson.id, i + 1);
 				}
 
+				// Validate each question for bilingual content
+				for (const q of questionInserts) {
+					validateBilingualContent(q.type, q.content as Record<string, unknown>, lesson.id);
+				}
+
 				if (questionInserts.length > 0) {
 					await db.insert(questions).values(questionInserts);
 					totalQuestions += questionInserts.length;
@@ -826,6 +930,21 @@ async function seed() {
 	await db.insert(achievements).values(achievementData);
 	console.log(`   ✓ Created ${achievementData.length} achievements\n`);
 
+	// Print validation warnings if any
+	if (validationWarnings.length > 0) {
+		console.log('⚠️  Validation Warnings:');
+		console.log('───────────────────────────────────────────────');
+		// Group and show first 20 warnings
+		const displayWarnings = validationWarnings.slice(0, 20);
+		for (const warning of displayWarnings) {
+			console.log(`   • ${warning}`);
+		}
+		if (validationWarnings.length > 20) {
+			console.log(`   ... and ${validationWarnings.length - 20} more warnings`);
+		}
+		console.log('');
+	}
+
 	// Summary
 	console.log('═══════════════════════════════════════════════');
 	console.log('🎉 Database seeding complete!\n');
@@ -835,6 +954,9 @@ async function seed() {
 	console.log(`   • Lessons: ${totalLessons}`);
 	console.log(`   • Questions: ${totalQuestions}`);
 	console.log(`   • Achievements: ${achievementData.length}`);
+	if (validationWarnings.length > 0) {
+		console.log(`   ⚠️  Validation warnings: ${validationWarnings.length}`);
+	}
 	console.log('═══════════════════════════════════════════════\n');
 
 	// Close connection
