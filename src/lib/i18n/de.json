@@ -243,7 +243,7 @@
 			"translation": "Übersetze diesen Satz",
 			"matching": "Ordne die Paare zu",
 			"speaking": "Sprich den Satz",
-			"listening": "Höre zu und tippe, was du hörst",
+			"listening": "Höre zu und übersetze, was du hörst",
 			"wordOrder": "Ordne die Wörter"
 		},
 		"wordOrder": {
@@ -269,7 +269,7 @@
 			"playing": "Wird abgespielt...",
 			"replay": "Wiederholen",
 			"whatDidYouHear": "Was hast du gehört?",
-			"typeAnswer": "Tippe, was du gehört hast...",
+			"typeAnswer": "Tippe, was du gehört hast, in deiner Sprache: ",
 			"speed": "Geschwindigkeit",
 			"noApiKey": "Hörübungen erfordern einen OpenAI API-Schlüssel.",
 			"noApiKeyHint": "Füge deinen API-Schlüssel in den Einstellungen hinzu oder bitte einen Administrator, einen globalen Schlüssel zu konfigurieren.",

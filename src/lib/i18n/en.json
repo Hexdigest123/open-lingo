@@ -176,11 +176,23 @@
 		"comingSoon": "Coming soon",
 		"unitsAvailable": "units available",
 		"levels": {
-			"A1": { "name": "Beginner", "description": "Basic phrases and expressions for everyday situations" },
+			"A1": {
+				"name": "Beginner",
+				"description": "Basic phrases and expressions for everyday situations"
+			},
 			"A2": { "name": "Elementary", "description": "Simple sentences about familiar topics" },
-			"B1": { "name": "Intermediate", "description": "Main points on familiar matters regularly encountered" },
-			"B2": { "name": "Upper Intermediate", "description": "Complex texts on both concrete and abstract topics" },
-			"C1": { "name": "Advanced", "description": "Demanding texts and implicit meaning recognition" },
+			"B1": {
+				"name": "Intermediate",
+				"description": "Main points on familiar matters regularly encountered"
+			},
+			"B2": {
+				"name": "Upper Intermediate",
+				"description": "Complex texts on both concrete and abstract topics"
+			},
+			"C1": {
+				"name": "Advanced",
+				"description": "Demanding texts and implicit meaning recognition"
+			},
 			"C2": { "name": "Mastery", "description": "Near-native fluency and understanding" }
 		}
 	},
@@ -228,7 +240,7 @@
 			"translation": "Translate this sentence",
 			"matching": "Match the pairs",
 			"speaking": "Speak the sentence",
-			"listening": "Listen and type what you hear",
+			"listening": "Listen and translate what you hear",
 			"wordOrder": "Arrange the words"
 		},
 		"wordOrder": {
@@ -254,7 +266,7 @@
 			"playing": "Playing...",
 			"replay": "Replay",
 			"whatDidYouHear": "What did you hear?",
-			"typeAnswer": "Type what you heard...",
+			"typeAnswer": "Type what you heard in your language...",
 			"speed": "Speed",
 			"noApiKey": "Listening practice requires an OpenAI API key.",
 			"noApiKeyHint": "Add your API key in Settings or ask an administrator to configure a global key.",
