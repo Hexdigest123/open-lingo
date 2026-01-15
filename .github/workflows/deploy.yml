@@ -4,6 +4,12 @@ on:
   push:
     branches: [main]
   workflow_dispatch:
+    inputs:
+      force_seed:
+        description: '⚠️ DANGER: Force re-seed database (DELETES ALL DATA!)'
+        required: false
+        type: boolean
+        default: false
 
 jobs:
   deploy:
@@ -60,15 +66,43 @@ jobs:
       - name: Check if seeding is needed
         id: check-seed
         run: |
-          LEVEL_COUNT=$(docker compose -f compose.yaml exec -T db psql -U "$POSTGRES_USER" -d "$POSTGRES_DB" -t -c "SELECT COUNT(*) FROM levels;" 2>/dev/null | tr -d ' ' || echo "0")
-          echo "Level count: $LEVEL_COUNT"
-          if [ "$LEVEL_COUNT" = "0" ] || [ -z "$LEVEL_COUNT" ]; then
+          FORCE_SEED="${{ github.event.inputs.force_seed }}"
+
+          if [ "$FORCE_SEED" = "true" ]; then
+            echo "⚠️  FORCE SEED ENABLED - Will wipe and re-seed database!"
             echo "needs_seed=true" >> $GITHUB_OUTPUT
-            echo "Database needs seeding"
+            echo "force_mode=true" >> $GITHUB_OUTPUT
           else
-            echo "needs_seed=false" >> $GITHUB_OUTPUT
-            echo "Database already seeded ($LEVEL_COUNT levels)"
+            LEVEL_COUNT=$(docker compose -f compose.yaml exec -T db psql -U "$POSTGRES_USER" -d "$POSTGRES_DB" -t -c "SELECT COUNT(*) FROM levels;" 2>/dev/null | tr -d ' ' || echo "0")
+            echo "Level count: $LEVEL_COUNT"
+            if [ "$LEVEL_COUNT" = "0" ] || [ -z "$LEVEL_COUNT" ]; then
+              echo "needs_seed=true" >> $GITHUB_OUTPUT
+              echo "force_mode=false" >> $GITHUB_OUTPUT
+              echo "Database needs seeding (empty)"
+            else
+              echo "needs_seed=false" >> $GITHUB_OUTPUT
+              echo "force_mode=false" >> $GITHUB_OUTPUT
+              echo "Database already seeded ($LEVEL_COUNT levels) - skipping seed"
+            fi
           fi
+
+      - name: ⚠️ Warning - Force seed will delete all data
+        if: steps.check-seed.outputs.force_mode == 'true'
+        run: |
+          echo "════════════════════════════════════════════════"
+          echo "⚠️  FORCE SEED MODE ACTIVE"
+          echo "════════════════════════════════════════════════"
+          echo ""
+          echo "This will DELETE ALL DATA including:"
+          echo "  • User accounts and profiles"
+          echo "  • User progress and stats"
+          echo "  • Lesson completions"
+          echo "  • Achievements earned"
+          echo "  • Chat sessions"
+          echo "  • All user data"
+          echo ""
+          echo "════════════════════════════════════════════════"
+          sleep 3
 
       - name: Seed database
         if: steps.check-seed.outputs.needs_seed == 'true'
