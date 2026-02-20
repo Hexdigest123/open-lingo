@@ -311,6 +311,12 @@
 		"freezeEarned": "Streak-Einfrierung verdient!",
 		"freezeUsed": "Streak-Einfrierung verwendet!"
 	},
+	"celebration": {
+		"firstCorrectToday": "Toller Start!",
+		"firstCorrectTodayMessage": "Du hast heute deine erste richtige Antwort gegeben. Weiter so!",
+		"achievementUnlocked": "Erfolg freigeschaltet!",
+		"awesome": "Super!"
+	},
 	"leaderboard": {
 		"title": "Rangliste",
 		"subtitle": "Sieh, wie du im Vergleich zu anderen Lernenden abschneidest",

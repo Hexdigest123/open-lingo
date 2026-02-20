@@ -308,6 +308,12 @@
 		"freezeEarned": "Streak Freeze Earned!",
 		"freezeUsed": "Streak Freeze Used!"
 	},
+	"celebration": {
+		"firstCorrectToday": "Great Start!",
+		"firstCorrectTodayMessage": "You got your first correct answer today. Keep it up!",
+		"achievementUnlocked": "Achievement Unlocked!",
+		"awesome": "Awesome!"
+	},
 	"leaderboard": {
 		"title": "Leaderboard",
 		"subtitle": "See how you compare to other learners",
