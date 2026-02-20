@@ -123,7 +123,7 @@
 				{#each data.sessions as session}
 					<a
 						href="/chat/{session.id}"
-						class="card block transition-colors hover:bg-bg-light-secondary"
+						class="block card transition-colors hover:bg-bg-light-secondary"
 					>
 						<div class="flex items-center justify-between">
 							<div class="min-w-0 flex-1">

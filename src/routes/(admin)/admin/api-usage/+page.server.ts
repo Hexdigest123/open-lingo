@@ -30,9 +30,7 @@ export const load: PageServerLoad = async ({ url }) => {
 		.offset(offset);
 
 	// Get total count
-	const [{ total }] = await db
-		.select({ total: count() })
-		.from(apiUsageLogs);
+	const [{ total }] = await db.select({ total: count() }).from(apiUsageLogs);
 
 	// Get summary stats for the last 30 days
 	const thirtyDaysAgo = new Date();

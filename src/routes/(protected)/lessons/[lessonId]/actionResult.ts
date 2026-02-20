@@ -11,10 +11,7 @@ type ActionResponse = {
 
 function isPayloadShape(payload: unknown): payload is SubmitActionPayload {
 	return Boolean(
-		payload &&
-			typeof payload === 'object' &&
-			'isCorrect' in payload &&
-			'correctAnswer' in payload
+		payload && typeof payload === 'object' && 'isCorrect' in payload && 'correctAnswer' in payload
 	);
 }
 

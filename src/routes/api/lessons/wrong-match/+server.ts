@@ -20,11 +20,7 @@ export const POST: RequestHandler = async ({ locals }) => {
 	}
 
 	// Get current stats
-	const [stats] = await db
-		.select()
-		.from(userStats)
-		.where(eq(userStats.userId, userId))
-		.limit(1);
+	const [stats] = await db.select().from(userStats).where(eq(userStats.userId, userId)).limit(1);
 
 	if (!stats) {
 		return json({ error: 'User stats not found' }, { status: 404 });

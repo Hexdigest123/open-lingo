@@ -71,7 +71,7 @@
 
 <div class="space-y-8">
 	<!-- Profile Header -->
-	<div class="card flex flex-col items-center gap-4 text-center sm:flex-row sm:text-left">
+	<div class="flex flex-col items-center gap-4 card text-center sm:flex-row sm:text-left">
 		<div
 			class="flex h-24 w-24 items-center justify-center rounded-full bg-gradient-to-br from-success to-primary text-4xl text-white"
 		>
@@ -135,7 +135,7 @@
 		<div class="grid grid-cols-2 gap-4 sm:grid-cols-3 lg:grid-cols-4">
 			{#each data.allAchievements as achievement}
 				{@const isEarned = earnedIds.has(achievement.id)}
-				<div class="card relative {isEarned ? '' : 'opacity-50 grayscale'}">
+				<div class="relative card {isEarned ? '' : 'opacity-50 grayscale'}">
 					<div class="flex flex-col items-center gap-2 text-center">
 						<div
 							class="flex h-16 w-16 items-center justify-center rounded-full {isEarned
@@ -193,7 +193,7 @@
 <!-- Delete Account Modal -->
 {#if showDeleteModal}
 	<div class="fixed inset-0 z-50 flex items-center justify-center bg-black/50 p-4">
-		<div class="card w-full max-w-md">
+		<div class="w-full max-w-md card">
 			<h2 class="mb-4 text-xl font-bold text-error">{t('profile.dangerZone.confirmTitle')}</h2>
 			<p class="mb-4 text-text-muted">{t('profile.dangerZone.confirmMessage')}</p>
 

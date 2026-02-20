@@ -320,7 +320,7 @@
 {#if isComplete}
 	<!-- Lesson Complete Screen -->
 	<div class="fixed inset-0 z-50 flex items-center justify-center bg-black/50 p-4">
-		<div class="card w-full max-w-md text-center">
+		<div class="w-full max-w-md card text-center">
 			<div class="text-6xl">🎉</div>
 			<h2 class="mt-4 text-2xl font-bold text-text-light">{t('lesson.complete.title')}</h2>
 			<p class="mt-2 text-lg text-text-muted">
@@ -348,7 +348,7 @@
 {:else if showOutOfHeartsModal}
 	<!-- Out of Hearts Screen -->
 	<div class="fixed inset-0 z-50 flex items-center justify-center bg-black/50 p-4">
-		<div class="card w-full max-w-md text-center">
+		<div class="w-full max-w-md card text-center">
 			<div class="text-6xl">💔</div>
 			<h2 class="mt-4 text-2xl font-bold text-error">{t('lesson.outOfHearts.title')}</h2>
 			<p class="mt-2 text-text-muted">{t('lesson.outOfHearts.message')}</p>

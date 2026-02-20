@@ -10,6 +10,7 @@ declare global {
 				displayName: string;
 				role: 'user' | 'admin';
 				approvalStatus: 'pending' | 'approved' | 'rejected';
+				onboardingCompleted: boolean;
 			} | null;
 			newAccessToken?: string;
 		}

@@ -3,7 +3,10 @@ import { fail, redirect } from '@sveltejs/kit';
 import { db } from '$lib/server/db';
 import { lessons, units, levels, questions, type QuestionType } from '$lib/server/db/schema';
 import { eq, desc } from 'drizzle-orm';
-import { validateQuestionContent, validateCorrectAnswer } from '$lib/server/validation/question-validation';
+import {
+	validateQuestionContent,
+	validateCorrectAnswer
+} from '$lib/server/validation/question-validation';
 
 export const load: PageServerLoad = async ({ params }) => {
 	const lessonId = parseInt(params.id);

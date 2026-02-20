@@ -32,7 +32,7 @@
 		{#each sentence.split('_____') as part, i}
 			{part}
 			{#if i < sentence.split('_____').length - 1}
-				<span class="inline-block min-w-24 border-b-2 border-primary mx-1"></span>
+				<span class="mx-1 inline-block min-w-24 border-b-2 border-primary"></span>
 			{/if}
 		{/each}
 	</p>
@@ -48,16 +48,12 @@
 		bind:value={answer}
 		onkeydown={handleKeydown}
 		placeholder={t('lesson.typeAnswer')}
-		disabled={disabled}
+		{disabled}
 		class="input text-lg"
 	/>
 
 	{#if !disabled}
-		<button
-			onclick={submit}
-			disabled={!answer.trim()}
-			class="btn btn-success btn-lg mt-6 w-full"
-		>
+		<button onclick={submit} disabled={!answer.trim()} class="btn btn-success btn-lg mt-6 w-full">
 			{t('lesson.checkAnswer')}
 		</button>
 	{/if}

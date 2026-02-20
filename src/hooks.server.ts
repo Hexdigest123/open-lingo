@@ -12,12 +12,7 @@ const RATE_LIMITED_PATHS: Array<{ pattern: RegExp; config: keyof typeof RATE_LIM
 ];
 
 // Routes that pending users are allowed to access
-const PENDING_USER_ALLOWED_ROUTES = [
-	'/pending-approval',
-	'/logout',
-	'/api/auth/logout',
-	'/'
-];
+const PENDING_USER_ALLOWED_ROUTES = ['/pending-approval', '/logout', '/api/auth/logout', '/'];
 
 export const handle: Handle = async ({ event, resolve }) => {
 	// Initialize user as null

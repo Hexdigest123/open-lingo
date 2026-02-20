@@ -10,11 +10,13 @@ import {
 	isEmailDomainAllowed,
 	type SignupMode
 } from '$lib/server/settings/appSettings';
+import { validateInvitationCode, markInvitationUsed } from '$lib/server/invitations/invitations';
 import {
-	validateInvitationCode,
-	markInvitationUsed
-} from '$lib/server/invitations/invitations';
-import { isValidInputWithSpaces, isValidInput, isValidEmail, MAX_INPUT_LENGTH } from '$lib/server/validation/input';
+	isValidInputWithSpaces,
+	isValidInput,
+	isValidEmail,
+	MAX_INPUT_LENGTH
+} from '$lib/server/validation/input';
 
 const REFRESH_COOKIE_NAME = 'refresh_token';
 

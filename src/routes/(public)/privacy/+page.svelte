@@ -22,9 +22,11 @@
 			</section>
 
 			<section>
-				<h2 class="text-xl font-semibold text-text-light">{t('legal.privacy.dataCollection.title')}</h2>
+				<h2 class="text-xl font-semibold text-text-light">
+					{t('legal.privacy.dataCollection.title')}
+				</h2>
 				<p class="mt-2">{t('legal.privacy.dataCollection.text')}</p>
-				<ul class="mt-2 list-disc list-inside space-y-1">
+				<ul class="mt-2 list-inside list-disc space-y-1">
 					<li>{t('legal.privacy.dataCollection.item1')}</li>
 					<li>{t('legal.privacy.dataCollection.item2')}</li>
 					<li>{t('legal.privacy.dataCollection.item3')}</li>
@@ -39,7 +41,7 @@
 			<section>
 				<h2 class="text-xl font-semibold text-text-light">{t('legal.privacy.security.title')}</h2>
 				<p class="mt-2">{t('legal.privacy.security.text')}</p>
-				<ul class="mt-2 list-disc list-inside space-y-1">
+				<ul class="mt-2 list-inside list-disc space-y-1">
 					<li>{t('legal.privacy.security.item1')}</li>
 					<li>{t('legal.privacy.security.item2')}</li>
 					<li>{t('legal.privacy.security.item3')}</li>
@@ -75,12 +77,14 @@
 						{/if}
 						{#if data.email}
 							<p>
-								{t('legal.imprint.email')}: <a href="mailto:{data.email}" class="text-primary hover:underline">{data.email}</a>
+								{t('legal.imprint.email')}:
+								<a href="mailto:{data.email}" class="text-primary hover:underline">{data.email}</a>
 							</p>
 						{/if}
 						{#if data.phone}
 							<p>
-								{t('legal.imprint.phone')}: <a href="tel:{data.phone}" class="text-primary hover:underline">{data.phone}</a>
+								{t('legal.imprint.phone')}:
+								<a href="tel:{data.phone}" class="text-primary hover:underline">{data.phone}</a>
 							</p>
 						{/if}
 					</div>

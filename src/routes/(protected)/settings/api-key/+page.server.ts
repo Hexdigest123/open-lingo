@@ -37,10 +37,7 @@ export const actions: Actions = {
 		try {
 			const encrypted = encryptApiKey(apiKey);
 
-			await db
-				.update(users)
-				.set({ openaiApiKeyEncrypted: encrypted })
-				.where(eq(users.id, userId));
+			await db.update(users).set({ openaiApiKeyEncrypted: encrypted }).where(eq(users.id, userId));
 
 			return { success: true, message: 'API key saved successfully' };
 		} catch (error) {
@@ -53,10 +50,7 @@ export const actions: Actions = {
 		const userId = locals.user!.id;
 
 		try {
-			await db
-				.update(users)
-				.set({ openaiApiKeyEncrypted: null })
-				.where(eq(users.id, userId));
+			await db.update(users).set({ openaiApiKeyEncrypted: null }).where(eq(users.id, userId));
 
 			return { success: true, message: 'API key removed' };
 		} catch (error) {

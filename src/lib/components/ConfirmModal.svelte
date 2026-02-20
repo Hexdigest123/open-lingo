@@ -46,11 +46,11 @@
 		aria-modal="true"
 		aria-labelledby="confirm-modal-title"
 	>
-		<div class="card w-full max-w-sm">
-			<h2 id="confirm-modal-title" class="text-lg font-bold text-text-light mb-2">
+		<div class="w-full max-w-sm card">
+			<h2 id="confirm-modal-title" class="mb-2 text-lg font-bold text-text-light">
 				{title}
 			</h2>
-			<p class="text-text-muted mb-6">
+			<p class="mb-6 text-text-muted">
 				{message}
 			</p>
 			<div class="flex justify-end gap-3">

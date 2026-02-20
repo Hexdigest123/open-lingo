@@ -143,23 +143,47 @@ function auditTranslation(
 
 	// Check direction
 	if (!direction || !['native_to_es', 'es_to_native'].includes(direction)) {
-		addIssue(issues, stats, question, 'invalid_direction', `Invalid or missing direction: "${direction}"`);
+		addIssue(
+			issues,
+			stats,
+			question,
+			'invalid_direction',
+			`Invalid or missing direction: "${direction}"`
+		);
 	}
 
 	// Check content based on direction
 	if (direction === 'native_to_es') {
 		// Should have textEn and/or textDe
 		if (!textEn && !textDe) {
-			addIssue(issues, stats, question, 'missing_native_text', 'native_to_es missing both textEn and textDe');
+			addIssue(
+				issues,
+				stats,
+				question,
+				'missing_native_text',
+				'native_to_es missing both textEn and textDe'
+			);
 		} else if (!textDe) {
-			addIssue(issues, stats, question, 'missing_german', 'native_to_es missing textDe (German users will see English)');
+			addIssue(
+				issues,
+				stats,
+				question,
+				'missing_german',
+				'native_to_es missing textDe (German users will see English)'
+			);
 		} else if (!textEn) {
 			addIssue(issues, stats, question, 'missing_english', 'native_to_es missing textEn');
 		}
 	} else if (direction === 'es_to_native') {
 		// Should have Spanish text
 		if (!text) {
-			addIssue(issues, stats, question, 'missing_spanish_text', 'es_to_native missing text (Spanish source)');
+			addIssue(
+				issues,
+				stats,
+				question,
+				'missing_spanish_text',
+				'es_to_native missing text (Spanish source)'
+			);
 		}
 	}
 }
@@ -188,13 +212,31 @@ function auditMatching(
 	}
 
 	if (missingSpanish > 0) {
-		addIssue(issues, stats, question, 'missing_spanish', `${missingSpanish}/${pairs.length} pairs missing Spanish`);
+		addIssue(
+			issues,
+			stats,
+			question,
+			'missing_spanish',
+			`${missingSpanish}/${pairs.length} pairs missing Spanish`
+		);
 	}
 	if (missingEnglish > 0) {
-		addIssue(issues, stats, question, 'missing_english', `${missingEnglish}/${pairs.length} pairs missing English`);
+		addIssue(
+			issues,
+			stats,
+			question,
+			'missing_english',
+			`${missingEnglish}/${pairs.length} pairs missing English`
+		);
 	}
 	if (missingGerman > 0) {
-		addIssue(issues, stats, question, 'missing_german', `${missingGerman}/${pairs.length} pairs missing German (German users will see English)`);
+		addIssue(
+			issues,
+			stats,
+			question,
+			'missing_german',
+			`${missingGerman}/${pairs.length} pairs missing German (German users will see English)`
+		);
 	}
 }
 
@@ -221,16 +263,34 @@ function auditListening(
 	// - Single word (always too short)
 	// - 2 words without punctuation (likely just a phrase, not a sentence)
 	if (wordCount === 1 || (wordCount === 2 && !hasEndPunctuation)) {
-		addIssue(issues, stats, question, 'text_too_short', `textToHear is only ${wordCount} word(s): "${textToHear}"`);
+		addIssue(
+			issues,
+			stats,
+			question,
+			'text_too_short',
+			`textToHear is only ${wordCount} word(s): "${textToHear}"`
+		);
 	}
 
 	// Check for bilingual options if multiple choice
 	if (answerType === 'multiple_choice') {
 		if (!optionsEn || optionsEn.length === 0) {
-			addIssue(issues, stats, question, 'missing_english_options', 'Multiple choice listening missing optionsEn');
+			addIssue(
+				issues,
+				stats,
+				question,
+				'missing_english_options',
+				'Multiple choice listening missing optionsEn'
+			);
 		}
 		if (!optionsDe || optionsDe.length === 0) {
-			addIssue(issues, stats, question, 'missing_german_options', 'Multiple choice listening missing optionsDe');
+			addIssue(
+				issues,
+				stats,
+				question,
+				'missing_german_options',
+				'Multiple choice listening missing optionsDe'
+			);
 		}
 	}
 }
@@ -248,10 +308,22 @@ function auditWordOrder(
 	}
 
 	if (!instructionEn) {
-		addIssue(issues, stats, question, 'missing_english_instruction', 'Word order missing instructionEn');
+		addIssue(
+			issues,
+			stats,
+			question,
+			'missing_english_instruction',
+			'Word order missing instructionEn'
+		);
 	}
 	if (!instructionDe) {
-		addIssue(issues, stats, question, 'missing_german_instruction', 'Word order missing instructionDe (German users will see English)');
+		addIssue(
+			issues,
+			stats,
+			question,
+			'missing_german_instruction',
+			'Word order missing instructionDe (German users will see English)'
+		);
 	}
 }
 
@@ -288,13 +360,31 @@ function auditMultipleChoice(
 	const { questionEn, questionDe, options } = content;
 
 	if (!questionEn) {
-		addIssue(issues, stats, question, 'missing_english_question', 'Multiple choice missing questionEn');
+		addIssue(
+			issues,
+			stats,
+			question,
+			'missing_english_question',
+			'Multiple choice missing questionEn'
+		);
 	}
 	if (!questionDe) {
-		addIssue(issues, stats, question, 'missing_german_question', 'Multiple choice missing questionDe');
+		addIssue(
+			issues,
+			stats,
+			question,
+			'missing_german_question',
+			'Multiple choice missing questionDe'
+		);
 	}
 	if (!options || options.length < 2) {
-		addIssue(issues, stats, question, 'insufficient_options', 'Multiple choice has fewer than 2 options');
+		addIssue(
+			issues,
+			stats,
+			question,
+			'insufficient_options',
+			'Multiple choice has fewer than 2 options'
+		);
 	}
 }
 

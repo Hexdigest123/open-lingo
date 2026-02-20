@@ -8,19 +8,37 @@ test.describe('Home page', () => {
 		await expect(page.locator('h1')).toBeVisible();
 
 		// Check for Get Started and Login buttons in main content area
-		await expect(page.getByRole('main').getByRole('link', { name: /get started/i }).first()).toBeVisible();
-		await expect(page.getByRole('main').getByRole('link', { name: /have.*account|log in/i }).first()).toBeVisible();
+		await expect(
+			page
+				.getByRole('main')
+				.getByRole('link', { name: /get started/i })
+				.first()
+		).toBeVisible();
+		await expect(
+			page
+				.getByRole('main')
+				.getByRole('link', { name: /have.*account|log in/i })
+				.first()
+		).toBeVisible();
 	});
 
 	test('navigates to register page from Get Started button', async ({ page }) => {
 		await page.goto('/');
-		await page.getByRole('main').getByRole('link', { name: /get started/i }).first().click();
+		await page
+			.getByRole('main')
+			.getByRole('link', { name: /get started/i })
+			.first()
+			.click();
 		await expect(page).toHaveURL('/register');
 	});
 
 	test('navigates to login page', async ({ page }) => {
 		await page.goto('/');
-		await page.getByRole('main').getByRole('link', { name: /have.*account|log in/i }).first().click();
+		await page
+			.getByRole('main')
+			.getByRole('link', { name: /have.*account|log in/i })
+			.first()
+			.click();
 		await expect(page).toHaveURL('/login');
 	});
 

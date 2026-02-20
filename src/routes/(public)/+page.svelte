@@ -127,7 +127,7 @@
 			<div class="mt-12 grid gap-8 md:grid-cols-3">
 				<!-- Feature 1: Gamified Learning -->
 				<div
-					class="card animate-fade-in-up group text-center transition-shadow duration-300 hover:shadow-xl delay-100"
+					class="animate-fade-in-up group card text-center transition-shadow delay-100 duration-300 hover:shadow-xl"
 				>
 					<div
 						class="mx-auto mb-4 flex h-16 w-16 items-center justify-center rounded-full bg-success/10 transition-colors group-hover:bg-success/20"
@@ -142,7 +142,7 @@
 
 				<!-- Feature 2: Voice Practice -->
 				<div
-					class="card animate-fade-in-up group text-center transition-shadow duration-300 hover:shadow-xl delay-200"
+					class="animate-fade-in-up group card text-center transition-shadow delay-200 duration-300 hover:shadow-xl"
 				>
 					<div
 						class="mx-auto mb-4 flex h-16 w-16 items-center justify-center rounded-full bg-primary/10 transition-colors group-hover:bg-primary/20"
@@ -157,7 +157,7 @@
 
 				<!-- Feature 3: AI Tutor -->
 				<div
-					class="card animate-fade-in-up group text-center transition-shadow duration-300 hover:shadow-xl delay-300"
+					class="animate-fade-in-up group card text-center transition-shadow delay-300 duration-300 hover:shadow-xl"
 				>
 					<div
 						class="mx-auto mb-4 flex h-16 w-16 items-center justify-center rounded-full bg-purple/10 transition-colors group-hover:bg-purple/20"

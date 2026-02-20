@@ -18,7 +18,7 @@
 </svelte:head>
 
 <div class="flex min-h-[calc(100vh-200px)] items-center justify-center px-4 py-12">
-	<div class="w-full max-w-md animate-fade-in-up">
+	<div class="animate-fade-in-up w-full max-w-md">
 		<div class="text-center">
 			<h1 class="text-3xl font-bold text-text-light">{t('auth.registerTitle')}</h1>
 			<p class="mt-2 text-text-muted">{t('auth.registerSubtitle')}</p>

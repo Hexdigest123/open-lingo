@@ -1,7 +1,14 @@
 import type { PageServerLoad, Actions } from './$types';
 import { fail, redirect } from '@sveltejs/kit';
 import { db } from '$lib/server/db';
-import { users, userStats, userAchievements, achievements, userLessonProgress, refreshTokens } from '$lib/server/db/schema';
+import {
+	users,
+	userStats,
+	userAchievements,
+	achievements,
+	userLessonProgress,
+	refreshTokens
+} from '$lib/server/db/schema';
 import { eq, count } from 'drizzle-orm';
 import { verifyPassword } from '$lib/server/auth/password';
 

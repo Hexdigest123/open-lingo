@@ -53,8 +53,16 @@
 
 	const CONFETTI_COUNT = 50;
 	const CONFETTI_COLORS = [
-		'#58cc02', '#ffc800', '#ff9600', '#1cb0f6', '#ce82ff',
-		'#ff4b4b', '#89e219', '#49c0f8', '#ffd633', '#dda0ff'
+		'#58cc02',
+		'#ffc800',
+		'#ff9600',
+		'#1cb0f6',
+		'#ce82ff',
+		'#ff4b4b',
+		'#89e219',
+		'#49c0f8',
+		'#ffd633',
+		'#dda0ff'
 	];
 
 	function randomBetween(min: number, max: number): number {
@@ -225,7 +233,18 @@
 
 	.confetti-star {
 		background: var(--confetti-color);
-		clip-path: polygon(50% 0%, 61% 35%, 98% 35%, 68% 57%, 79% 91%, 50% 70%, 21% 91%, 32% 57%, 2% 35%, 39% 35%);
+		clip-path: polygon(
+			50% 0%,
+			61% 35%,
+			98% 35%,
+			68% 57%,
+			79% 91%,
+			50% 70%,
+			21% 91%,
+			32% 57%,
+			2% 35%,
+			39% 35%
+		);
 	}
 
 	@keyframes confetti-fall {
@@ -235,11 +254,13 @@
 		}
 		10% {
 			opacity: 1;
-			transform: translateY(10vh) translateX(calc(var(--confetti-drift) * 0.3)) rotate(calc(var(--confetti-rotation) * 0.3)) scale(1);
+			transform: translateY(10vh) translateX(calc(var(--confetti-drift) * 0.3))
+				rotate(calc(var(--confetti-rotation) * 0.3)) scale(1);
 		}
 		100% {
 			opacity: 0;
-			transform: translateY(100vh) translateX(var(--confetti-drift)) rotate(var(--confetti-rotation)) scale(0.5);
+			transform: translateY(100vh) translateX(var(--confetti-drift))
+				rotate(var(--confetti-rotation)) scale(0.5);
 		}
 	}
 
@@ -311,7 +332,8 @@
 	}
 
 	@keyframes celebration-icon-pulse {
-		0%, 100% {
+		0%,
+		100% {
 			box-shadow: 0 0 0 0 rgba(255, 200, 0, 0.4);
 			transform: scale(1);
 		}

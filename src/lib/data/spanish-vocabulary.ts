@@ -83,7 +83,11 @@ export const A1_UNITS: UnitVocab[] = [
 			{ target: 'tercero', en: 'third', de: 'dritte' }
 		],
 		sentences: [
-			{ target: 'Tengo tres hermanos.', en: 'I have three siblings.', de: 'Ich habe drei Geschwister.' },
+			{
+				target: 'Tengo tres hermanos.',
+				en: 'I have three siblings.',
+				de: 'Ich habe drei Geschwister.'
+			},
 			{ target: '¿Cuántos años tienes?', en: 'How old are you?', de: 'Wie alt bist du?' },
 			{ target: 'Son las cinco.', en: 'It is five o clock.', de: 'Es ist fünf Uhr.' },
 			{ target: 'Hay diez manzanas.', en: 'There are ten apples.', de: 'Es gibt zehn Äpfel.' },
@@ -119,10 +123,18 @@ export const A1_UNITS: UnitVocab[] = [
 			{ target: 'hijos', en: 'children', de: 'Kinder' }
 		],
 		sentences: [
-			{ target: 'Mi madre es doctora.', en: 'My mother is a doctor.', de: 'Meine Mutter ist Ärztin.' },
+			{
+				target: 'Mi madre es doctora.',
+				en: 'My mother is a doctor.',
+				de: 'Meine Mutter ist Ärztin.'
+			},
 			{ target: 'Tengo dos hermanas.', en: 'I have two sisters.', de: 'Ich habe zwei Schwestern.' },
 			{ target: 'Mi familia es grande.', en: 'My family is big.', de: 'Meine Familie ist groß.' },
-			{ target: 'El abuelo está en casa.', en: 'Grandfather is at home.', de: 'Der Großvater ist zu Hause.' },
+			{
+				target: 'El abuelo está en casa.',
+				en: 'Grandfather is at home.',
+				de: 'Der Großvater ist zu Hause.'
+			},
 			{ target: 'Ella es mi tía.', en: 'She is my aunt.', de: 'Sie ist meine Tante.' }
 		]
 	},
@@ -158,7 +170,11 @@ export const A1_UNITS: UnitVocab[] = [
 			{ target: 'El cielo es azul.', en: 'The sky is blue.', de: 'Der Himmel ist blau.' },
 			{ target: 'La manzana es roja.', en: 'The apple is red.', de: 'Der Apfel ist rot.' },
 			{ target: 'Mi carro es negro.', en: 'My car is black.', de: 'Mein Auto ist schwarz.' },
-			{ target: 'Las flores son amarillas.', en: 'The flowers are yellow.', de: 'Die Blumen sind gelb.' },
+			{
+				target: 'Las flores son amarillas.',
+				en: 'The flowers are yellow.',
+				de: 'Die Blumen sind gelb.'
+			},
 			{ target: '¿De qué color es?', en: 'What color is it?', de: 'Welche Farbe hat es?' }
 		]
 	},
@@ -191,10 +207,22 @@ export const A1_UNITS: UnitVocab[] = [
 			{ target: 'postre', en: 'dessert', de: 'Nachtisch' }
 		],
 		sentences: [
-			{ target: 'Quiero agua, por favor.', en: 'I want water, please.', de: 'Ich möchte Wasser, bitte.' },
-			{ target: 'El desayuno está listo.', en: 'Breakfast is ready.', de: 'Das Frühstück ist fertig.' },
+			{
+				target: 'Quiero agua, por favor.',
+				en: 'I want water, please.',
+				de: 'Ich möchte Wasser, bitte.'
+			},
+			{
+				target: 'El desayuno está listo.',
+				en: 'Breakfast is ready.',
+				de: 'Das Frühstück ist fertig.'
+			},
 			{ target: 'Me gusta el pollo.', en: 'I like chicken.', de: 'Ich mag Hähnchen.' },
-			{ target: '¿Qué quieres comer?', en: 'What do you want to eat?', de: 'Was möchtest du essen?' },
+			{
+				target: '¿Qué quieres comer?',
+				en: 'What do you want to eat?',
+				de: 'Was möchtest du essen?'
+			},
 			{ target: 'La sopa está caliente.', en: 'The soup is hot.', de: 'Die Suppe ist heiß.' }
 		]
 	},
@@ -231,7 +259,11 @@ export const A1_UNITS: UnitVocab[] = [
 			{ target: '¿Qué hora es?', en: 'What time is it?', de: 'Wie spät ist es?' },
 			{ target: 'Son las tres.', en: 'It is three o clock.', de: 'Es ist drei Uhr.' },
 			{ target: 'Mañana es viernes.', en: 'Tomorrow is Friday.', de: 'Morgen ist Freitag.' },
-			{ target: 'La semana tiene siete días.', en: 'The week has seven days.', de: 'Die Woche hat sieben Tage.' }
+			{
+				target: 'La semana tiene siete días.',
+				en: 'The week has seven days.',
+				de: 'Die Woche hat sieben Tage.'
+			}
 		]
 	},
 	{
@@ -267,7 +299,11 @@ export const A1_UNITS: UnitVocab[] = [
 			{ target: 'Tengo dos ojos.', en: 'I have two eyes.', de: 'Ich habe zwei Augen.' },
 			{ target: 'Ella tiene pelo largo.', en: 'She has long hair.', de: 'Sie hat lange Haare.' },
 			{ target: 'Lávate las manos.', en: 'Wash your hands.', de: 'Wasch dir die Hände.' },
-			{ target: 'El corazón late rápido.', en: 'The heart beats fast.', de: 'Das Herz schlägt schnell.' }
+			{
+				target: 'El corazón late rápido.',
+				en: 'The heart beats fast.',
+				de: 'Das Herz schlägt schnell.'
+			}
 		]
 	},
 	{
@@ -299,11 +335,27 @@ export const A1_UNITS: UnitVocab[] = [
 			{ target: 'pijama', en: 'pajamas', de: 'Schlafanzug' }
 		],
 		sentences: [
-			{ target: 'Ella lleva un vestido rojo.', en: 'She wears a red dress.', de: 'Sie trägt ein rotes Kleid.' },
-			{ target: 'Necesito comprar zapatos.', en: 'I need to buy shoes.', de: 'Ich muss Schuhe kaufen.' },
-			{ target: 'Hace frío, ponte la chaqueta.', en: 'It is cold, put on your jacket.', de: 'Es ist kalt, zieh deine Jacke an.' },
+			{
+				target: 'Ella lleva un vestido rojo.',
+				en: 'She wears a red dress.',
+				de: 'Sie trägt ein rotes Kleid.'
+			},
+			{
+				target: 'Necesito comprar zapatos.',
+				en: 'I need to buy shoes.',
+				de: 'Ich muss Schuhe kaufen.'
+			},
+			{
+				target: 'Hace frío, ponte la chaqueta.',
+				en: 'It is cold, put on your jacket.',
+				de: 'Es ist kalt, zieh deine Jacke an.'
+			},
 			{ target: '¿Dónde está mi camisa?', en: 'Where is my shirt?', de: 'Wo ist mein Hemd?' },
-			{ target: 'Los calcetines son blancos.', en: 'The socks are white.', de: 'Die Socken sind weiß.' }
+			{
+				target: 'Los calcetines son blancos.',
+				en: 'The socks are white.',
+				de: 'Die Socken sind weiß.'
+			}
 		]
 	},
 	{
@@ -336,10 +388,22 @@ export const A1_UNITS: UnitVocab[] = [
 		],
 		sentences: [
 			{ target: 'Mi casa es grande.', en: 'My house is big.', de: 'Mein Haus ist groß.' },
-			{ target: 'La cocina está limpia.', en: 'The kitchen is clean.', de: 'Die Küche ist sauber.' },
-			{ target: 'Hay una mesa en el comedor.', en: 'There is a table in the dining room.', de: 'Es gibt einen Tisch im Esszimmer.' },
+			{
+				target: 'La cocina está limpia.',
+				en: 'The kitchen is clean.',
+				de: 'Die Küche ist sauber.'
+			},
+			{
+				target: 'Hay una mesa en el comedor.',
+				en: 'There is a table in the dining room.',
+				de: 'Es gibt einen Tisch im Esszimmer.'
+			},
 			{ target: 'Duermo en mi cama.', en: 'I sleep in my bed.', de: 'Ich schlafe in meinem Bett.' },
-			{ target: 'El jardín tiene flores.', en: 'The garden has flowers.', de: 'Der Garten hat Blumen.' }
+			{
+				target: 'El jardín tiene flores.',
+				en: 'The garden has flowers.',
+				de: 'Der Garten hat Blumen.'
+			}
 		]
 	},
 	{
@@ -373,8 +437,16 @@ export const A1_UNITS: UnitVocab[] = [
 		sentences: [
 			{ target: 'Yo soy estudiante.', en: 'I am a student.', de: 'Ich bin Student.' },
 			{ target: 'Ella tiene un perro.', en: 'She has a dog.', de: 'Sie hat einen Hund.' },
-			{ target: 'Nosotros vamos al parque.', en: 'We go to the park.', de: 'Wir gehen in den Park.' },
-			{ target: 'Quiero aprender español.', en: 'I want to learn Spanish.', de: 'Ich möchte Spanisch lernen.' },
+			{
+				target: 'Nosotros vamos al parque.',
+				en: 'We go to the park.',
+				de: 'Wir gehen in den Park.'
+			},
+			{
+				target: 'Quiero aprender español.',
+				en: 'I want to learn Spanish.',
+				de: 'Ich möchte Spanisch lernen.'
+			},
 			{ target: 'Ellos trabajan mucho.', en: 'They work a lot.', de: 'Sie arbeiten viel.' }
 		]
 	}
@@ -446,10 +518,22 @@ export const A2_UNITS: UnitVocab[] = [
 			{ target: 'turista', en: 'tourist', de: 'Tourist' }
 		],
 		sentences: [
-			{ target: 'El tren sale a las ocho.', en: 'The train leaves at eight.', de: 'Der Zug fährt um acht ab.' },
+			{
+				target: 'El tren sale a las ocho.',
+				en: 'The train leaves at eight.',
+				de: 'Der Zug fährt um acht ab.'
+			},
 			{ target: 'Necesito un boleto.', en: 'I need a ticket.', de: 'Ich brauche eine Fahrkarte.' },
-			{ target: 'El aeropuerto está lejos.', en: 'The airport is far.', de: 'Der Flughafen ist weit weg.' },
-			{ target: '¿Dónde está la estación?', en: 'Where is the station?', de: 'Wo ist der Bahnhof?' },
+			{
+				target: 'El aeropuerto está lejos.',
+				en: 'The airport is far.',
+				de: 'Der Flughafen ist weit weg.'
+			},
+			{
+				target: '¿Dónde está la estación?',
+				en: 'Where is the station?',
+				de: 'Wo ist der Bahnhof?'
+			},
 			{ target: 'Viajo en avión.', en: 'I travel by plane.', de: 'Ich reise mit dem Flugzeug.' }
 		]
 	},
@@ -486,7 +570,11 @@ export const A2_UNITS: UnitVocab[] = [
 			{ target: 'Es muy caro.', en: 'It is very expensive.', de: 'Es ist sehr teuer.' },
 			{ target: '¿Aceptan tarjeta?', en: 'Do you accept cards?', de: 'Akzeptieren Sie Karten?' },
 			{ target: 'Quiero comprar esto.', en: 'I want to buy this.', de: 'Ich möchte das kaufen.' },
-			{ target: 'Hay un descuento del veinte por ciento.', en: 'There is a twenty percent discount.', de: 'Es gibt zwanzig Prozent Rabatt.' }
+			{
+				target: 'Hay un descuento del veinte por ciento.',
+				en: 'There is a twenty percent discount.',
+				de: 'Es gibt zwanzig Prozent Rabatt.'
+			}
 		]
 	},
 	{
@@ -519,9 +607,17 @@ export const A2_UNITS: UnitVocab[] = [
 		],
 		sentences: [
 			{ target: 'Me siento enfermo.', en: 'I feel sick.', de: 'Ich fühle mich krank.' },
-			{ target: 'Necesito ver al médico.', en: 'I need to see the doctor.', de: 'Ich muss zum Arzt.' },
+			{
+				target: 'Necesito ver al médico.',
+				en: 'I need to see the doctor.',
+				de: 'Ich muss zum Arzt.'
+			},
 			{ target: 'Tengo dolor de cabeza.', en: 'I have a headache.', de: 'Ich habe Kopfschmerzen.' },
-			{ target: '¿Dónde está la farmacia?', en: 'Where is the pharmacy?', de: 'Wo ist die Apotheke?' },
+			{
+				target: '¿Dónde está la farmacia?',
+				en: 'Where is the pharmacy?',
+				de: 'Wo ist die Apotheke?'
+			},
 			{ target: 'Toma esta medicina.', en: 'Take this medicine.', de: 'Nimm diese Medizin.' }
 		]
 	},
@@ -554,10 +650,26 @@ export const A2_UNITS: UnitVocab[] = [
 			{ target: 'carrera', en: 'career', de: 'Karriere' }
 		],
 		sentences: [
-			{ target: 'Trabajo en una oficina.', en: 'I work in an office.', de: 'Ich arbeite in einem Büro.' },
-			{ target: 'Mi hermano es ingeniero.', en: 'My brother is an engineer.', de: 'Mein Bruder ist Ingenieur.' },
-			{ target: 'Tengo una reunión mañana.', en: 'I have a meeting tomorrow.', de: 'Ich habe morgen eine Besprechung.' },
-			{ target: '¿Cuál es tu profesión?', en: 'What is your profession?', de: 'Was ist dein Beruf?' },
+			{
+				target: 'Trabajo en una oficina.',
+				en: 'I work in an office.',
+				de: 'Ich arbeite in einem Büro.'
+			},
+			{
+				target: 'Mi hermano es ingeniero.',
+				en: 'My brother is an engineer.',
+				de: 'Mein Bruder ist Ingenieur.'
+			},
+			{
+				target: 'Tengo una reunión mañana.',
+				en: 'I have a meeting tomorrow.',
+				de: 'Ich habe morgen eine Besprechung.'
+			},
+			{
+				target: '¿Cuál es tu profesión?',
+				en: 'What is your profession?',
+				de: 'Was ist dein Beruf?'
+			},
 			{ target: 'El jefe está ocupado.', en: 'The boss is busy.', de: 'Der Chef ist beschäftigt.' }
 		]
 	},
@@ -591,10 +703,26 @@ export const A2_UNITS: UnitVocab[] = [
 		],
 		sentences: [
 			{ target: 'Estudio español.', en: 'I study Spanish.', de: 'Ich lerne Spanisch.' },
-			{ target: 'La clase empieza a las nueve.', en: 'The class starts at nine.', de: 'Der Unterricht beginnt um neun.' },
-			{ target: 'Tengo mucha tarea.', en: 'I have a lot of homework.', de: 'Ich habe viele Hausaufgaben.' },
-			{ target: '¿Dónde está la biblioteca?', en: 'Where is the library?', de: 'Wo ist die Bibliothek?' },
-			{ target: 'El examen es difícil.', en: 'The exam is difficult.', de: 'Die Prüfung ist schwer.' }
+			{
+				target: 'La clase empieza a las nueve.',
+				en: 'The class starts at nine.',
+				de: 'Der Unterricht beginnt um neun.'
+			},
+			{
+				target: 'Tengo mucha tarea.',
+				en: 'I have a lot of homework.',
+				de: 'Ich habe viele Hausaufgaben.'
+			},
+			{
+				target: '¿Dónde está la biblioteca?',
+				en: 'Where is the library?',
+				de: 'Wo ist die Bibliothek?'
+			},
+			{
+				target: 'El examen es difícil.',
+				en: 'The exam is difficult.',
+				de: 'Die Prüfung ist schwer.'
+			}
 		]
 	},
 	{
@@ -626,11 +754,23 @@ export const A2_UNITS: UnitVocab[] = [
 			{ target: 'fotografía', en: 'photography', de: 'Fotografie' }
 		],
 		sentences: [
-			{ target: 'Me gusta jugar fútbol.', en: 'I like to play soccer.', de: 'Ich spiele gern Fußball.' },
+			{
+				target: 'Me gusta jugar fútbol.',
+				en: 'I like to play soccer.',
+				de: 'Ich spiele gern Fußball.'
+			},
 			{ target: 'Ella nada muy bien.', en: 'She swims very well.', de: 'Sie schwimmt sehr gut.' },
-			{ target: 'El equipo ganó el partido.', en: 'The team won the game.', de: 'Die Mannschaft hat das Spiel gewonnen.' },
+			{
+				target: 'El equipo ganó el partido.',
+				en: 'The team won the game.',
+				de: 'Die Mannschaft hat das Spiel gewonnen.'
+			},
 			{ target: '¿Cuál es tu hobby?', en: 'What is your hobby?', de: 'Was ist dein Hobby?' },
-			{ target: 'Leo libros todos los días.', en: 'I read books every day.', de: 'Ich lese jeden Tag Bücher.' }
+			{
+				target: 'Leo libros todos los días.',
+				en: 'I read books every day.',
+				de: 'Ich lese jeden Tag Bücher.'
+			}
 		]
 	},
 	{
@@ -662,11 +802,31 @@ export const A2_UNITS: UnitVocab[] = [
 			{ target: 'dirección', en: 'direction', de: 'Richtung' }
 		],
 		sentences: [
-			{ target: 'El banco está a la derecha.', en: 'The bank is on the right.', de: 'Die Bank ist rechts.' },
-			{ target: 'Vamos al centro.', en: 'Let us go downtown.', de: 'Lass uns in die Innenstadt gehen.' },
-			{ target: 'El museo está cerca.', en: 'The museum is nearby.', de: 'Das Museum ist in der Nähe.' },
-			{ target: '¿Cómo llego al parque?', en: 'How do I get to the park?', de: 'Wie komme ich zum Park?' },
-			{ target: 'Sigue recto dos calles.', en: 'Go straight two blocks.', de: 'Geh zwei Straßen geradeaus.' }
+			{
+				target: 'El banco está a la derecha.',
+				en: 'The bank is on the right.',
+				de: 'Die Bank ist rechts.'
+			},
+			{
+				target: 'Vamos al centro.',
+				en: 'Let us go downtown.',
+				de: 'Lass uns in die Innenstadt gehen.'
+			},
+			{
+				target: 'El museo está cerca.',
+				en: 'The museum is nearby.',
+				de: 'Das Museum ist in der Nähe.'
+			},
+			{
+				target: '¿Cómo llego al parque?',
+				en: 'How do I get to the park?',
+				de: 'Wie komme ich zum Park?'
+			},
+			{
+				target: 'Sigue recto dos calles.',
+				en: 'Go straight two blocks.',
+				de: 'Geh zwei Straßen geradeaus.'
+			}
 		]
 	},
 	{
@@ -698,11 +858,27 @@ export const A2_UNITS: UnitVocab[] = [
 			{ target: 'tierra', en: 'earth', de: 'Erde' }
 		],
 		sentences: [
-			{ target: 'Mi perro es muy amigable.', en: 'My dog is very friendly.', de: 'Mein Hund ist sehr freundlich.' },
-			{ target: 'Las flores son hermosas.', en: 'The flowers are beautiful.', de: 'Die Blumen sind wunderschön.' },
+			{
+				target: 'Mi perro es muy amigable.',
+				en: 'My dog is very friendly.',
+				de: 'Mein Hund ist sehr freundlich.'
+			},
+			{
+				target: 'Las flores son hermosas.',
+				en: 'The flowers are beautiful.',
+				de: 'Die Blumen sind wunderschön.'
+			},
 			{ target: 'El río está limpio.', en: 'The river is clean.', de: 'Der Fluss ist sauber.' },
-			{ target: 'Hay muchos árboles en el bosque.', en: 'There are many trees in the forest.', de: 'Es gibt viele Bäume im Wald.' },
-			{ target: 'Las estrellas brillan en el cielo.', en: 'The stars shine in the sky.', de: 'Die Sterne leuchten am Himmel.' }
+			{
+				target: 'Hay muchos árboles en el bosque.',
+				en: 'There are many trees in the forest.',
+				de: 'Es gibt viele Bäume im Wald.'
+			},
+			{
+				target: 'Las estrellas brillan en el cielo.',
+				en: 'The stars shine in the sky.',
+				de: 'Die Sterne leuchten am Himmel.'
+			}
 		]
 	},
 	{
@@ -734,11 +910,19 @@ export const A2_UNITS: UnitVocab[] = [
 			{ target: 'orgullo', en: 'pride', de: 'Stolz' }
 		],
 		sentences: [
-			{ target: 'Estoy muy feliz hoy.', en: 'I am very happy today.', de: 'Ich bin heute sehr glücklich.' },
+			{
+				target: 'Estoy muy feliz hoy.',
+				en: 'I am very happy today.',
+				de: 'Ich bin heute sehr glücklich.'
+			},
 			{ target: 'Ella está triste.', en: 'She is sad.', de: 'Sie ist traurig.' },
 			{ target: 'Me siento cansado.', en: 'I feel tired.', de: 'Ich fühle mich müde.' },
 			{ target: 'No estés nervioso.', en: 'Do not be nervous.', de: 'Sei nicht nervös.' },
-			{ target: 'Tengo miedo de la oscuridad.', en: 'I am afraid of the dark.', de: 'Ich habe Angst vor der Dunkelheit.' }
+			{
+				target: 'Tengo miedo de la oscuridad.',
+				en: 'I am afraid of the dark.',
+				de: 'Ich habe Angst vor der Dunkelheit.'
+			}
 		]
 	}
 ];
@@ -774,11 +958,27 @@ export const B1_UNITS: UnitVocab[] = [
 			{ target: 'murió', en: 'died', de: 'starb' }
 		],
 		sentences: [
-			{ target: 'Ayer fui al cine.', en: 'Yesterday I went to the movies.', de: 'Gestern ging ich ins Kino.' },
+			{
+				target: 'Ayer fui al cine.',
+				en: 'Yesterday I went to the movies.',
+				de: 'Gestern ging ich ins Kino.'
+			},
 			{ target: 'Ella comió pizza.', en: 'She ate pizza.', de: 'Sie aß Pizza.' },
-			{ target: 'Él me dijo la verdad.', en: 'He told me the truth.', de: 'Er sagte mir die Wahrheit.' },
-			{ target: '¿Qué hiciste ayer?', en: 'What did you do yesterday?', de: 'Was hast du gestern gemacht?' },
-			{ target: 'No pude dormir anoche.', en: 'I could not sleep last night.', de: 'Ich konnte letzte Nacht nicht schlafen.' }
+			{
+				target: 'Él me dijo la verdad.',
+				en: 'He told me the truth.',
+				de: 'Er sagte mir die Wahrheit.'
+			},
+			{
+				target: '¿Qué hiciste ayer?',
+				en: 'What did you do yesterday?',
+				de: 'Was hast du gestern gemacht?'
+			},
+			{
+				target: 'No pude dormir anoche.',
+				en: 'I could not sleep last night.',
+				de: 'Ich konnte letzte Nacht nicht schlafen.'
+			}
 		]
 	},
 	{
@@ -810,11 +1010,31 @@ export const B1_UNITS: UnitVocab[] = [
 			{ target: 'decidir', en: 'to decide', de: 'entscheiden' }
 		],
 		sentences: [
-			{ target: 'Mañana iré al doctor.', en: 'Tomorrow I will go to the doctor.', de: 'Morgen werde ich zum Arzt gehen.' },
-			{ target: 'El próximo año viajaré a España.', en: 'Next year I will travel to Spain.', de: 'Nächstes Jahr werde ich nach Spanien reisen.' },
-			{ target: '¿Qué harás este fin de semana?', en: 'What will you do this weekend?', de: 'Was wirst du dieses Wochenende machen?' },
-			{ target: 'Ella vendrá a la fiesta.', en: 'She will come to the party.', de: 'Sie wird zur Party kommen.' },
-			{ target: 'Pronto sabremos los resultados.', en: 'Soon we will know the results.', de: 'Bald werden wir die Ergebnisse wissen.' }
+			{
+				target: 'Mañana iré al doctor.',
+				en: 'Tomorrow I will go to the doctor.',
+				de: 'Morgen werde ich zum Arzt gehen.'
+			},
+			{
+				target: 'El próximo año viajaré a España.',
+				en: 'Next year I will travel to Spain.',
+				de: 'Nächstes Jahr werde ich nach Spanien reisen.'
+			},
+			{
+				target: '¿Qué harás este fin de semana?',
+				en: 'What will you do this weekend?',
+				de: 'Was wirst du dieses Wochenende machen?'
+			},
+			{
+				target: 'Ella vendrá a la fiesta.',
+				en: 'She will come to the party.',
+				de: 'Sie wird zur Party kommen.'
+			},
+			{
+				target: 'Pronto sabremos los resultados.',
+				en: 'Soon we will know the results.',
+				de: 'Bald werden wir die Ergebnisse wissen.'
+			}
 		]
 	},
 	{
@@ -846,11 +1066,31 @@ export const B1_UNITS: UnitVocab[] = [
 			{ target: 'datos', en: 'data', de: 'Daten' }
 		],
 		sentences: [
-			{ target: 'No tengo internet.', en: 'I do not have internet.', de: 'Ich habe kein Internet.' },
-			{ target: 'Descarga esta aplicación.', en: 'Download this app.', de: 'Lade diese App herunter.' },
-			{ target: 'Mi batería está baja.', en: 'My battery is low.', de: 'Meine Batterie ist schwach.' },
-			{ target: '¿Cuál es la contraseña?', en: 'What is the password?', de: 'Wie lautet das Passwort?' },
-			{ target: 'Subí una foto nueva.', en: 'I uploaded a new photo.', de: 'Ich habe ein neues Foto hochgeladen.' }
+			{
+				target: 'No tengo internet.',
+				en: 'I do not have internet.',
+				de: 'Ich habe kein Internet.'
+			},
+			{
+				target: 'Descarga esta aplicación.',
+				en: 'Download this app.',
+				de: 'Lade diese App herunter.'
+			},
+			{
+				target: 'Mi batería está baja.',
+				en: 'My battery is low.',
+				de: 'Meine Batterie ist schwach.'
+			},
+			{
+				target: '¿Cuál es la contraseña?',
+				en: 'What is the password?',
+				de: 'Wie lautet das Passwort?'
+			},
+			{
+				target: 'Subí una foto nueva.',
+				en: 'I uploaded a new photo.',
+				de: 'Ich habe ein neues Foto hochgeladen.'
+			}
 		]
 	},
 	{
@@ -882,11 +1122,31 @@ export const B1_UNITS: UnitVocab[] = [
 			{ target: 'planeta', en: 'planet', de: 'Planet' }
 		],
 		sentences: [
-			{ target: 'Debemos reciclar más.', en: 'We should recycle more.', de: 'Wir sollten mehr recyceln.' },
-			{ target: 'La contaminación es un problema grave.', en: 'Pollution is a serious problem.', de: 'Verschmutzung ist ein ernstes Problem.' },
-			{ target: 'El clima está cambiando.', en: 'The climate is changing.', de: 'Das Klima verändert sich.' },
-			{ target: 'Hay que proteger el planeta.', en: 'We must protect the planet.', de: 'Wir müssen den Planeten schützen.' },
-			{ target: 'Muchas especies están en peligro.', en: 'Many species are in danger.', de: 'Viele Arten sind in Gefahr.' }
+			{
+				target: 'Debemos reciclar más.',
+				en: 'We should recycle more.',
+				de: 'Wir sollten mehr recyceln.'
+			},
+			{
+				target: 'La contaminación es un problema grave.',
+				en: 'Pollution is a serious problem.',
+				de: 'Verschmutzung ist ein ernstes Problem.'
+			},
+			{
+				target: 'El clima está cambiando.',
+				en: 'The climate is changing.',
+				de: 'Das Klima verändert sich.'
+			},
+			{
+				target: 'Hay que proteger el planeta.',
+				en: 'We must protect the planet.',
+				de: 'Wir müssen den Planeten schützen.'
+			},
+			{
+				target: 'Muchas especies están en peligro.',
+				en: 'Many species are in danger.',
+				de: 'Viele Arten sind in Gefahr.'
+			}
 		]
 	}
 ];
@@ -921,11 +1181,31 @@ export const B2_UNITS: UnitVocab[] = [
 			{ target: 'economía', en: 'economy', de: 'Wirtschaft' }
 		],
 		sentences: [
-			{ target: 'Las elecciones son el próximo mes.', en: 'Elections are next month.', de: 'Die Wahlen sind nächsten Monat.' },
-			{ target: 'Todos tenemos el derecho de votar.', en: 'We all have the right to vote.', de: 'Wir alle haben das Recht zu wählen.' },
-			{ target: 'El gobierno anunció nuevas reformas.', en: 'The government announced new reforms.', de: 'Die Regierung hat neue Reformen angekündigt.' },
-			{ target: 'La democracia es importante.', en: 'Democracy is important.', de: 'Demokratie ist wichtig.' },
-			{ target: 'Hay una manifestación en la plaza.', en: 'There is a demonstration in the square.', de: 'Es gibt eine Demonstration auf dem Platz.' }
+			{
+				target: 'Las elecciones son el próximo mes.',
+				en: 'Elections are next month.',
+				de: 'Die Wahlen sind nächsten Monat.'
+			},
+			{
+				target: 'Todos tenemos el derecho de votar.',
+				en: 'We all have the right to vote.',
+				de: 'Wir alle haben das Recht zu wählen.'
+			},
+			{
+				target: 'El gobierno anunció nuevas reformas.',
+				en: 'The government announced new reforms.',
+				de: 'Die Regierung hat neue Reformen angekündigt.'
+			},
+			{
+				target: 'La democracia es importante.',
+				en: 'Democracy is important.',
+				de: 'Demokratie ist wichtig.'
+			},
+			{
+				target: 'Hay una manifestación en la plaza.',
+				en: 'There is a demonstration in the square.',
+				de: 'Es gibt eine Demonstration auf dem Platz.'
+			}
 		]
 	},
 	{
@@ -957,11 +1237,31 @@ export const B2_UNITS: UnitVocab[] = [
 			{ target: 'éxito', en: 'success', de: 'Erfolg' }
 		],
 		sentences: [
-			{ target: 'El negocio está creciendo.', en: 'The business is growing.', de: 'Das Geschäft wächst.' },
-			{ target: 'Necesitamos revisar el presupuesto.', en: 'We need to review the budget.', de: 'Wir müssen das Budget überprüfen.' },
-			{ target: 'La inversión fue exitosa.', en: 'The investment was successful.', de: 'Die Investition war erfolgreich.' },
-			{ target: 'Firmamos el contrato ayer.', en: 'We signed the contract yesterday.', de: 'Wir haben gestern den Vertrag unterschrieben.' },
-			{ target: 'La competencia es muy fuerte.', en: 'The competition is very strong.', de: 'Der Wettbewerb ist sehr stark.' }
+			{
+				target: 'El negocio está creciendo.',
+				en: 'The business is growing.',
+				de: 'Das Geschäft wächst.'
+			},
+			{
+				target: 'Necesitamos revisar el presupuesto.',
+				en: 'We need to review the budget.',
+				de: 'Wir müssen das Budget überprüfen.'
+			},
+			{
+				target: 'La inversión fue exitosa.',
+				en: 'The investment was successful.',
+				de: 'Die Investition war erfolgreich.'
+			},
+			{
+				target: 'Firmamos el contrato ayer.',
+				en: 'We signed the contract yesterday.',
+				de: 'Wir haben gestern den Vertrag unterschrieben.'
+			},
+			{
+				target: 'La competencia es muy fuerte.',
+				en: 'The competition is very strong.',
+				de: 'Der Wettbewerb ist sehr stark.'
+			}
 		]
 	}
 ];
@@ -996,11 +1296,31 @@ export const C1_UNITS: UnitVocab[] = [
 			{ target: 'implicar', en: 'to imply', de: 'implizieren' }
 		],
 		sentences: [
-			{ target: 'La hipótesis fue confirmada.', en: 'The hypothesis was confirmed.', de: 'Die Hypothese wurde bestätigt.' },
-			{ target: 'Según la investigación...', en: 'According to the research...', de: 'Laut der Forschung...' },
-			{ target: 'La evidencia sugiere que...', en: 'The evidence suggests that...', de: 'Die Beweise deuten darauf hin, dass...' },
-			{ target: 'En conclusión, podemos afirmar...', en: 'In conclusion, we can affirm...', de: 'Abschließend können wir feststellen...' },
-			{ target: 'Es necesario analizar el contexto.', en: 'It is necessary to analyze the context.', de: 'Es ist notwendig, den Kontext zu analysieren.' }
+			{
+				target: 'La hipótesis fue confirmada.',
+				en: 'The hypothesis was confirmed.',
+				de: 'Die Hypothese wurde bestätigt.'
+			},
+			{
+				target: 'Según la investigación...',
+				en: 'According to the research...',
+				de: 'Laut der Forschung...'
+			},
+			{
+				target: 'La evidencia sugiere que...',
+				en: 'The evidence suggests that...',
+				de: 'Die Beweise deuten darauf hin, dass...'
+			},
+			{
+				target: 'En conclusión, podemos afirmar...',
+				en: 'In conclusion, we can affirm...',
+				de: 'Abschließend können wir feststellen...'
+			},
+			{
+				target: 'Es necesario analizar el contexto.',
+				en: 'It is necessary to analyze the context.',
+				de: 'Es ist notwendig, den Kontext zu analysieren.'
+			}
 		]
 	}
 ];
@@ -1015,15 +1335,39 @@ export const C2_UNITS: UnitVocab[] = [
 		vocab: [
 			{ target: 'pan comido', en: 'piece of cake', de: 'ein Kinderspiel' },
 			{ target: 'meter la pata', en: 'to put your foot in it', de: 'ins Fettnäpfchen treten' },
-			{ target: 'tomar el pelo', en: 'to pull someone\'s leg', de: 'jemanden auf den Arm nehmen' },
-			{ target: 'estar en las nubes', en: 'to have your head in the clouds', de: 'mit den Gedanken woanders sein' },
-			{ target: 'costar un ojo de la cara', en: 'to cost an arm and a leg', de: 'ein Vermögen kosten' },
-			{ target: 'ser uña y carne', en: 'to be thick as thieves', de: 'ein Herz und eine Seele sein' },
-			{ target: 'no tener pelos en la lengua', en: 'to not mince words', de: 'kein Blatt vor den Mund nehmen' },
-			{ target: 'estar como pez en el agua', en: 'to be in one\'s element', de: 'sich wie ein Fisch im Wasser fühlen' },
+			{ target: 'tomar el pelo', en: "to pull someone's leg", de: 'jemanden auf den Arm nehmen' },
+			{
+				target: 'estar en las nubes',
+				en: 'to have your head in the clouds',
+				de: 'mit den Gedanken woanders sein'
+			},
+			{
+				target: 'costar un ojo de la cara',
+				en: 'to cost an arm and a leg',
+				de: 'ein Vermögen kosten'
+			},
+			{
+				target: 'ser uña y carne',
+				en: 'to be thick as thieves',
+				de: 'ein Herz und eine Seele sein'
+			},
+			{
+				target: 'no tener pelos en la lengua',
+				en: 'to not mince words',
+				de: 'kein Blatt vor den Mund nehmen'
+			},
+			{
+				target: 'estar como pez en el agua',
+				en: "to be in one's element",
+				de: 'sich wie ein Fisch im Wasser fühlen'
+			},
 			{ target: 'llover a cántaros', en: 'to rain cats and dogs', de: 'in Strömen regnen' },
-			{ target: 'dar en el clavo', en: 'to hit the nail on the head', de: 'den Nagel auf den Kopf treffen' },
-			{ target: 'ponerse las pilas', en: 'to get one\'s act together', de: 'in die Gänge kommen' },
+			{
+				target: 'dar en el clavo',
+				en: 'to hit the nail on the head',
+				de: 'den Nagel auf den Kopf treffen'
+			},
+			{ target: 'ponerse las pilas', en: "to get one's act together", de: 'in die Gänge kommen' },
 			{ target: 'ser pan comido', en: 'to be a piece of cake', de: 'ein Kinderspiel sein' },
 			{ target: 'echar una mano', en: 'to lend a hand', de: 'unter die Arme greifen' },
 			{ target: 'tener mala leche', en: 'to be in a bad mood', de: 'schlechte Laune haben' },
@@ -1031,15 +1375,39 @@ export const C2_UNITS: UnitVocab[] = [
 			{ target: 'tirar la toalla', en: 'to throw in the towel', de: 'das Handtuch werfen' },
 			{ target: 'dormir como un tronco', en: 'to sleep like a log', de: 'wie ein Stein schlafen' },
 			{ target: 'estar hecho polvo', en: 'to be exhausted', de: 'völlig fertig sein' },
-			{ target: 'no dar pie con bola', en: 'to not get anything right', de: 'nichts auf die Reihe kriegen' },
+			{
+				target: 'no dar pie con bola',
+				en: 'to not get anything right',
+				de: 'nichts auf die Reihe kriegen'
+			},
 			{ target: 'pillar el toro', en: 'to be too late', de: 'zu spät kommen' }
 		],
 		sentences: [
-			{ target: 'Este examen fue pan comido.', en: 'This exam was a piece of cake.', de: 'Diese Prüfung war ein Kinderspiel.' },
-			{ target: 'Metí la pata en la reunión.', en: 'I put my foot in it at the meeting.', de: 'Ich bin bei der Besprechung ins Fettnäpfchen getreten.' },
-			{ target: 'No me tomes el pelo.', en: 'Don\'t pull my leg.', de: 'Nimm mich nicht auf den Arm.' },
-			{ target: 'Siempre estás en las nubes.', en: 'You always have your head in the clouds.', de: 'Du bist immer mit den Gedanken woanders.' },
-			{ target: 'El carro me costó un ojo de la cara.', en: 'The car cost me an arm and a leg.', de: 'Das Auto hat mich ein Vermögen gekostet.' }
+			{
+				target: 'Este examen fue pan comido.',
+				en: 'This exam was a piece of cake.',
+				de: 'Diese Prüfung war ein Kinderspiel.'
+			},
+			{
+				target: 'Metí la pata en la reunión.',
+				en: 'I put my foot in it at the meeting.',
+				de: 'Ich bin bei der Besprechung ins Fettnäpfchen getreten.'
+			},
+			{
+				target: 'No me tomes el pelo.',
+				en: "Don't pull my leg.",
+				de: 'Nimm mich nicht auf den Arm.'
+			},
+			{
+				target: 'Siempre estás en las nubes.',
+				en: 'You always have your head in the clouds.',
+				de: 'Du bist immer mit den Gedanken woanders.'
+			},
+			{
+				target: 'El carro me costó un ojo de la cara.',
+				en: 'The car cost me an arm and a leg.',
+				de: 'Das Auto hat mich ein Vermögen gekostet.'
+			}
 		]
 	}
 ];

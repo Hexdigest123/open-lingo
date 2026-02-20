@@ -43,6 +43,59 @@ interface ListeningContent {
 	options?: string[];
 }
 
+interface CharacterRecognitionContent {
+	character: string;
+	options: string[];
+	characterType: 'hiragana' | 'katakana' | 'kanji';
+}
+
+interface CharacterWritingContent {
+	reading: string;
+	characterType: 'hiragana' | 'katakana' | 'kanji';
+}
+
+interface ScriptTransliterationContent {
+	sourceText: string;
+	sourceScript: 'romaji' | 'hiragana' | 'katakana' | 'kanji';
+	targetScript: 'romaji' | 'hiragana' | 'katakana';
+}
+
+interface ConjugationClozeContent {
+	sentence: string;
+	infinitive: string;
+	targetTense: string;
+}
+
+interface ParticleSelectionContent {
+	sentence: string;
+	options: string[];
+}
+
+interface GrammarTransformationContent {
+	sourceSentence: string;
+	transformationType: string;
+}
+
+interface KanjiCompositionContent {
+	targetKanji: string;
+	radicals: unknown[];
+	distractorRadicals: unknown[];
+}
+
+interface MinimalPairDiscriminationContent {
+	audioText: string;
+	options: Array<{ isCorrect: boolean }>;
+}
+
+interface DictationContent {
+	textToHear: string;
+	speed: 'normal' | 'slow';
+}
+
+interface GuidedCompositionContent {
+	vocabularyHints: string[];
+}
+
 export type QuestionContent =
 	| MultipleChoiceContent
 	| FillBlankContent
@@ -50,7 +103,17 @@ export type QuestionContent =
 	| MatchingContent
 	| WordOrderContent
 	| SpeakingContent
-	| ListeningContent;
+	| ListeningContent
+	| CharacterRecognitionContent
+	| CharacterWritingContent
+	| ScriptTransliterationContent
+	| ConjugationClozeContent
+	| ParticleSelectionContent
+	| GrammarTransformationContent
+	| KanjiCompositionContent
+	| MinimalPairDiscriminationContent
+	| DictationContent
+	| GuidedCompositionContent;
 
 export function validateQuestionContent(type: QuestionType, content: unknown): string | null {
 	if (!content || typeof content !== 'object') {
@@ -164,6 +227,144 @@ export function validateQuestionContent(type: QuestionType, content: unknown): s
 				if (!Array.isArray(c.options) || c.options.length < 2) {
 					return 'At least 2 options are required for multiple choice listening';
 				}
+			}
+			break;
+		}
+
+		case 'character_recognition': {
+			if (!c.character || typeof c.character !== 'string') {
+				return 'Character is required';
+			}
+			if (!Array.isArray(c.options) || c.options.length < 2) {
+				return 'At least 2 options are required';
+			}
+			if (c.options.some((opt: unknown) => typeof opt !== 'string' || !opt.trim())) {
+				return 'All options must be non-empty strings';
+			}
+			if (
+				!c.characterType ||
+				!['hiragana', 'katakana', 'kanji'].includes(c.characterType as string)
+			) {
+				return 'Character type must be hiragana, katakana, or kanji';
+			}
+			break;
+		}
+
+		case 'character_writing': {
+			if (!c.reading || typeof c.reading !== 'string') {
+				return 'Reading is required';
+			}
+			if (
+				!c.characterType ||
+				!['hiragana', 'katakana', 'kanji'].includes(c.characterType as string)
+			) {
+				return 'Character type must be hiragana, katakana, or kanji';
+			}
+			break;
+		}
+
+		case 'script_transliteration': {
+			if (!c.sourceText || typeof c.sourceText !== 'string') {
+				return 'Source text is required';
+			}
+			if (
+				!c.sourceScript ||
+				!['romaji', 'hiragana', 'katakana', 'kanji'].includes(c.sourceScript as string)
+			) {
+				return 'Source script must be romaji, hiragana, katakana, or kanji';
+			}
+			if (
+				!c.targetScript ||
+				!['romaji', 'hiragana', 'katakana'].includes(c.targetScript as string)
+			) {
+				return 'Target script must be romaji, hiragana, or katakana';
+			}
+			break;
+		}
+
+		case 'conjugation_cloze': {
+			if (!c.sentence || typeof c.sentence !== 'string') {
+				return 'Sentence is required';
+			}
+			if (!c.sentence.includes('_____')) {
+				return 'Sentence must contain a blank (_____) for the answer';
+			}
+			if (!c.infinitive || typeof c.infinitive !== 'string') {
+				return 'Infinitive is required';
+			}
+			if (!c.targetTense || typeof c.targetTense !== 'string') {
+				return 'Target tense is required';
+			}
+			break;
+		}
+
+		case 'particle_selection': {
+			if (!c.sentence || typeof c.sentence !== 'string') {
+				return 'Sentence is required';
+			}
+			if (!Array.isArray(c.options) || c.options.length < 2) {
+				return 'At least 2 options are required';
+			}
+			if (c.options.some((opt: unknown) => typeof opt !== 'string' || !opt.trim())) {
+				return 'All options must be non-empty strings';
+			}
+			break;
+		}
+
+		case 'grammar_transformation': {
+			if (!c.sourceSentence || typeof c.sourceSentence !== 'string') {
+				return 'Source sentence is required';
+			}
+			if (!c.transformationType || typeof c.transformationType !== 'string') {
+				return 'Transformation type is required';
+			}
+			break;
+		}
+
+		case 'kanji_composition': {
+			if (!c.targetKanji || typeof c.targetKanji !== 'string') {
+				return 'Target kanji is required';
+			}
+			if (!Array.isArray(c.radicals) || c.radicals.length < 1) {
+				return 'At least 1 radical is required';
+			}
+			if (!Array.isArray(c.distractorRadicals)) {
+				return 'Distractor radicals must be an array';
+			}
+			break;
+		}
+
+		case 'minimal_pair_discrimination': {
+			if (!c.audioText || typeof c.audioText !== 'string') {
+				return 'Audio text is required';
+			}
+			if (!Array.isArray(c.options) || c.options.length < 2) {
+				return 'At least 2 options are required';
+			}
+			for (const option of c.options as Array<Record<string, unknown>>) {
+				if (typeof option.isCorrect !== 'boolean') {
+					return 'Each option must include an isCorrect boolean';
+				}
+			}
+			break;
+		}
+
+		case 'dictation': {
+			if (!c.textToHear || typeof c.textToHear !== 'string') {
+				return 'Text to hear is required';
+			}
+			if (!c.speed || !['normal', 'slow'].includes(c.speed as string)) {
+				return 'Speed must be normal or slow';
+			}
+			break;
+		}
+
+		case 'guided_composition': {
+			if (!Array.isArray(c.vocabularyHints) || c.vocabularyHints.length < 1) {
+				return 'At least 1 vocabulary hint is required';
+			}
+			if (c.vocabularyHints.some((hint: unknown) => typeof hint !== 'string' || !hint.trim())) {
+				return 'All vocabulary hints must be non-empty strings';
 			}
 			break;
 		}

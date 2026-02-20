@@ -117,9 +117,7 @@ export const actions: Actions = {
 				emailSent = await sendRejectionNotificationEmail(user.email, user.displayName);
 			}
 
-			const message = emailSent
-				? 'User rejected and notification email sent'
-				: 'User rejected';
+			const message = emailSent ? 'User rejected and notification email sent' : 'User rejected';
 
 			return { success: true, message };
 		} catch (error) {

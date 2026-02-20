@@ -1,11 +1,7 @@
 import type { PageServerLoad, Actions } from './$types';
 import { fail } from '@sveltejs/kit';
 import { encryptApiKey } from '$lib/server/auth/encryption';
-import {
-	hasGlobalApiKey,
-	setGlobalApiKey,
-	removeGlobalApiKey
-} from '$lib/server/openai/getApiKey';
+import { hasGlobalApiKey, setGlobalApiKey, removeGlobalApiKey } from '$lib/server/openai/getApiKey';
 import {
 	getSignupMode,
 	setSignupMode,
@@ -45,14 +41,21 @@ export const actions: Actions = {
 
 		// Validate API key format (starts with sk-)
 		if (!apiKey.startsWith('sk-')) {
-			return fail(400, { error: 'Invalid API key format. Key should start with sk-', action: 'saveGlobalKey' });
+			return fail(400, {
+				error: 'Invalid API key format. Key should start with sk-',
+				action: 'saveGlobalKey'
+			});
 		}
 
 		try {
 			const encrypted = encryptApiKey(apiKey);
 			await setGlobalApiKey(encrypted);
 
-			return { success: true, message: 'Global API key saved successfully', action: 'saveGlobalKey' };
+			return {
+				success: true,
+				message: 'Global API key saved successfully',
+				action: 'saveGlobalKey'
+			};
 		} catch (error) {
 			console.error('Failed to save global API key:', error);
 			return fail(500, { error: 'Failed to save global API key', action: 'saveGlobalKey' });
@@ -79,7 +82,11 @@ export const actions: Actions = {
 
 		try {
 			await setSignupMode(mode);
-			return { success: true, message: `Signup mode updated to "${mode}"`, action: 'updateSignupMode' };
+			return {
+				success: true,
+				message: `Signup mode updated to "${mode}"`,
+				action: 'updateSignupMode'
+			};
 		} catch (error) {
 			console.error('Failed to update signup mode:', error);
 			return fail(500, { error: 'Failed to update signup mode', action: 'updateSignupMode' });
@@ -99,12 +106,23 @@ export const actions: Actions = {
 		try {
 			await setAllowedDomains(domains);
 			if (domains.length === 0) {
-				return { success: true, message: 'Domain restriction removed. All email domains are now allowed.', action: 'updateAllowedDomains' };
+				return {
+					success: true,
+					message: 'Domain restriction removed. All email domains are now allowed.',
+					action: 'updateAllowedDomains'
+				};
 			}
-			return { success: true, message: `Allowed domains updated: ${domains.join(', ')}`, action: 'updateAllowedDomains' };
+			return {
+				success: true,
+				message: `Allowed domains updated: ${domains.join(', ')}`,
+				action: 'updateAllowedDomains'
+			};
 		} catch (error) {
 			console.error('Failed to update allowed domains:', error);
-			return fail(500, { error: 'Failed to update allowed domains', action: 'updateAllowedDomains' });
+			return fail(500, {
+				error: 'Failed to update allowed domains',
+				action: 'updateAllowedDomains'
+			});
 		}
 	},
 
@@ -128,7 +146,11 @@ export const actions: Actions = {
 	testEmail: async () => {
 		const result = await testEmailConfiguration();
 		if (result.success) {
-			return { success: true, message: 'Email configuration is working correctly', action: 'testEmail' };
+			return {
+				success: true,
+				message: 'Email configuration is working correctly',
+				action: 'testEmail'
+			};
 		} else {
 			return fail(500, { error: result.error || 'Email test failed', action: 'testEmail' });
 		}

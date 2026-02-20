@@ -125,7 +125,15 @@ async function fixQuestions() {
 
 		switch (question.type) {
 			case 'listening':
-				await fixListeningQuestion(db, question, content, shuffledSentences, sentenceIndex, results, stats);
+				await fixListeningQuestion(
+					db,
+					question,
+					content,
+					shuffledSentences,
+					sentenceIndex,
+					results,
+					stats
+				);
 				sentenceIndex = (sentenceIndex + 1) % shuffledSentences.length;
 				break;
 			case 'matching':
@@ -243,7 +251,8 @@ async function fixMatchingQuestion(
 		if (pair.german) return pair;
 
 		// Try to find German translation from vocabulary
-		const vocab = vocabLookup.get(pair.spanish?.toLowerCase()) || vocabLookup.get(pair.english?.toLowerCase());
+		const vocab =
+			vocabLookup.get(pair.spanish?.toLowerCase()) || vocabLookup.get(pair.english?.toLowerCase());
 
 		if (vocab) {
 			needsUpdate = true;

@@ -66,7 +66,7 @@
 		<div class="space-y-3 sm:hidden">
 			{#each data.leaderboard as entry}
 				<div
-					class="card flex items-center gap-3 p-3 {entry.isCurrentUser
+					class="flex items-center gap-3 card p-3 {entry.isCurrentUser
 						? 'border-2 border-primary'
 						: ''} {getRankClass(entry.rank)}"
 				>
@@ -97,7 +97,7 @@
 		</div>
 
 		<!-- Desktop View (>= sm: 640px) -->
-		<div class="card hidden overflow-hidden p-0 sm:block">
+		<div class="hidden overflow-hidden card p-0 sm:block">
 			<table class="w-full">
 				<thead class="bg-bg-light-secondary">
 					<tr>

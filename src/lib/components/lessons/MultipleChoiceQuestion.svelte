@@ -32,11 +32,11 @@
 		{#each options as option}
 			<button
 				onclick={() => selectOption(option)}
-				disabled={disabled}
+				{disabled}
 				class="w-full rounded-xl border-2 p-4 text-left font-medium transition-all
 					{selectedOption === option
-						? 'border-primary bg-primary/10 text-primary'
-						: 'border-border-light text-text-light hover:border-primary/50'}
+					? 'border-primary bg-primary/10 text-primary'
+					: 'border-border-light text-text-light hover:border-primary/50'}
 					{disabled ? 'cursor-not-allowed opacity-50' : 'cursor-pointer'}"
 			>
 				{option}
@@ -45,11 +45,7 @@
 	</div>
 
 	{#if !disabled}
-		<button
-			onclick={submit}
-			disabled={!selectedOption}
-			class="btn btn-success btn-lg mt-6 w-full"
-		>
+		<button onclick={submit} disabled={!selectedOption} class="btn btn-success btn-lg mt-6 w-full">
 			{t('lesson.checkAnswer')}
 		</button>
 	{/if}

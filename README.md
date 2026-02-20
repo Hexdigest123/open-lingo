@@ -33,6 +33,7 @@ A Duolingo-inspired Spanish language learning application with AI-powered featur
 ## Quick Start
 
 1. **Clone and install dependencies**
+
    ```bash
    git clone <repository-url>
    cd open-lingo
@@ -40,11 +41,13 @@ A Duolingo-inspired Spanish language learning application with AI-powered featur
    ```
 
 2. **Set up environment variables**
+
    ```bash
    cp .env.example .env
    ```
 
    Required variables:
+
    ```env
    DATABASE_URL=postgres://user:password@localhost:5432/openlingo
    JWT_ACCESS_SECRET=<random-64-char-string>
@@ -53,11 +56,13 @@ A Duolingo-inspired Spanish language learning application with AI-powered featur
    ```
 
    Optional (for AI features):
+
    ```env
    OPENAI_API_KEY=sk-...
    ```
 
    Optional (for email notifications):
+
    ```env
    SMTP_HOST=smtp.example.com
    SMTP_PORT=587
@@ -68,17 +73,20 @@ A Duolingo-inspired Spanish language learning application with AI-powered featur
    ```
 
 3. **Start the database**
+
    ```bash
    npm run db:start
    ```
 
 4. **Initialize the database**
+
    ```bash
    npm run db:push
    npm run db:seed
    ```
 
 5. **Start development server**
+
    ```bash
    npm run dev
    ```
@@ -90,6 +98,7 @@ A Duolingo-inspired Spanish language learning application with AI-powered featur
 ## Available Scripts
 
 ### Development
+
 ```bash
 npm run dev              # Start dev server with HMR
 npm run build            # Production build
@@ -100,6 +109,7 @@ npm run format           # Auto-format with Prettier
 ```
 
 ### Testing
+
 ```bash
 npm run test             # Run all tests (E2E + unit)
 npm run test:unit        # Run Vitest unit tests only
@@ -107,6 +117,7 @@ npm run test:e2e         # Run Playwright E2E tests
 ```
 
 ### Database
+
 ```bash
 npm run db:start         # Start PostgreSQL container
 npm run db:push          # Push schema changes to database
@@ -143,6 +154,7 @@ src/
 ## Database Schema
 
 Key tables:
+
 - `users` - User accounts with roles and approval status
 - `levels`, `units`, `lessons` - Content hierarchy
 - `questions` - Lesson questions with JSON content
@@ -163,6 +175,7 @@ Key tables:
 ## Signup Modes
 
 Configurable in admin settings:
+
 - **Open**: Anyone can register
 - **Invitation**: Requires invite code from admin
 - **Approval**: Requires admin approval after registration
@@ -170,6 +183,7 @@ Configurable in admin settings:
 ## API Key Management
 
 Users can:
+
 1. Use their own OpenAI API key (stored encrypted)
 2. Use a global API key set by admin (if configured)
 

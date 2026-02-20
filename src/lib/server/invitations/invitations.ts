@@ -172,6 +172,10 @@ export async function deleteInvitation(id: number): Promise<void> {
 export async function getInvitationByCode(
 	code: string
 ): Promise<typeof invitations.$inferSelect | null> {
-	const [invitation] = await db.select().from(invitations).where(eq(invitations.code, code)).limit(1);
+	const [invitation] = await db
+		.select()
+		.from(invitations)
+		.where(eq(invitations.code, code))
+		.limit(1);
 	return invitation || null;
 }

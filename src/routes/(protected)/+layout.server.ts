@@ -9,6 +9,11 @@ export const load: LayoutServerLoad = async ({ locals, url }) => {
 		redirect(303, `/login?redirect=${encodeURIComponent(url.pathname)}`);
 	}
 
+	// Redirect to onboarding if not completed (except when already on onboarding page)
+	if (!locals.user.onboardingCompleted && url.pathname !== '/onboarding') {
+		redirect(303, '/onboarding');
+	}
+
 	// Fetch user stats for gamification display
 	const [stats] = await db
 		.select()

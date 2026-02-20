@@ -7,7 +7,7 @@
 </svelte:head>
 
 <div class="flex min-h-[calc(100vh-200px)] items-center justify-center px-4 py-12">
-	<div class="w-full max-w-md animate-fade-in-up text-center">
+	<div class="animate-fade-in-up w-full max-w-md text-center">
 		<div class="mx-auto flex h-24 w-24 items-center justify-center rounded-full bg-error/10">
 			<span class="text-5xl">
 				<svg

@@ -13,7 +13,8 @@ const ALLOWED_PATTERN = /^[a-zA-Z0-9!@#$%^&*()\-_./]+$/;
 const ALLOWED_PATTERN_WITH_SPACES = /^[a-zA-Z0-9!@#$%^&*()\-_./ ]+$/;
 
 // Email validation regex - RFC 5322 simplified, ASCII only
-const EMAIL_PATTERN = /^[a-zA-Z0-9.!#$%&'*+/=?^_`{|}~-]+@[a-zA-Z0-9](?:[a-zA-Z0-9-]{0,61}[a-zA-Z0-9])?(?:\.[a-zA-Z0-9](?:[a-zA-Z0-9-]{0,61}[a-zA-Z0-9])?)*$/;
+const EMAIL_PATTERN =
+	/^[a-zA-Z0-9.!#$%&'*+/=?^_`{|}~-]+@[a-zA-Z0-9](?:[a-zA-Z0-9-]{0,61}[a-zA-Z0-9])?(?:\.[a-zA-Z0-9](?:[a-zA-Z0-9-]{0,61}[a-zA-Z0-9])?)*$/;
 
 /**
  * Check if a string contains only allowed ASCII characters.

@@ -43,6 +43,7 @@
 
 	// Track expanded units
 	let expandedUnits = $state<Set<number>>(new Set());
+	let showSkillTreeBanner = $state(true);
 
 	function toggleUnit(unitId: number) {
 		if (expandedUnits.has(unitId)) {
@@ -92,7 +93,7 @@
 {#if showError && data.error === 'no_hearts'}
 	<!-- Out of Hearts Modal -->
 	<div class="fixed inset-0 z-50 flex items-center justify-center bg-black/50 p-4">
-		<div class="card w-full max-w-md text-center">
+		<div class="w-full max-w-md card text-center">
 			<div class="text-6xl">💔</div>
 			<h2 class="mt-4 text-2xl font-bold text-error">{t('lesson.outOfHearts.title')}</h2>
 			<p class="mt-2 text-text-muted">{t('lesson.outOfHearts.message')}</p>
@@ -105,6 +106,31 @@
 {/if}
 
 <div class="space-y-8">
+	{#if showSkillTreeBanner}
+		<div class="card border-primary/30 bg-primary/5">
+			<div class="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
+				<div>
+					<p class="font-semibold text-text-light">
+						{t('lesson.trySkillTreeBanner', {
+							defaultValue: 'Try the new Skill Tree for guided learning!'
+						})}
+					</p>
+				</div>
+				<div class="flex items-center gap-2">
+					<a href="/skills" class="btn btn-sm btn-success">{t('skills.title')}</a>
+					<button
+						type="button"
+						class="btn btn-sm btn-ghost"
+						onclick={() => (showSkillTreeBanner = false)}
+						aria-label={t('common.dismiss', { defaultValue: 'Dismiss' })}
+					>
+						×
+					</button>
+				</div>
+			</div>
+		</div>
+	{/if}
+
 	{#if data.selectedLevel}
 		<!-- Level Selected - Show Units and Lessons -->
 		<div class="flex items-center gap-4">

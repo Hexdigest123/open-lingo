@@ -1,6 +1,8 @@
 <script lang="ts">
-	import type { PageData } from './$types';
+	import type { PageData, ActionData } from './$types';
 	import { t } from '$lib/i18n/index.svelte';
+	import { enhance } from '$app/forms';
+	import { invalidateAll } from '$app/navigation';
 
 	type ActiveLanguage = {
 		code: string;
@@ -12,7 +14,24 @@
 		tutorGreeting: string | null;
 	};
 
-	let { data }: { data: PageData & { activeLanguage?: ActiveLanguage } } = $props();
+	type AvailableLanguage = {
+		code: string;
+		name: string;
+		nativeName: string;
+		flagEmoji: string;
+	};
+
+	let {
+		data,
+		form
+	}: {
+		data: PageData & {
+			activeLanguage?: ActiveLanguage;
+			availableLanguages?: AvailableLanguage[];
+			dueReviewCount?: number;
+		};
+		form: ActionData;
+	} = $props();
 
 	const activeLanguageName = $derived(
 		data.activeLanguage?.name || t('lesson.languages.targetLanguage')
@@ -21,9 +40,18 @@
 		data.activeLanguage?.tutorGreeting ||
 			t('dashboard.greeting', { name: data.user?.displayName ?? '' })
 	);
-	const learningSubtitle = $derived(`Start learning ${activeLanguageName} with the basics`);
+	const dueReviewCount = $derived(data.dueReviewCount ?? 0);
 
-	// Calculate progress to next freeze (every 50 correct answers)
+	let showLanguagePicker = $state(false);
+
+	function handleLanguageChange() {
+		return async ({ update }: { update: () => Promise<void> }) => {
+			await update();
+			await invalidateAll();
+			showLanguagePicker = false;
+		};
+	}
+
 	const answersToNextFreeze = 50 - (data.stats.totalCorrectAnswers % 50);
 	const freezeProgress = ((50 - answersToNextFreeze) / 50) * 100;
 </script>
@@ -42,6 +70,71 @@
 			<p class="text-text-muted">{t('dashboard.continueSubtitle')}</p>
 		</div>
 	</div>
+
+	<!-- Learning Path Switcher -->
+	{#if data.availableLanguages && data.availableLanguages.length > 1}
+		<div class="card">
+			<div class="flex items-center justify-between">
+				<div class="flex items-center gap-3">
+					<span class="text-2xl">{data.activeLanguage?.flagEmoji ?? '🌍'}</span>
+					<div>
+						<h2 class="font-bold text-text-light">{t('dashboard.learningPath')}</h2>
+						<p class="text-sm text-text-muted">{activeLanguageName}</p>
+					</div>
+				</div>
+				<button
+					onclick={() => (showLanguagePicker = !showLanguagePicker)}
+					class="btn btn-ghost btn-sm"
+				>
+					{t('dashboard.changeLanguage')}
+				</button>
+			</div>
+
+			{#if showLanguagePicker}
+				<div
+					class="mt-4 grid gap-3 border-t border-border-light pt-4 sm:grid-cols-2 lg:grid-cols-3"
+				>
+					{#each data.availableLanguages as language}
+						{@const isActive = data.activeLanguage?.code === language.code}
+						<form method="POST" action="?/changeLanguage" use:enhance={handleLanguageChange}>
+							<input type="hidden" name="languageCode" value={language.code} />
+							<button
+								type="submit"
+								class="flex w-full cursor-pointer items-center gap-3 rounded-xl border-2 px-4 py-3 text-left transition-all
+									{isActive
+									? 'border-success bg-success/10 text-success'
+									: 'border-border-light hover:border-primary/50 hover:bg-bg-light-secondary'}"
+							>
+								<span class="text-2xl">{language.flagEmoji}</span>
+								<div class="flex-1">
+									<div class="font-bold {isActive ? 'text-success' : 'text-text-light'}">
+										{language.name}
+									</div>
+									{#if language.nativeName && language.nativeName !== language.name}
+										<div class="text-xs text-text-muted">{language.nativeName}</div>
+									{/if}
+								</div>
+								{#if isActive}
+									<svg
+										xmlns="http://www.w3.org/2000/svg"
+										class="h-5 w-5 text-success"
+										viewBox="0 0 20 20"
+										fill="currentColor"
+									>
+										<path
+											fill-rule="evenodd"
+											d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z"
+											clip-rule="evenodd"
+										/>
+									</svg>
+								{/if}
+							</button>
+						</form>
+					{/each}
+				</div>
+			{/if}
+		</div>
+	{/if}
 
 	<!-- Stats Overview -->
 	<div class="grid gap-4 sm:grid-cols-2 lg:grid-cols-5">
@@ -129,19 +222,35 @@
 	<div>
 		<h2 class="mb-4 text-xl font-bold text-text-light">Continue Learning</h2>
 		<div class="card">
-			<div class="flex flex-col items-center justify-between gap-4 sm:flex-row">
+			<div class="flex flex-col items-center justify-between gap-4 sm:flex-row sm:items-start">
 				<div class="flex items-center gap-4">
 					<div
 						class="flex h-16 w-16 items-center justify-center rounded-2xl bg-gradient-to-br from-success to-success-dark text-2xl font-bold text-white"
 					>
-						A1
+						🌳
 					</div>
 					<div>
-						<h3 class="font-bold text-text-light">Beginner {activeLanguageName}</h3>
-						<p class="text-text-muted">{learningSubtitle}</p>
+						<div class="flex flex-wrap items-center gap-2">
+							<h3 class="font-bold text-text-light">{t('skills.title')}</h3>
+							{#if dueReviewCount > 0}
+								<span
+									class="bg-warning/20 text-warning rounded-full px-2 py-0.5 text-xs font-semibold"
+								>
+									{t('review.dueCount', { count: dueReviewCount })}
+								</span>
+							{/if}
+						</div>
+						<p class="text-text-muted">{t('dashboard.skillProgress')}</p>
 					</div>
 				</div>
-				<a href="/lessons" class="btn btn-success btn-md w-full sm:w-auto"> Start Learning </a>
+				<div class="flex w-full flex-col gap-2 sm:w-auto sm:flex-row">
+					<a href="/skills" class="btn btn-success btn-md w-full sm:w-auto">
+						{t('skills.title')}
+					</a>
+					<a href="/lessons" class="btn btn-ghost btn-md w-full sm:w-auto">
+						{t('lesson.startLearning')}
+					</a>
+				</div>
 			</div>
 		</div>
 	</div>
@@ -150,6 +259,39 @@
 	<div>
 		<h2 class="mb-4 text-xl font-bold text-text-light">Quick Actions</h2>
 		<div class="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
+			<a href="/skills" class="card transition-shadow hover:shadow-lg">
+				<div class="flex items-center gap-4">
+					<span class="text-3xl">🌳</span>
+					<div>
+						<h3 class="font-bold text-text-light">{t('skills.title')}</h3>
+						<p class="text-sm text-text-muted">{t('dashboard.skillProgress')}</p>
+					</div>
+				</div>
+			</a>
+
+			<a href="/review" class="card transition-shadow hover:shadow-lg">
+				<div class="flex items-center gap-4">
+					<span class="text-3xl">🔄</span>
+					<div>
+						<div class="flex items-center gap-2">
+							<h3 class="font-bold text-text-light">{t('review.title')}</h3>
+							{#if dueReviewCount > 0}
+								<span
+									class="bg-warning/20 text-warning rounded-full px-2 py-0.5 text-xs font-semibold"
+								>
+									{dueReviewCount}
+								</span>
+							{/if}
+						</div>
+						<p class="text-sm text-text-muted">
+							{dueReviewCount > 0
+								? t('review.dueCount', { count: dueReviewCount })
+								: t('review.noDue')}
+						</p>
+					</div>
+				</div>
+			</a>
+
 			<a href="/lessons" class="card transition-shadow hover:shadow-lg">
 				<div class="flex items-center gap-4">
 					<span class="text-3xl">📚</span>

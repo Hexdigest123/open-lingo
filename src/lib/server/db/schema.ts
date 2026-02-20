@@ -10,7 +10,8 @@ import {
 	jsonb,
 	unique,
 	index,
-	uuid
+	uuid,
+	real
 } from 'drizzle-orm/pg-core';
 import { relations } from 'drizzle-orm';
 
@@ -37,7 +38,17 @@ export const questionTypeEnum = pgEnum('question_type', [
 	'matching',
 	'speaking',
 	'listening',
-	'word_order'
+	'word_order',
+	'character_recognition',
+	'character_writing',
+	'script_transliteration',
+	'conjugation_cloze',
+	'particle_selection',
+	'grammar_transformation',
+	'kanji_composition',
+	'minimal_pair_discrimination',
+	'dictation',
+	'guided_composition'
 ]);
 
 export type QuestionType = (typeof questionTypeEnum.enumValues)[number];
@@ -63,6 +74,60 @@ export const leaderboardTimeframeEnum = pgEnum('leaderboard_timeframe', [
 	'all_time'
 ]);
 
+// Learning system enums
+export const conceptTypeEnum = pgEnum('concept_type', [
+	'vocab',
+	'grammar_rule',
+	'writing_char',
+	'kanji',
+	'radical',
+	'phonetic_sound',
+	'conjugation_pattern',
+	'particle_usage',
+	'sentence_pattern',
+	'listening_contrast',
+	'composition_frame'
+]);
+
+export const skillTypeEnum = pgEnum('skill_type', [
+	'writing',
+	'grammar',
+	'vocabulary',
+	'pronunciation',
+	'composition',
+	'review',
+	'kana',
+	'kanji',
+	'radical',
+	'listening',
+	'speaking',
+	'conjugation'
+]);
+
+export const skillStatusEnum = pgEnum('skill_status', [
+	'locked',
+	'unlocked',
+	'in_progress',
+	'mastered'
+]);
+
+export const lessonModeEnum = pgEnum('lesson_mode', ['legacy_quiz', 'guided_skill']);
+
+export const lessonBlockTypeEnum = pgEnum('lesson_block_type', [
+	'teach',
+	'drill',
+	'checkpoint',
+	'review',
+	'exam'
+]);
+
+export const conceptProgressStatusEnum = pgEnum('concept_progress_status', [
+	'new',
+	'learning',
+	'reviewing',
+	'mastered'
+]);
+
 // Users table
 export const users = pgTable(
 	'users',
@@ -80,6 +145,7 @@ export const users = pgTable(
 			.references(() => languages.code)
 			.default('es'),
 		locale: varchar('locale', { length: 10 }),
+		onboardingCompleted: boolean('onboarding_completed').default(false).notNull(),
 		createdAt: timestamp('created_at').defaultNow().notNull(),
 		updatedAt: timestamp('updated_at').defaultNow().notNull()
 	},
@@ -154,6 +220,7 @@ export const lessons = pgTable(
 		isExam: boolean('is_exam').default(false).notNull(),
 		examPassThreshold: integer('exam_pass_threshold').default(80), // 80% to pass
 		requiredLessonId: integer('required_lesson_id'), // Prerequisite lesson
+		mode: lessonModeEnum('mode').default('legacy_quiz').notNull(),
 		createdAt: timestamp('created_at').defaultNow().notNull(),
 		updatedAt: timestamp('updated_at').defaultNow().notNull()
 	},
@@ -387,7 +454,10 @@ export const usersRelations = relations(users, ({ one, many }) => ({
 	dailyStreaks: many(dailyStreaks),
 	achievements: many(userAchievements),
 	leaderboardEntries: many(leaderboardCache),
-	chatSessions: many(chatSessions)
+	chatSessions: many(chatSessions),
+	conceptProgress: many(userConceptProgress),
+	skillProgress: many(userSkillProgress),
+	placementSessions: many(placementSessions)
 }));
 
 export const refreshTokensRelations = relations(refreshTokens, ({ one }) => ({
@@ -398,7 +468,9 @@ export const refreshTokensRelations = relations(refreshTokens, ({ one }) => ({
 }));
 
 export const languagesRelations = relations(languages, ({ many }) => ({
-	levels: many(levels)
+	levels: many(levels),
+	concepts: many(concepts),
+	skills: many(skills)
 }));
 
 export const levelsRelations = relations(levels, ({ one, many }) => ({
@@ -423,7 +495,9 @@ export const lessonsRelations = relations(lessons, ({ one, many }) => ({
 		references: [units.id]
 	}),
 	questions: many(questions),
-	userProgress: many(userLessonProgress)
+	userProgress: many(userLessonProgress),
+	lessonSkills: many(lessonSkills),
+	blocks: many(lessonBlocks)
 }));
 
 export const questionsRelations = relations(questions, ({ one, many }) => ({
@@ -431,7 +505,8 @@ export const questionsRelations = relations(questions, ({ one, many }) => ({
 		fields: [questions.lessonId],
 		references: [lessons.id]
 	}),
-	attempts: many(userQuestionAttempts)
+	attempts: many(userQuestionAttempts),
+	questionConcepts: many(questionConcepts)
 }));
 
 export const userStatsRelations = relations(userStats, ({ one }) => ({
@@ -580,3 +655,357 @@ export type Invitation = typeof invitations.$inferSelect;
 export type NewInvitation = typeof invitations.$inferInsert;
 export type Language = typeof languages.$inferSelect;
 export type NewLanguage = typeof languages.$inferInsert;
+
+// ─── Learning System Tables ─────────────────────────────────────────────────
+
+export const concepts = pgTable(
+	'concepts',
+	{
+		id: serial('id').primaryKey(),
+		languageCode: varchar('language_code', { length: 10 })
+			.references(() => languages.code, { onDelete: 'cascade' })
+			.notNull(),
+		type: conceptTypeEnum('type').notNull(),
+		key: varchar('key', { length: 100 }).notNull(),
+		titleEn: varchar('title_en', { length: 200 }).notNull(),
+		titleDe: varchar('title_de', { length: 200 }).notNull(),
+		descriptionEn: text('description_en'),
+		descriptionDe: text('description_de'),
+		data: jsonb('data').default({}).notNull(),
+		cefrLevel: levelCodeEnum('cefr_level'),
+		order: integer('order').default(0).notNull(),
+		isActive: boolean('is_active').default(true).notNull(),
+		createdAt: timestamp('created_at').defaultNow().notNull(),
+		updatedAt: timestamp('updated_at').defaultNow().notNull()
+	},
+	(table) => [
+		unique('concepts_lang_key_unique').on(table.languageCode, table.key),
+		index('concepts_language_code_idx').on(table.languageCode),
+		index('concepts_type_idx').on(table.type)
+	]
+);
+
+export const skills = pgTable(
+	'skills',
+	{
+		id: serial('id').primaryKey(),
+		languageCode: varchar('language_code', { length: 10 })
+			.references(() => languages.code, { onDelete: 'cascade' })
+			.notNull(),
+		type: skillTypeEnum('type').notNull(),
+		key: varchar('key', { length: 100 }).notNull(),
+		titleEn: varchar('title_en', { length: 200 }).notNull(),
+		titleDe: varchar('title_de', { length: 200 }).notNull(),
+		descriptionEn: text('description_en'),
+		descriptionDe: text('description_de'),
+		cefrLevel: levelCodeEnum('cefr_level'),
+		iconName: varchar('icon_name', { length: 50 }),
+		order: integer('order').default(0).notNull(),
+		isActive: boolean('is_active').default(true).notNull(),
+		createdAt: timestamp('created_at').defaultNow().notNull(),
+		updatedAt: timestamp('updated_at').defaultNow().notNull()
+	},
+	(table) => [
+		unique('skills_lang_key_unique').on(table.languageCode, table.key),
+		index('skills_language_code_idx').on(table.languageCode),
+		index('skills_type_idx').on(table.type)
+	]
+);
+
+export const skillConcepts = pgTable(
+	'skill_concepts',
+	{
+		id: serial('id').primaryKey(),
+		skillId: integer('skill_id')
+			.references(() => skills.id, { onDelete: 'cascade' })
+			.notNull(),
+		conceptId: integer('concept_id')
+			.references(() => concepts.id, { onDelete: 'cascade' })
+			.notNull(),
+		role: varchar('role', { length: 20 }).default('core').notNull(),
+		weight: integer('weight').default(1).notNull()
+	},
+	(table) => [
+		unique('skill_concepts_unique').on(table.skillId, table.conceptId),
+		index('skill_concepts_skill_id_idx').on(table.skillId),
+		index('skill_concepts_concept_id_idx').on(table.conceptId)
+	]
+);
+
+export const skillPrerequisites = pgTable(
+	'skill_prerequisites',
+	{
+		id: serial('id').primaryKey(),
+		skillId: integer('skill_id')
+			.references(() => skills.id, { onDelete: 'cascade' })
+			.notNull(),
+		prerequisiteSkillId: integer('prerequisite_skill_id')
+			.references(() => skills.id, { onDelete: 'cascade' })
+			.notNull(),
+		minMastery: real('min_mastery').default(0.8).notNull()
+	},
+	(table) => [
+		unique('skill_prerequisites_unique').on(table.skillId, table.prerequisiteSkillId),
+		index('skill_prerequisites_skill_id_idx').on(table.skillId)
+	]
+);
+
+export const lessonSkills = pgTable(
+	'lesson_skills',
+	{
+		id: serial('id').primaryKey(),
+		lessonId: integer('lesson_id')
+			.references(() => lessons.id, { onDelete: 'cascade' })
+			.notNull(),
+		skillId: integer('skill_id')
+			.references(() => skills.id, { onDelete: 'cascade' })
+			.notNull(),
+		role: varchar('role', { length: 20 }).default('primary').notNull()
+	},
+	(table) => [
+		unique('lesson_skills_unique').on(table.lessonId, table.skillId),
+		index('lesson_skills_lesson_id_idx').on(table.lessonId),
+		index('lesson_skills_skill_id_idx').on(table.skillId)
+	]
+);
+
+export const questionConcepts = pgTable(
+	'question_concepts',
+	{
+		id: serial('id').primaryKey(),
+		questionId: integer('question_id')
+			.references(() => questions.id, { onDelete: 'cascade' })
+			.notNull(),
+		conceptId: integer('concept_id')
+			.references(() => concepts.id, { onDelete: 'cascade' })
+			.notNull()
+	},
+	(table) => [
+		unique('question_concepts_unique').on(table.questionId, table.conceptId),
+		index('question_concepts_question_id_idx').on(table.questionId),
+		index('question_concepts_concept_id_idx').on(table.conceptId)
+	]
+);
+
+export const lessonBlocks = pgTable(
+	'lesson_blocks',
+	{
+		id: serial('id').primaryKey(),
+		lessonId: integer('lesson_id')
+			.references(() => lessons.id, { onDelete: 'cascade' })
+			.notNull(),
+		blockType: lessonBlockTypeEnum('block_type').notNull(),
+		order: integer('order').notNull(),
+		titleEn: varchar('title_en', { length: 200 }),
+		titleDe: varchar('title_de', { length: 200 }),
+		config: jsonb('config').default({}).notNull(),
+		isOptional: boolean('is_optional').default(false).notNull(),
+		createdAt: timestamp('created_at').defaultNow().notNull()
+	},
+	(table) => [
+		index('lesson_blocks_lesson_id_idx').on(table.lessonId),
+		index('lesson_blocks_order_idx').on(table.lessonId, table.order)
+	]
+);
+
+export const userConceptProgress = pgTable(
+	'user_concept_progress',
+	{
+		id: serial('id').primaryKey(),
+		userId: integer('user_id')
+			.references(() => users.id, { onDelete: 'cascade' })
+			.notNull(),
+		conceptId: integer('concept_id')
+			.references(() => concepts.id, { onDelete: 'cascade' })
+			.notNull(),
+		status: conceptProgressStatusEnum('status').default('new').notNull(),
+		mastery: real('mastery').default(0).notNull(),
+		easinessFactor: real('easiness_factor').default(2.5).notNull(),
+		intervalDays: real('interval_days').default(1).notNull(),
+		repetitions: integer('repetitions').default(0).notNull(),
+		totalAttempts: integer('total_attempts').default(0).notNull(),
+		correctAttempts: integer('correct_attempts').default(0).notNull(),
+		nextReviewAt: timestamp('next_review_at'),
+		lastReviewedAt: timestamp('last_reviewed_at'),
+		updatedAt: timestamp('updated_at').defaultNow().notNull()
+	},
+	(table) => [
+		unique('user_concept_progress_unique').on(table.userId, table.conceptId),
+		index('user_concept_progress_user_id_idx').on(table.userId),
+		index('user_concept_progress_due_idx').on(table.userId, table.nextReviewAt)
+	]
+);
+
+export const userSkillProgress = pgTable(
+	'user_skill_progress',
+	{
+		id: serial('id').primaryKey(),
+		userId: integer('user_id')
+			.references(() => users.id, { onDelete: 'cascade' })
+			.notNull(),
+		skillId: integer('skill_id')
+			.references(() => skills.id, { onDelete: 'cascade' })
+			.notNull(),
+		status: skillStatusEnum('status').default('locked').notNull(),
+		mastery: real('mastery').default(0).notNull(),
+		unlockedAt: timestamp('unlocked_at'),
+		masteredAt: timestamp('mastered_at'),
+		updatedAt: timestamp('updated_at').defaultNow().notNull()
+	},
+	(table) => [
+		unique('user_skill_progress_unique').on(table.userId, table.skillId),
+		index('user_skill_progress_user_id_idx').on(table.userId),
+		index('user_skill_progress_skill_id_idx').on(table.skillId)
+	]
+);
+
+export const placementSessions = pgTable(
+	'placement_sessions',
+	{
+		id: serial('id').primaryKey(),
+		userId: integer('user_id')
+			.references(() => users.id, { onDelete: 'cascade' })
+			.notNull(),
+		languageCode: varchar('language_code', { length: 10 })
+			.references(() => languages.code, { onDelete: 'cascade' })
+			.notNull(),
+		estimatedLevel: varchar('estimated_level', { length: 10 }),
+		totalQuestions: integer('total_questions').default(0).notNull(),
+		correctCount: integer('correct_count').default(0).notNull(),
+		data: jsonb('data').default({}).notNull(),
+		completedAt: timestamp('completed_at'),
+		createdAt: timestamp('created_at').defaultNow().notNull()
+	},
+	(table) => [
+		index('placement_sessions_user_id_idx').on(table.userId),
+		index('placement_sessions_language_code_idx').on(table.languageCode)
+	]
+);
+
+// ─── Learning System Relations ──────────────────────────────────────────────
+
+export const conceptsRelations = relations(concepts, ({ one, many }) => ({
+	language: one(languages, {
+		fields: [concepts.languageCode],
+		references: [languages.code]
+	}),
+	skillConcepts: many(skillConcepts),
+	questionConcepts: many(questionConcepts),
+	userProgress: many(userConceptProgress)
+}));
+
+export const skillsRelations = relations(skills, ({ one, many }) => ({
+	language: one(languages, {
+		fields: [skills.languageCode],
+		references: [languages.code]
+	}),
+	skillConcepts: many(skillConcepts),
+	prerequisites: many(skillPrerequisites, { relationName: 'skillPrereqs' }),
+	dependents: many(skillPrerequisites, { relationName: 'prereqFor' }),
+	lessonSkills: many(lessonSkills),
+	userProgress: many(userSkillProgress)
+}));
+
+export const skillConceptsRelations = relations(skillConcepts, ({ one }) => ({
+	skill: one(skills, {
+		fields: [skillConcepts.skillId],
+		references: [skills.id]
+	}),
+	concept: one(concepts, {
+		fields: [skillConcepts.conceptId],
+		references: [concepts.id]
+	})
+}));
+
+export const skillPrerequisitesRelations = relations(skillPrerequisites, ({ one }) => ({
+	skill: one(skills, {
+		fields: [skillPrerequisites.skillId],
+		references: [skills.id],
+		relationName: 'skillPrereqs'
+	}),
+	prerequisite: one(skills, {
+		fields: [skillPrerequisites.prerequisiteSkillId],
+		references: [skills.id],
+		relationName: 'prereqFor'
+	})
+}));
+
+export const lessonSkillsRelations = relations(lessonSkills, ({ one }) => ({
+	lesson: one(lessons, {
+		fields: [lessonSkills.lessonId],
+		references: [lessons.id]
+	}),
+	skill: one(skills, {
+		fields: [lessonSkills.skillId],
+		references: [skills.id]
+	})
+}));
+
+export const questionConceptsRelations = relations(questionConcepts, ({ one }) => ({
+	question: one(questions, {
+		fields: [questionConcepts.questionId],
+		references: [questions.id]
+	}),
+	concept: one(concepts, {
+		fields: [questionConcepts.conceptId],
+		references: [concepts.id]
+	})
+}));
+
+export const lessonBlocksRelations = relations(lessonBlocks, ({ one }) => ({
+	lesson: one(lessons, {
+		fields: [lessonBlocks.lessonId],
+		references: [lessons.id]
+	})
+}));
+
+export const userConceptProgressRelations = relations(userConceptProgress, ({ one }) => ({
+	user: one(users, {
+		fields: [userConceptProgress.userId],
+		references: [users.id]
+	}),
+	concept: one(concepts, {
+		fields: [userConceptProgress.conceptId],
+		references: [concepts.id]
+	})
+}));
+
+export const userSkillProgressRelations = relations(userSkillProgress, ({ one }) => ({
+	user: one(users, {
+		fields: [userSkillProgress.userId],
+		references: [users.id]
+	}),
+	skill: one(skills, {
+		fields: [userSkillProgress.skillId],
+		references: [skills.id]
+	})
+}));
+
+export const placementSessionsRelations = relations(placementSessions, ({ one }) => ({
+	user: one(users, {
+		fields: [placementSessions.userId],
+		references: [users.id]
+	})
+}));
+
+// ─── Learning System Type Exports ───────────────────────────────────────────
+
+export type Concept = typeof concepts.$inferSelect;
+export type NewConcept = typeof concepts.$inferInsert;
+export type Skill = typeof skills.$inferSelect;
+export type NewSkill = typeof skills.$inferInsert;
+export type SkillConcept = typeof skillConcepts.$inferSelect;
+export type SkillPrerequisite = typeof skillPrerequisites.$inferSelect;
+export type LessonSkill = typeof lessonSkills.$inferSelect;
+export type QuestionConcept = typeof questionConcepts.$inferSelect;
+export type LessonBlock = typeof lessonBlocks.$inferSelect;
+export type NewLessonBlock = typeof lessonBlocks.$inferInsert;
+export type UserConceptProgress = typeof userConceptProgress.$inferSelect;
+export type UserSkillProgress = typeof userSkillProgress.$inferSelect;
+export type PlacementSession = typeof placementSessions.$inferSelect;
+export type ConceptType = (typeof conceptTypeEnum.enumValues)[number];
+export type SkillType = (typeof skillTypeEnum.enumValues)[number];
+export type SkillStatus = (typeof skillStatusEnum.enumValues)[number];
+export type LessonMode = (typeof lessonModeEnum.enumValues)[number];
+export type LessonBlockType = (typeof lessonBlockTypeEnum.enumValues)[number];
+export type ConceptProgressStatus = (typeof conceptProgressStatusEnum.enumValues)[number];

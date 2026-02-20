@@ -1,0 +1,202 @@
+import type { SkillGraphDefinition } from '$lib/learning/types';
+
+export const SPANISH_SKILL_GRAPH: SkillGraphDefinition = {
+	skills: [
+		{
+			key: 'es.pronunciation.basics',
+			type: 'pronunciation',
+			titleEn: 'Pronunciation Basics',
+			titleDe: 'Aussprache-Grundlagen',
+			descriptionEn: 'Spanish vowels and core sound patterns for beginners.',
+			descriptionDe: 'Spanische Vokale und zentrale Lautmuster fur den Einstieg.',
+			cefrLevel: 'A1',
+			iconName: 'volume-2',
+			order: 1,
+			conceptKeys: ['es.phonetics.vowels-basic']
+		},
+		{
+			key: 'es.vocab.greetings',
+			type: 'vocabulary',
+			titleEn: 'Greetings',
+			titleDe: 'Begrussungen',
+			descriptionEn: 'Essential greetings and polite expressions.',
+			descriptionDe: 'Wichtige Begrussungen und hofliche Wendungen.',
+			cefrLevel: 'A1',
+			iconName: 'handshake',
+			order: 2,
+			conceptKeys: ['es.vocab.hola', 'es.vocab.buenos-dias', 'es.vocab.adios']
+		},
+		{
+			key: 'es.vocab.numbers',
+			type: 'vocabulary',
+			titleEn: 'Numbers',
+			titleDe: 'Zahlen',
+			descriptionEn: 'Core numbers for counting and basic quantities.',
+			descriptionDe: 'Grundlegende Zahlen fur Zahlen und einfache Mengen.',
+			cefrLevel: 'A1',
+			iconName: 'hash',
+			order: 3,
+			conceptKeys: ['es.vocab.uno', 'es.vocab.dos', 'es.vocab.tres']
+		},
+		{
+			key: 'es.grammar.articles',
+			type: 'grammar',
+			titleEn: 'Articles',
+			titleDe: 'Artikel',
+			descriptionEn: 'Definite and indefinite articles with gender and number.',
+			descriptionDe: 'Bestimmte und unbestimmte Artikel mit Genus und Numerus.',
+			cefrLevel: 'A1',
+			iconName: 'book-open',
+			order: 4,
+			conceptKeys: ['es.grammar.definite-articles', 'es.grammar.indefinite-articles']
+		},
+		{
+			key: 'es.grammar.ser-estar',
+			type: 'grammar',
+			titleEn: 'Ser vs Estar',
+			titleDe: 'Ser und Estar',
+			descriptionEn: 'Difference between permanent and temporary be.',
+			descriptionDe: 'Unterschied zwischen dauerhafter und vorubergehender Form von sein.',
+			cefrLevel: 'A1',
+			iconName: 'split',
+			order: 5,
+			conceptKeys: ['es.grammar.ser-present', 'es.grammar.estar-present']
+		},
+		{
+			key: 'es.grammar.present-regular',
+			type: 'grammar',
+			titleEn: 'Regular Present Tense',
+			titleDe: 'Regelmassiges Prasens',
+			descriptionEn: 'Present-tense endings for regular -ar, -er, and -ir verbs.',
+			descriptionDe: 'Prasensendungen fur regelmassige -ar-, -er- und -ir-Verben.',
+			cefrLevel: 'A1',
+			iconName: 'repeat',
+			order: 6,
+			conceptKeys: ['es.grammar.present-ar', 'es.grammar.present-er', 'es.grammar.present-ir']
+		},
+		{
+			key: 'es.grammar.negation',
+			type: 'grammar',
+			titleEn: 'Negation',
+			titleDe: 'Verneinung',
+			descriptionEn: 'Build simple negative sentences with no + verb.',
+			descriptionDe: 'Einfache Verneinung mit no + Verb bilden.',
+			cefrLevel: 'A1',
+			iconName: 'ban',
+			order: 7,
+			conceptKeys: ['es.grammar.negation-no']
+		},
+		{
+			key: 'es.grammar.questions',
+			type: 'grammar',
+			titleEn: 'Questions',
+			titleDe: 'Fragen',
+			descriptionEn: 'Use key question words to ask for information.',
+			descriptionDe: 'Mit zentralen Fragewortern Informationen erfragen.',
+			cefrLevel: 'A1',
+			iconName: 'help-circle',
+			order: 8,
+			conceptKeys: ['es.grammar.question-words']
+		},
+		{
+			key: 'es.vocab.family',
+			type: 'vocabulary',
+			titleEn: 'Family',
+			titleDe: 'Familie',
+			descriptionEn: 'Words for close family members and relations.',
+			descriptionDe: 'Worter fur enge Familienmitglieder und Beziehungen.',
+			cefrLevel: 'A1',
+			iconName: 'users',
+			order: 9,
+			conceptKeys: ['es.vocab.madre', 'es.vocab.padre', 'es.vocab.hermano']
+		},
+		{
+			key: 'es.vocab.food',
+			type: 'vocabulary',
+			titleEn: 'Food',
+			titleDe: 'Essen',
+			descriptionEn: 'Basic food and drink vocabulary for daily use.',
+			descriptionDe: 'Grundwortschatz zu Essen und Trinken fur den Alltag.',
+			cefrLevel: 'A1',
+			iconName: 'utensils',
+			order: 10,
+			conceptKeys: ['es.vocab.pan', 'es.vocab.agua', 'es.vocab.manzana']
+		},
+		{
+			key: 'es.grammar.adjectives',
+			type: 'grammar',
+			titleEn: 'Adjectives',
+			titleDe: 'Adjektive',
+			descriptionEn: 'Gender and number agreement in adjective forms.',
+			descriptionDe: 'Genus- und Numerusubereinstimmung bei Adjektiven.',
+			cefrLevel: 'A1',
+			iconName: 'align-left',
+			order: 11,
+			conceptKeys: ['es.grammar.adjective-agreement']
+		},
+		{
+			key: 'es.grammar.gustar',
+			type: 'grammar',
+			titleEn: 'Gustar Structure',
+			titleDe: 'Gustar-Struktur',
+			descriptionEn: 'Use indirect object pronouns with gusta/gustan.',
+			descriptionDe: 'Indirekte Objektpronomen mit gusta/gustan verwenden.',
+			cefrLevel: 'A2',
+			iconName: 'heart',
+			order: 12,
+			conceptKeys: ['es.grammar.gustar']
+		},
+		{
+			key: 'es.grammar.tener-ir',
+			type: 'grammar',
+			titleEn: 'Tener and Ir',
+			titleDe: 'Tener und Ir',
+			descriptionEn: 'Key irregular verbs for possession, age, and movement.',
+			descriptionDe: 'Wichtige unregelmassige Verben fur Besitz, Alter und Bewegung.',
+			cefrLevel: 'A1',
+			iconName: 'navigation',
+			order: 13,
+			conceptKeys: ['es.grammar.tener-present', 'es.grammar.ir-present']
+		},
+		{
+			key: 'es.grammar.past-preterite',
+			type: 'grammar',
+			titleEn: 'Past: Preterite',
+			titleDe: 'Vergangenheit: Pretorito',
+			descriptionEn: 'Completed actions in the past with preterite forms.',
+			descriptionDe: 'Abgeschlossene Handlungen in der Vergangenheit mit Pretorito.',
+			cefrLevel: 'A2',
+			iconName: 'history',
+			order: 14,
+			conceptKeys: ['es.grammar.past-preterite']
+		},
+		{
+			key: 'es.grammar.past-imperfect',
+			type: 'grammar',
+			titleEn: 'Past: Imperfect',
+			titleDe: 'Vergangenheit: Imperfekt',
+			descriptionEn: 'Background actions and habits in the past.',
+			descriptionDe: 'Hintergrundhandlungen und Gewohnheiten in der Vergangenheit.',
+			cefrLevel: 'A2',
+			iconName: 'clock-3',
+			order: 15,
+			conceptKeys: ['es.grammar.past-imperfect']
+		}
+	],
+	prerequisites: [
+		{ skillKey: 'es.vocab.greetings', prerequisiteKey: 'es.pronunciation.basics' },
+		{ skillKey: 'es.vocab.numbers', prerequisiteKey: 'es.pronunciation.basics' },
+		{ skillKey: 'es.grammar.articles', prerequisiteKey: 'es.vocab.greetings' },
+		{ skillKey: 'es.grammar.ser-estar', prerequisiteKey: 'es.grammar.articles' },
+		{ skillKey: 'es.grammar.present-regular', prerequisiteKey: 'es.grammar.ser-estar' },
+		{ skillKey: 'es.grammar.negation', prerequisiteKey: 'es.grammar.present-regular' },
+		{ skillKey: 'es.grammar.questions', prerequisiteKey: 'es.grammar.present-regular' },
+		{ skillKey: 'es.vocab.family', prerequisiteKey: 'es.grammar.articles' },
+		{ skillKey: 'es.vocab.food', prerequisiteKey: 'es.grammar.articles' },
+		{ skillKey: 'es.grammar.adjectives', prerequisiteKey: 'es.grammar.articles' },
+		{ skillKey: 'es.grammar.gustar', prerequisiteKey: 'es.grammar.present-regular' },
+		{ skillKey: 'es.grammar.tener-ir', prerequisiteKey: 'es.grammar.present-regular' },
+		{ skillKey: 'es.grammar.past-preterite', prerequisiteKey: 'es.grammar.tener-ir' },
+		{ skillKey: 'es.grammar.past-imperfect', prerequisiteKey: 'es.grammar.past-preterite' }
+	]
+};

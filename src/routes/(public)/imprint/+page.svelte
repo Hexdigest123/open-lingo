@@ -26,7 +26,9 @@
 
 				{#if data.representative}
 					<section>
-						<h2 class="text-lg font-semibold text-text-light">{t('legal.imprint.representative')}</h2>
+						<h2 class="text-lg font-semibold text-text-light">
+							{t('legal.imprint.representative')}
+						</h2>
 						<p class="mt-1 text-text-muted">{data.representative}</p>
 					</section>
 				{/if}
@@ -34,7 +36,7 @@
 				{#if data.address}
 					<section>
 						<h2 class="text-lg font-semibold text-text-light">{t('legal.imprint.address')}</h2>
-						<p class="mt-1 text-text-muted whitespace-pre-line">{data.address}</p>
+						<p class="mt-1 whitespace-pre-line text-text-muted">{data.address}</p>
 					</section>
 				{/if}
 
@@ -44,12 +46,15 @@
 						<div class="mt-1 space-y-1">
 							{#if data.email}
 								<p class="text-text-muted">
-									{t('legal.imprint.email')}: <a href="mailto:{data.email}" class="text-primary hover:underline">{data.email}</a>
+									{t('legal.imprint.email')}:
+									<a href="mailto:{data.email}" class="text-primary hover:underline">{data.email}</a
+									>
 								</p>
 							{/if}
 							{#if data.phone}
 								<p class="text-text-muted">
-									{t('legal.imprint.phone')}: <a href="tel:{data.phone}" class="text-primary hover:underline">{data.phone}</a>
+									{t('legal.imprint.phone')}:
+									<a href="tel:{data.phone}" class="text-primary hover:underline">{data.phone}</a>
 								</p>
 							{/if}
 						</div>

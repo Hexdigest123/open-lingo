@@ -44,7 +44,13 @@ export const POST: RequestHandler = async ({ request, locals }) => {
 	const { key: apiKey, isGlobalKey } = await getEffectiveApiKeyWithSource(userId);
 
 	if (!apiKey) {
-		return json({ error: 'OpenAI API key not configured. Please set your API key in settings or contact an administrator.' }, { status: 400 });
+		return json(
+			{
+				error:
+					'OpenAI API key not configured. Please set your API key in settings or contact an administrator.'
+			},
+			{ status: 400 }
+		);
 	}
 
 	// Verify session ownership

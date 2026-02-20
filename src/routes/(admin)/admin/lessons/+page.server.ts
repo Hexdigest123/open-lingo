@@ -111,10 +111,7 @@ export const actions: Actions = {
 		}
 
 		try {
-			await db
-				.update(lessons)
-				.set({ isPublished: !isPublished })
-				.where(eq(lessons.id, lessonId));
+			await db.update(lessons).set({ isPublished: !isPublished }).where(eq(lessons.id, lessonId));
 
 			return { success: true };
 		} catch (error) {

@@ -17,6 +17,7 @@ export interface SessionUser {
 	displayName: string;
 	role: 'user' | 'admin';
 	approvalStatus: 'pending' | 'approved' | 'rejected';
+	onboardingCompleted: boolean;
 }
 
 export interface SessionTokens {
@@ -64,7 +65,8 @@ export async function validateAccessToken(token: string): Promise<SessionUser | 
 		email: user.email,
 		displayName: user.displayName,
 		role: user.role,
-		approvalStatus: user.approvalStatus
+		approvalStatus: user.approvalStatus,
+		onboardingCompleted: user.onboardingCompleted
 	};
 }
 
@@ -129,7 +131,7 @@ export async function createUserWithSession(
 	const isFirstUser = userCount === 0;
 
 	// First user is always approved, otherwise use the provided status or default to approved
-	const approvalStatus = isFirstUser ? 'approved' : (options?.approvalStatus || 'approved');
+	const approvalStatus = isFirstUser ? 'approved' : options?.approvalStatus || 'approved';
 
 	// Create user
 	const [user] = await db
@@ -161,7 +163,8 @@ export async function createUserWithSession(
 			email: user.email,
 			displayName: user.displayName,
 			role: user.role,
-			approvalStatus: user.approvalStatus
+			approvalStatus: user.approvalStatus,
+			onboardingCompleted: user.onboardingCompleted
 		},
 		tokens,
 		userId: user.id
