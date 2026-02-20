@@ -1,4 +1,6 @@
 import { json, redirect, type Handle } from '@sveltejs/kit';
+import { sequence } from '@sveltejs/kit/hooks';
+import { paraglideMiddleware } from '$lib/paraglide/server.js';
 import { validateAccessToken, refreshSession } from '$lib/server/auth/session';
 import { checkRateLimit, RATE_LIMITS } from '$lib/server/security/rateLimit';
 
@@ -14,7 +16,7 @@ const RATE_LIMITED_PATHS: Array<{ pattern: RegExp; config: keyof typeof RATE_LIM
 // Routes that pending users are allowed to access
 const PENDING_USER_ALLOWED_ROUTES = ['/pending-approval', '/logout', '/api/auth/logout', '/'];
 
-export const handle: Handle = async ({ event, resolve }) => {
+const authHandle: Handle = async ({ event, resolve }) => {
 	// Initialize user as null
 	event.locals.user = null;
 
@@ -132,3 +134,13 @@ export const handle: Handle = async ({ event, resolve }) => {
 
 	return response;
 };
+
+const i18nHandle: Handle = ({ event, resolve }) =>
+	paraglideMiddleware(event.request, ({ request: localizedRequest, locale }) => {
+		event.request = localizedRequest;
+		return resolve(event, {
+			transformPageChunk: ({ html }) => html.replace('%lang%', locale)
+		});
+	});
+
+export const handle = sequence(i18nHandle, authHandle);

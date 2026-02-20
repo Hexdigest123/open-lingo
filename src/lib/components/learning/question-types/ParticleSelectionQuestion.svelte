@@ -1,7 +1,7 @@
 <script lang="ts">
-	import { i18n, t } from '$lib/i18n/index.svelte';
-
-	interface Props {
+	import * as m from '$lib/paraglide/messages.js';
+	import { getLocale } from '$lib/paraglide/runtime.js';
+interface Props {
 		sentence: string;
 		sentenceEn: string;
 		sentenceDe: string;
@@ -15,8 +15,8 @@
 	let { sentence, sentenceEn, sentenceDe, options, hintEn, hintDe, disabled, onAnswer }: Props =
 		$props();
 
-	const translationText = $derived(i18n.locale === 'de' ? sentenceDe : sentenceEn);
-	const hintText = $derived(i18n.locale === 'de' ? hintDe : hintEn);
+	const translationText = $derived(getLocale() === 'de' ? sentenceDe : sentenceEn);
+	const hintText = $derived(getLocale() === 'de' ? hintDe : hintEn);
 
 	let selectedOption = $state<string | null>(null);
 
@@ -29,7 +29,7 @@
 
 <div class="card">
 	<h2 class="mb-2 text-lg font-bold text-text-light">
-		{t('lesson.types.particleSelection') || 'Select Particle'}
+		{m["lesson.types.particleSelection"]() || 'Select Particle'}
 	</h2>
 
 	<div class="mb-8">
@@ -47,7 +47,7 @@
 		</p>
 		<p class="text-text-muted italic">{translationText}</p>
 		{#if hintText}
-			<p class="mt-2 text-sm text-text-muted">{t('lesson.hint')}: {hintText}</p>
+			<p class="mt-2 text-sm text-text-muted">{m["lesson.hint"]()}: {hintText}</p>
 		{/if}
 	</div>
 

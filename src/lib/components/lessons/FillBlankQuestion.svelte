@@ -1,7 +1,6 @@
 <script lang="ts">
-	import { t } from '$lib/i18n/index.svelte';
-
-	interface Props {
+	import * as m from '$lib/paraglide/messages.js';
+interface Props {
 		sentence: string;
 		hint?: string;
 		disabled: boolean;
@@ -26,7 +25,7 @@
 </script>
 
 <div class="card">
-	<h2 class="mb-2 text-lg font-bold text-text-light">{t('lesson.types.fillBlank')}</h2>
+	<h2 class="mb-2 text-lg font-bold text-text-light">{m["lesson.types.fillBlank"]()}</h2>
 
 	<p class="mb-6 text-xl text-text-light">
 		{#each sentence.split('_____') as part, i}
@@ -39,7 +38,7 @@
 
 	{#if hint}
 		<p class="mb-4 text-sm text-text-muted">
-			{t('lesson.hint')}: {hint}
+			{m["lesson.hint"]()}: {hint}
 		</p>
 	{/if}
 
@@ -47,14 +46,14 @@
 		type="text"
 		bind:value={answer}
 		onkeydown={handleKeydown}
-		placeholder={t('lesson.typeAnswer')}
+		placeholder={m["lesson.typeAnswer"]()}
 		{disabled}
 		class="input text-lg"
 	/>
 
 	{#if !disabled}
 		<button onclick={submit} disabled={!answer.trim()} class="btn btn-success btn-lg mt-6 w-full">
-			{t('lesson.checkAnswer')}
+			{m["lesson.checkAnswer"]()}
 		</button>
 	{/if}
 </div>

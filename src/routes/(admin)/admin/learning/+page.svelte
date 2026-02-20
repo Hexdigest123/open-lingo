@@ -1,6 +1,6 @@
 <script lang="ts">
 	import type { PageData } from './$types';
-	import { t } from '$lib/i18n/index.svelte';
+	import * as m from '$lib/paraglide/messages.js';
 
 	let { data }: { data: PageData } = $props();
 
@@ -13,35 +13,35 @@
 </script>
 
 <svelte:head>
-	<title>{t('admin.learning.title')} - OpenLingo</title>
+	<title>{m["admin.learning.title"]()} - OpenLingo</title>
 </svelte:head>
 
 <div class="space-y-8">
 	<div>
 		<h1 class="text-3xl font-bold text-text-light">
-			{t('admin.learning.title')}
+			{m["admin.learning.title"]()}
 		</h1>
 		<p class="text-text-muted">
-			{t('admin.learning.subtitle')}
+			{m["admin.learning.subtitle"]()}
 		</p>
 	</div>
 
 	<div class="grid gap-4 sm:grid-cols-3">
 		<div class="card">
 			<p class="text-sm text-text-muted">
-				{t('admin.learning.totalConcepts')}
+				{m["admin.learning.totalConcepts"]()}
 			</p>
 			<p class="text-3xl font-bold text-primary">{totalConcepts}</p>
 		</div>
 		<div class="card">
 			<p class="text-sm text-text-muted">
-				{t('admin.learning.totalSkills')}
+				{m["admin.learning.totalSkills"]()}
 			</p>
 			<p class="text-3xl font-bold text-success">{totalSkills}</p>
 		</div>
 		<div class="card">
 			<p class="text-sm text-text-muted">
-				{t('admin.learning.linkedQuestions')}
+				{m["admin.learning.linkedQuestions"]()}
 			</p>
 			<p class="text-3xl font-bold text-yellow-dark">{data.stats.questionCount}</p>
 		</div>
@@ -50,7 +50,7 @@
 	<div class="grid gap-4 lg:grid-cols-2">
 		<div class="card">
 			<h2 class="mb-4 text-lg font-bold text-text-light">
-				{t('admin.learning.conceptsByLanguage')}
+				{m["admin.learning.conceptsByLanguage"]()}
 			</h2>
 			<div class="space-y-2">
 				{#each data.stats.conceptsByLanguage as row}
@@ -66,7 +66,7 @@
 
 		<div class="card">
 			<h2 class="mb-4 text-lg font-bold text-text-light">
-				{t('admin.learning.skillsByLanguage')}
+				{m["admin.learning.skillsByLanguage"]()}
 			</h2>
 			<div class="space-y-2">
 				{#each data.stats.skillsByLanguage as row}
@@ -85,16 +85,16 @@
 
 	<div class="overflow-x-auto card">
 		<h2 class="mb-4 text-lg font-bold text-text-light">
-			{t('admin.learning.skillsTable')}
+			{m["admin.learning.skillsTable"]()}
 		</h2>
 		<table class="w-full min-w-[720px] text-left text-sm">
 			<thead>
 				<tr class="border-b border-border-light text-text-muted">
-					<th class="px-3 py-2">{t('admin.learning.key')}</th>
-					<th class="px-3 py-2">{t('admin.learning.type')}</th>
-					<th class="px-3 py-2">{t('admin.learning.level')}</th>
-					<th class="px-3 py-2">{t('admin.learning.conceptCount')}</th>
-					<th class="px-3 py-2">{t('admin.learning.status')}</th>
+					<th class="px-3 py-2">{m["admin.learning.key"]()}</th>
+					<th class="px-3 py-2">{m["admin.learning.type"]()}</th>
+					<th class="px-3 py-2">{m["admin.learning.level"]()}</th>
+					<th class="px-3 py-2">{m["admin.learning.conceptCount"]()}</th>
+					<th class="px-3 py-2">{m["admin.learning.status"]()}</th>
 				</tr>
 			</thead>
 			<tbody>
@@ -110,7 +110,7 @@
 									? 'bg-success/15 text-success'
 									: 'bg-surface-100 text-text-muted'}"
 							>
-								{skill.isActive ? t('common.active') : t('common.inactive')}
+								{skill.isActive ? m["common.active"]() : m["common.inactive"]()}
 							</span>
 						</td>
 					</tr>

@@ -1,7 +1,6 @@
 <script lang="ts">
-	import { t } from '$lib/i18n/index.svelte';
-
-	interface Props {
+	import * as m from '$lib/paraglide/messages.js';
+interface Props {
 		character: string;
 		characterType: string;
 		options: string[];
@@ -26,7 +25,7 @@
 </script>
 
 <div class="card">
-	<h2 class="mb-2 text-lg font-bold text-text-light">{t('lesson.types.characterRecognition')}</h2>
+	<h2 class="mb-2 text-lg font-bold text-text-light">{m["lesson.types.characterRecognition"]()}</h2>
 
 	<div
 		class="mb-8 flex flex-col items-center justify-center rounded-xl bg-bg-light-secondary py-12"
@@ -57,7 +56,7 @@
 
 	{#if !disabled}
 		<button onclick={submit} disabled={!selectedOption} class="btn btn-success btn-lg mt-6 w-full">
-			{t('lesson.checkAnswer')}
+			{m["lesson.checkAnswer"]()}
 		</button>
 	{/if}
 </div>

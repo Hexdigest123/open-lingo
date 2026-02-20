@@ -1,6 +1,6 @@
 <script lang="ts">
 	import type { PageData, ActionData } from './$types';
-	import { t } from '$lib/i18n/index.svelte';
+	import * as m from '$lib/paraglide/messages.js';
 	import { enhance } from '$app/forms';
 	import { goto } from '$app/navigation';
 	import { page } from '$app/stores';
@@ -73,18 +73,18 @@
 </script>
 
 <svelte:head>
-	<title>{t('admin.users.title')} - OpenLingo</title>
+	<title>{m['admin.users.title']()} - OpenLingo</title>
 </svelte:head>
 
 <div class="space-y-6">
 	<div class="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
-		<h1 class="text-2xl font-bold text-text-light">{t('admin.users.title')}</h1>
+		<h1 class="text-2xl font-bold text-text-light">{m['admin.users.title']()}</h1>
 
 		<div class="flex items-center gap-2">
 			{#if data.pendingUsers.length > 0}
 				<span class="rounded-full bg-yellow/10 px-3 py-1 text-sm font-medium text-yellow-dark">
 					{data.pendingUsers.length}
-					{t('admin.approvals.pending')}
+					{m['admin.approvals.pending']()}
 				</span>
 			{/if}
 		</div>
@@ -99,7 +99,7 @@
 					? 'border-b-2 border-primary text-primary'
 					: 'text-text-muted hover:text-text-light'}"
 			>
-				{t(tab.label)}
+				{(m[tab.label as keyof typeof m] as (...args: any[]) => string)()}
 				{#if tab.id === 'approvals' && data.pendingUsers.length > 0}
 					<span class="ml-1 rounded-full bg-yellow/20 px-2 py-0.5 text-xs text-yellow-dark">
 						{data.pendingUsers.length}
@@ -115,7 +115,7 @@
 
 	{#if form?.success}
 		<div class="rounded-xl bg-success/10 p-4 text-success">
-			{form.message || t('common.success')}
+			{form.message || m['common.success']()}
 		</div>
 	{/if}
 
@@ -125,17 +125,17 @@
 			<input
 				type="text"
 				bind:value={searchInput}
-				placeholder={t('admin.users.search')}
+				placeholder={m['admin.users.search']()}
 				class="input w-full sm:w-64"
 			/>
 			<button type="submit" class="btn btn-primary btn-md">
-				{t('common.search')}
+				{m['common.search']()}
 			</button>
 		</form>
 
 		{#if data.users.length === 0}
 			<div class="card text-center">
-				<p class="text-text-muted">{t('admin.users.noUsers')}</p>
+				<p class="text-text-muted">{m['admin.users.noUsers']()}</p>
 			</div>
 		{:else}
 			<div class="overflow-hidden card p-0">
@@ -143,30 +143,30 @@
 					<thead class="bg-bg-light-secondary">
 						<tr>
 							<th class="px-4 py-3 text-left text-sm font-medium text-text-muted"
-								>{t('admin.users.user')}</th
+								>{m['admin.users.user']()}</th
 							>
 							<th
 								class="hidden px-4 py-3 text-left text-sm font-medium text-text-muted md:table-cell"
 							>
-								{t('admin.users.role')}
+								{m['admin.users.role']()}
 							</th>
 							<th
 								class="hidden px-4 py-3 text-center text-sm font-medium text-text-muted sm:table-cell"
 							>
-								{t('admin.users.xp')}
+								{m['admin.users.xp']()}
 							</th>
 							<th
 								class="hidden px-4 py-3 text-center text-sm font-medium text-text-muted sm:table-cell"
 							>
-								{t('admin.users.hearts')}
+								{m['admin.users.hearts']()}
 							</th>
 							<th
 								class="hidden px-4 py-3 text-left text-sm font-medium text-text-muted lg:table-cell"
 							>
-								{t('admin.users.joined')}
+								{m['admin.users.joined']()}
 							</th>
 							<th class="px-4 py-3 text-right text-sm font-medium text-text-muted"
-								>{t('common.actions')}</th
+								>{m['common.actions']()}</th
 							>
 						</tr>
 					</thead>
@@ -201,7 +201,7 @@
 								<td class="hidden px-4 py-3 text-center sm:table-cell">
 									{#if user.heartsDisabled}
 										<span class="rounded-full bg-error/10 px-2 py-1 text-xs text-error"
-											>{t('admin.users.heartsDisabled')}</span
+											>{m['admin.users.heartsDisabled']()}</span
 										>
 									{:else}
 										<span class="font-medium text-error">
@@ -218,7 +218,7 @@
 											<form method="POST" action="?/restoreHearts" use:enhance class="inline">
 												<input type="hidden" name="userId" value={user.id} />
 												<button type="submit" class="text-sm text-error hover:underline">
-													{t('admin.users.restoreHearts')}
+													{m['admin.users.restoreHearts']()}
 												</button>
 											</form>
 										{/if}
@@ -237,8 +237,8 @@
 													: 'text-warning'} hover:underline"
 											>
 												{user.heartsDisabled
-													? t('admin.users.enableHearts')
-													: t('admin.users.disableHearts')}
+													? m['admin.users.enableHearts']()
+													: m['admin.users.disableHearts']()}
 											</button>
 										</form>
 
@@ -247,7 +247,7 @@
 												<input type="hidden" name="userId" value={user.id} />
 												<input type="hidden" name="newRole" value="user" />
 												<button type="submit" class="text-sm text-orange hover:underline">
-													{t('admin.users.removeAdmin')}
+													{m['admin.users.removeAdmin']()}
 												</button>
 											</form>
 										{:else}
@@ -255,7 +255,7 @@
 												<input type="hidden" name="userId" value={user.id} />
 												<input type="hidden" name="newRole" value="admin" />
 												<button type="submit" class="text-sm text-purple hover:underline">
-													{t('admin.users.makeAdmin')}
+													{m['admin.users.makeAdmin']()}
 												</button>
 											</form>
 										{/if}
@@ -264,21 +264,21 @@
 											<form method="POST" action="?/deleteUser" use:enhance class="inline">
 												<input type="hidden" name="userId" value={user.id} />
 												<button type="submit" class="text-sm text-error hover:underline"
-													>{t('common.confirm')}</button
+													>{m['common.confirm']()}</button
 												>
 											</form>
 											<button
 												onclick={() => (deleteConfirm = null)}
 												class="text-sm text-text-muted hover:underline"
 											>
-												{t('common.cancel')}
+												{m['common.cancel']()}
 											</button>
 										{:else}
 											<button
 												onclick={() => (deleteConfirm = user.id)}
 												class="text-sm text-error hover:underline"
 											>
-												{t('common.delete')}
+												{m['common.delete']()}
 											</button>
 										{/if}
 									</div>
@@ -295,16 +295,16 @@
 	{#if data.tab === 'invitations'}
 		{#if data.signupMode !== 'invitation'}
 			<div class="rounded-xl bg-yellow/10 p-4 text-yellow-dark">
-				<strong>{t('common.note')}</strong>
-				{t('admin.invitations.signupModeNote', { mode: data.signupMode })}
-				<a href="/admin/settings" class="underline">{t('common.changeSettings')}</a>
+				<strong>{m['common.note']()}</strong>
+				{m['admin.invitations.signupModeNote']({ mode: data.signupMode })}
+				<a href="/admin/settings" class="underline">{m['common.changeSettings']()}</a>
 			</div>
 		{/if}
 
 		<!-- Create Invitation Form -->
 		<div class="card">
-			<h2 class="text-xl font-bold text-text-light">{t('admin.invitations.create')}</h2>
-			<p class="mt-2 text-text-muted">{t('admin.invitations.createDesc')}</p>
+			<h2 class="text-xl font-bold text-text-light">{m['admin.invitations.create']()}</h2>
+			<p class="mt-2 text-text-muted">{m['admin.invitations.createDesc']()}</p>
 
 			{#if form?.code}
 				<div class="mt-4 rounded-xl bg-success/10 p-4 text-success">
@@ -316,7 +316,7 @@
 							onclick={() => copyToClipboard(form.code)}
 							class="btn btn-sm btn-secondary"
 						>
-							{copiedCode === form.code ? t('common.copied') : t('common.copyLink')}
+							{copiedCode === form.code ? m['common.copied']() : m['common.copyLink']()}
 						</button>
 					</div>
 				</div>
@@ -325,7 +325,7 @@
 			<form method="POST" action="?/createInvitation" use:enhance class="mt-6 space-y-4">
 				<div>
 					<label for="email" class="block text-sm font-medium text-text-light">
-						{t('admin.invitations.emailOptional')}
+						{m['admin.invitations.emailOptional']()}
 					</label>
 					<input
 						type="email"
@@ -336,13 +336,13 @@
 						class="input mt-1"
 					/>
 					<p class="mt-1 text-xs text-text-muted">
-						{t('admin.invitations.emailHint')}
+						{m['admin.invitations.emailHint']()}
 					</p>
 				</div>
 
 				<div>
 					<label for="expiresInDays" class="block text-sm font-medium text-text-light">
-						{t('admin.invitations.expiresInDays')}
+						{m['admin.invitations.expiresInDays']()}
 					</label>
 					<input
 						type="number"
@@ -366,41 +366,42 @@
 							class="h-5 w-5 rounded border-border-light text-success focus:ring-success"
 						/>
 						<label for="sendEmail" class="text-sm text-text-light">
-							{t('admin.invitations.sendEmailTo', { email })}
+							{m['admin.invitations.sendEmailTo']({ email })}
 						</label>
 					</div>
 				{:else if email && !data.emailConfigured}
 					<div class="rounded-xl bg-yellow/10 p-3 text-sm text-yellow-dark">
-						{t('admin.invitations.emailNotConfigured')}
-						<a href="/admin/settings" class="underline">{t('admin.invitations.configureEmail')}</a>
+						{m['admin.invitations.emailNotConfigured']()}
+						<a href="/admin/settings" class="underline">{m['admin.invitations.configureEmail']()}</a
+						>
 					</div>
 				{/if}
 
 				<button type="submit" class="btn btn-success btn-md">
 					{email && sendEmail && data.emailConfigured
-						? t('admin.invitations.createAndSend')
-						: t('admin.invitations.create')}
+						? m['admin.invitations.createAndSend']()
+						: m['admin.invitations.create']()}
 				</button>
 			</form>
 		</div>
 
 		<!-- Invitations List -->
 		<div class="card">
-			<h2 class="text-xl font-bold text-text-light">{t('admin.invitations.allInvitations')}</h2>
+			<h2 class="text-xl font-bold text-text-light">{m['admin.invitations.allInvitations']()}</h2>
 
 			{#if data.invitations.length === 0}
-				<p class="mt-4 text-text-muted">{t('admin.invitations.noInvitations')}</p>
+				<p class="mt-4 text-text-muted">{m['admin.invitations.noInvitations']()}</p>
 			{:else}
 				<div class="mt-4 overflow-x-auto">
 					<table class="w-full">
 						<thead>
 							<tr class="border-b border-border-light text-left text-sm text-text-muted">
-								<th class="pr-4 pb-3">{t('admin.invitations.code')}</th>
-								<th class="pr-4 pb-3">{t('auth.email')}</th>
-								<th class="pr-4 pb-3">{t('admin.invitations.status')}</th>
-								<th class="pr-4 pb-3">{t('admin.invitations.createdBy')}</th>
-								<th class="pr-4 pb-3">{t('admin.invitations.expires')}</th>
-								<th class="pb-3">{t('common.actions')}</th>
+								<th class="pr-4 pb-3">{m['admin.invitations.code']()}</th>
+								<th class="pr-4 pb-3">{m['auth.email']()}</th>
+								<th class="pr-4 pb-3">{m['admin.invitations.status']()}</th>
+								<th class="pr-4 pb-3">{m['admin.invitations.createdBy']()}</th>
+								<th class="pr-4 pb-3">{m['admin.invitations.expires']()}</th>
+								<th class="pb-3">{m['common.actions']()}</th>
 							</tr>
 						</thead>
 						<tbody>
@@ -419,17 +420,17 @@
 									<td class="py-3 pr-4">
 										{#if invitation.usedAt}
 											<span class="rounded-full bg-success/10 px-2 py-1 text-xs text-success">
-												{t('admin.invitations.usedBy', {
+												{m['admin.invitations.usedBy']({
 													name: invitation.usedByName || 'Unknown'
 												})}
 											</span>
 										{:else if isExpired(invitation.expiresAt)}
 											<span class="rounded-full bg-error/10 px-2 py-1 text-xs text-error">
-												{t('admin.invitations.expired')}
+												{m['admin.invitations.expired']()}
 											</span>
 										{:else}
 											<span class="rounded-full bg-primary/10 px-2 py-1 text-xs text-primary">
-												{t('admin.invitations.active')}
+												{m['admin.invitations.active']()}
 											</span>
 										{/if}
 									</td>
@@ -447,13 +448,15 @@
 													onclick={() => copyToClipboard(invitation.code)}
 													class="btn btn-sm btn-secondary"
 												>
-													{copiedCode === invitation.code ? t('common.copied') : t('common.copy')}
+													{copiedCode === invitation.code
+														? m['common.copied']()
+														: m['common.copy']()}
 												</button>
 											{/if}
 											<form method="POST" action="?/deleteInvitation" use:enhance>
 												<input type="hidden" name="id" value={invitation.id} />
 												<button type="submit" class="btn btn-sm btn-error">
-													{t('common.delete')}
+													{m['common.delete']()}
 												</button>
 											</form>
 										</div>
@@ -471,16 +474,16 @@
 	{#if data.tab === 'approvals'}
 		{#if data.signupMode !== 'approval'}
 			<div class="rounded-xl bg-yellow/10 p-4 text-yellow-dark">
-				<strong>{t('common.note')}</strong>
-				{t('admin.approvals.signupModeNote', { mode: data.signupMode })}
-				<a href="/admin/settings" class="underline">{t('common.changeSettings')}</a>
+				<strong>{m['common.note']()}</strong>
+				{m['admin.approvals.signupModeNote']({ mode: data.signupMode })}
+				<a href="/admin/settings" class="underline">{m['common.changeSettings']()}</a>
 			</div>
 		{/if}
 
 		<!-- Pending Approvals Section -->
 		<div class="card">
 			<h2 class="mb-4 text-lg font-semibold text-text-light">
-				{t('admin.approvals.pendingTitle')}
+				{m['admin.approvals.pendingTitle']()}
 			</h2>
 			{#if data.pendingUsers.length === 0}
 				<div class="py-8 text-center">
@@ -490,19 +493,19 @@
 						<span class="text-2xl">✓</span>
 					</div>
 					<h3 class="mt-4 text-xl font-semibold text-text-light">
-						{t('admin.approvals.allCaughtUp')}
+						{m['admin.approvals.allCaughtUp']()}
 					</h3>
-					<p class="mt-2 text-text-muted">{t('admin.approvals.noPending')}</p>
+					<p class="mt-2 text-text-muted">{m['admin.approvals.noPending']()}</p>
 				</div>
 			{:else}
 				<div class="overflow-x-auto">
 					<table class="w-full">
 						<thead>
 							<tr class="border-b border-border-light text-left text-sm text-text-muted">
-								<th class="pr-4 pb-3">{t('admin.approvals.user')}</th>
-								<th class="pr-4 pb-3">{t('admin.approvals.email')}</th>
-								<th class="pr-4 pb-3">{t('admin.approvals.requested')}</th>
-								<th class="pb-3">{t('admin.approvals.actions')}</th>
+								<th class="pr-4 pb-3">{m['admin.approvals.user']()}</th>
+								<th class="pr-4 pb-3">{m['admin.approvals.email']()}</th>
+								<th class="pr-4 pb-3">{m['admin.approvals.requested']()}</th>
+								<th class="pb-3">{m['admin.approvals.actions']()}</th>
 							</tr>
 						</thead>
 						<tbody>
@@ -529,13 +532,13 @@
 											<form method="POST" action="?/approveUser" use:enhance>
 												<input type="hidden" name="userId" value={user.id} />
 												<button type="submit" class="btn btn-sm btn-success">
-													{t('admin.approvals.approve')}
+													{m['admin.approvals.approve']()}
 												</button>
 											</form>
 											<form method="POST" action="?/rejectUser" use:enhance>
 												<input type="hidden" name="userId" value={user.id} />
 												<button type="submit" class="btn btn-sm btn-error">
-													{t('admin.approvals.reject')}
+													{m['admin.approvals.reject']()}
 												</button>
 											</form>
 										</div>
@@ -551,7 +554,7 @@
 		<!-- Declined Approvals Section -->
 		<div class="card">
 			<h2 class="mb-4 text-lg font-semibold text-text-light">
-				{t('admin.approvals.declinedTitle')}
+				{m['admin.approvals.declinedTitle']()}
 			</h2>
 			{#if data.rejectedUsers.length === 0}
 				<div class="py-8 text-center">
@@ -561,20 +564,20 @@
 						<span class="text-2xl text-text-muted">-</span>
 					</div>
 					<h3 class="mt-4 text-xl font-semibold text-text-light">
-						{t('admin.approvals.noDeclined')}
+						{m['admin.approvals.noDeclined']()}
 					</h3>
-					<p class="mt-2 text-text-muted">{t('admin.approvals.noDeclinedDesc')}</p>
+					<p class="mt-2 text-text-muted">{m['admin.approvals.noDeclinedDesc']()}</p>
 				</div>
 			{:else}
-				<p class="mb-4 text-sm text-text-muted">{t('admin.approvals.declinedDesc')}</p>
+				<p class="mb-4 text-sm text-text-muted">{m['admin.approvals.declinedDesc']()}</p>
 				<div class="overflow-x-auto">
 					<table class="w-full">
 						<thead>
 							<tr class="border-b border-border-light text-left text-sm text-text-muted">
-								<th class="pr-4 pb-3">{t('admin.approvals.user')}</th>
-								<th class="pr-4 pb-3">{t('admin.approvals.email')}</th>
-								<th class="pr-4 pb-3">{t('admin.approvals.rejectedOn')}</th>
-								<th class="pb-3">{t('admin.approvals.actions')}</th>
+								<th class="pr-4 pb-3">{m['admin.approvals.user']()}</th>
+								<th class="pr-4 pb-3">{m['admin.approvals.email']()}</th>
+								<th class="pr-4 pb-3">{m['admin.approvals.rejectedOn']()}</th>
+								<th class="pb-3">{m['admin.approvals.actions']()}</th>
 							</tr>
 						</thead>
 						<tbody>
@@ -601,7 +604,7 @@
 											<form method="POST" action="?/reApproveUser" use:enhance>
 												<input type="hidden" name="userId" value={user.id} />
 												<button type="submit" class="btn btn-sm btn-success">
-													{t('admin.approvals.allow')}
+													{m['admin.approvals.allow']()}
 												</button>
 											</form>
 											{#if deleteApprovalConfirm === user.id}
@@ -617,7 +620,7 @@
 												>
 													<input type="hidden" name="userId" value={user.id} />
 													<button type="submit" class="btn btn-sm btn-error">
-														{t('admin.approvals.confirmDelete')}
+														{m['admin.approvals.confirmDelete']()}
 													</button>
 												</form>
 												<button
@@ -625,7 +628,7 @@
 													class="btn btn-sm btn-secondary"
 													onclick={() => (deleteApprovalConfirm = null)}
 												>
-													{t('common.cancel')}
+													{m['common.cancel']()}
 												</button>
 											{:else}
 												<button
@@ -633,7 +636,7 @@
 													class="btn btn-sm btn-ghost text-error"
 													onclick={() => (deleteApprovalConfirm = user.id)}
 												>
-													{t('admin.approvals.delete')}
+													{m['admin.approvals.delete']()}
 												</button>
 											{/if}
 										</div>

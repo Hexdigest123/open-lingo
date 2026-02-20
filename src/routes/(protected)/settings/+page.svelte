@@ -1,9 +1,14 @@
 <script lang="ts">
+	import * as m from '$lib/paraglide/messages.js';
+	import { getLocale, setLocale } from '$lib/paraglide/runtime.js';
 	import type { PageData, ActionData } from './$types';
-	import { t, i18n } from '$lib/i18n/index.svelte';
-	import type { Locale } from '$lib/i18n/index.svelte';
 	import { enhance } from '$app/forms';
 	import { invalidateAll } from '$app/navigation';
+	const availableLocales = [
+		{ code: 'en' as const, name: 'English' },
+		{ code: 'de' as const, name: 'Deutsch' }
+	];
+	type Locale = 'en' | 'de';
 
 	type LearningLanguage = {
 		code: string;
@@ -26,8 +31,8 @@
 	let isUpdatingProfile = $state(false);
 	let isChangingPassword = $state(false);
 
-	async function setLocale(locale: Locale) {
-		i18n.setLocale(locale);
+	async function changeLocale(locale: Locale) {
+		setLocale(locale);
 
 		// Persist locale to database
 		const formData = new FormData();
@@ -64,28 +69,29 @@
 </script>
 
 <svelte:head>
-	<title>{t('settings.title')} - OpenLingo</title>
+	<title>{m['settings.title']()} - OpenLingo</title>
 </svelte:head>
 
 <div class="space-y-8">
-	<h1 class="text-3xl font-bold text-text-light">{t('settings.title')}</h1>
+	<h1 class="text-3xl font-bold text-text-light">{m['settings.title']()}</h1>
 
 	<!-- Profile Settings -->
 	<div class="card">
-		<h2 class="text-xl font-bold text-text-light">{t('profile.editProfile')}</h2>
+		<h2 class="text-xl font-bold text-text-light">{m['profile.editProfile']()}</h2>
 		<p class="mt-1 text-text-muted">
-			{t('settings.profileDescription') || 'Update your display name and profile information.'}
+			{m['settings.profileDescription']() || 'Update your display name and profile information.'}
 		</p>
 
 		{#if form?.profileSuccess}
 			<div class="mt-4 rounded-xl bg-success/10 p-3 text-success">
-				{t('settings.profileUpdated') || 'Profile updated successfully!'}
+				{m['settings.profileUpdated']() || 'Profile updated successfully!'}
 			</div>
 		{/if}
 
 		{#if form?.profileError}
 			<div class="mt-4 rounded-xl bg-error/10 p-3 text-error">
-				{t(form.profileError)}
+				{(m[form.profileError as keyof typeof m] as unknown as () => string)?.() ??
+					form.profileError}
 			</div>
 		{/if}
 
@@ -103,7 +109,7 @@
 		>
 			<div>
 				<label for="email" class="block text-sm font-medium text-text-light">
-					{t('auth.email')}
+					{m['auth.email']()}
 				</label>
 				<input
 					type="email"
@@ -113,13 +119,13 @@
 					class="input mt-1 cursor-not-allowed bg-bg-light-secondary text-text-muted"
 				/>
 				<p class="mt-1 text-xs text-text-muted">
-					{t('settings.emailCannotChange') || 'Email cannot be changed.'}
+					{m['settings.emailCannotChange']() || 'Email cannot be changed.'}
 				</p>
 			</div>
 
 			<div>
 				<label for="displayName" class="block text-sm font-medium text-text-light">
-					{t('auth.displayName')}
+					{m['auth.displayName']()}
 				</label>
 				<input
 					type="text"
@@ -139,9 +145,9 @@
 				class="btn btn-success btn-md"
 			>
 				{#if isUpdatingProfile}
-					{t('common.loading')}
+					{m['common.loading']()}
 				{:else}
-					{t('common.save')}
+					{m['common.save']()}
 				{/if}
 			</button>
 		</form>
@@ -150,21 +156,22 @@
 	<!-- Password Change -->
 	<div class="card">
 		<h2 class="text-xl font-bold text-text-light">
-			{t('settings.changePassword') || 'Change Password'}
+			{m['settings.changePassword']() || 'Change Password'}
 		</h2>
 		<p class="mt-1 text-text-muted">
-			{t('settings.passwordDescription') || 'Update your account password.'}
+			{m['settings.passwordDescription']() || 'Update your account password.'}
 		</p>
 
 		{#if form?.passwordSuccess}
 			<div class="mt-4 rounded-xl bg-success/10 p-3 text-success">
-				{t('settings.passwordChanged') || 'Password changed successfully!'}
+				{m['settings.passwordChanged']() || 'Password changed successfully!'}
 			</div>
 		{/if}
 
 		{#if form?.passwordError}
 			<div class="mt-4 rounded-xl bg-error/10 p-3 text-error">
-				{t(form.passwordError)}
+				{(m[form.passwordError as keyof typeof m] as unknown as () => string)?.() ??
+					form.passwordError}
 			</div>
 		{/if}
 
@@ -185,7 +192,7 @@
 		>
 			<div>
 				<label for="currentPassword" class="block text-sm font-medium text-text-light">
-					{t('settings.currentPassword') || 'Current Password'}
+					{m['settings.currentPassword']() || 'Current Password'}
 				</label>
 				<input
 					type="password"
@@ -202,7 +209,7 @@
 
 			<div>
 				<label for="newPassword" class="block text-sm font-medium text-text-light">
-					{t('settings.newPassword') || 'New Password'}
+					{m['settings.newPassword']() || 'New Password'}
 				</label>
 				<input
 					type="password"
@@ -217,13 +224,13 @@
 					class="input mt-1"
 				/>
 				<p class="mt-1 text-xs text-text-muted">
-					{t('auth.passwordHint') || 'Minimum 8 characters'}
+					{m['auth.passwordHint']() || 'Minimum 8 characters'}
 				</p>
 			</div>
 
 			<div>
 				<label for="confirmPassword" class="block text-sm font-medium text-text-light">
-					{t('settings.confirmPassword') || 'Confirm New Password'}
+					{m['settings.confirmPassword']() || 'Confirm New Password'}
 				</label>
 				<input
 					type="password"
@@ -245,9 +252,9 @@
 				class="btn btn-primary btn-md"
 			>
 				{#if isChangingPassword}
-					{t('common.loading')}
+					{m['common.loading']()}
 				{:else}
-					{t('settings.changePassword') || 'Change Password'}
+					{m['settings.changePassword']() || 'Change Password'}
 				{/if}
 			</button>
 		</form>
@@ -279,14 +286,14 @@
 	</div>
 
 	<div class="card">
-		<h2 class="text-xl font-bold text-text-light">{t('settings.language')}</h2>
-		<p class="mt-1 text-text-muted">{t('settings.languageDescription')}</p>
+		<h2 class="text-xl font-bold text-text-light">{m['settings.language']()}</h2>
+		<p class="mt-1 text-text-muted">{m['settings.languageDescription']()}</p>
 		<div class="mt-4 flex flex-col gap-3 sm:flex-row sm:gap-4">
-			{#each i18n.availableLocales as locale}
+			{#each availableLocales as locale}
 				<button
-					onclick={() => setLocale(locale.code)}
+					onclick={() => changeLocale(locale.code)}
 					class="flex cursor-pointer items-center gap-2 rounded-xl border-2 px-4 py-3 font-medium transition-colors
-						{i18n.locale === locale.code
+						{getLocale() === locale.code
 						? 'border-primary bg-primary/10 text-primary'
 						: 'border-border-light text-text-light hover:border-primary/50'}"
 				>
@@ -299,11 +306,11 @@
 
 	<!-- API Key Settings -->
 	<div class="card">
-		<h2 class="text-xl font-bold text-text-light">{t('settings.apiKey.title')}</h2>
-		<p class="mt-1 text-text-muted">{t('settings.apiKey.description')}</p>
+		<h2 class="text-xl font-bold text-text-light">{m['settings.apiKey.title']()}</h2>
+		<p class="mt-1 text-text-muted">{m['settings.apiKey.description']()}</p>
 		<div class="mt-4">
 			<a href="/settings/api-key" class="btn btn-primary btn-md">
-				{t('settings.apiKey.configure') || 'Configure API Key'}
+				{m['settings.apiKey.configure']() || 'Configure API Key'}
 			</a>
 		</div>
 	</div>

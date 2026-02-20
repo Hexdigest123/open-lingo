@@ -1,6 +1,6 @@
 <script lang="ts">
 	import { page } from '$app/stores';
-	import { t } from '$lib/i18n/index.svelte';
+	import * as m from '$lib/paraglide/messages.js';
 	import type { PageData } from './$types';
 	import { Gamepad2, Mic, Bot } from 'lucide-svelte';
 
@@ -21,7 +21,7 @@
 	{#if accountDeleted}
 		<div class="mx-auto mb-8 max-w-7xl px-4">
 			<div class="rounded-xl bg-success/10 p-4 text-center text-success">
-				{t('landing.accountDeleted')}
+				{m['landing.accountDeleted']()}
 			</div>
 		</div>
 	{/if}
@@ -31,18 +31,18 @@
 		<div class="flex flex-col items-center text-center lg:flex-row lg:gap-16 lg:text-left">
 			<div class="flex-1">
 				<h1 class="text-4xl font-bold text-text-light lg:text-6xl">
-					{t('landing.title')}
-					<span class="text-success">{t('landing.titleHighlight')}</span>
+					{m['landing.title']()}
+					<span class="text-success">{m['landing.titleHighlight']()}</span>
 				</h1>
 				<p class="mt-6 text-xl text-text-muted">
-					{t('landing.subtitle')}
+					{m['landing.subtitle']()}
 				</p>
 				<div class="mt-8 flex flex-col gap-4 sm:flex-row sm:justify-center lg:justify-start">
 					<a href="/register" class="btn btn-success btn-lg w-full sm:w-auto">
-						{t('landing.getStarted')}
+						{m['landing.getStarted']()}
 					</a>
 					<a href="/login" class="btn btn-ghost btn-lg w-full sm:w-auto">
-						{t('landing.haveAccount')}
+						{m['landing.haveAccount']()}
 					</a>
 				</div>
 			</div>
@@ -110,20 +110,20 @@
 					<div class="text-4xl font-bold text-success">
 						{data.stats.totalUsers.toLocaleString()}+
 					</div>
-					<div class="text-text-muted">{t('landing.stats.users')}</div>
+					<div class="text-text-muted">{m['landing.stats.users']()}</div>
 				</div>
 				<div class="animate-fade-in-up text-center delay-200">
 					<div class="text-4xl font-bold text-primary">
 						{data.stats.totalLessons.toLocaleString()}+
 					</div>
-					<div class="text-text-muted">{t('landing.stats.lessons')}</div>
+					<div class="text-text-muted">{m['landing.stats.lessons']()}</div>
 				</div>
 			</div>
 		{/if}
 
 		<!-- Features Section -->
 		<div class="mt-24">
-			<h2 class="text-center text-3xl font-bold text-text-light">{t('landing.whyTitle')}</h2>
+			<h2 class="text-center text-3xl font-bold text-text-light">{m['landing.whyTitle']()}</h2>
 			<div class="mt-12 grid gap-8 md:grid-cols-3">
 				<!-- Feature 1: Gamified Learning -->
 				<div
@@ -134,9 +134,11 @@
 					>
 						<Gamepad2 size={28} class="text-success" />
 					</div>
-					<h3 class="text-xl font-bold text-text-light">{t('landing.features.gamified.title')}</h3>
+					<h3 class="text-xl font-bold text-text-light">
+						{m['landing.features.gamified.title']()}
+					</h3>
 					<p class="mt-2 text-text-muted">
-						{t('landing.features.gamified.description')}
+						{m['landing.features.gamified.description']()}
 					</p>
 				</div>
 
@@ -149,9 +151,9 @@
 					>
 						<Mic size={28} class="text-primary" />
 					</div>
-					<h3 class="text-xl font-bold text-text-light">{t('landing.features.voice.title')}</h3>
+					<h3 class="text-xl font-bold text-text-light">{m['landing.features.voice.title']()}</h3>
 					<p class="mt-2 text-text-muted">
-						{t('landing.features.voice.description')}
+						{m['landing.features.voice.description']()}
 					</p>
 				</div>
 
@@ -164,9 +166,9 @@
 					>
 						<Bot size={28} class="text-purple" />
 					</div>
-					<h3 class="text-xl font-bold text-text-light">{t('landing.features.ai.title')}</h3>
+					<h3 class="text-xl font-bold text-text-light">{m['landing.features.ai.title']()}</h3>
 					<p class="mt-2 text-text-muted">
-						{t('landing.features.ai.description')}
+						{m['landing.features.ai.description']()}
 					</p>
 				</div>
 			</div>
@@ -175,7 +177,7 @@
 		<!-- How It Works Section -->
 		<div class="mt-24">
 			<h2 class="text-center text-3xl font-bold text-text-light">
-				{t('landing.howItWorks.title')}
+				{m['landing.howItWorks.title']()}
 			</h2>
 			<div class="mt-12 grid gap-8 md:grid-cols-4">
 				<div class="animate-fade-in-up text-center delay-100">
@@ -184,8 +186,8 @@
 					>
 						1
 					</div>
-					<h3 class="font-bold text-text-light">{t('landing.howItWorks.step1.title')}</h3>
-					<p class="mt-1 text-sm text-text-muted">{t('landing.howItWorks.step1.description')}</p>
+					<h3 class="font-bold text-text-light">{m['landing.howItWorks.step1.title']()}</h3>
+					<p class="mt-1 text-sm text-text-muted">{m['landing.howItWorks.step1.description']()}</p>
 				</div>
 				<div class="animate-fade-in-up text-center delay-200">
 					<div
@@ -193,8 +195,8 @@
 					>
 						2
 					</div>
-					<h3 class="font-bold text-text-light">{t('landing.howItWorks.step2.title')}</h3>
-					<p class="mt-1 text-sm text-text-muted">{t('landing.howItWorks.step2.description')}</p>
+					<h3 class="font-bold text-text-light">{m['landing.howItWorks.step2.title']()}</h3>
+					<p class="mt-1 text-sm text-text-muted">{m['landing.howItWorks.step2.description']()}</p>
 				</div>
 				<div class="animate-fade-in-up text-center delay-300">
 					<div
@@ -202,8 +204,8 @@
 					>
 						3
 					</div>
-					<h3 class="font-bold text-text-light">{t('landing.howItWorks.step3.title')}</h3>
-					<p class="mt-1 text-sm text-text-muted">{t('landing.howItWorks.step3.description')}</p>
+					<h3 class="font-bold text-text-light">{m['landing.howItWorks.step3.title']()}</h3>
+					<p class="mt-1 text-sm text-text-muted">{m['landing.howItWorks.step3.description']()}</p>
 				</div>
 				<div class="animate-fade-in-up text-center delay-400">
 					<div
@@ -211,17 +213,17 @@
 					>
 						4
 					</div>
-					<h3 class="font-bold text-text-light">{t('landing.howItWorks.step4.title')}</h3>
-					<p class="mt-1 text-sm text-text-muted">{t('landing.howItWorks.step4.description')}</p>
+					<h3 class="font-bold text-text-light">{m['landing.howItWorks.step4.title']()}</h3>
+					<p class="mt-1 text-sm text-text-muted">{m['landing.howItWorks.step4.description']()}</p>
 				</div>
 			</div>
 		</div>
 
 		<!-- Levels Section -->
 		<div class="mt-24">
-			<h2 class="text-center text-3xl font-bold text-text-light">{t('landing.levelsTitle')}</h2>
+			<h2 class="text-center text-3xl font-bold text-text-light">{m['landing.levelsTitle']()}</h2>
 			<p class="mt-4 text-center text-text-muted">
-				{t('landing.levelsSubtitle')}
+				{m['landing.levelsSubtitle']()}
 			</p>
 			<div class="mt-12 flex flex-wrap justify-center gap-4">
 				{#each ['A1', 'A2', 'B1', 'B2', 'C1', 'C2'] as level, i}
@@ -249,15 +251,15 @@
 		<div
 			class="mt-24 rounded-3xl bg-gradient-to-r from-success to-success-dark p-8 text-center text-white lg:p-12"
 		>
-			<h2 class="text-3xl font-bold">{t('landing.ctaTitle')}</h2>
+			<h2 class="text-3xl font-bold">{m['landing.ctaTitle']()}</h2>
 			<p class="mt-4 text-lg opacity-90">
-				{t('landing.ctaSubtitle')}
+				{m['landing.ctaSubtitle']()}
 			</p>
 			<a
 				href="/register"
 				class="btn btn-lg mt-8 transform bg-white text-success transition-transform hover:scale-105 hover:bg-gray-100"
 			>
-				{t('landing.ctaButton')}
+				{m['landing.ctaButton']()}
 			</a>
 		</div>
 	</div>

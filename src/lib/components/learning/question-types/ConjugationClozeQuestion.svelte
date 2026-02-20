@@ -1,7 +1,7 @@
 <script lang="ts">
-	import { i18n, t } from '$lib/i18n/index.svelte';
-
-	interface Props {
+	import * as m from '$lib/paraglide/messages.js';
+	import { getLocale } from '$lib/paraglide/runtime.js';
+interface Props {
 		sentenceEn: string;
 		sentenceDe: string;
 		sentence: string;
@@ -25,8 +25,8 @@
 		onAnswer
 	}: Props = $props();
 
-	const translationText = $derived(i18n.locale === 'de' ? sentenceDe : sentenceEn);
-	const hintText = $derived(i18n.locale === 'de' ? hintDe : hintEn);
+	const translationText = $derived(getLocale() === 'de' ? sentenceDe : sentenceEn);
+	const hintText = $derived(getLocale() === 'de' ? hintDe : hintEn);
 
 	let answer = $state('');
 
@@ -45,7 +45,7 @@
 
 <div class="card">
 	<h2 class="mb-2 text-lg font-bold text-text-light">
-		{t('lesson.types.conjugationCloze') || 'Conjugation Practice'}
+		{m["lesson.types.conjugationCloze"]() || 'Conjugation Practice'}
 	</h2>
 
 	<div class="mb-6">
@@ -61,7 +61,7 @@
 	</div>
 
 	<div class="mb-6 rounded-xl border border-border-light bg-bg-light-secondary p-4">
-		<p class="mb-1 text-sm font-medium text-text-muted">{t('lesson.hint') || 'Hint'}:</p>
+		<p class="mb-1 text-sm font-medium text-text-muted">{m["lesson.hint"]() || 'Hint'}:</p>
 		<div class="flex flex-wrap gap-4">
 			<div class="badge badge-primary">{infinitive}</div>
 			<div class="badge badge-secondary">{targetTense}</div>
@@ -75,14 +75,14 @@
 		type="text"
 		bind:value={answer}
 		onkeydown={handleKeydown}
-		placeholder={t('lesson.typeAnswer')}
+		placeholder={m["lesson.typeAnswer"]()}
 		{disabled}
 		class="input mb-6 w-full text-lg"
 	/>
 
 	{#if !disabled}
 		<button onclick={submit} disabled={!answer.trim()} class="btn btn-success btn-lg w-full">
-			{t('lesson.checkAnswer')}
+			{m["lesson.checkAnswer"]()}
 		</button>
 	{/if}
 </div>

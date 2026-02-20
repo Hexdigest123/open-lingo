@@ -2,7 +2,7 @@
 	import type { PageData, ActionData } from './$types';
 	import { enhance } from '$app/forms';
 	import { page } from '$app/stores';
-	import { t } from '$lib/i18n/index.svelte';
+	import * as m from '$lib/paraglide/messages.js';
 
 	let { data, form }: { data: PageData; form: ActionData } = $props();
 
@@ -41,21 +41,21 @@
 
 <div class="space-y-6">
 	<div class="flex items-center justify-between">
-		<h1 class="text-2xl font-bold text-text-light">{t('admin.invitations.title')}</h1>
+		<h1 class="text-2xl font-bold text-text-light">{m["admin.invitations.title"]()}</h1>
 	</div>
 
 	{#if data.signupMode !== 'invitation'}
 		<div class="rounded-xl bg-yellow/10 p-4 text-yellow-dark">
-			<strong>{t('common.note')}</strong>
-			{t('admin.invitations.signupModeNote', { mode: data.signupMode })}
-			<a href="/admin/settings" class="underline">{t('common.changeSettings')}</a>
+			<strong>{m["common.note"]()}</strong>
+			{m["admin.invitations.signupModeNote"]({ mode: data.signupMode })}
+			<a href="/admin/settings" class="underline">{m["common.changeSettings"]()}</a>
 		</div>
 	{/if}
 
 	<!-- Create Invitation Form -->
 	<div class="card">
-		<h2 class="text-xl font-bold text-text-light">{t('admin.invitations.create')}</h2>
-		<p class="mt-2 text-text-muted">{t('admin.invitations.createDesc')}</p>
+		<h2 class="text-xl font-bold text-text-light">{m["admin.invitations.create"]()}</h2>
+		<p class="mt-2 text-text-muted">{m["admin.invitations.createDesc"]()}</p>
 
 		{#if form?.success}
 			<div class="mt-4 rounded-xl bg-success/10 p-4 text-success">
@@ -68,7 +68,7 @@
 							onclick={() => copyToClipboard(form.code)}
 							class="btn btn-sm btn-secondary"
 						>
-							{copiedCode === form.code ? t('common.copied') : t('common.copyLink')}
+							{copiedCode === form.code ? m["common.copied"]() : m["common.copyLink"]()}
 						</button>
 					</div>
 				{/if}
@@ -83,7 +83,7 @@
 		<form method="POST" action="?/createInvitation" use:enhance class="mt-6 space-y-4">
 			<div>
 				<label for="email" class="block text-sm font-medium text-text-light">
-					{t('admin.invitations.emailOptional')}
+					{m["admin.invitations.emailOptional"]()}
 				</label>
 				<input
 					type="email"
@@ -94,13 +94,13 @@
 					class="input mt-1"
 				/>
 				<p class="mt-1 text-xs text-text-muted">
-					{t('admin.invitations.emailHint')}
+					{m["admin.invitations.emailHint"]()}
 				</p>
 			</div>
 
 			<div>
 				<label for="expiresInDays" class="block text-sm font-medium text-text-light">
-					{t('admin.invitations.expiresInDays')}
+					{m["admin.invitations.expiresInDays"]()}
 				</label>
 				<input
 					type="number"
@@ -124,41 +124,41 @@
 						class="h-5 w-5 rounded border-border-light text-success focus:ring-success"
 					/>
 					<label for="sendEmail" class="text-sm text-text-light">
-						{t('admin.invitations.sendEmailTo', { email })}
+						{m["admin.invitations.sendEmailTo"]({ email })}
 					</label>
 				</div>
 			{:else if email && !data.emailConfigured}
 				<div class="rounded-xl bg-yellow/10 p-3 text-sm text-yellow-dark">
-					{t('admin.invitations.emailNotConfigured')}
-					<a href="/admin/settings" class="underline">{t('admin.invitations.configureEmail')}</a>
+					{m["admin.invitations.emailNotConfigured"]()}
+					<a href="/admin/settings" class="underline">{m["admin.invitations.configureEmail"]()}</a>
 				</div>
 			{/if}
 
 			<button type="submit" class="btn btn-success btn-md">
 				{email && sendEmail && data.emailConfigured
-					? t('admin.invitations.createAndSend')
-					: t('admin.invitations.create')}
+					? m["admin.invitations.createAndSend"]()
+					: m["admin.invitations.create"]()}
 			</button>
 		</form>
 	</div>
 
 	<!-- Invitations List -->
 	<div class="card">
-		<h2 class="text-xl font-bold text-text-light">{t('admin.invitations.allInvitations')}</h2>
+		<h2 class="text-xl font-bold text-text-light">{m["admin.invitations.allInvitations"]()}</h2>
 
 		{#if data.invitations.length === 0}
-			<p class="mt-4 text-text-muted">{t('admin.invitations.noInvitations')}</p>
+			<p class="mt-4 text-text-muted">{m["admin.invitations.noInvitations"]()}</p>
 		{:else}
 			<div class="mt-4 overflow-x-auto">
 				<table class="w-full">
 					<thead>
 						<tr class="border-b border-border-light text-left text-sm text-text-muted">
-							<th class="pr-4 pb-3">{t('admin.invitations.code')}</th>
-							<th class="pr-4 pb-3">{t('auth.email')}</th>
-							<th class="pr-4 pb-3">{t('admin.invitations.status')}</th>
-							<th class="pr-4 pb-3">{t('admin.invitations.createdBy')}</th>
-							<th class="pr-4 pb-3">{t('admin.invitations.expires')}</th>
-							<th class="pb-3">{t('common.actions')}</th>
+							<th class="pr-4 pb-3">{m["admin.invitations.code"]()}</th>
+							<th class="pr-4 pb-3">{m["auth.email"]()}</th>
+							<th class="pr-4 pb-3">{m["admin.invitations.status"]()}</th>
+							<th class="pr-4 pb-3">{m["admin.invitations.createdBy"]()}</th>
+							<th class="pr-4 pb-3">{m["admin.invitations.expires"]()}</th>
+							<th class="pb-3">{m["common.actions"]()}</th>
 						</tr>
 					</thead>
 					<tbody>
@@ -177,17 +177,17 @@
 								<td class="py-3 pr-4">
 									{#if invitation.usedAt}
 										<span class="rounded-full bg-success/10 px-2 py-1 text-xs text-success">
-											{t('admin.invitations.usedBy', {
+											{m["admin.invitations.usedBy"]({
 												name: invitation.usedByName || 'Unknown'
 											})}
 										</span>
 									{:else if isExpired(invitation.expiresAt)}
 										<span class="rounded-full bg-error/10 px-2 py-1 text-xs text-error">
-											{t('admin.invitations.expired')}
+											{m["admin.invitations.expired"]()}
 										</span>
 									{:else}
 										<span class="rounded-full bg-primary/10 px-2 py-1 text-xs text-primary">
-											{t('admin.invitations.active')}
+											{m["admin.invitations.active"]()}
 										</span>
 									{/if}
 								</td>
@@ -205,13 +205,13 @@
 												onclick={() => copyToClipboard(invitation.code)}
 												class="btn btn-sm btn-secondary"
 											>
-												{copiedCode === invitation.code ? t('common.copied') : t('common.copy')}
+												{copiedCode === invitation.code ? m["common.copied"]() : m["common.copy"]()}
 											</button>
 										{/if}
 										<form method="POST" action="?/deleteInvitation" use:enhance>
 											<input type="hidden" name="id" value={invitation.id} />
 											<button type="submit" class="btn btn-sm btn-error">
-												{t('common.delete')}
+												{m["common.delete"]()}
 											</button>
 										</form>
 									</div>

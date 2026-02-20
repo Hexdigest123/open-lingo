@@ -1,7 +1,7 @@
 <script lang="ts">
+	import * as m from '$lib/paraglide/messages.js';
 	import type { PageData, ActionData } from './$types';
-	import { t } from '$lib/i18n/index.svelte';
-	import { enhance } from '$app/forms';
+import { enhance } from '$app/forms';
 	import { invalidateAll } from '$app/navigation';
 	import {
 		Flame,
@@ -47,11 +47,11 @@
 	} = $props();
 
 	const activeLanguageName = $derived(
-		data.activeLanguage?.name || t('lesson.languages.targetLanguage')
+		data.activeLanguage?.name || m["lesson.languages.targetLanguage"]()
 	);
 	const greeting = $derived(
 		data.activeLanguage?.tutorGreeting ||
-			t('dashboard.greeting', { name: data.user?.displayName ?? '' })
+			m["dashboard.greeting"]({ name: data.user?.displayName ?? '' })
 	);
 	const dueReviewCount = $derived(data.dueReviewCount ?? 0);
 
@@ -70,7 +70,7 @@
 </script>
 
 <svelte:head>
-	<title>{t('nav.dashboard')} - OpenLingo</title>
+	<title>{m["nav.dashboard"]()} - OpenLingo</title>
 </svelte:head>
 
 <div class="space-y-8">
@@ -80,7 +80,7 @@
 			<h1 class="text-2xl font-bold text-text-light">
 				{greeting}
 			</h1>
-			<p class="text-text-muted">{t('dashboard.continueSubtitle')}</p>
+			<p class="text-text-muted">{m["dashboard.continueSubtitle"]()}</p>
 		</div>
 	</div>
 
@@ -95,7 +95,7 @@
 						<Globe size={24} />
 					{/if}
 					<div>
-						<h2 class="font-bold text-text-light">{t('dashboard.learningPath')}</h2>
+						<h2 class="font-bold text-text-light">{m["dashboard.learningPath"]()}</h2>
 						<p class="text-sm text-text-muted">{activeLanguageName}</p>
 					</div>
 				</div>
@@ -103,7 +103,7 @@
 					onclick={() => (showLanguagePicker = !showLanguagePicker)}
 					class="btn btn-ghost btn-sm"
 				>
-					{t('dashboard.changeLanguage')}
+					{m["dashboard.changeLanguage"]()}
 				</button>
 			</div>
 
@@ -154,7 +154,7 @@
 					<Star size={24} class="text-yellow-dark" />
 				</div>
 				<div>
-					<p class="text-sm text-text-muted">{t('dashboard.stats.xp')}</p>
+					<p class="text-sm text-text-muted">{m["dashboard.stats.xp"]()}</p>
 					<p class="text-2xl font-bold text-text-light">{data.stats.xpTotal}</p>
 				</div>
 			</div>
@@ -166,7 +166,7 @@
 					<Flame size={24} class="text-orange" />
 				</div>
 				<div>
-					<p class="text-sm text-text-muted">{t('dashboard.stats.streak')}</p>
+					<p class="text-sm text-text-muted">{m["dashboard.stats.streak"]()}</p>
 					<p class="text-2xl font-bold text-text-light">{data.stats.currentStreak}</p>
 				</div>
 			</div>
@@ -178,7 +178,7 @@
 					<Heart size={24} class="text-error" />
 				</div>
 				<div>
-					<p class="text-sm text-text-muted">{t('dashboard.stats.hearts')}</p>
+					<p class="text-sm text-text-muted">{m["dashboard.stats.hearts"]()}</p>
 					<p class="text-2xl font-bold text-text-light">{data.stats.hearts}/10</p>
 				</div>
 			</div>
@@ -196,14 +196,14 @@
 					<Snowflake size={24} class="text-primary" />
 				</div>
 				<div class="flex-1">
-					<p class="text-sm text-text-muted">{t('gamification.streakFreezes')}</p>
+					<p class="text-sm text-text-muted">{m["gamification.streakFreezes"]()}</p>
 					<p class="text-2xl font-bold text-primary">{data.stats.streakFreezes}</p>
 				</div>
 			</div>
 			<!-- Progress to next freeze -->
 			<div class="mt-3">
 				<div class="mb-1 flex justify-between text-xs text-text-muted">
-					<span>{t('dashboard.nextFreeze')}</span>
+					<span>{m["dashboard.nextFreeze"]()}</span>
 					<span>{50 - answersToNextFreeze}/50</span>
 				</div>
 				<div class="h-1.5 overflow-hidden rounded-full bg-border-light">
@@ -221,7 +221,7 @@
 					<Trophy size={24} class="text-purple" />
 				</div>
 				<div>
-					<p class="text-sm text-text-muted">{t('dashboard.stats.bestStreak')}</p>
+					<p class="text-sm text-text-muted">{m["dashboard.stats.bestStreak"]()}</p>
 					<p class="text-2xl font-bold text-text-light">{data.stats.longestStreak}</p>
 				</div>
 			</div>
@@ -230,7 +230,7 @@
 
 	<!-- Continue Learning Section -->
 	<div>
-		<h2 class="mb-4 text-xl font-bold text-text-light">{t('dashboard.continueTitle')}</h2>
+		<h2 class="mb-4 text-xl font-bold text-text-light">{m["dashboard.continueTitle"]()}</h2>
 		<div class="card">
 			<div class="flex flex-col items-center justify-between gap-4 sm:flex-row sm:items-start">
 				<div class="flex items-center gap-4">
@@ -241,24 +241,24 @@
 					</div>
 					<div>
 						<div class="flex flex-wrap items-center gap-2">
-							<h3 class="font-bold text-text-light">{t('skills.title')}</h3>
+							<h3 class="font-bold text-text-light">{m["skills.title"]()}</h3>
 							{#if dueReviewCount > 0}
 								<span
 									class="bg-warning/20 text-warning rounded-full px-2 py-0.5 text-xs font-semibold"
 								>
-									{t('review.dueCount', { count: dueReviewCount })}
+									{m["review.dueCount"]({ count: dueReviewCount })}
 								</span>
 							{/if}
 						</div>
-						<p class="text-text-muted">{t('dashboard.skillProgress')}</p>
+						<p class="text-text-muted">{m["dashboard.skillProgress"]()}</p>
 					</div>
 				</div>
 				<div class="flex w-full flex-col gap-2 sm:w-auto sm:flex-row">
 					<a href="/skills" class="btn btn-success btn-md w-full sm:w-auto">
-						{t('skills.title')}
+						{m["skills.title"]()}
 					</a>
 					<a href="/lessons" class="btn btn-ghost btn-md w-full sm:w-auto">
-						{t('lesson.startLearning')}
+						{m["lesson.startLearning"]()}
 					</a>
 				</div>
 			</div>
@@ -267,14 +267,14 @@
 
 	<!-- Quick Actions -->
 	<div>
-		<h2 class="mb-4 text-xl font-bold text-text-light">{t('dashboard.quickActions')}</h2>
+		<h2 class="mb-4 text-xl font-bold text-text-light">{m["dashboard.quickActions"]()}</h2>
 		<div class="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
 			<a href="/skills" class="card transition-shadow hover:shadow-lg">
 				<div class="flex items-center gap-4">
 					<TreePine size={32} class="shrink-0 text-success" />
 					<div>
-						<h3 class="font-bold text-text-light">{t('skills.title')}</h3>
-						<p class="text-sm text-text-muted">{t('dashboard.skillProgress')}</p>
+						<h3 class="font-bold text-text-light">{m["skills.title"]()}</h3>
+						<p class="text-sm text-text-muted">{m["dashboard.skillProgress"]()}</p>
 					</div>
 				</div>
 			</a>
@@ -284,7 +284,7 @@
 					<RefreshCw size={32} class="shrink-0 text-primary" />
 					<div>
 						<div class="flex items-center gap-2">
-							<h3 class="font-bold text-text-light">{t('review.title')}</h3>
+							<h3 class="font-bold text-text-light">{m["review.title"]()}</h3>
 							{#if dueReviewCount > 0}
 								<span
 									class="bg-warning/20 text-warning rounded-full px-2 py-0.5 text-xs font-semibold"
@@ -295,8 +295,8 @@
 						</div>
 						<p class="text-sm text-text-muted">
 							{dueReviewCount > 0
-								? t('review.dueCount', { count: dueReviewCount })
-								: t('review.noDue')}
+								? m["review.dueCount"]({ count: dueReviewCount })
+								: m["review.noDue"]()}
 						</p>
 					</div>
 				</div>
@@ -306,8 +306,8 @@
 				<div class="flex items-center gap-4">
 					<BookOpen size={32} class="shrink-0 text-primary" />
 					<div>
-						<h3 class="font-bold text-text-light">{t('lesson.spanishLessons')}</h3>
-						<p class="text-sm text-text-muted">{t('lesson.chooseLevelToStart')}</p>
+						<h3 class="font-bold text-text-light">{m["lesson.spanishLessons"]()}</h3>
+						<p class="text-sm text-text-muted">{m["lesson.chooseLevelToStart"]()}</p>
 					</div>
 				</div>
 			</a>
@@ -316,8 +316,8 @@
 				<div class="flex items-center gap-4">
 					<Trophy size={32} class="shrink-0 text-yellow-dark" />
 					<div>
-						<h3 class="font-bold text-text-light">{t('dashboard.actions.leaderboard.title')}</h3>
-						<p class="text-sm text-text-muted">{t('dashboard.actions.leaderboard.description')}</p>
+						<h3 class="font-bold text-text-light">{m["dashboard.actions.leaderboard.title"]()}</h3>
+						<p class="text-sm text-text-muted">{m["dashboard.actions.leaderboard.description"]()}</p>
 					</div>
 				</div>
 			</a>
@@ -326,8 +326,8 @@
 				<div class="flex items-center gap-4">
 					<Bot size={32} class="shrink-0 text-purple" />
 					<div>
-						<h3 class="font-bold text-text-light">{t('dashboard.actions.aiSettings.title')}</h3>
-						<p class="text-sm text-text-muted">{t('dashboard.actions.aiSettings.description')}</p>
+						<h3 class="font-bold text-text-light">{m["dashboard.actions.aiSettings.title"]()}</h3>
+						<p class="text-sm text-text-muted">{m["dashboard.actions.aiSettings.description"]()}</p>
 					</div>
 				</div>
 			</a>

@@ -1,7 +1,7 @@
 <script lang="ts">
-	import { t, i18n } from '$lib/i18n/index.svelte';
-
-	interface Props {
+	import * as m from '$lib/paraglide/messages.js';
+	import { getLocale } from '$lib/paraglide/runtime.js';
+interface Props {
 		reading: string;
 		characterType: string;
 		hintEn?: string;
@@ -26,11 +26,11 @@
 		}
 	}
 
-	let currentHint = $derived(i18n.locale === 'de' ? hintDe : hintEn);
+	let currentHint = $derived(getLocale() === 'de' ? hintDe : hintEn);
 </script>
 
 <div class="card">
-	<h2 class="mb-2 text-lg font-bold text-text-light">{t('lesson.types.characterWriting')}</h2>
+	<h2 class="mb-2 text-lg font-bold text-text-light">{m["lesson.types.characterWriting"]()}</h2>
 
 	<div class="mb-8 flex flex-col items-center justify-center">
 		<span
@@ -43,7 +43,7 @@
 
 	{#if currentHint}
 		<p class="mb-4 text-sm text-text-muted">
-			{t('lesson.hint')}: {currentHint}
+			{m["lesson.hint"]()}: {currentHint}
 		</p>
 	{/if}
 
@@ -51,14 +51,14 @@
 		type="text"
 		bind:value={answer}
 		onkeydown={handleKeydown}
-		placeholder={t('lesson.typeAnswer')}
+		placeholder={m["lesson.typeAnswer"]()}
 		{disabled}
 		class="input text-lg"
 	/>
 
 	{#if !disabled}
 		<button onclick={submit} disabled={!answer.trim()} class="btn btn-success btn-lg mt-6 w-full">
-			{t('lesson.checkAnswer')}
+			{m["lesson.checkAnswer"]()}
 		</button>
 	{/if}
 </div>

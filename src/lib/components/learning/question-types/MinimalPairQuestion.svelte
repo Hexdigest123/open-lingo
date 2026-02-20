@@ -1,6 +1,7 @@
 <script lang="ts">
-	import { i18n, t } from '$lib/i18n/index.svelte';
-	import { Headphones, Loader2, Volume2, Play } from 'lucide-svelte';
+	import * as m from '$lib/paraglide/messages.js';
+	import { getLocale } from '$lib/paraglide/runtime.js';
+import { Headphones, Loader2, Volume2, Play } from 'lucide-svelte';
 
 	interface Option {
 		text: string;
@@ -21,7 +22,7 @@
 	let { questionEn, questionDe, audioText, options, disabled, hasApiKey, onAnswer, onSkip }: Props =
 		$props();
 
-	const questionText = $derived(i18n.locale === 'de' ? questionDe : questionEn);
+	const questionText = $derived(getLocale() === 'de' ? questionDe : questionEn);
 
 	let isPlaying = $state(false);
 	let isLoading = $state(false);
@@ -52,7 +53,7 @@
 					await newAudio.play();
 				} catch (e2) {
 					console.error('Audio playback failed:', e2);
-					error = t('common.error');
+					error = m["common.error"]();
 				}
 			}
 			return;
@@ -74,7 +75,7 @@
 			const result = await response.json();
 
 			if (!response.ok) {
-				error = result.error || t('common.error');
+				error = result.error || m["common.error"]();
 				return;
 			}
 
@@ -97,12 +98,12 @@
 					await audio.play();
 				} catch (e2) {
 					console.error('Audio playback failed after retry:', e2);
-					error = t('common.error');
+					error = m["common.error"]();
 				}
 			}
 		} catch (err) {
 			console.error('Failed to generate audio:', err);
-			error = t('common.error');
+			error = m["common.error"]();
 		} finally {
 			isLoading = false;
 		}
@@ -117,7 +118,7 @@
 		};
 		audio.onerror = () => {
 			isPlaying = false;
-			error = t('common.error');
+			error = m["common.error"]();
 		};
 	}
 
@@ -130,7 +131,7 @@
 
 <div class="card">
 	<h2 class="mb-2 text-lg font-bold text-text-light">
-		{t('lesson.types.minimalPair') || 'Minimal Pair'}
+		{m["lesson.types.minimalPair"]() || 'Minimal Pair'}
 	</h2>
 	<p class="mb-4 text-text-muted">{questionText}</p>
 
@@ -139,11 +140,11 @@
 			<div class="mb-4 flex justify-center">
 				<Headphones size={48} class="text-yellow-dark" />
 			</div>
-			<p class="font-medium text-yellow-dark">{t('lesson.listening.noApiKey')}</p>
-			<p class="mt-2 text-sm text-text-muted">{t('lesson.listening.noApiKeyHint')}</p>
+			<p class="font-medium text-yellow-dark">{m["lesson.listening.noApiKey"]()}</p>
+			<p class="mt-2 text-sm text-text-muted">{m["lesson.listening.noApiKeyHint"]()}</p>
 			{#if onSkip}
 				<button onclick={onSkip} class="btn btn-primary mt-4">
-					{t('lesson.listening.skip')}
+					{m["lesson.listening.skip"]()}
 				</button>
 			{/if}
 		</div>
@@ -165,7 +166,7 @@
 			</button>
 
 			<p class="text-sm text-text-muted">
-				{isPlaying ? t('lesson.listening.playing') : t('lesson.listening.tapToPlay')}
+				{isPlaying ? m["lesson.listening.playing"]() : m["lesson.listening.tapToPlay"]()}
 			</p>
 		</div>
 

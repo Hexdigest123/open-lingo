@@ -1,6 +1,6 @@
 <script lang="ts">
-	import { t } from '$lib/i18n/index.svelte';
-	import { MessageCircle, Mic } from 'lucide-svelte';
+	import * as m from '$lib/paraglide/messages.js';
+import { MessageCircle, Mic } from 'lucide-svelte';
 
 	interface Props {
 		mode: 'voice' | 'text';
@@ -20,7 +20,7 @@
 			{disabled ? 'cursor-not-allowed opacity-50' : ''}"
 	>
 		<MessageCircle size={16} />
-		<span>{t('chat.textMode')}</span>
+		<span>{m["chat.textMode"]()}</span>
 	</button>
 	<button
 		onclick={() => onModeChange('voice')}
@@ -30,6 +30,6 @@
 			{disabled ? 'cursor-not-allowed opacity-50' : ''}"
 	>
 		<Mic size={16} />
-		<span>{t('chat.voiceMode')}</span>
+		<span>{m["chat.voiceMode"]()}</span>
 	</button>
 </div>

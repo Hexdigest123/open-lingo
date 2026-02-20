@@ -1,7 +1,7 @@
 <script lang="ts">
-	import { t, i18n } from '$lib/i18n/index.svelte';
-
-	interface Props {
+	import * as m from '$lib/paraglide/messages.js';
+	import { getLocale } from '$lib/paraglide/runtime.js';
+interface Props {
 		// For native_to_es direction: both language versions of the source text
 		textEn?: string;
 		textDe?: string;
@@ -16,7 +16,7 @@
 	let { textEn, textDe, text, direction, targetLanguageName, disabled, onAnswer }: Props = $props();
 
 	const resolvedTargetLanguageName = $derived(
-		targetLanguageName || t('lesson.languages.targetLanguage')
+		targetLanguageName || m["lesson.languages.targetLanguage"]()
 	);
 
 	let answer = $state('');
@@ -25,7 +25,7 @@
 	const displayText = $derived(() => {
 		if (direction === 'native_to_target' || direction === 'native_to_es') {
 			// Show the user's native language text
-			return i18n.locale === 'de' ? textDe || textEn || '' : textEn || textDe || '';
+			return getLocale() === 'de' ? textDe || textEn || '' : textEn || textDe || '';
 		}
 		// target_to_native / es_to_native: show target language text
 		return text || textEn || '';
@@ -33,7 +33,7 @@
 
 	// Get the user's native language name
 	const nativeLang = $derived(() => {
-		return i18n.locale === 'de' ? t('lesson.languages.german') : t('lesson.languages.english');
+		return getLocale() === 'de' ? m["lesson.languages.german"]() : m["lesson.languages.english"]();
 	});
 
 	// Determine source and target languages based on direction
@@ -65,7 +65,7 @@
 </script>
 
 <div class="card">
-	<h2 class="mb-2 text-lg font-bold text-text-light">{t('lesson.types.translation')}</h2>
+	<h2 class="mb-2 text-lg font-bold text-text-light">{m["lesson.types.translation"]()}</h2>
 
 	<div class="mb-6">
 		<div class="mb-2 flex items-center gap-2">
@@ -85,7 +85,7 @@
 		<textarea
 			bind:value={answer}
 			onkeydown={handleKeydown}
-			placeholder={t('lesson.typeTranslation')}
+			placeholder={m["lesson.typeTranslation"]()}
 			{disabled}
 			rows="2"
 			class="input text-lg"
@@ -94,7 +94,7 @@
 
 	{#if !disabled}
 		<button onclick={submit} disabled={!answer.trim()} class="btn btn-success btn-lg w-full">
-			{t('lesson.checkAnswer')}
+			{m["lesson.checkAnswer"]()}
 		</button>
 	{/if}
 </div>

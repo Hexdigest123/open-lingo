@@ -1,7 +1,6 @@
 <script lang="ts">
-	import { t } from '$lib/i18n/index.svelte';
-
-	interface Props {
+	import * as m from '$lib/paraglide/messages.js';
+interface Props {
 		open: boolean;
 		title: string;
 		message: string;
@@ -16,8 +15,8 @@
 		open,
 		title,
 		message,
-		confirmText = t('common.confirm'),
-		cancelText = t('common.cancel'),
+		confirmText = m["common.confirm"](),
+		cancelText = m["common.cancel"](),
 		confirmVariant = 'danger',
 		onConfirm,
 		onCancel

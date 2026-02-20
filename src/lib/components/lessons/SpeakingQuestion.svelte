@@ -1,6 +1,7 @@
 <script lang="ts">
-	import { i18n, t } from '$lib/i18n/index.svelte';
-	import { Mic } from 'lucide-svelte';
+	import * as m from '$lib/paraglide/messages.js';
+	import { getLocale } from '$lib/paraglide/runtime.js';
+import { Mic } from 'lucide-svelte';
 
 	interface Props {
 		textToSpeak: string;
@@ -15,7 +16,7 @@
 	let { textToSpeak, hintEn, hintDe, disabled, hasApiKey, onAnswer, onSkip }: Props = $props();
 
 	// Get locale-specific hint
-	const hint = $derived(i18n.locale === 'de' && hintDe ? hintDe : hintEn);
+	const hint = $derived(getLocale() === 'de' && hintDe ? hintDe : hintEn);
 
 	let isRecording = $state(false);
 	let isProcessing = $state(false);
@@ -57,7 +58,7 @@
 			isRecording = true;
 		} catch (err) {
 			console.error('Failed to start recording:', err);
-			error = t('chat.error.microphoneAccess');
+			error = m["chat.error.microphoneAccess"]();
 		}
 	}
 
@@ -95,14 +96,14 @@
 				body: JSON.stringify({
 					expectedText: textToSpeak,
 					audioBase64,
-					locale: i18n.locale
+					locale: getLocale()
 				})
 			});
 
 			const result = await response.json();
 
 			if (!response.ok) {
-				error = result.error || t('common.error');
+				error = result.error || m["common.error"]();
 				return;
 			}
 
@@ -118,7 +119,7 @@
 			}
 		} catch (err) {
 			console.error('Failed to process audio:', err);
-			error = t('common.error');
+			error = m["common.error"]();
 		} finally {
 			isProcessing = false;
 		}
@@ -126,18 +127,18 @@
 </script>
 
 <div class="card">
-	<h2 class="mb-2 text-lg font-bold text-text-light">{t('lesson.types.speaking')}</h2>
-	<p class="mb-4 text-text-muted">{t('lesson.speaking.speakNow')}</p>
+	<h2 class="mb-2 text-lg font-bold text-text-light">{m["lesson.types.speaking"]()}</h2>
+	<p class="mb-4 text-text-muted">{m["lesson.speaking.speakNow"]()}</p>
 
 	{#if !hasApiKey}
 		<!-- No API key - show skip option -->
 		<div class="rounded-xl bg-yellow/10 p-6 text-center">
 			<div class="mb-4 flex justify-center"><Mic size={32} class="text-yellow-dark" /></div>
-			<p class="font-medium text-yellow-dark">{t('lesson.speaking.noApiKey')}</p>
-			<p class="mt-2 text-sm text-text-muted">{t('lesson.speaking.noApiKeyHint')}</p>
+			<p class="font-medium text-yellow-dark">{m["lesson.speaking.noApiKey"]()}</p>
+			<p class="mt-2 text-sm text-text-muted">{m["lesson.speaking.noApiKeyHint"]()}</p>
 			{#if onSkip}
 				<button onclick={onSkip} class="btn btn-primary mt-4">
-					{t('lesson.speaking.skip')}
+					{m["lesson.speaking.skip"]()}
 				</button>
 			{/if}
 		</div>
@@ -156,7 +157,7 @@
 				<button
 					onclick={stopRecording}
 					{disabled}
-					aria-label={t('lesson.speaking.stopRecording')}
+					aria-label={m["lesson.speaking.stopRecording"]()}
 					class="flex h-20 w-20 items-center justify-center rounded-full bg-error text-white shadow-lg transition-all hover:bg-error/90 active:scale-95"
 				>
 					<svg
@@ -170,7 +171,7 @@
 						<path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12" />
 					</svg>
 				</button>
-				<p class="text-sm font-medium text-error">{t('lesson.speaking.recording')}</p>
+				<p class="text-sm font-medium text-error">{m["lesson.speaking.recording"]()}</p>
 				<div class="flex gap-1">
 					{#each Array(5) as _, i}
 						<div
@@ -200,12 +201,12 @@
 						></path>
 					</svg>
 				</div>
-				<p class="text-sm font-medium text-primary">{t('lesson.speaking.processing')}</p>
+				<p class="text-sm font-medium text-primary">{m["lesson.speaking.processing"]()}</p>
 			{:else}
 				<button
 					onclick={startRecording}
 					{disabled}
-					aria-label={t('lesson.speaking.tapToRecord')}
+					aria-label={m["lesson.speaking.tapToRecord"]()}
 					class="flex h-20 w-20 items-center justify-center rounded-full bg-primary text-white shadow-lg transition-all hover:bg-primary/90 active:scale-95
 						{disabled ? 'cursor-not-allowed opacity-50' : ''}"
 				>
@@ -224,7 +225,7 @@
 						/>
 					</svg>
 				</button>
-				<p class="text-sm text-text-muted">{t('lesson.speaking.tapToRecord')}</p>
+				<p class="text-sm text-text-muted">{m["lesson.speaking.tapToRecord"]()}</p>
 			{/if}
 		</div>
 
@@ -234,7 +235,7 @@
 				<p class="font-medium text-success">{feedback}</p>
 				{#if transcript}
 					<p class="mt-2 text-sm text-text-muted">
-						{i18n.locale === 'de' ? 'Du sagtest' : 'You said'}: "{transcript}"
+						{getLocale() === 'de' ? 'Du sagtest' : 'You said'}: "{transcript}"
 					</p>
 				{/if}
 			</div>

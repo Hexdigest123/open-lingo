@@ -1,7 +1,7 @@
 <script lang="ts">
-	import { i18n, t } from '$lib/i18n/index.svelte';
-
-	interface Props {
+	import * as m from '$lib/paraglide/messages.js';
+	import { getLocale } from '$lib/paraglide/runtime.js';
+interface Props {
 		character: string;
 		questionEn: string;
 		questionDe: string;
@@ -14,7 +14,7 @@
 	let { character, questionEn, questionDe, options, characterType, disabled, onAnswer }: Props =
 		$props();
 
-	const questionText = $derived(i18n.locale === 'de' ? questionDe : questionEn);
+	const questionText = $derived(getLocale() === 'de' ? questionDe : questionEn);
 
 	let selectedOption = $state<string | null>(null);
 
@@ -27,7 +27,7 @@
 
 <div class="card">
 	<h2 class="mb-2 text-lg font-bold text-text-light">
-		{t('lesson.types.characterRecognition') || 'Character Recognition'}
+		{m["lesson.types.characterRecognition"]() || 'Character Recognition'}
 	</h2>
 
 	<div class="mb-8 flex flex-col items-center justify-center">

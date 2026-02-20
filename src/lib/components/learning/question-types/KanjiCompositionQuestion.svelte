@@ -1,7 +1,7 @@
 <script lang="ts">
-	import { i18n, t } from '$lib/i18n/index.svelte';
-
-	interface Radical {
+	import * as m from '$lib/paraglide/messages.js';
+	import { getLocale } from '$lib/paraglide/runtime.js';
+interface Radical {
 		character: string;
 		name: string;
 	}
@@ -26,7 +26,7 @@
 		onAnswer
 	}: Props = $props();
 
-	const meaningText = $derived(i18n.locale === 'de' ? meaningDe : meaningEn);
+	const meaningText = $derived(getLocale() === 'de' ? meaningDe : meaningEn);
 
 	// Combine and shuffle radicals
 	const allRadicals = $derived(
@@ -56,16 +56,16 @@
 
 <div class="card">
 	<h2 class="mb-2 text-lg font-bold text-text-light">
-		{t('lesson.types.kanjiComposition') || 'Kanji Composition'}
+		{m["lesson.types.kanjiComposition"]() || 'Kanji Composition'}
 	</h2>
 
 	<div class="mb-8 text-center">
 		<p class="mb-2 text-sm tracking-wider text-text-muted uppercase">
-			{t('lesson.meaning') || 'Meaning'}
+			{m["lesson.meaning"]() || 'Meaning'}
 		</p>
 		<p class="mb-4 text-3xl font-bold text-text-light">{meaningText}</p>
 		<p class="text-sm text-text-muted">
-			{t('lesson.selectRadicals') || 'Select the parts that make up this Kanji'}
+			{m["lesson.selectRadicals"]() || 'Select the parts that make up this Kanji'}
 		</p>
 	</div>
 
@@ -93,7 +93,7 @@
 			disabled={selectedRadicals.size === 0}
 			class="btn btn-success btn-lg w-full"
 		>
-			{t('lesson.checkAnswer')}
+			{m["lesson.checkAnswer"]()}
 		</button>
 	{/if}
 </div>

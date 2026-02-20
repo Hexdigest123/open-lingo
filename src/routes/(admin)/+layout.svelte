@@ -2,7 +2,7 @@
 	import type { Snippet } from 'svelte';
 	import type { LayoutData } from './$types';
 	import { page } from '$app/stores';
-	import { t } from '$lib/i18n/index.svelte';
+	import * as m from '$lib/paraglide/messages.js';
 	import { BarChart3, BookOpen, Users, TrendingUp, Settings } from 'lucide-svelte';
 
 	let { children, data }: { children: Snippet; data: LayoutData } = $props();
@@ -57,14 +57,14 @@
 						{:else}
 							{item.icon}
 						{/if}
-						<span>{t(item.label)}</span>
+						<span>{(m[item.label as keyof typeof m] as (...args: any[]) => string)()}</span>
 					</a>
 				{/each}
 			</nav>
 
 			<div class="flex items-center gap-4">
 				<a href="/dashboard" class="text-white/70 hover:text-white">
-					← {t('nav.dashboard')}
+					← {m['nav.dashboard']()}
 				</a>
 			</div>
 		</div>
@@ -90,7 +90,9 @@
 					{:else}
 						<span class="text-xl">{item.icon}</span>
 					{/if}
-					<span class="text-xs font-medium">{t(item.label)}</span>
+					<span class="text-xs font-medium"
+						>{(m[item.label as keyof typeof m] as (...args: any[]) => string)()}</span
+					>
 				</a>
 			{/each}
 		</div>

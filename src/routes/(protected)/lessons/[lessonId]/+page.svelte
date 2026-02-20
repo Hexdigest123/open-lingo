@@ -1,7 +1,8 @@
 <script lang="ts">
+	import * as m from '$lib/paraglide/messages.js';
+	import { getLocale } from '$lib/paraglide/runtime.js';
 	import type { PageData } from './$types';
-	import { i18n, t } from '$lib/i18n/index.svelte';
-	import { goto, invalidateAll } from '$app/navigation';
+import { goto, invalidateAll } from '$app/navigation';
 	import { getBilingualText } from '$lib/utils/bilingual';
 	import { deserialize } from '$app/forms';
 	import MultipleChoiceQuestion from '$lib/components/lessons/MultipleChoiceQuestion.svelte';
@@ -65,7 +66,7 @@
 		const content = questionContent;
 		if (!content) return '';
 
-		if (i18n.locale === 'de' && content[deKey]) {
+		if (getLocale() === 'de' && content[deKey]) {
 			return content[deKey] as string;
 		}
 		if (content[enKey]) {
@@ -96,7 +97,7 @@
 		}>;
 		return pairs.map((p) => ({
 			target: p.target || p.spanish,
-			english: i18n.locale === 'de' && p.german ? p.german : p.english
+			english: getLocale() === 'de' && p.german ? p.german : p.english
 		}));
 	}
 	const localizedPairs = $derived(getLocalizedPairs());
@@ -104,7 +105,7 @@
 	// Locale-aware options for listening questions (and other multiple choice)
 	function getLocalizedOptions(): string[] | undefined {
 		// Check for locale-specific options first
-		if (i18n.locale === 'de' && questionContent?.optionsDe) {
+		if (getLocale() === 'de' && questionContent?.optionsDe) {
 			return questionContent.optionsDe as string[];
 		}
 		if (questionContent?.optionsEn) {
@@ -130,20 +131,20 @@
 				body: JSON.stringify({
 					questionId: currentQuestion.id,
 					userAnswer: lastUserAnswer,
-					locale: i18n.locale
+					locale: getLocale()
 				})
 			});
 
 			const result = await response.json();
 
 			if (!response.ok) {
-				explanationError = result.error || t('lesson.explanation.error');
+				explanationError = result.error || m["lesson.explanation.error"]();
 			} else {
 				aiExplanation = result.explanation;
 			}
 		} catch (error) {
 			console.error('Failed to fetch explanation:', error);
-			explanationError = t('lesson.explanation.error');
+			explanationError = m["lesson.explanation.error"]();
 		} finally {
 			isLoadingExplanation = false;
 		}
@@ -160,7 +161,7 @@
 		formData.append('questionId', question.id.toString());
 		formData.append('answer', answer);
 		formData.append('isRevision', data.isRevision ? 'true' : 'false');
-		formData.append('locale', i18n.locale);
+		formData.append('locale', getLocale());
 
 		try {
 			const response = await fetch(`?/submit`, {
@@ -206,8 +207,8 @@
 
 				if (actionData.firstCorrectToday) {
 					celebrateFirstCorrectToday(
-						t('celebration.firstCorrectToday'),
-						t('celebration.firstCorrectTodayMessage')
+						m["celebration.firstCorrectToday"](),
+						m["celebration.firstCorrectTodayMessage"]()
 					);
 				}
 			}
@@ -302,10 +303,10 @@
 	}
 
 	function getAccuracyMessage(accuracy: number): string {
-		if (accuracy === 100) return t('lesson.complete.perfect');
-		if (accuracy >= 80) return t('lesson.complete.great');
-		if (accuracy >= 60) return t('lesson.complete.good');
-		return t('lesson.complete.keepPracticing');
+		if (accuracy === 100) return m["lesson.complete.perfect"]();
+		if (accuracy >= 80) return m["lesson.complete.great"]();
+		if (accuracy >= 60) return m["lesson.complete.good"]();
+		return m["lesson.complete.keepPracticing"]();
 	}
 
 	function exitLesson() {
@@ -324,7 +325,7 @@
 			<div class="flex justify-center">
 				<PartyPopper size={64} class="text-success" />
 			</div>
-			<h2 class="mt-4 text-2xl font-bold text-text-light">{t('lesson.complete.title')}</h2>
+			<h2 class="mt-4 text-2xl font-bold text-text-light">{m["lesson.complete.title"]()}</h2>
 			<p class="mt-2 text-lg text-text-muted">
 				{getAccuracyMessage(Math.round((correctCount / totalQuestions) * 100))}
 			</p>
@@ -332,18 +333,18 @@
 			<div class="mt-6 grid grid-cols-2 gap-4">
 				<div class="rounded-xl bg-yellow/10 p-4">
 					<div class="text-2xl font-bold text-yellow-dark">+{xpEarned}</div>
-					<div class="text-sm text-text-muted">{t('lesson.complete.xpEarned')}</div>
+					<div class="text-sm text-text-muted">{m["lesson.complete.xpEarned"]()}</div>
 				</div>
 				<div class="rounded-xl bg-success/10 p-4">
 					<div class="text-2xl font-bold text-success">
 						{Math.round((correctCount / totalQuestions) * 100)}%
 					</div>
-					<div class="text-sm text-text-muted">{t('lesson.complete.accuracy')}</div>
+					<div class="text-sm text-text-muted">{m["lesson.complete.accuracy"]()}</div>
 				</div>
 			</div>
 
 			<button onclick={exitLesson} class="btn btn-success btn-lg mt-6 w-full">
-				{t('lesson.complete.continueButton')}
+				{m["lesson.complete.continueButton"]()}
 			</button>
 		</div>
 	</div>
@@ -354,14 +355,14 @@
 			<div class="flex justify-center">
 				<HeartCrack size={64} class="text-error" />
 			</div>
-			<h2 class="mt-4 text-2xl font-bold text-error">{t('lesson.outOfHearts.title')}</h2>
-			<p class="mt-2 text-text-muted">{t('lesson.outOfHearts.message')}</p>
+			<h2 class="mt-4 text-2xl font-bold text-error">{m["lesson.outOfHearts.title"]()}</h2>
+			<p class="mt-2 text-text-muted">{m["lesson.outOfHearts.message"]()}</p>
 
 			<button
 				onclick={() => (window.location.href = '/dashboard')}
 				class="btn btn-primary btn-lg mt-6 w-full"
 			>
-				{t('common.back')}
+				{m["common.back"]()}
 			</button>
 		</div>
 	</div>
@@ -392,9 +393,9 @@
 
 		<!-- Question Counter -->
 		<div class="mb-4 text-center text-sm text-text-muted">
-			{t('lesson.question')}
+			{m["lesson.question"]()}
 			{currentIndex + 1}
-			{t('lesson.of')}
+			{m["lesson.of"]()}
 			{totalQuestions}
 		</div>
 
@@ -420,14 +421,14 @@
 					textEn={questionContent.textEn as string}
 					textDe={questionContent.textDe as string}
 					direction={questionContent.direction as string}
-					targetLanguageName={data.activeLanguage?.name || t('lesson.languages.targetLanguage')}
+					targetLanguageName={data.activeLanguage?.name || m["lesson.languages.targetLanguage"]()}
 					disabled={showFeedback || isSubmitting}
 					onAnswer={handleAnswer}
 				/>
 			{:else if currentQuestion.type === 'matching'}
 				<MatchingQuestion
 					pairs={localizedPairs}
-					targetLanguageName={data.activeLanguage?.name || t('lesson.languages.targetLanguage')}
+					targetLanguageName={data.activeLanguage?.name || m["lesson.languages.targetLanguage"]()}
 					disabled={showFeedback || isSubmitting}
 					onAnswer={handleAnswer}
 					onWrongMatch={handleWrongMatch}
@@ -480,11 +481,11 @@
 					</span>
 					<div class="flex-1">
 						<p class="font-bold {lastAnswer.isCorrect ? 'text-success' : 'text-error'}">
-							{lastAnswer.isCorrect ? t('lesson.correct') : t('lesson.incorrect')}
+							{lastAnswer.isCorrect ? m["lesson.correct"]() : m["lesson.incorrect"]()}
 						</p>
 						{#if !lastAnswer.isCorrect}
 							<p class="text-sm text-text-muted">
-								{t('lesson.correctAnswer')}:
+								{m["lesson.correctAnswer"]()}:
 								<span class="font-medium">{lastAnswer.correctAnswer}</span>
 							</p>
 							{#if data.hasApiKey && !aiExplanation && !isLoadingExplanation}
@@ -493,7 +494,7 @@
 									class="btn btn-ghost mt-3 -ml-2 flex items-center gap-2 px-2 text-sm text-primary hover:bg-primary/10"
 								>
 									<Bot size={16} />
-									{t('lesson.explain')}
+									{m["lesson.explain"]()}
 								</button>
 							{/if}
 						{/if}
@@ -510,7 +511,7 @@
 					onclick={nextQuestion}
 					class="btn {lastAnswer.isCorrect ? 'btn-success' : 'btn-primary'} btn-lg mt-4 w-full"
 				>
-					{t('lesson.continue')}
+					{m["lesson.continue"]()}
 				</button>
 			</div>
 		{/if}

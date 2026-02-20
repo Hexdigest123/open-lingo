@@ -3,6 +3,7 @@ import { db } from '$lib/server/db';
 import { users } from '$lib/server/db/schema';
 import { getSkillTree } from '$lib/server/learning/content-service';
 import { getDueReviewCount } from '$lib/server/learning/review-service';
+import { checkAndUnlockSkills } from '$lib/server/learning/progression-service';
 import { eq } from 'drizzle-orm';
 
 export const load: PageServerLoad = async ({ locals }) => {
@@ -15,6 +16,9 @@ export const load: PageServerLoad = async ({ locals }) => {
 		.limit(1);
 
 	const languageCode = userLanguage?.activeLanguage ?? 'es';
+
+	// Unlock any skills whose prerequisites are met (including root skills with none)
+	await checkAndUnlockSkills(userId, languageCode);
 
 	const [skills, dueReviewCount] = await Promise.all([
 		getSkillTree(languageCode, userId),

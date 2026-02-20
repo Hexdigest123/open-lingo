@@ -1,6 +1,6 @@
 <script lang="ts">
-	import { t } from '$lib/i18n/index.svelte';
-	import { onDestroy } from 'svelte';
+	import * as m from '$lib/paraglide/messages.js';
+import { onDestroy } from 'svelte';
 	import { Mic } from 'lucide-svelte';
 
 	interface Props {
@@ -78,7 +78,7 @@
 
 			dataChannel.onerror = (e) => {
 				console.error('Data channel error:', e);
-				onError(t('chat.error.connectionFailed'));
+				onError(m["chat.error.connectionFailed"]());
 			};
 
 			dataChannel.onclose = () => {
@@ -115,9 +115,9 @@
 		} catch (error) {
 			console.error('Connection error:', error);
 			if (error instanceof Error && error.message.includes('Permission denied')) {
-				onError(t('chat.error.microphoneAccess'));
+				onError(m["chat.error.microphoneAccess"]());
 			} else {
-				onError(error instanceof Error ? error.message : t('chat.error.connectionFailed'));
+				onError(error instanceof Error ? error.message : m["chat.error.connectionFailed"]());
 			}
 			disconnect();
 		}
@@ -198,7 +198,7 @@
 			<Mic size={24} />
 			<span>Start Voice Chat</span>
 		</button>
-		<p class="text-sm text-text-muted">{t('chat.holdToSpeak')}</p>
+		<p class="text-sm text-text-muted">{m["chat.holdToSpeak"]()}</p>
 	{:else if status === 'connecting'}
 		<div class="flex flex-col items-center gap-2">
 			<div
@@ -206,7 +206,7 @@
 			>
 				<Mic size={24} />
 			</div>
-			<p class="text-sm text-text-muted">{t('chat.connecting')}</p>
+			<p class="text-sm text-text-muted">{m["chat.connecting"]()}</p>
 		</div>
 	{:else}
 		<div class="flex flex-col items-center gap-4">
@@ -222,7 +222,7 @@
 					></div>
 				{/if}
 			</div>
-			<p class="text-sm font-medium text-primary">{t('chat.connected')}</p>
+			<p class="text-sm font-medium text-primary">{m["chat.connected"]()}</p>
 			<button onclick={disconnect} class="btn btn-error btn-sm"> End Call </button>
 		</div>
 	{/if}

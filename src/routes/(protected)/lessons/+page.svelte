@@ -1,7 +1,7 @@
 <script lang="ts">
+	import * as m from '$lib/paraglide/messages.js';
 	import type { PageData } from './$types';
-	import { t } from '$lib/i18n/index.svelte';
-	import { enhance } from '$app/forms';
+import { enhance } from '$app/forms';
 	import { goto, invalidateAll } from '$app/navigation';
 	import { getBilingualText } from '$lib/utils/bilingual';
 	import { HeartCrack, Construction, BookOpen, Check, Star, Pencil, Circle } from 'lucide-svelte';
@@ -28,7 +28,7 @@
 	let { data }: { data: PageData & { activeLanguage?: ActiveLanguage } } = $props();
 
 	const activeLanguageName = $derived(
-		data.activeLanguage?.name || t('lesson.languages.targetLanguage')
+		data.activeLanguage?.name || m["lesson.languages.targetLanguage"]()
 	);
 
 	// Handle error messages - use $derived to react to data.error changes from navigation
@@ -87,7 +87,7 @@
 
 <svelte:head>
 	<title
-		>{data.selectedLevel ? `${getBilingualText(data.selectedLevel.name)} - ` : ''}{t('nav.learn')} - OpenLingo</title
+		>{data.selectedLevel ? `${getBilingualText(data.selectedLevel.name)} - ` : ''}{m["nav.learn"]()} - OpenLingo</title
 	>
 </svelte:head>
 
@@ -98,11 +98,11 @@
 			<div class="flex justify-center">
 				<HeartCrack size={64} class="text-error" />
 			</div>
-			<h2 class="mt-4 text-2xl font-bold text-error">{t('lesson.outOfHearts.title')}</h2>
-			<p class="mt-2 text-text-muted">{t('lesson.outOfHearts.message')}</p>
+			<h2 class="mt-4 text-2xl font-bold text-error">{m["lesson.outOfHearts.title"]()}</h2>
+			<p class="mt-2 text-text-muted">{m["lesson.outOfHearts.message"]()}</p>
 
 			<button onclick={dismissError} class="btn btn-primary btn-lg mt-6 w-full">
-				{t('common.back')}
+				{m["common.back"]()}
 			</button>
 		</div>
 	</div>
@@ -114,16 +114,16 @@
 			<div class="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
 				<div>
 					<p class="font-semibold text-text-light">
-						{t('lesson.trySkillTreeBanner')}
+						{m["lesson.trySkillTreeBanner"]()}
 					</p>
 				</div>
 				<div class="flex items-center gap-2">
-					<a href="/skills" class="btn btn-sm btn-success">{t('skills.title')}</a>
+					<a href="/skills" class="btn btn-sm btn-success">{m["skills.title"]()}</a>
 					<button
 						type="button"
 						class="btn btn-sm btn-ghost"
 						onclick={() => (showSkillTreeBanner = false)}
-						aria-label={t('common.dismiss')}
+						aria-label={m["common.dismiss"]()}
 					>
 						×
 					</button>
@@ -136,7 +136,7 @@
 		<!-- Level Selected - Show Units and Lessons -->
 		<div class="flex items-center gap-4">
 			<a href="/lessons" class="text-text-muted hover:text-text-light">
-				← {t('common.back')}
+				← {m["common.back"]()}
 			</a>
 			<div>
 				<h1 class="text-2xl font-bold text-text-light">
@@ -217,8 +217,8 @@
 													: 'btn-success'}"
 											>
 												{status === 'completed' || status === 'mastered'
-													? t('lesson.practice')
-													: t('lesson.start')}
+													? m["lesson.practice"]()
+													: m["lesson.start"]()}
 											</a>
 											{#if status !== 'completed' && status !== 'mastered'}
 												<form
@@ -237,7 +237,7 @@
 														type="submit"
 														class="btn btn-sm btn-ghost cursor-pointer text-text-muted"
 													>
-														{t('lesson.skip')}
+														{m["lesson.skip"]()}
 													</button>
 												</form>
 											{/if}
@@ -245,7 +245,7 @@
 									</div>
 								{:else}
 									<p class="text-center text-text-muted py-4">
-										{t('lesson.noLessons')}
+										{m["lesson.noLessons"]()}
 									</p>
 								{/each}
 							</div>
@@ -259,12 +259,12 @@
 				<div class="flex justify-center">
 					<Construction size={64} class="text-warning" />
 				</div>
-				<h3 class="mt-4 text-xl font-bold text-text-light">{t('lesson.comingSoon')}</h3>
+				<h3 class="mt-4 text-xl font-bold text-text-light">{m["lesson.comingSoon"]()}</h3>
 				<p class="mt-2 text-text-muted">
-					{t('lesson.unitsBeingPrepared')}
+					{m["lesson.unitsBeingPrepared"]()}
 				</p>
 				<a href="/lessons" class="btn btn-primary mt-4">
-					← {t('lesson.backToLevels')}
+					← {m["lesson.backToLevels"]()}
 				</a>
 			</div>
 		{/if}
@@ -272,9 +272,9 @@
 		<!-- No Level Selected - Show Level Selection -->
 		<div>
 			<h1 class="text-2xl font-bold text-text-light">
-				{t('lesson.languageLessons', { language: activeLanguageName })}
+				{m["lesson.languageLessons"]({ language: activeLanguageName })}
 			</h1>
-			<p class="text-text-muted">{t('lesson.chooseLevelToStart')}</p>
+			<p class="text-text-muted">{m["lesson.chooseLevelToStart"]()}</p>
 		</div>
 
 		<!-- Levels Grid -->
@@ -298,10 +298,10 @@
 							<div class="mt-4">
 								{#if (level.unitCount || 0) > 0}
 									<a href="/lessons?level={level.code}" class="btn btn-success btn-sm">
-										{t('lesson.startLearning')}
+										{m["lesson.startLearning"]()}
 									</a>
 								{:else}
-									<span class="text-sm text-text-muted">{t('lesson.comingSoon')}</span>
+									<span class="text-sm text-text-muted">{m["lesson.comingSoon"]()}</span>
 								{/if}
 							</div>
 						</div>
@@ -316,9 +316,9 @@
 				<div class="flex justify-center">
 					<BookOpen size={64} class="text-text-muted" />
 				</div>
-				<h3 class="mt-4 text-xl font-bold text-text-light">{t('lesson.noLessons')}</h3>
+				<h3 class="mt-4 text-xl font-bold text-text-light">{m["lesson.noLessons"]()}</h3>
 				<p class="mt-2 text-text-muted">
-					{t('lesson.lessonsBeingPrepared')}
+					{m["lesson.lessonsBeingPrepared"]()}
 				</p>
 			</div>
 		{/if}

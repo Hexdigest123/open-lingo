@@ -1,9 +1,10 @@
 <script lang="ts">
+	import * as m from '$lib/paraglide/messages.js';
+	import { getLocale } from '$lib/paraglide/runtime.js';
 	import type { PageData } from './$types';
 	import { deserialize } from '$app/forms';
 	import { goto } from '$app/navigation';
-	import { i18n, t } from '$lib/i18n/index.svelte';
-	import MultipleChoiceQuestion from '$lib/components/lessons/MultipleChoiceQuestion.svelte';
+import MultipleChoiceQuestion from '$lib/components/lessons/MultipleChoiceQuestion.svelte';
 	import FillBlankQuestion from '$lib/components/lessons/FillBlankQuestion.svelte';
 	import TranslationQuestion from '$lib/components/lessons/TranslationQuestion.svelte';
 	import MatchingQuestion from '$lib/components/lessons/MatchingQuestion.svelte';
@@ -52,7 +53,7 @@
 		const de = content[`${keyPrefix}De`];
 		const fallback = content[keyPrefix];
 
-		if (i18n.locale === 'de' && typeof de === 'string') return de;
+		if (getLocale() === 'de' && typeof de === 'string') return de;
 		if (typeof en === 'string') return en;
 		return typeof fallback === 'string' ? fallback : '';
 	}
@@ -62,7 +63,7 @@
 		const enOptions = content.optionsEn;
 		const fallback = content.options;
 
-		if (i18n.locale === 'de' && Array.isArray(deOptions)) {
+		if (getLocale() === 'de' && Array.isArray(deOptions)) {
 			return deOptions.filter((value): value is string => typeof value === 'string');
 		}
 		if (Array.isArray(enOptions)) {
@@ -90,7 +91,7 @@
 							? pair.spanish
 							: '',
 				english:
-					i18n.locale === 'de' && typeof pair.german === 'string'
+					getLocale() === 'de' && typeof pair.german === 'string'
 						? pair.german
 						: typeof pair.english === 'string'
 							? pair.english
@@ -196,7 +197,7 @@
 </script>
 
 <svelte:head>
-	<title>{t('placement.title')} - OpenLingo</title>
+	<title>{m["placement.title"]()} - OpenLingo</title>
 </svelte:head>
 
 {#if isComplete}
@@ -205,16 +206,16 @@
 			<Flag size={64} class="text-success" />
 		</div>
 		<h1 class="text-2xl font-bold text-text-light">
-			{t('placement.complete')}
+			{m["placement.complete"]()}
 		</h1>
 		<p class="text-lg text-text-light">
-			{t('placement.yourLevel', { level: completedLevel || estimatedLevel })}
+			{m["placement.yourLevel"]({ level: completedLevel || estimatedLevel })}
 		</p>
 		<p class="text-sm text-text-muted">
-			{t('placement.explanation')}
+			{m["placement.explanation"]()}
 		</p>
 		<button class="btn btn-primary" onclick={() => goto('/skills')}
-			>{t('placement.goToSkills')}</button
+			>{m["placement.goToSkills"]()}</button
 		>
 	</div>
 {:else if !activeSession}
@@ -223,13 +224,13 @@
 			<Compass size={64} class="text-primary" />
 		</div>
 		<h1 class="text-2xl font-bold text-text-light">
-			{t('placement.title')}
+			{m["placement.title"]()}
 		</h1>
 		<p class="text-text-muted">
-			{t('placement.description')}
+			{m["placement.description"]()}
 		</p>
 		<button class="btn btn-primary" onclick={beginPlacement} disabled={isSubmitting}
-			>{t('placement.start')}</button
+			>{m["placement.start"]()}</button
 		>
 	</div>
 {:else if currentQuestion}
@@ -237,13 +238,13 @@
 		<div class="card">
 			<div class="flex items-center justify-between gap-3">
 				<p class="text-sm text-text-muted">
-					{t('placement.questionOf', {
+					{m["placement.questionOf"]({
 						current: Math.min(questionsAnswered + 1, maxQuestions),
 						total: maxQuestions
 					})}
 				</p>
 				<p class="rounded-full bg-primary/15 px-3 py-1 text-sm font-semibold text-primary">
-					{t('placement.estimatedLevel', { level: estimatedLevel })}
+					{m["placement.estimatedLevel"]({ level: estimatedLevel })}
 				</p>
 			</div>
 		</div>
@@ -334,11 +335,11 @@
 		{:else}
 			<div class="card text-center">
 				<p class="text-text-muted">
-					{t('learn.unsupportedType')}
+					{m["learn.unsupportedType"]()}
 				</p>
 				<button
 					class="btn btn-primary mt-4"
-					onclick={() => submitAnswer(currentQuestion.correctAnswer)}>{t('learn.continue')}</button
+					onclick={() => submitAnswer(currentQuestion.correctAnswer)}>{m["learn.continue"]()}</button
 				>
 			</div>
 		{/if}
@@ -350,16 +351,16 @@
 					: 'border-error bg-error/10'}"
 			>
 				<p class="font-semibold {feedback.isCorrect ? 'text-success' : 'text-error'}">
-					{feedback.isCorrect ? t('learn.correct') : t('learn.incorrect')}
+					{feedback.isCorrect ? m["learn.correct"]() : m["learn.incorrect"]()}
 				</p>
 				{#if !feedback.isCorrect}
 					<p class="mt-1 text-sm text-text-muted">
-						{t('learn.correctAnswerWas', { answer: feedback.correctAnswer })}
+						{m["learn.correctAnswerWas"]({ answer: feedback.correctAnswer })}
 					</p>
 				{/if}
 				{#if !isComplete}
 					<button class="btn btn-primary mt-4 w-full" onclick={nextStep}
-						>{t('learn.continue')}</button
+						>{m["learn.continue"]()}</button
 					>
 				{/if}
 			</div>

@@ -1,6 +1,6 @@
 <script lang="ts">
 	import type { PageData, ActionData } from './$types';
-	import { t } from '$lib/i18n/index.svelte';
+	import * as m from '$lib/paraglide/messages.js';
 	import { enhance } from '$app/forms';
 	import { Eye, EyeOff } from 'lucide-svelte';
 
@@ -15,23 +15,23 @@
 </script>
 
 <svelte:head>
-	<title>{t('admin.settings.title')} - OpenLingo</title>
+	<title>{m["admin.settings.title"]()} - OpenLingo</title>
 </svelte:head>
 
 <div class="space-y-6">
 	<div class="flex items-center justify-between">
-		<h1 class="text-2xl font-bold text-text-light">{t('admin.settings.title')}</h1>
+		<h1 class="text-2xl font-bold text-text-light">{m["admin.settings.title"]()}</h1>
 	</div>
 
 	<!-- Registration Settings Section -->
 	<div class="card">
-		<h2 class="text-xl font-bold text-text-light">{t('admin.settings.registration.title')}</h2>
-		<p class="mt-2 text-text-muted">{t('admin.settings.registration.description')}</p>
+		<h2 class="text-xl font-bold text-text-light">{m["admin.settings.registration.title"]()}</h2>
+		<p class="mt-2 text-text-muted">{m["admin.settings.registration.description"]()}</p>
 
 		<!-- Signup Mode -->
 		<div class="mt-6">
-			<h3 class="font-semibold text-text-light">{t('admin.settings.signupMode.title')}</h3>
-			<p class="mt-1 text-sm text-text-muted">{t('admin.settings.signupMode.description')}</p>
+			<h3 class="font-semibold text-text-light">{m["admin.settings.signupMode.title"]()}</h3>
+			<p class="mt-1 text-sm text-text-muted">{m["admin.settings.signupMode.description"]()}</p>
 
 			{#if form?.success && lastAction === 'updateSignupMode'}
 				<div class="mt-3 rounded-xl bg-success/10 p-3 text-sm text-success">
@@ -56,8 +56,8 @@
 						class="h-4 w-4 text-primary"
 					/>
 					<div>
-						<div class="font-medium text-text-light">{t('admin.settings.signupMode.open')}</div>
-						<div class="text-sm text-text-muted">{t('admin.settings.signupMode.openDesc')}</div>
+						<div class="font-medium text-text-light">{m["admin.settings.signupMode.open"]()}</div>
+						<div class="text-sm text-text-muted">{m["admin.settings.signupMode.openDesc"]()}</div>
 					</div>
 				</label>
 
@@ -73,10 +73,10 @@
 					/>
 					<div>
 						<div class="font-medium text-text-light">
-							{t('admin.settings.signupMode.invitation')}
+							{m["admin.settings.signupMode.invitation"]()}
 						</div>
 						<div class="text-sm text-text-muted">
-							{t('admin.settings.signupMode.invitationDesc')}
+							{m["admin.settings.signupMode.invitationDesc"]()}
 						</div>
 					</div>
 				</label>
@@ -92,30 +92,30 @@
 						class="h-4 w-4 text-primary"
 					/>
 					<div>
-						<div class="font-medium text-text-light">{t('admin.settings.signupMode.approval')}</div>
-						<div class="text-sm text-text-muted">{t('admin.settings.signupMode.approvalDesc')}</div>
+						<div class="font-medium text-text-light">{m["admin.settings.signupMode.approval"]()}</div>
+						<div class="text-sm text-text-muted">{m["admin.settings.signupMode.approvalDesc"]()}</div>
 					</div>
 				</label>
 
 				<button type="submit" class="btn btn-primary btn-md"
-					>{t('admin.settings.signupMode.save')}</button
+					>{m["admin.settings.signupMode.save"]()}</button
 				>
 			</form>
 
 			{#if data.signupMode === 'invitation'}
 				<div class="mt-4 rounded-xl bg-primary/10 p-4 text-sm text-primary">
-					<strong>{t('common.note')}</strong>
-					{@html t('admin.settings.signupMode.invitationsNote', {
-						link: `<a href="/admin/invitations" class="underline">${t('admin.nav.invitations')}</a>`
+					<strong>{m["common.note"]()}</strong>
+					{@html m["admin.settings.signupMode.invitationsNote"]({
+						link: `<a href="/admin/invitations" class="underline">${m["admin.nav.invitations"]()}</a>`
 					})}
 				</div>
 			{/if}
 
 			{#if data.signupMode === 'approval'}
 				<div class="mt-4 rounded-xl bg-primary/10 p-4 text-sm text-primary">
-					<strong>{t('common.note')}</strong>
-					{@html t('admin.settings.signupMode.approvalsNote', {
-						link: `<a href="/admin/approvals" class="underline">${t('admin.nav.approvals')}</a>`
+					<strong>{m["common.note"]()}</strong>
+					{@html m["admin.settings.signupMode.approvalsNote"]({
+						link: `<a href="/admin/approvals" class="underline">${m["admin.nav.approvals"]()}</a>`
 					})}
 				</div>
 			{/if}
@@ -123,9 +123,9 @@
 
 		<!-- Domain Restriction -->
 		<div class="mt-8 border-t border-border-light pt-6">
-			<h3 class="font-semibold text-text-light">{t('admin.settings.domainRestriction.title')}</h3>
+			<h3 class="font-semibold text-text-light">{m["admin.settings.domainRestriction.title"]()}</h3>
 			<p class="mt-1 text-sm text-text-muted">
-				{t('admin.settings.domainRestriction.description')}
+				{m["admin.settings.domainRestriction.description"]()}
 			</p>
 
 			{#if form?.success && lastAction === 'updateAllowedDomains'}
@@ -142,7 +142,7 @@
 			<form method="POST" action="?/updateAllowedDomains" use:enhance class="mt-4 space-y-4">
 				<div>
 					<label for="allowedDomains" class="block text-sm font-medium text-text-light">
-						{t('admin.settings.domainRestriction.label')}
+						{m["admin.settings.domainRestriction.label"]()}
 					</label>
 					<input
 						type="text"
@@ -156,14 +156,14 @@
 				</div>
 
 				<button type="submit" class="btn btn-primary btn-md"
-					>{t('admin.settings.domainRestriction.save')}</button
+					>{m["admin.settings.domainRestriction.save"]()}</button
 				>
 			</form>
 
 			{#if data.allowedDomains.length > 0}
 				<div class="mt-4">
 					<span class="text-sm text-text-muted"
-						>{t('admin.settings.domainRestriction.currentlyRestricted')}</span
+						>{m["admin.settings.domainRestriction.currentlyRestricted"]()}</span
 					>
 					<div class="mt-2 flex flex-wrap gap-2">
 						{#each data.allowedDomains as domain}
@@ -179,8 +179,8 @@
 
 	<!-- Hearts System Settings -->
 	<div class="card">
-		<h2 class="text-xl font-bold text-text-light">{t('admin.settings.hearts.title')}</h2>
-		<p class="mt-2 text-text-muted">{t('admin.settings.hearts.description')}</p>
+		<h2 class="text-xl font-bold text-text-light">{m["admin.settings.hearts.title"]()}</h2>
+		<p class="mt-2 text-text-muted">{m["admin.settings.hearts.description"]()}</p>
 
 		{#if form?.success && lastAction === 'toggleGlobalHearts'}
 			<div class="mt-3 rounded-xl bg-success/10 p-3 text-sm text-success">
@@ -194,14 +194,14 @@
 		{/if}
 
 		<div class="mt-4 flex items-center gap-2">
-			<span class="text-sm text-text-muted">{t('admin.settings.hearts.currentStatus')}</span>
+			<span class="text-sm text-text-muted">{m["admin.settings.hearts.currentStatus"]()}</span>
 			{#if data.heartsDisabledGlobal}
 				<span class="rounded-full bg-error/10 px-3 py-1 text-sm text-error">
-					{t('admin.settings.hearts.disabledGlobally')}
+					{m["admin.settings.hearts.disabledGlobally"]()}
 				</span>
 			{:else}
 				<span class="rounded-full bg-success/10 px-3 py-1 text-sm text-success">
-					{t('admin.settings.hearts.enabled')}
+					{m["admin.settings.hearts.enabled"]()}
 				</span>
 			{/if}
 		</div>
@@ -217,23 +217,23 @@
 				class="btn {data.heartsDisabledGlobal ? 'btn-success' : 'btn-error'} btn-md"
 			>
 				{data.heartsDisabledGlobal
-					? t('admin.settings.hearts.enable')
-					: t('admin.settings.hearts.disable')}
+					? m["admin.settings.hearts.enable"]()
+					: m["admin.settings.hearts.disable"]()}
 			</button>
 		</form>
 
 		<div class="mt-4 rounded-xl bg-yellow/10 p-4 text-sm text-yellow-dark">
-			<strong>{t('common.note')}</strong>
-			{@html t('admin.settings.hearts.note', {
-				link: `<a href="/admin/users" class="underline">${t('admin.nav.users')}</a>`
+			<strong>{m["common.note"]()}</strong>
+			{@html m["admin.settings.hearts.note"]({
+				link: `<a href="/admin/users" class="underline">${m["admin.nav.users"]()}</a>`
 			})}
 		</div>
 	</div>
 
 	<!-- Global OpenAI API Key Section -->
 	<div class="card">
-		<h2 class="text-xl font-bold text-text-light">{t('admin.settings.globalApiKey.title')}</h2>
-		<p class="mt-2 text-text-muted">{t('admin.settings.globalApiKey.description')}</p>
+		<h2 class="text-xl font-bold text-text-light">{m["admin.settings.globalApiKey.title"]()}</h2>
+		<p class="mt-2 text-text-muted">{m["admin.settings.globalApiKey.description"]()}</p>
 
 		<!-- Status -->
 		<div class="mt-4 flex items-center gap-2">
@@ -242,14 +242,14 @@
 					class="flex items-center gap-2 rounded-full bg-success/10 px-3 py-1 text-sm text-success"
 				>
 					<span>✓</span>
-					{t('admin.settings.globalApiKey.status.configured')}
+					{m["admin.settings.globalApiKey.status.configured"]()}
 				</span>
 			{:else}
 				<span
 					class="bg-warning/10 text-warning flex items-center gap-2 rounded-full px-3 py-1 text-sm"
 				>
 					<span>!</span>
-					{t('admin.settings.globalApiKey.status.notConfigured')}
+					{m["admin.settings.globalApiKey.status.notConfigured"]()}
 				</span>
 			{/if}
 		</div>
@@ -268,15 +268,15 @@
 
 		<!-- Info Box -->
 		<div class="mt-4 rounded-xl bg-primary/10 p-4 text-sm text-primary">
-			<strong>{t('admin.settings.globalApiKey.note')}:</strong>
-			{t('admin.settings.globalApiKey.noteText')}
+			<strong>{m["admin.settings.globalApiKey.note"]()}:</strong>
+			{m["admin.settings.globalApiKey.noteText"]()}
 		</div>
 
 		<!-- Save Form -->
 		<form method="POST" action="?/saveGlobalKey" use:enhance class="mt-6 space-y-4">
 			<div>
 				<label for="apiKey" class="block text-sm font-medium text-text-light">
-					{t('admin.settings.globalApiKey.label')}
+					{m["admin.settings.globalApiKey.label"]()}
 				</label>
 				<div class="relative mt-1">
 					<input
@@ -284,7 +284,7 @@
 						id="apiKey"
 						name="apiKey"
 						bind:value={apiKey}
-						placeholder={t('admin.settings.globalApiKey.placeholder')}
+						placeholder={m["admin.settings.globalApiKey.placeholder"]()}
 						class="input pr-12"
 					/>
 					<button
@@ -303,7 +303,7 @@
 
 			<div class="flex gap-4">
 				<button type="submit" class="btn btn-success btn-md" disabled={!apiKey}>
-					{t('admin.settings.globalApiKey.save')}
+					{m["admin.settings.globalApiKey.save"]()}
 				</button>
 			</div>
 		</form>
@@ -317,7 +317,7 @@
 				class="mt-4 border-t border-border-light pt-4"
 			>
 				<button type="submit" class="btn btn-error btn-sm">
-					{t('admin.settings.globalApiKey.remove')}
+					{m["admin.settings.globalApiKey.remove"]()}
 				</button>
 			</form>
 		{/if}
@@ -330,16 +330,16 @@
 				rel="noopener noreferrer"
 				class="text-primary hover:underline"
 			>
-				{t('settings.apiKey.getKey')} →
+				{m["settings.apiKey.getKey"]()} →
 			</a>
 		</div>
 	</div>
 
 	<!-- Email Configuration Section -->
 	<div class="card">
-		<h2 class="text-xl font-bold text-text-light">{t('admin.settings.emailConfig.title')}</h2>
+		<h2 class="text-xl font-bold text-text-light">{m["admin.settings.emailConfig.title"]()}</h2>
 		<p class="mt-2 text-text-muted">
-			{t('admin.settings.emailConfig.description')}
+			{m["admin.settings.emailConfig.description"]()}
 		</p>
 
 		<!-- Status -->
@@ -349,14 +349,14 @@
 					class="flex items-center gap-2 rounded-full bg-success/10 px-3 py-1 text-sm text-success"
 				>
 					<span>✓</span>
-					{t('admin.settings.emailConfig.configured')}
+					{m["admin.settings.emailConfig.configured"]()}
 				</span>
 			{:else}
 				<span
 					class="flex items-center gap-2 rounded-full bg-yellow/10 px-3 py-1 text-sm text-yellow-dark"
 				>
 					<span>!</span>
-					{t('admin.settings.emailConfig.notConfigured')}
+					{m["admin.settings.emailConfig.notConfigured"]()}
 				</span>
 			{/if}
 		</div>
@@ -376,12 +376,12 @@
 		{#if data.emailConfigured}
 			<form method="POST" action="?/testEmail" use:enhance class="mt-4">
 				<button type="submit" class="btn btn-primary btn-sm"
-					>{t('admin.settings.emailConfig.testConnection')}</button
+					>{m["admin.settings.emailConfig.testConnection"]()}</button
 				>
 			</form>
 		{:else}
 			<div class="mt-4 rounded-xl bg-yellow/10 p-4 text-sm text-yellow-dark">
-				<p class="font-medium">{t('admin.settings.emailConfig.envVarsTitle')}</p>
+				<p class="font-medium">{m["admin.settings.emailConfig.envVarsTitle"]()}</p>
 				<ul class="mt-2 space-y-1 font-mono text-xs">
 					<li>SMTP_HOST - SMTP server hostname</li>
 					<li>SMTP_PORT - SMTP port (default: 587)</li>

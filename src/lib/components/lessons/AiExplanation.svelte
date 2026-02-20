@@ -1,6 +1,6 @@
 <script lang="ts">
-	import { t } from '$lib/i18n/index.svelte';
-	import { Bot } from 'lucide-svelte';
+	import * as m from '$lib/paraglide/messages.js';
+import { Bot } from 'lucide-svelte';
 
 	interface Props {
 		explanation: string | null;
@@ -17,7 +17,7 @@
 			<div
 				class="h-5 w-5 animate-spin rounded-full border-2 border-primary border-t-transparent"
 			></div>
-			<span class="text-sm text-primary">{t('lesson.explaining')}</span>
+			<span class="text-sm text-primary">{m["lesson.explaining"]()}</span>
 		</div>
 	</div>
 {:else if error}
@@ -28,7 +28,7 @@
 	<div class="mt-4 rounded-xl bg-primary/10 p-4">
 		<div class="mb-2 flex items-center gap-2">
 			<Bot size={20} class="text-primary" />
-			<span class="font-medium text-primary">{t('lesson.explanation.title')}</span>
+			<span class="font-medium text-primary">{m["lesson.explanation.title"]()}</span>
 		</div>
 		<p class="text-sm leading-relaxed text-text-light">{explanation}</p>
 	</div>

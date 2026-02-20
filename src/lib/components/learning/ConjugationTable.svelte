@@ -1,7 +1,6 @@
 <script lang="ts">
-	import { i18n } from '$lib/i18n/index.svelte';
-
-	interface Props {
+	import { getLocale } from '$lib/paraglide/runtime.js';
+interface Props {
 		infinitive: string;
 		infinitiveEn: string;
 		infinitiveDe: string;
@@ -13,7 +12,7 @@
 	let { infinitive, infinitiveEn, infinitiveDe, forms, highlightTense, highlightPerson }: Props =
 		$props();
 
-	const translation = $derived(i18n.locale === 'de' ? infinitiveDe : infinitiveEn);
+	const translation = $derived(getLocale() === 'de' ? infinitiveDe : infinitiveEn);
 
 	// Extract tenses (keys of forms) and persons (keys of first tense object)
 	const tenses = $derived(Object.keys(forms));

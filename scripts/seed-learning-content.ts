@@ -16,7 +16,18 @@ import 'dotenv/config';
 import type { SkillGraphDefinition, GrammarPointData } from '../src/lib/learning/types';
 import type { ConceptType, SkillType } from '../src/lib/server/db/schema';
 
-const { concepts, skills, skillConcepts, skillPrerequisites } = schema;
+const {
+	concepts,
+	skills,
+	skillConcepts,
+	skillPrerequisites,
+	levels,
+	units,
+	lessons,
+	questions,
+	questionConcepts,
+	lessonSkills
+} = schema;
 
 type SeedConcept = {
 	key: string;
@@ -758,6 +769,268 @@ async function seedLanguageContent(db: ReturnType<typeof drizzle>, language: See
 	console.log(`   ✓ Skill prerequisite links upserted: ${prerequisiteRows.length}`);
 }
 
+type HiraganaChar = {
+	char: string;
+	romaji: string;
+	row: string;
+	mnemonicEn: string;
+	mnemonicDe: string;
+};
+
+function buildQuestionsForChar(
+	char: HiraganaChar,
+	allCharsInRow: HiraganaChar[],
+	allHiragana: HiraganaChar[]
+): Array<{ type: string; content: Record<string, unknown>; correctAnswer: string; order: number }> {
+	const distractors = allHiragana
+		.filter((h) => h.romaji !== char.romaji)
+		.sort(() => Math.random() - 0.5)
+		.slice(0, 3)
+		.map((h) => h.romaji);
+
+	const charDistractors = allHiragana
+		.filter((h) => h.char !== char.char)
+		.sort(() => Math.random() - 0.5)
+		.slice(0, 3)
+		.map((h) => h.char);
+
+	const options = [char.romaji, ...distractors].sort(() => Math.random() - 0.5);
+	const charOptions = [char.char, ...charDistractors].sort(() => Math.random() - 0.5);
+
+	return [
+		{
+			type: 'character_recognition',
+			content: {
+				character: char.char,
+				characterType: 'hiragana',
+				options
+			},
+			correctAnswer: char.romaji,
+			order: 1
+		},
+		{
+			type: 'character_recognition',
+			content: {
+				character: char.char,
+				characterType: 'hiragana',
+				options: options.slice().reverse()
+			},
+			correctAnswer: char.romaji,
+			order: 2
+		},
+		{
+			type: 'character_writing',
+			content: {
+				reading: char.romaji,
+				characterType: 'hiragana',
+				hintEn: char.mnemonicEn,
+				hintDe: char.mnemonicDe
+			},
+			correctAnswer: char.char,
+			order: 3
+		},
+		{
+			type: 'script_transliteration',
+			content: {
+				sourceText: char.char,
+				sourceScript: 'hiragana',
+				targetScript: 'romaji'
+			},
+			correctAnswer: char.romaji,
+			order: 4
+		},
+		{
+			type: 'script_transliteration',
+			content: {
+				sourceText: char.romaji,
+				sourceScript: 'romaji',
+				targetScript: 'hiragana'
+			},
+			correctAnswer: char.char,
+			order: 5
+		},
+		{
+			type: 'multiple_choice',
+			content: {
+				questionEn: `Which hiragana represents "${char.romaji}"?`,
+				questionDe: `Welches Hiragana steht für „${char.romaji}"?`,
+				options: charOptions
+			},
+			correctAnswer: char.char,
+			order: 6
+		}
+	];
+}
+
+async function seedJapaneseQuestions(db: ReturnType<typeof drizzle>) {
+	console.log('\n🇯🇵 Seeding Japanese questions...');
+
+	const [existingLevel] = await db
+		.select({ id: levels.id })
+		.from(levels)
+		.where(and(eq(levels.languageCode, 'ja'), eq(levels.code, 'A1')))
+		.limit(1);
+
+	let levelId: number;
+	if (existingLevel) {
+		levelId = existingLevel.id;
+	} else {
+		const [inserted] = await db
+			.insert(levels)
+			.values({ code: 'A1', languageCode: 'ja', name: 'Beginner', order: 1 })
+			.onConflictDoNothing()
+			.returning();
+		if (!inserted) {
+			const [fallback] = await db
+				.select({ id: levels.id })
+				.from(levels)
+				.where(and(eq(levels.languageCode, 'ja'), eq(levels.code, 'A1')))
+				.limit(1);
+			levelId = fallback.id;
+		} else {
+			levelId = inserted.id;
+		}
+	}
+
+	const [existingUnit] = await db
+		.select({ id: units.id })
+		.from(units)
+		.where(eq(units.levelId, levelId))
+		.limit(1);
+
+	let unitId: number;
+	if (existingUnit) {
+		unitId = existingUnit.id;
+	} else {
+		const [inserted] = await db
+			.insert(units)
+			.values({ levelId, title: 'Hiragana', description: 'Learn hiragana characters', order: 1 })
+			.returning();
+		unitId = inserted.id;
+	}
+
+	const skillGraph = JAPANESE_SKILL_GRAPH;
+	const writingSkills = skillGraph.skills.filter((s) => s.type === 'writing');
+
+	const HIRAGANA_ROW_MAP: Record<string, string[]> = {
+		'ja.writing.hiragana-vowels': ['a', 'i', 'u', 'e', 'o'],
+		'ja.writing.hiragana-k': ['ka', 'ki', 'ku', 'ke', 'ko'],
+		'ja.writing.hiragana-s': ['sa', 'shi', 'su', 'se', 'so'],
+		'ja.writing.hiragana-t': ['ta', 'chi', 'tsu', 'te', 'to'],
+		'ja.writing.hiragana-n': ['na', 'ni', 'nu', 'ne', 'no'],
+		'ja.writing.hiragana-h': ['ha', 'hi', 'fu', 'he', 'ho'],
+		'ja.writing.hiragana-m': ['ma', 'mi', 'mu', 'me', 'mo'],
+		'ja.writing.hiragana-y': ['ya', 'yu', 'yo'],
+		'ja.writing.hiragana-r': ['ra', 'ri', 'ru', 're', 'ro'],
+		'ja.writing.hiragana-w': ['wa', 'wo', 'n']
+	};
+
+	const dbSkills = await db
+		.select({ id: skills.id, key: skills.key })
+		.from(skills)
+		.where(eq(skills.languageCode, 'ja'));
+	const skillIdByKey = new Map(dbSkills.map((s) => [s.key, s.id]));
+
+	const dbConcepts = await db
+		.select({ id: concepts.id, key: concepts.key })
+		.from(concepts)
+		.where(eq(concepts.languageCode, 'ja'));
+	const conceptIdByKey = new Map(dbConcepts.map((c) => [c.key, c.id]));
+
+	let totalQuestions = 0;
+	let totalLinks = 0;
+
+	for (const skill of writingSkills) {
+		const romajiList = HIRAGANA_ROW_MAP[skill.key];
+		if (!romajiList) continue;
+
+		const skillId = skillIdByKey.get(skill.key);
+		if (!skillId) {
+			console.warn(`   ⚠ Skill not found in DB: ${skill.key}`);
+			continue;
+		}
+
+		const [existingLesson] = await db
+			.select({ id: lessons.id })
+			.from(lessons)
+			.innerJoin(schema.lessonSkills, eq(schema.lessonSkills.lessonId, lessons.id))
+			.where(eq(schema.lessonSkills.skillId, skillId))
+			.limit(1);
+
+		let lessonId: number;
+		if (existingLesson) {
+			lessonId = existingLesson.id;
+		} else {
+			const [inserted] = await db
+				.insert(lessons)
+				.values({
+					unitId,
+					title: JSON.stringify({ en: skill.titleEn, de: skill.titleDe }),
+					description: JSON.stringify({ en: skill.descriptionEn, de: skill.descriptionDe }),
+					xpReward: 15,
+					order: skill.order,
+					isPublished: true,
+					mode: 'guided_skill'
+				})
+				.returning();
+			lessonId = inserted.id;
+
+			await db
+				.insert(lessonSkills)
+				.values({ lessonId, skillId, role: 'primary' })
+				.onConflictDoNothing();
+		}
+
+		const charsInRow = romajiList
+			.map((r) => HIRAGANA_BASE.find((h) => h.romaji === r))
+			.filter((h): h is HiraganaChar => !!h);
+
+		for (const charData of charsInRow) {
+			const conceptKey = `ja.hira.${charData.romaji}`;
+			const conceptId = conceptIdByKey.get(conceptKey);
+			if (!conceptId) {
+				console.warn(`   ⚠ Concept not found: ${conceptKey}`);
+				continue;
+			}
+
+			const existingQs = await db
+				.select({ id: questions.id })
+				.from(questions)
+				.innerJoin(questionConcepts, eq(questionConcepts.questionId, questions.id))
+				.where(eq(questionConcepts.conceptId, conceptId))
+				.limit(1);
+
+			if (existingQs.length > 0) continue;
+
+			const questionData = buildQuestionsForChar(charData, charsInRow, HIRAGANA_BASE);
+
+			for (const qd of questionData) {
+				const [inserted] = await db
+					.insert(questions)
+					.values({
+						lessonId,
+						type: qd.type as any,
+						content: qd.content,
+						correctAnswer: qd.correctAnswer,
+						order: qd.order
+					})
+					.returning();
+
+				await db
+					.insert(questionConcepts)
+					.values({ questionId: inserted.id, conceptId })
+					.onConflictDoNothing();
+
+				totalLinks++;
+				totalQuestions++;
+			}
+		}
+	}
+
+	console.log(`   ✓ Questions inserted: ${totalQuestions}`);
+	console.log(`   ✓ Question-concept links: ${totalLinks}`);
+}
+
 async function seed() {
 	const databaseUrl = process.env.DATABASE_URL;
 	if (!databaseUrl) {
@@ -772,6 +1045,8 @@ async function seed() {
 	for (const language of LANGUAGES) {
 		await seedLanguageContent(db, language);
 	}
+
+	await seedJapaneseQuestions(db);
 
 	console.log('\n🎉 Learning content seed finished (additive, idempotent).');
 	await client.end();

@@ -1,8 +1,8 @@
 <script lang="ts">
+	import * as m from '$lib/paraglide/messages.js';
 	import { enhance } from '$app/forms';
 	import { invalidateAll } from '$app/navigation';
-	import { t } from '$lib/i18n/index.svelte';
-	import type { ActionData, PageData } from './$types';
+import type { ActionData, PageData } from './$types';
 	import { PartyPopper, Check } from 'lucide-svelte';
 
 	let { data, form }: { data: PageData & { hasGlobalKey: boolean }; form: ActionData } = $props();
@@ -39,8 +39,8 @@
 
 <div class="mx-auto w-full max-w-2xl py-8">
 	<div class="mb-8 text-center">
-		<h1 class="mb-2 text-3xl font-bold text-text-light">{t('onboarding.title')}</h1>
-		<p class="text-lg text-text-muted">{t('onboarding.subtitle')}</p>
+		<h1 class="mb-2 text-3xl font-bold text-text-light">{m["onboarding.title"]()}</h1>
+		<p class="text-lg text-text-muted">{m["onboarding.subtitle"]()}</p>
 	</div>
 
 	<div class="mb-12 flex items-center justify-center gap-4">
@@ -56,7 +56,7 @@
 					class="text-xs font-bold tracking-wider uppercase
 						{step >= s.num ? 'text-success' : 'text-text-muted'}"
 				>
-					{t(s.key)}
+					{(m[s.key as keyof typeof m] as unknown as (() => string))?.() ?? s.key}
 				</span>
 			</div>
 			{#if i < steps.length - 1}
@@ -74,9 +74,9 @@
 		<div class="animate-bounce-in">
 			<div class="mb-8 text-center">
 				<h2 class="mb-2 text-2xl font-bold text-text-light">
-					{t('onboarding.language.title')}
+					{m["onboarding.language.title"]()}
 				</h2>
-				<p class="text-text-muted">{t('onboarding.language.subtitle')}</p>
+				<p class="text-text-muted">{m["onboarding.language.subtitle"]()}</p>
 			</div>
 
 			<form method="POST" action="?/setLanguage" use:enhance={handleEnhance} class="space-y-8">
@@ -119,7 +119,7 @@
 
 				{#if !selectedLanguage}
 					<p class="text-center text-sm text-text-muted">
-						{t('onboarding.language.select')}
+						{m["onboarding.language.select"]()}
 					</p>
 				{/if}
 
@@ -129,7 +129,7 @@
 						class="btn btn-success btn-lg w-full sm:w-auto"
 						disabled={!selectedLanguage}
 					>
-						{t('common.next')}
+						{m["common.next"]()}
 					</button>
 				</div>
 			</form>
@@ -140,30 +140,30 @@
 		<div class="animate-bounce-in">
 			<div class="mb-8 text-center">
 				<h2 class="mb-2 text-2xl font-bold text-text-light">
-					{t('onboarding.apiKey.title')}
+					{m["onboarding.apiKey.title"]()}
 				</h2>
-				<p class="text-text-muted">{t('onboarding.apiKey.subtitle')}</p>
+				<p class="text-text-muted">{m["onboarding.apiKey.subtitle"]()}</p>
 			</div>
 
 			<form method="POST" action="?/setApiKey" use:enhance={handleEnhance} class="space-y-6 card">
 				{#if data.hasGlobalKey}
 					<div class="rounded-xl border border-success/30 bg-success/5 p-4 text-sm text-text-light">
-						<p>{t('onboarding.apiKey.globalKeySet')}</p>
+						<p>{m["onboarding.apiKey.globalKeySet"]()}</p>
 					</div>
 				{/if}
 
 				<div>
 					<label for="apiKey" class="mb-1 block text-sm font-medium text-text-light">
-						{t('onboarding.steps.apiKey')}
+						{m["onboarding.steps.apiKey"]()}
 					</label>
 					<input
 						type="text"
 						id="apiKey"
 						name="apiKey"
-						placeholder={t('onboarding.apiKey.placeholder')}
+						placeholder={m["onboarding.apiKey.placeholder"]()}
 						class="input"
 					/>
-					<p class="mt-2 text-xs text-text-muted">{t('onboarding.apiKey.hint')}</p>
+					<p class="mt-2 text-xs text-text-muted">{m["onboarding.apiKey.hint"]()}</p>
 				</div>
 
 				<div class="text-center">
@@ -173,7 +173,7 @@
 						rel="noopener noreferrer"
 						class="text-sm font-medium text-primary hover:underline"
 					>
-						{t('onboarding.apiKey.getKey')}
+						{m["onboarding.apiKey.getKey"]()}
 					</a>
 				</div>
 
@@ -183,13 +183,13 @@
 
 				<div class="flex flex-col gap-3 pt-2 sm:flex-row">
 					<button type="button" class="btn btn-ghost btn-md flex-1" onclick={() => (step = 1)}>
-						{t('common.back')}
+						{m["common.back"]()}
 					</button>
 					<button type="button" class="btn btn-ghost btn-md flex-1" onclick={() => (step = 3)}>
-						{t('onboarding.apiKey.skip')}
+						{m["onboarding.apiKey.skip"]()}
 					</button>
 					<button type="submit" class="btn btn-primary btn-md flex-1">
-						{t('onboarding.apiKey.save')}
+						{m["onboarding.apiKey.save"]()}
 					</button>
 				</div>
 			</form>
@@ -204,24 +204,24 @@
 				</div>
 			</div>
 
-			<h2 class="mb-4 text-3xl font-bold text-success">{t('onboarding.done.title')}</h2>
+			<h2 class="mb-4 text-3xl font-bold text-success">{m["onboarding.done.title"]()}</h2>
 			<p class="mx-auto mb-12 max-w-md text-xl text-text-muted">
-				{t('onboarding.done.subtitle')}
+				{m["onboarding.done.subtitle"]()}
 			</p>
 
 			<p class="mx-auto mb-6 max-w-md text-sm text-text-muted">
-				{t('onboarding.done.choosePath')}
+				{m["onboarding.done.choosePath"]()}
 			</p>
 
 			<div class="mx-auto flex w-full max-w-sm flex-col gap-3">
 				<form method="POST" action="?/completeAndTest" use:enhance={handleEnhance}>
 					<button type="submit" class="btn btn-primary btn-lg w-full">
-						{t('placement.start')}
+						{m["placement.start"]()}
 					</button>
 				</form>
 				<form method="POST" action="?/complete" use:enhance={handleEnhance}>
 					<button type="submit" class="btn btn-success btn-lg w-full">
-						{t('placement.skip')}
+						{m["placement.skip"]()}
 					</button>
 				</form>
 			</div>

@@ -1,7 +1,6 @@
 <script lang="ts">
-	import { t } from '$lib/i18n/index.svelte';
-
-	interface Props {
+	import * as m from '$lib/paraglide/messages.js';
+interface Props {
 		onSend: (message: string) => void;
 		disabled: boolean;
 		placeholder?: string;
@@ -40,6 +39,6 @@
 		disabled={disabled || !message.trim()}
 		class="btn btn-success btn-md shrink-0"
 	>
-		{t('chat.send')}
+		{m["chat.send"]()}
 	</button>
 </div>

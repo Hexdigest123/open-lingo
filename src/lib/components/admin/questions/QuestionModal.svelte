@@ -1,9 +1,8 @@
 <script lang="ts">
+	import * as m from '$lib/paraglide/messages.js';
 	import { enhance } from '$app/forms';
 	import type { QuestionType } from '$lib/server/db/schema';
-	import { t } from '$lib/i18n/index.svelte';
-
-	type Question = {
+type Question = {
 		id: number;
 		type: QuestionType;
 		content: Record<string, unknown>;
@@ -224,11 +223,11 @@
 				} else {
 					// Try to extract error
 					const match = text.match(/"error":"([^"]+)"/);
-					formError = match ? match[1] : t('admin.questions.errors.generic');
+					formError = match ? match[1] : m["admin.questions.errors.generic"]();
 				}
 			})
 			.catch(() => {
-				formError = t('admin.questions.errors.network');
+				formError = m["admin.questions.errors.network"]();
 			})
 			.finally(() => {
 				isSubmitting = false;
@@ -240,7 +239,7 @@
 	<div class="max-h-[90vh] w-full max-w-2xl overflow-y-auto card">
 		<div class="mb-4 flex items-center justify-between">
 			<h2 class="text-xl font-bold text-text-light">
-				{mode === 'add' ? t('admin.questions.addTitle') : t('admin.questions.editTitle')}
+				{mode === 'add' ? m["admin.questions.addTitle"]() : m["admin.questions.editTitle"]()}
 			</h2>
 			<button onclick={onClose} class="text-2xl text-text-muted hover:text-text-light">
 				&times;
@@ -260,7 +259,7 @@
 			<!-- Question Type Selector -->
 			<div>
 				<label for="questionType" class="mb-1 block text-sm font-medium text-text-light">
-					{t('admin.questions.questionType')}
+					{m["admin.questions.questionType"]()}
 				</label>
 				<select
 					id="questionType"
@@ -269,7 +268,7 @@
 					class="input"
 				>
 					{#each QUESTION_TYPES as qtype}
-						<option value={qtype.value}>{t(qtype.label)}</option>
+						<option value={qtype.value}>{(m[qtype.label as keyof typeof m] as unknown as (() => string))?.() ?? qtype.label}</option>
 					{/each}
 				</select>
 			</div>
@@ -277,10 +276,10 @@
 			<!-- Type-specific content -->
 			{#if selectedType === 'multiple_choice'}
 				<div class="space-y-3 rounded-xl bg-bg-light-secondary p-3">
-					<h3 class="font-medium text-text-light">{t('admin.questions.section.multipleChoice')}</h3>
+					<h3 class="font-medium text-text-light">{m["admin.questions.section.multipleChoice"]()}</h3>
 					<div>
 						<label class="mb-1 block text-sm text-text-muted"
-							>{t('admin.questions.labels.questionEn')}</label
+							>{m["admin.questions.labels.questionEn"]()}</label
 						>
 						<input
 							type="text"
@@ -291,7 +290,7 @@
 					</div>
 					<div>
 						<label class="mb-1 block text-sm text-text-muted"
-							>{t('admin.questions.labels.questionDe')}</label
+							>{m["admin.questions.labels.questionDe"]()}</label
 						>
 						<input
 							type="text"
@@ -302,7 +301,7 @@
 					</div>
 					<div>
 						<label class="mb-1 block text-sm text-text-muted"
-							>{t('admin.questions.labels.options')}</label
+							>{m["admin.questions.labels.options"]()}</label
 						>
 						{#each mcOptions as option, i}
 							<div class="mb-2 flex gap-2">
@@ -329,17 +328,17 @@
 								onclick={() => addOption(mcOptions, (v) => (mcOptions = v))}
 								class="text-sm text-primary hover:underline"
 							>
-								{t('admin.questions.buttons.addOption')}
+								{m["admin.questions.buttons.addOption"]()}
 							</button>
 						{/if}
 					</div>
 				</div>
 			{:else if selectedType === 'fill_blank'}
 				<div class="space-y-3 rounded-xl bg-bg-light-secondary p-3">
-					<h3 class="font-medium text-text-light">{t('admin.questions.section.fillBlank')}</h3>
+					<h3 class="font-medium text-text-light">{m["admin.questions.section.fillBlank"]()}</h3>
 					<div>
 						<label class="mb-1 block text-sm text-text-muted"
-							>{t('admin.questions.labels.sentenceEn')}</label
+							>{m["admin.questions.labels.sentenceEn"]()}</label
 						>
 						<input
 							type="text"
@@ -350,7 +349,7 @@
 					</div>
 					<div>
 						<label class="mb-1 block text-sm text-text-muted"
-							>{t('admin.questions.labels.sentenceDe')}</label
+							>{m["admin.questions.labels.sentenceDe"]()}</label
 						>
 						<input
 							type="text"
@@ -362,7 +361,7 @@
 					<div class="grid grid-cols-2 gap-3">
 						<div>
 							<label class="mb-1 block text-sm text-text-muted"
-								>{t('admin.questions.labels.hintEn')}</label
+								>{m["admin.questions.labels.hintEn"]()}</label
 							>
 							<input
 								type="text"
@@ -373,7 +372,7 @@
 						</div>
 						<div>
 							<label class="mb-1 block text-sm text-text-muted"
-								>{t('admin.questions.labels.hintDe')}</label
+								>{m["admin.questions.labels.hintDe"]()}</label
 							>
 							<input
 								type="text"
@@ -386,33 +385,33 @@
 				</div>
 			{:else if selectedType === 'translation'}
 				<div class="space-y-3 rounded-xl bg-bg-light-secondary p-3">
-					<h3 class="font-medium text-text-light">{t('admin.questions.section.translation')}</h3>
+					<h3 class="font-medium text-text-light">{m["admin.questions.section.translation"]()}</h3>
 					<div>
 						<label class="mb-1 block text-sm text-text-muted"
-							>{t('admin.questions.labels.direction')}</label
+							>{m["admin.questions.labels.direction"]()}</label
 						>
 						<select bind:value={transDirection} class="input">
-							<option value="native_to_target">{t('admin.questions.labels.nativeToTarget')}</option>
-							<option value="target_to_native">{t('admin.questions.labels.targetToNative')}</option>
+							<option value="native_to_target">{m["admin.questions.labels.nativeToTarget"]()}</option>
+							<option value="target_to_native">{m["admin.questions.labels.targetToNative"]()}</option>
 						</select>
 					</div>
 					{#if transDirection === 'native_to_target'}
 						<div>
 							<label class="mb-1 block text-sm text-text-muted"
-								>{t('admin.questions.labels.sourceTextEn')}</label
+								>{m["admin.questions.labels.sourceTextEn"]()}</label
 							>
 							<input type="text" bind:value={transTextEn} class="input" placeholder="Hello" />
 						</div>
 						<div>
 							<label class="mb-1 block text-sm text-text-muted"
-								>{t('admin.questions.labels.sourceTextDe')}</label
+								>{m["admin.questions.labels.sourceTextDe"]()}</label
 							>
 							<input type="text" bind:value={transTextDe} class="input" placeholder="Hallo" />
 						</div>
 					{:else}
 						<div>
 							<label class="mb-1 block text-sm text-text-muted"
-								>{t('admin.questions.labels.targetLangText')}</label
+								>{m["admin.questions.labels.targetLangText"]()}</label
 							>
 							<input type="text" bind:value={transText} class="input" placeholder="Hola" />
 						</div>
@@ -420,7 +419,7 @@
 				</div>
 			{:else if selectedType === 'matching'}
 				<div class="space-y-3 rounded-xl bg-bg-light-secondary p-3">
-					<h3 class="font-medium text-text-light">{t('admin.questions.section.matching')}</h3>
+					<h3 class="font-medium text-text-light">{m["admin.questions.section.matching"]()}</h3>
 					{#each matchingPairs as pair, i}
 						<div class="flex items-start gap-2">
 							<div class="grid flex-1 grid-cols-3 gap-2">
@@ -456,16 +455,16 @@
 					{/each}
 					{#if matchingPairs.length < 6}
 						<button type="button" onclick={addPair} class="text-sm text-primary hover:underline">
-							{t('admin.questions.buttons.addPair')}
+							{m["admin.questions.buttons.addPair"]()}
 						</button>
 					{/if}
 				</div>
 			{:else if selectedType === 'word_order'}
 				<div class="space-y-3 rounded-xl bg-bg-light-secondary p-3">
-					<h3 class="font-medium text-text-light">{t('admin.questions.section.wordOrder')}</h3>
+					<h3 class="font-medium text-text-light">{m["admin.questions.section.wordOrder"]()}</h3>
 					<div>
 						<label class="mb-1 block text-sm text-text-muted"
-							>{t('admin.questions.labels.wordsScrambled')}</label
+							>{m["admin.questions.labels.wordsScrambled"]()}</label
 						>
 						{#each woWords as word, i}
 							<div class="mb-2 flex gap-2">

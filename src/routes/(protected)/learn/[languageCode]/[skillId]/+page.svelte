@@ -1,8 +1,9 @@
 <script lang="ts">
+	import * as m from '$lib/paraglide/messages.js';
+	import { getLocale } from '$lib/paraglide/runtime.js';
 	import type { PageData } from './$types';
 	import { deserialize } from '$app/forms';
-	import { i18n, t } from '$lib/i18n/index.svelte';
-	import TeachBlock from '$lib/components/learning/TeachBlock.svelte';
+import TeachBlock from '$lib/components/learning/TeachBlock.svelte';
 	import DrillBlock from '$lib/components/learning/DrillBlock.svelte';
 
 	type BlockType = 'teach' | 'drill' | 'checkpoint' | 'review' | 'exam';
@@ -69,13 +70,13 @@
 	});
 
 	function getLocalizedSkillTitle() {
-		return i18n.locale === 'de' ? data.skill.titleDe : data.skill.titleEn;
+		return getLocale() === 'de' ? data.skill.titleDe : data.skill.titleEn;
 	}
 
 	function getLocalizedConceptTitle(conceptId: number): string {
 		const concept = conceptById.get(conceptId);
 		if (!concept) return '';
-		return i18n.locale === 'de' ? concept.titleDe : concept.titleEn;
+		return getLocale() === 'de' ? concept.titleDe : concept.titleEn;
 	}
 
 	function getBlockQuestions(block: LearnBlock): LearnQuestion[] {
@@ -199,9 +200,9 @@
 			titleEn: block.titleEn ?? data.skill.titleEn,
 			titleDe: block.titleDe ?? data.skill.titleDe,
 			explanationEn:
-				typeof config.explanationEn === 'string' ? config.explanationEn : t('learn.teachTitle'),
+				typeof config.explanationEn === 'string' ? config.explanationEn : m["learn.teachTitle"](),
 			explanationDe:
-				typeof config.explanationDe === 'string' ? config.explanationDe : t('learn.teachTitle'),
+				typeof config.explanationDe === 'string' ? config.explanationDe : m["learn.teachTitle"](),
 			examples,
 			visualAid:
 				typeof config.visualAid === 'object' && config.visualAid !== null
@@ -239,7 +240,7 @@
 			</svg>
 		</div>
 		<h1 class="text-2xl font-bold text-text-light">
-			{t('learn.lessonComplete')}
+			{m["learn.lessonComplete"]()}
 		</h1>
 		<p class="text-text-muted">{getLocalizedSkillTitle()}</p>
 
@@ -247,33 +248,33 @@
 			<div class="bg-surface-100 rounded-xl p-4">
 				<p class="text-2xl font-bold text-success">{totalCorrect}/{totalAnswered}</p>
 				<p class="text-xs text-text-muted">
-					{t('learn.drillScore', { correct: totalCorrect, total: totalAnswered })}
+					{m["learn.drillScore"]({ correct: totalCorrect, total: totalAnswered })}
 				</p>
 			</div>
 			<div class="bg-surface-100 rounded-xl p-4">
 				<p class="text-2xl font-bold text-primary">{data.concepts.length}</p>
 				<p class="text-xs text-text-muted">
-					{t('learn.conceptsLearned', { count: data.concepts.length })}
+					{m["learn.conceptsLearned"]({ count: data.concepts.length })}
 				</p>
 			</div>
 			<div class="bg-surface-100 rounded-xl p-4">
 				<p class="text-2xl font-bold text-yellow-dark">{averageMasteryGain}%</p>
 				<p class="text-xs text-text-muted">
-					{t('skills.mastery', { percent: averageMasteryGain })}
+					{m["skills.mastery"]({ percent: averageMasteryGain })}
 				</p>
 			</div>
 		</div>
 
-		<a href="/skills" class="btn btn-primary">← {t('learn.backToSkills')}</a>
+		<a href="/skills" class="btn btn-primary">← {m["learn.backToSkills"]()}</a>
 	</div>
 {:else}
 	<div class="mx-auto max-w-3xl space-y-6">
 		<div class="flex items-center justify-between gap-4">
 			<a href="/skills" class="text-sm text-text-muted hover:text-text-light"
-				>← {t('learn.backToSkills')}</a
+				>← {m["learn.backToSkills"]()}</a
 			>
 			<p class="text-sm text-text-muted">
-				{t('learn.progress', { current: blockIndex + 1, total: blockSequence.length })}
+				{m["learn.progress"]({ current: blockIndex + 1, total: blockSequence.length })}
 			</p>
 		</div>
 
@@ -300,9 +301,9 @@
 				{#if blockQuestions.length === 0}
 					<div class="card text-center">
 						<p class="text-text-muted">
-							{t('learn.unsupportedType')}
+							{m["learn.unsupportedType"]()}
 						</p>
-						<button class="btn btn-primary mt-4" onclick={nextBlock}>{t('learn.continue')}</button>
+						<button class="btn btn-primary mt-4" onclick={nextBlock}>{m["learn.continue"]()}</button>
 					</div>
 				{:else}
 					{#key `${currentBlock.id}-${checkpointAttempt}`}
@@ -319,11 +320,11 @@
 				<div class="space-y-4">
 					<div class="card bg-yellow/10">
 						<p class="font-semibold text-yellow-dark">
-							{t('learn.checkpointTitle')}
+							{m["learn.checkpointTitle"]()}
 						</p>
 						{#if checkpointFailed}
 							<p class="mt-2 text-sm text-error">
-								{t('learn.checkpointFailed')}
+								{m["learn.checkpointFailed"]()}
 							</p>
 						{/if}
 						{#if currentBlock.config.conceptIds}
@@ -338,9 +339,9 @@
 					{#if checkpointQuestions.length === 0}
 						<div class="card text-center">
 							<p class="text-text-muted">
-								{t('learn.unsupportedType')}
+								{m["learn.unsupportedType"]()}
 							</p>
-							<button class="btn btn-primary mt-4" onclick={nextBlock}>{t('learn.continue')}</button
+							<button class="btn btn-primary mt-4" onclick={nextBlock}>{m["learn.continue"]()}</button
 							>
 						</div>
 					{:else}

@@ -1,6 +1,6 @@
 <script lang="ts">
+	import * as m from '$lib/paraglide/messages.js';
 	import type { Snippet } from 'svelte';
-	import { t } from '$lib/i18n/index.svelte';
 
 	let { children }: { children: Snippet } = $props();
 </script>
@@ -14,10 +14,10 @@
 			</a>
 			<nav class="hidden items-center gap-3 md:flex">
 				<a href="/login" class="btn btn-ghost btn-sm flex items-center justify-center"
-					>{t('nav.login')}</a
+					>{m['nav.login']()}</a
 				>
 				<a href="/register" class="btn btn-success btn-sm items-center justify-center sm:flex"
-					>{t('nav.register')}</a
+					>{m['nav.register']()}</a
 				>
 			</nav>
 		</div>
@@ -31,14 +31,14 @@
 	<!-- Footer -->
 	<footer class="border-t border-border-light bg-white py-8">
 		<div class="mx-auto max-w-7xl px-4 text-center text-text-muted">
-			<p>{t('landing.footer')}</p>
+			<p>{m['landing.footer']()}</p>
 			<div class="mt-4 flex justify-center gap-4 text-sm">
 				<a href="/imprint" class="hover:text-text-light hover:underline"
-					>{t('legal.footer.imprint')}</a
+					>{m['legal.footer.imprint']()}</a
 				>
 				<span>|</span>
 				<a href="/privacy" class="hover:text-text-light hover:underline"
-					>{t('legal.footer.privacy')}</a
+					>{m['legal.footer.privacy']()}</a
 				>
 			</div>
 		</div>

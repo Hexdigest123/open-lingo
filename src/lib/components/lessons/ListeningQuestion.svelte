@@ -1,6 +1,6 @@
 <script lang="ts">
-	import { t } from '$lib/i18n/index.svelte';
-	import { Headphones } from 'lucide-svelte';
+	import * as m from '$lib/paraglide/messages.js';
+import { Headphones } from 'lucide-svelte';
 
 	interface Props {
 		textToHear: string;
@@ -45,7 +45,7 @@
 					await newAudio.play();
 				} catch (e2) {
 					console.error('Audio playback failed:', e2);
-					error = t('common.error');
+					error = m["common.error"]();
 				}
 			}
 			return;
@@ -67,7 +67,7 @@
 			const result = await response.json();
 
 			if (!response.ok) {
-				error = result.error || t('common.error');
+				error = result.error || m["common.error"]();
 				return;
 			}
 
@@ -94,12 +94,12 @@
 					await audio.play();
 				} catch (e2) {
 					console.error('Audio playback failed after retry:', e2);
-					error = t('common.error');
+					error = m["common.error"]();
 				}
 			}
 		} catch (err) {
 			console.error('Failed to generate audio:', err);
-			error = t('common.error');
+			error = m["common.error"]();
 		} finally {
 			isLoading = false;
 		}
@@ -114,7 +114,7 @@
 		};
 		audio.onerror = () => {
 			isPlaying = false;
-			error = t('common.error');
+			error = m["common.error"]();
 		};
 	}
 
@@ -145,18 +145,18 @@
 </script>
 
 <div class="card">
-	<h2 class="mb-2 text-lg font-bold text-text-light">{t('lesson.types.listening')}</h2>
-	<p class="mb-4 text-text-muted">{t('lesson.listening.whatDidYouHear')}</p>
+	<h2 class="mb-2 text-lg font-bold text-text-light">{m["lesson.types.listening"]()}</h2>
+	<p class="mb-4 text-text-muted">{m["lesson.listening.whatDidYouHear"]()}</p>
 
 	{#if !hasApiKey}
 		<!-- No API key - show skip option -->
 		<div class="rounded-xl bg-yellow/10 p-6 text-center">
 			<div class="mb-4 flex justify-center"><Headphones size={32} class="text-yellow-dark" /></div>
-			<p class="font-medium text-yellow-dark">{t('lesson.listening.noApiKey')}</p>
-			<p class="mt-2 text-sm text-text-muted">{t('lesson.listening.noApiKeyHint')}</p>
+			<p class="font-medium text-yellow-dark">{m["lesson.listening.noApiKey"]()}</p>
+			<p class="mt-2 text-sm text-text-muted">{m["lesson.listening.noApiKeyHint"]()}</p>
 			{#if onSkip}
 				<button onclick={onSkip} class="btn btn-primary mt-4">
-					{t('lesson.listening.skip')}
+					{m["lesson.listening.skip"]()}
 				</button>
 			{/if}
 		</div>
@@ -220,12 +220,12 @@
 			</button>
 
 			<p class="text-sm text-text-muted">
-				{isPlaying ? t('lesson.listening.playing') : t('lesson.listening.tapToPlay')}
+				{isPlaying ? m["lesson.listening.playing"]() : m["lesson.listening.tapToPlay"]()}
 			</p>
 
 			<!-- Speed controls -->
 			<div class="flex items-center gap-2">
-				<span class="text-xs text-text-muted">{t('lesson.listening.speed')}:</span>
+				<span class="text-xs text-text-muted">{m["lesson.listening.speed"]()}:</span>
 				<div class="flex gap-1">
 					{#each [0.75, 1.0, 1.25] as speed}
 						<button
@@ -247,7 +247,7 @@
 					class="text-sm text-primary hover:underline"
 					disabled={disabled || isPlaying}
 				>
-					{t('lesson.listening.replay')}
+					{m["lesson.listening.replay"]()}
 				</button>
 			{/if}
 		</div>
@@ -259,7 +259,7 @@
 					type="text"
 					bind:value={answer}
 					onkeydown={handleKeydown}
-					placeholder={t('lesson.listening.typeAnswer')}
+					placeholder={m["lesson.listening.typeAnswer"]()}
 					{disabled}
 					class="input w-full"
 				/>
@@ -268,7 +268,7 @@
 					disabled={!answer.trim() || disabled}
 					class="btn btn-success btn-lg w-full"
 				>
-					{t('lesson.checkAnswer')}
+					{m["lesson.checkAnswer"]()}
 				</button>
 			</div>
 		{:else if answerType === 'multiple_choice' && options}

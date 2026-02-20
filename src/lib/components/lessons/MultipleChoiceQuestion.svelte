@@ -1,7 +1,6 @@
 <script lang="ts">
-	import { t } from '$lib/i18n/index.svelte';
-
-	interface Props {
+	import * as m from '$lib/paraglide/messages.js';
+interface Props {
 		questionText: string;
 		options: string[];
 		disabled: boolean;
@@ -25,7 +24,7 @@
 </script>
 
 <div class="card">
-	<h2 class="mb-2 text-lg font-bold text-text-light">{t('lesson.types.multipleChoice')}</h2>
+	<h2 class="mb-2 text-lg font-bold text-text-light">{m["lesson.types.multipleChoice"]()}</h2>
 	<p class="mb-6 text-xl text-text-light">{questionText}</p>
 
 	<div class="space-y-3">
@@ -46,7 +45,7 @@
 
 	{#if !disabled}
 		<button onclick={submit} disabled={!selectedOption} class="btn btn-success btn-lg mt-6 w-full">
-			{t('lesson.checkAnswer')}
+			{m["lesson.checkAnswer"]()}
 		</button>
 	{/if}
 </div>

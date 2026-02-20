@@ -1,7 +1,8 @@
 <script lang="ts">
+	import * as m from '$lib/paraglide/messages.js';
+	import { getLocale } from '$lib/paraglide/runtime.js';
 	import type { PageData } from './$types';
-	import { i18n, t } from '$lib/i18n/index.svelte';
-	import ChatMessage from '$lib/components/chat/ChatMessage.svelte';
+import ChatMessage from '$lib/components/chat/ChatMessage.svelte';
 	import ChatInput from '$lib/components/chat/ChatInput.svelte';
 	import ModeToggle from '$lib/components/chat/ModeToggle.svelte';
 	import VoiceRecorder from '$lib/components/chat/VoiceRecorder.svelte';
@@ -39,7 +40,7 @@
 				body: JSON.stringify({
 					sessionId: data.session.id,
 					message: content,
-					locale: i18n.locale
+					locale: getLocale()
 				})
 			});
 
@@ -55,7 +56,7 @@
 						id: Date.now() + 1,
 						sessionId: data.session.id,
 						role: 'assistant' as const,
-						content: result.error || t('chat.error.sendFailed'),
+						content: result.error || m["chat.error.sendFailed"](),
 						createdAt: new Date()
 					}
 				];
@@ -68,7 +69,7 @@
 					id: Date.now() + 1,
 					sessionId: data.session.id,
 					role: 'assistant' as const,
-					content: t('chat.error.sendFailed'),
+					content: m["chat.error.sendFailed"](),
 					createdAt: new Date()
 				}
 			];
@@ -123,7 +124,7 @@
 </script>
 
 <svelte:head>
-	<title>{data.session.title || t('chat.title')} - OpenLingo</title>
+	<title>{data.session.title || m["chat.title"]()} - OpenLingo</title>
 </svelte:head>
 
 <div class="mx-auto flex h-[calc(100vh-10rem)] max-w-3xl flex-col">
@@ -131,11 +132,11 @@
 	<div class="mb-2 flex flex-col gap-2">
 		<div class="flex items-center gap-3">
 			<a href="/chat" class="text-text-muted hover:text-text-light">
-				← {t('common.back')}
+				← {m["common.back"]()}
 			</a>
 			<span class="text-text-muted">|</span>
 			<h1 class="max-w-xs truncate font-medium text-text-light">
-				{data.session.title || t('chat.newSession')}
+				{data.session.title || m["chat.newSession"]()}
 			</h1>
 		</div>
 
@@ -158,7 +159,7 @@
 				<div class="mb-4 flex justify-center">
 					<MessageCircle size={32} class="text-text-muted" />
 				</div>
-				<p class="text-text-muted">{t('chat.startConversation')}</p>
+				<p class="text-text-muted">{m["chat.startConversation"]()}</p>
 			</div>
 		{:else}
 			{#each messages as message (message.id)}
@@ -205,7 +206,7 @@
 				{/if}
 				<VoiceRecorder
 					sessionId={data.session.id}
-					locale={i18n.locale}
+					locale={getLocale()}
 					onTranscript={handleVoiceTranscript}
 					onStatusChange={handleVoiceStatusChange}
 					onError={handleVoiceError}
@@ -216,7 +217,7 @@
 			<ChatInput
 				onSend={sendMessage}
 				disabled={isLoading || !data.hasApiKey}
-				placeholder={t('chat.typeMessage')}
+				placeholder={m["chat.typeMessage"]()}
 			/>
 		{/if}
 	</div>

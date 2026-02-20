@@ -1,12 +1,19 @@
 <script lang="ts">
+	import * as m from '$lib/paraglide/messages.js';
+	import { getLocale, setLocale } from '$lib/paraglide/runtime.js';
 	import type { Snippet } from 'svelte';
 	import type { LayoutData } from './$types';
 	import { page } from '$app/stores';
 	import { goto } from '$app/navigation';
-	import { i18n, t, type Locale } from '$lib/i18n/index.svelte';
 	import Toast from '$lib/components/ui/Toast.svelte';
 	import CelebrationOverlay from '$lib/components/ui/CelebrationOverlay.svelte';
 	import { onMount } from 'svelte';
+	const availableLocales = [
+		{ code: 'en' as const, name: 'English' },
+		{ code: 'de' as const, name: 'Deutsch' }
+	];
+	type Locale = 'en' | 'de';
+
 	import {
 		Home,
 		BookOpen,
@@ -34,7 +41,7 @@
 	// Initialize locale from server data if available
 	onMount(() => {
 		if (data.userLocale && (data.userLocale === 'en' || data.userLocale === 'de')) {
-			i18n.setLocale(data.userLocale as Locale);
+			setLocale(data.userLocale as Locale);
 		}
 	});
 
@@ -88,7 +95,7 @@
 	}
 
 	function selectLocale(locale: 'en' | 'de') {
-		i18n.setLocale(locale);
+		setLocale(locale);
 		showLangMenu = false;
 	}
 </script>
@@ -111,7 +118,10 @@
 							{isActive(item.href) ? 'bg-success/10 text-success' : 'text-text-muted hover:text-text-light'}"
 					>
 						<item.icon size={20} />
-						<span>{t(item.labelKey)}</span>
+						<span
+							>{(m[item.labelKey as keyof typeof m] as unknown as () => string)?.() ??
+								item.labelKey}</span
+						>
 					</a>
 				{/each}
 				{#if isAdmin}
@@ -121,7 +131,7 @@
 							{isActive('/admin') ? 'bg-purple/10 text-purple' : 'text-text-muted hover:text-purple'}"
 					>
 						<Wrench size={20} />
-						<span>{t('nav.admin')}</span>
+						<span>{m['nav.admin']()}</span>
 					</a>
 				{/if}
 			</nav>
@@ -131,7 +141,7 @@
 				<!-- Hearts -->
 				<div
 					class="flex items-center gap-1 rounded-xl bg-error/10 px-2 py-1"
-					title={t('gamification.hearts')}
+					title={m['gamification.hearts']()}
 				>
 					<Heart size={16} class="text-error" />
 					<span class="text-sm font-bold text-error">{data.stats.hearts}</span>
@@ -140,7 +150,7 @@
 				<!-- Streak -->
 				<div
 					class="hidden items-center gap-1 rounded-xl bg-orange/10 px-2 py-1 sm:flex"
-					title={t('gamification.streak')}
+					title={m['gamification.streak']()}
 				>
 					<Flame size={16} class="text-orange" />
 					<span class="text-sm font-bold text-orange">{data.stats.currentStreak}</span>
@@ -150,7 +160,7 @@
 				{#if data.stats.streakFreezes > 0}
 					<div
 						class="hidden items-center gap-1 rounded-xl bg-primary/10 px-2 py-1 md:flex"
-						title={t('gamification.streakFreezes')}
+						title={m['gamification.streakFreezes']()}
 					>
 						<Snowflake size={16} class="text-primary" />
 						<span class="text-sm font-bold text-primary">{data.stats.streakFreezes}</span>
@@ -160,7 +170,7 @@
 				<!-- XP -->
 				<div
 					class="flex items-center gap-1 rounded-xl bg-yellow/10 px-2 py-1"
-					title={t('gamification.xp')}
+					title={m['gamification.xp']()}
 				>
 					<Star size={16} class="text-yellow-dark" />
 					<span class="text-sm font-bold text-yellow-dark">{data.stats.xpTotal}</span>
@@ -174,15 +184,15 @@
 							class="flex cursor-pointer items-center gap-1 rounded-xl bg-primary/10 px-2 py-1 text-sm font-medium text-primary hover:bg-primary/20"
 						>
 							<Globe size={16} />
-							<span class="hidden sm:inline">{i18n.locale === 'de' ? 'DE' : 'EN'}</span>
+							<span class="hidden sm:inline">{getLocale() === 'de' ? 'DE' : 'EN'}</span>
 						</button>
 						<div
 							class="absolute top-full right-0 mt-2 w-32 rounded-xl border border-border-light bg-white py-1 shadow-lg"
 						>
-							{#each i18n.availableLocales as locale}
+							{#each availableLocales as locale}
 								<button
 									onclick={() => selectLocale(locale.code)}
-									class="w-full px-4 py-2 text-left first:rounded-t-lg last:rounded-b-lg hover:bg-bg-light-secondary {i18n.locale ===
+									class="w-full px-4 py-2 text-left first:rounded-t-lg last:rounded-b-lg hover:bg-bg-light-secondary {getLocale() ===
 									locale.code
 										? 'font-bold text-primary'
 										: 'text-text-light'}"
@@ -199,7 +209,7 @@
 							class="flex cursor-pointer items-center gap-1 rounded-xl bg-primary/10 px-2 py-1 text-sm font-medium text-primary hover:bg-primary/20"
 						>
 							<Globe size={16} />
-							<span class="hidden sm:inline">{i18n.locale === 'de' ? 'DE' : 'EN'}</span>
+							<span class="hidden sm:inline">{getLocale() === 'de' ? 'DE' : 'EN'}</span>
 						</button>
 					</div>
 				{/if}
@@ -227,7 +237,7 @@
 								class="flex w-full items-center gap-2 px-4 py-2 text-left text-text-light hover:bg-bg-light-secondary"
 							>
 								<Settings size={16} />
-								<span>{t('nav.settings')}</span>
+								<span>{m['nav.settings']()}</span>
 							</a>
 							{#if isAdmin}
 								<a
@@ -236,7 +246,7 @@
 									class="flex w-full items-center gap-2 px-4 py-2 text-left text-purple hover:bg-purple/10 lg:hidden"
 								>
 									<Wrench size={16} />
-									<span>{t('nav.admin')}</span>
+									<span>{m['nav.admin']()}</span>
 								</a>
 							{/if}
 							<button
@@ -244,7 +254,7 @@
 								class="flex w-full items-center gap-2 rounded-b-xl px-4 py-2 text-left text-error hover:bg-error/10"
 							>
 								<LogOut size={16} />
-								<span>{t('nav.logout')}</span>
+								<span>{m['nav.logout']()}</span>
 							</button>
 						</div>
 					</div>
@@ -300,7 +310,10 @@
 								: 'text-text-muted hover:bg-bg-light-secondary hover:text-text-light'}"
 						>
 							<item.icon size={24} />
-							<span class="font-medium">{t(item.labelKey)}</span>
+							<span class="font-medium"
+								>{(m[item.labelKey as keyof typeof m] as unknown as () => string)?.() ??
+									item.labelKey}</span
+							>
 						</a>
 					{/each}
 					{#if isAdmin}
@@ -313,7 +326,7 @@
 								: 'text-text-muted hover:bg-purple/10 hover:text-purple'}"
 						>
 							<Wrench size={24} />
-							<span class="font-medium">{t('nav.admin')}</span>
+							<span class="font-medium">{m['nav.admin']()}</span>
 						</a>
 					{/if}
 				</nav>
@@ -354,7 +367,10 @@
 							{isActive(item.href) ? 'text-success' : 'text-text-muted'}"
 					>
 						<item.icon size={24} />
-						<span class="text-xs font-medium">{t(item.labelKey)}</span>
+						<span class="text-xs font-medium"
+							>{(m[item.labelKey as keyof typeof m] as unknown as () => string)?.() ??
+								item.labelKey}</span
+						>
 					</a>
 				{/each}
 			</div>

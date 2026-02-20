@@ -1,8 +1,9 @@
 <script lang="ts">
+	import * as m from '$lib/paraglide/messages.js';
+	import { getLocale } from '$lib/paraglide/runtime.js';
 	import type { PageData } from './$types';
 	import { deserialize } from '$app/forms';
-	import { i18n, t } from '$lib/i18n/index.svelte';
-	import MultipleChoiceQuestion from '$lib/components/lessons/MultipleChoiceQuestion.svelte';
+import MultipleChoiceQuestion from '$lib/components/lessons/MultipleChoiceQuestion.svelte';
 	import FillBlankQuestion from '$lib/components/lessons/FillBlankQuestion.svelte';
 	import TranslationQuestion from '$lib/components/lessons/TranslationQuestion.svelte';
 	import MatchingQuestion from '$lib/components/lessons/MatchingQuestion.svelte';
@@ -43,7 +44,7 @@
 	const currentQuestion = $derived(currentItem?.question);
 
 	function getConceptTitle(item: ReviewItem): string {
-		return i18n.locale === 'de' ? item.concept.titleDe : item.concept.titleEn;
+		return getLocale() === 'de' ? item.concept.titleDe : item.concept.titleEn;
 	}
 
 	function getLocalized(content: Record<string, unknown>, keyPrefix: string): string {
@@ -51,7 +52,7 @@
 		const de = content[`${keyPrefix}De`];
 		const fallback = content[keyPrefix];
 
-		if (i18n.locale === 'de' && typeof de === 'string') return de;
+		if (getLocale() === 'de' && typeof de === 'string') return de;
 		if (typeof en === 'string') return en;
 		return typeof fallback === 'string' ? fallback : '';
 	}
@@ -61,7 +62,7 @@
 		const enOptions = content.optionsEn;
 		const fallback = content.options;
 
-		if (i18n.locale === 'de' && Array.isArray(deOptions)) {
+		if (getLocale() === 'de' && Array.isArray(deOptions)) {
 			return deOptions.filter((value): value is string => typeof value === 'string');
 		}
 		if (Array.isArray(enOptions)) {
@@ -89,7 +90,7 @@
 							? pair.spanish
 							: '',
 				english:
-					i18n.locale === 'de' && typeof pair.german === 'string'
+					getLocale() === 'de' && typeof pair.german === 'string'
 						? pair.german
 						: typeof pair.english === 'string'
 							? pair.english
@@ -153,7 +154,7 @@
 </script>
 
 <svelte:head>
-	<title>{t('review.title')} - OpenLingo</title>
+	<title>{m["review.title"]()} - OpenLingo</title>
 </svelte:head>
 
 {#if reviews.length === 0}
@@ -175,9 +176,9 @@
 			</svg>
 		</div>
 		<h1 class="mt-4 text-2xl font-bold text-text-light">
-			{t('review.noDue')}
+			{m["review.noDue"]()}
 		</h1>
-		<a href="/skills" class="btn btn-primary mt-6">{t('learn.backToSkills')}</a>
+		<a href="/skills" class="btn btn-primary mt-6">{m["learn.backToSkills"]()}</a>
 	</div>
 {:else if reviewDone}
 	<div class="mx-auto max-w-2xl space-y-4 card text-center">
@@ -198,33 +199,33 @@
 			</svg>
 		</div>
 		<h1 class="text-2xl font-bold text-text-light">
-			{t('review.complete')}
+			{m["review.complete"]()}
 		</h1>
 		<p class="text-text-muted">
-			{t('review.reviewed', { count: reviews.length })}
+			{m["review.reviewed"]({ count: reviews.length })}
 		</p>
 		<p class="text-lg font-semibold text-success">
-			{t('review.accuracy', { percent: accuracy })}
+			{m["review.accuracy"]({ percent: accuracy })}
 		</p>
 		<p class="text-sm text-text-muted">
-			{t('review.nextReview', { time: t('common.tomorrow') })}
+			{m["review.nextReview"]({ time: m["common.tomorrow"]() })}
 		</p>
-		<a href="/skills" class="btn btn-primary">{t('learn.backToSkills')}</a>
+		<a href="/skills" class="btn btn-primary">{m["learn.backToSkills"]()}</a>
 	</div>
 {:else if currentItem && currentQuestion}
 	<div class="mx-auto max-w-2xl space-y-6">
 		<div class="flex items-center justify-between">
 			<a href="/skills" class="text-sm text-text-muted hover:text-text-light"
-				>← {t('learn.backToSkills')}</a
+				>← {m["learn.backToSkills"]()}</a
 			>
 			<p class="text-sm text-text-muted">
-				{t('review.reviewOf', { current: currentIndex + 1, total: reviews.length })}
+				{m["review.reviewOf"]({ current: currentIndex + 1, total: reviews.length })}
 			</p>
 		</div>
 
 		<div class="card">
 			<p class="text-xs tracking-wide text-text-muted uppercase">
-				{t('review.concept', { name: getConceptTitle(currentItem) })}
+				{m["review.concept"]({ name: getConceptTitle(currentItem) })}
 			</p>
 			<h2 class="mt-1 text-lg font-bold text-text-light">{getConceptTitle(currentItem)}</h2>
 		</div>
@@ -315,11 +316,11 @@
 		{:else}
 			<div class="card text-center">
 				<p class="text-text-muted">
-					{t('learn.unsupportedType')}
+					{m["learn.unsupportedType"]()}
 				</p>
 				<button
 					class="btn btn-primary mt-4"
-					onclick={() => submitAnswer(currentQuestion.correctAnswer)}>{t('learn.continue')}</button
+					onclick={() => submitAnswer(currentQuestion.correctAnswer)}>{m["learn.continue"]()}</button
 				>
 			</div>
 		{/if}
@@ -331,18 +332,18 @@
 					: 'border-error bg-error/10'}"
 			>
 				<p class="font-semibold {feedback.isCorrect ? 'text-success' : 'text-error'}">
-					{feedback.isCorrect ? t('learn.correct') : t('learn.incorrect')}
+					{feedback.isCorrect ? m["learn.correct"]() : m["learn.incorrect"]()}
 				</p>
 				{#if !feedback.isCorrect}
 					<p class="mt-1 text-sm text-text-muted">
-						{t('learn.correctAnswerWas', { answer: feedback.correctAnswer })}
+						{m["learn.correctAnswerWas"]({ answer: feedback.correctAnswer })}
 					</p>
 				{/if}
 				<p class="mt-1 text-sm text-text-muted">
-					{t('skills.mastery', { percent: Math.round(feedback.mastery * 100) })}
+					{m["skills.mastery"]({ percent: Math.round(feedback.mastery * 100) })}
 				</p>
 				<button class="btn btn-primary mt-4 w-full" onclick={nextReview}
-					>{t('learn.continue')}</button
+					>{m["learn.continue"]()}</button
 				>
 			</div>
 		{/if}

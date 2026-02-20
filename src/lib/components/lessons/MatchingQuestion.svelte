@@ -1,7 +1,7 @@
 <script lang="ts">
-	import { i18n, t } from '$lib/i18n/index.svelte';
-
-	interface Pair {
+	import * as m from '$lib/paraglide/messages.js';
+	import { getLocale } from '$lib/paraglide/runtime.js';
+interface Pair {
 		target: string;
 		english: string;
 		spanish?: string;
@@ -18,12 +18,12 @@
 	let { pairs, targetLanguageName, disabled, onAnswer, onWrongMatch }: Props = $props();
 
 	const resolvedTargetLanguageName = $derived(
-		targetLanguageName || t('lesson.languages.targetLanguage')
+		targetLanguageName || m["lesson.languages.targetLanguage"]()
 	);
 
 	// Show "German" or "English" based on locale
 	const targetLanguageLabel = $derived(
-		i18n.locale === 'de' ? t('lesson.languages.german') : t('lesson.languages.english')
+		getLocale() === 'de' ? m["lesson.languages.german"]() : m["lesson.languages.english"]()
 	);
 
 	let selectedTarget = $state<string | null>(null);
@@ -87,8 +87,8 @@
 </script>
 
 <div class="card">
-	<h2 class="mb-2 text-lg font-bold text-text-light">{t('lesson.types.matching')}</h2>
-	<p class="mb-6 text-text-muted">{t('lesson.tapToMatch')}</p>
+	<h2 class="mb-2 text-lg font-bold text-text-light">{m["lesson.types.matching"]()}</h2>
+	<p class="mb-6 text-text-muted">{m["lesson.tapToMatch"]()}</p>
 
 	<div class="grid grid-cols-2 gap-4">
 		<div class="space-y-2">
@@ -138,6 +138,6 @@
 	</div>
 
 	<div class="mt-4 text-center text-sm text-text-muted">
-		{t('lesson.matched')}: {matchedPairs.size / 2} / {pairs.length}
+		{m["lesson.matched"]()}: {matchedPairs.size / 2} / {pairs.length}
 	</div>
 </div>

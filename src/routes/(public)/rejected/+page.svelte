@@ -1,9 +1,9 @@
 <script lang="ts">
-	import { t } from '$lib/i18n/index.svelte';
+	import * as m from '$lib/paraglide/messages.js';
 </script>
 
 <svelte:head>
-	<title>{t('auth.rejected.title')} - OpenLingo</title>
+	<title>{m['auth.rejected.title']()} - OpenLingo</title>
 </svelte:head>
 
 <div class="flex min-h-[calc(100vh-200px)] items-center justify-center px-4 py-12">
@@ -27,22 +27,22 @@
 			</span>
 		</div>
 
-		<h1 class="mt-6 text-3xl font-bold text-text-light">{t('auth.rejected.title')}</h1>
+		<h1 class="mt-6 text-3xl font-bold text-text-light">{m['auth.rejected.title']()}</h1>
 
 		<p class="mt-4 text-text-muted">
-			{t('auth.rejected.message')}
+			{m['auth.rejected.message']()}
 		</p>
 
 		<div class="mt-8 rounded-xl bg-border-light/50 p-6">
-			<h2 class="font-semibold text-text-light">{t('auth.rejected.whatNow')}</h2>
+			<h2 class="font-semibold text-text-light">{m['auth.rejected.whatNow']()}</h2>
 			<ul class="mt-4 space-y-2 text-left text-sm text-text-muted">
 				<li class="flex items-start gap-2">
 					<span class="text-error">1.</span>
-					<span>{t('auth.rejected.step1')}</span>
+					<span>{m['auth.rejected.step1']()}</span>
 				</li>
 				<li class="flex items-start gap-2">
 					<span class="text-error">2.</span>
-					<span>{t('auth.rejected.step2')}</span>
+					<span>{m['auth.rejected.step2']()}</span>
 				</li>
 			</ul>
 		</div>
@@ -51,7 +51,7 @@
 			<a
 				href="/"
 				class="btn btn-primary btn-lg w-full transform transition-transform hover:scale-[1.02] active:scale-[0.98]"
-				>{t('auth.rejected.backHome')}</a
+				>{m['auth.rejected.backHome']()}</a
 			>
 		</div>
 	</div>

@@ -1,6 +1,7 @@
 <script lang="ts">
-	import { i18n, t } from '$lib/i18n/index.svelte';
-	import StrokeOrderVisualizer from './StrokeOrderVisualizer.svelte';
+	import * as m from '$lib/paraglide/messages.js';
+	import { getLocale } from '$lib/paraglide/runtime.js';
+import StrokeOrderVisualizer from './StrokeOrderVisualizer.svelte';
 	import GrammarDiagram from './GrammarDiagram.svelte';
 	import ConjugationTable from './ConjugationTable.svelte';
 	import { Lightbulb } from 'lucide-svelte';
@@ -32,12 +33,12 @@
 		onContinue
 	}: Props = $props();
 
-	const title = $derived(i18n.locale === 'de' ? titleDe : titleEn);
-	const explanation = $derived(i18n.locale === 'de' ? explanationDe : explanationEn);
-	const tips = $derived(i18n.locale === 'de' ? tipsDe : tipsEn);
+	const title = $derived(getLocale() === 'de' ? titleDe : titleEn);
+	const explanation = $derived(getLocale() === 'de' ? explanationDe : explanationEn);
+	const tips = $derived(getLocale() === 'de' ? tipsDe : tipsEn);
 
 	function getExampleTranslation(ex: { en: string; de: string }) {
-		return i18n.locale === 'de' ? ex.de : ex.en;
+		return getLocale() === 'de' ? ex.de : ex.en;
 	}
 </script>
 
@@ -108,7 +109,7 @@
 	{#if examples.length > 0}
 		<div class="space-y-4">
 			<h3 class="text-lg font-bold tracking-wider text-text-light uppercase">
-				{t('lesson.examples')}
+				{m["lesson.examples"]()}
 			</h3>
 			<div class="grid gap-4 sm:grid-cols-2">
 				{#each examples as example}
@@ -126,7 +127,7 @@
 	{#if tips && tips.length > 0}
 		<div class="space-y-4">
 			<h3 class="text-lg font-bold tracking-wider text-text-light uppercase">
-				{t('lesson.tips')}
+				{m["lesson.tips"]()}
 			</h3>
 			{#each tips as tip}
 				<div class="bg-accent/10 flex gap-4 rounded-xl p-4 text-text-dark">
@@ -144,7 +145,7 @@
 	<div class="bg-surface-100 fixed right-0 bottom-0 left-0 border-t border-border-light p-4">
 		<div class="mx-auto max-w-2xl">
 			<button onclick={onContinue} class="btn btn-primary btn-lg w-full shadow-lg">
-				{t('lesson.continue')}
+				{m["lesson.continue"]()}
 			</button>
 		</div>
 	</div>

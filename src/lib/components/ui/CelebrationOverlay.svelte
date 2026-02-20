@@ -1,7 +1,7 @@
 <script lang="ts">
+	import * as m from '$lib/paraglide/messages.js';
 	import { onMount } from 'svelte';
-	import { t } from '$lib/i18n/index.svelte';
-	import {
+import {
 		getActiveCelebration,
 		dismissCelebration,
 		type Celebration
@@ -153,7 +153,7 @@
 			<!-- Text -->
 			<h2 class="celebration-title">
 				{#if celebration.type === 'achievement'}
-					{t('celebration.achievementUnlocked')}
+					{m["celebration.achievementUnlocked"]()}
 				{:else}
 					{celebration.title}
 				{/if}
@@ -169,7 +169,7 @@
 
 			<!-- Dismiss Button -->
 			<button class="btn btn-success btn-lg mt-6 w-full" onclick={handleDismiss}>
-				{t('celebration.awesome')}
+				{m["celebration.awesome"]()}
 			</button>
 		</div>
 	</div>

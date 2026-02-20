@@ -1,6 +1,6 @@
 <script lang="ts">
 	import type { PageData, ActionData } from './$types';
-	import { t } from '$lib/i18n/index.svelte';
+	import * as m from '$lib/paraglide/messages.js';
 	import { enhance } from '$app/forms';
 	import QuestionModal from '$lib/components/admin/questions/QuestionModal.svelte';
 	import type { QuestionType } from '$lib/server/db/schema';
@@ -61,11 +61,11 @@
 <div class="flex min-h-[60vh] flex-col items-center justify-center gap-4 text-center md:hidden">
 	<Monitor size={64} class="text-text-muted" />
 	<div>
-		<h1 class="text-xl font-bold text-text-light">{t('admin.desktopRecommended')}</h1>
-		<p class="mt-2 text-text-muted">{t('admin.desktopRecommendedDesc')}</p>
+		<h1 class="text-xl font-bold text-text-light">{m["admin.desktopRecommended"]()}</h1>
+		<p class="mt-2 text-text-muted">{m["admin.desktopRecommendedDesc"]()}</p>
 	</div>
 	<a href="/admin" class="btn btn-primary btn-md mt-4">
-		{t('common.back')}
+		{m["common.back"]()}
 	</a>
 </div>
 
@@ -74,9 +74,9 @@
 	<div class="flex items-center justify-between">
 		<div class="flex items-center gap-4">
 			<a href="/admin/lessons" class="text-text-muted hover:text-text-light">
-				&larr; {t('common.back')}
+				&larr; {m["common.back"]()}
 			</a>
-			<h1 class="text-2xl font-bold text-text-light">{t('admin.lessons.editLesson')}</h1>
+			<h1 class="text-2xl font-bold text-text-light">{m["admin.lessons.editLesson"]()}</h1>
 		</div>
 	</div>
 
@@ -85,7 +85,7 @@
 	{/if}
 
 	{#if form?.success}
-		<div class="rounded-xl bg-success/10 p-4 text-success">{t('common.success')}</div>
+		<div class="rounded-xl bg-success/10 p-4 text-success">{m["common.success"]()}</div>
 	{/if}
 
 	<!-- Lesson Edit Form -->
@@ -94,7 +94,7 @@
 		<div class="grid gap-4 md:grid-cols-2">
 			<div>
 				<label for="title" class="block text-sm font-medium text-text-light">
-					{t('admin.lessons.form.title')} (EN) *
+					{m["admin.lessons.form.title"]()} (EN) *
 				</label>
 				<input
 					type="text"
@@ -103,12 +103,12 @@
 					value={getTranslation(data.lesson.title, 'en')}
 					required
 					class="input mt-1"
-					placeholder={t('admin.lessons.form.placeholderTitleEn')}
+					placeholder={m["admin.lessons.form.placeholderTitleEn"]()}
 				/>
 			</div>
 			<div>
 				<label for="titleDe" class="block text-sm font-medium text-text-light">
-					{t('admin.lessons.form.title')} (DE)
+					{m["admin.lessons.form.title"]()} (DE)
 				</label>
 				<input
 					type="text"
@@ -116,7 +116,7 @@
 					name="titleDe"
 					value={getTranslation(data.lesson.title, 'de')}
 					class="input mt-1"
-					placeholder={t('admin.lessons.form.placeholderTitleDe')}
+					placeholder={m["admin.lessons.form.placeholderTitleDe"]()}
 				/>
 			</div>
 		</div>
@@ -125,27 +125,27 @@
 		<div class="grid gap-4 md:grid-cols-2">
 			<div>
 				<label for="description" class="block text-sm font-medium text-text-light">
-					{t('admin.lessons.form.description')} (EN)
+					{m["admin.lessons.form.description"]()} (EN)
 				</label>
 				<textarea
 					id="description"
 					name="description"
 					rows="2"
 					class="input mt-1"
-					placeholder={t('admin.lessons.form.placeholderDescEn')}
+					placeholder={m["admin.lessons.form.placeholderDescEn"]()}
 					>{getTranslation(data.lesson.description, 'en')}</textarea
 				>
 			</div>
 			<div>
 				<label for="descriptionDe" class="block text-sm font-medium text-text-light">
-					{t('admin.lessons.form.description')} (DE)
+					{m["admin.lessons.form.description"]()} (DE)
 				</label>
 				<textarea
 					id="descriptionDe"
 					name="descriptionDe"
 					rows="2"
 					class="input mt-1"
-					placeholder={t('admin.lessons.form.placeholderDescDe')}
+					placeholder={m["admin.lessons.form.placeholderDescDe"]()}
 					>{getTranslation(data.lesson.description, 'de')}</textarea
 				>
 			</div>
@@ -154,7 +154,7 @@
 		<div class="grid gap-4 md:grid-cols-2">
 			<div>
 				<label for="unitId" class="block text-sm font-medium text-text-light">
-					{t('admin.lessons.form.unit')} *
+					{m["admin.lessons.form.unit"]()} *
 				</label>
 				<select id="unitId" name="unitId" required class="input mt-1">
 					{#each data.units as unit}
@@ -167,7 +167,7 @@
 
 			<div>
 				<label for="xpReward" class="block text-sm font-medium text-text-light">
-					{t('admin.lessons.form.xpReward')}
+					{m["admin.lessons.form.xpReward"]()}
 				</label>
 				<input
 					type="number"
@@ -181,7 +181,7 @@
 
 			<div>
 				<label for="examPassThreshold" class="block text-sm font-medium text-text-light">
-					{t('admin.lessons.examPassThreshold')}
+					{m["admin.lessons.examPassThreshold"]()}
 				</label>
 				<input
 					type="number"
@@ -204,7 +204,7 @@
 					checked={data.lesson.isPublished}
 					class="h-4 w-4"
 				/>
-				<span class="text-sm text-text-light">{t('admin.lessons.form.isPublished')}</span>
+				<span class="text-sm text-text-light">{m["admin.lessons.form.isPublished"]()}</span>
 			</label>
 
 			<label class="flex items-center gap-2">
@@ -215,7 +215,7 @@
 					checked={data.lesson.isExam}
 					class="h-4 w-4"
 				/>
-				<span class="text-sm text-text-light">{t('admin.lessons.isExam')}</span>
+				<span class="text-sm text-text-light">{m["admin.lessons.isExam"]()}</span>
 			</label>
 		</div>
 
@@ -226,11 +226,11 @@
 					onclick={() => (deleteConfirm = true)}
 					class="btn btn-ghost btn-md text-error"
 				>
-					{t('admin.lessons.deleteLesson')}
+					{m["admin.lessons.deleteLesson"]()}
 				</button>
 			</div>
 			<button type="submit" class="btn btn-success btn-md">
-				{t('common.saveChanges')}
+				{m["common.saveChanges"]()}
 			</button>
 		</div>
 	</form>
@@ -240,14 +240,14 @@
 		<div class="fixed inset-0 z-50 flex items-center justify-center bg-black/50 p-4">
 			<div class="w-full max-w-sm card text-center">
 				<p class="mb-4 text-lg font-medium text-text-light">
-					{t('admin.lessons.deleteLessonConfirm')}
+					{m["admin.lessons.deleteLessonConfirm"]()}
 				</p>
 				<div class="flex justify-center gap-4">
 					<button onclick={() => (deleteConfirm = false)} class="btn btn-ghost btn-md">
-						{t('common.cancel')}
+						{m["common.cancel"]()}
 					</button>
 					<form method="POST" action="?/delete" use:enhance>
-						<button type="submit" class="btn btn-error btn-md">{t('common.confirmDelete')}</button>
+						<button type="submit" class="btn btn-error btn-md">{m["common.confirmDelete"]()}</button>
 					</form>
 				</div>
 			</div>
@@ -258,15 +258,15 @@
 	<div class="card">
 		<div class="mb-4 flex items-center justify-between">
 			<h2 class="text-xl font-bold text-text-light">
-				{t('admin.lessons.questionsCount', { count: data.questions.length })}
+				{m["admin.lessons.questionsCount"]({ count: data.questions.length })}
 			</h2>
 			<button onclick={openAddModal} class="btn btn-success btn-sm">
-				{t('admin.lessons.addQuestion')}
+				{m["admin.lessons.addQuestion"]()}
 			</button>
 		</div>
 
 		{#if data.questions.length === 0}
-			<p class="py-8 text-center text-text-muted">{t('admin.lessons.noQuestions')}</p>
+			<p class="py-8 text-center text-text-muted">{m["admin.lessons.noQuestions"]()}</p>
 		{:else}
 			<div class="space-y-3">
 				{#each data.questions as question, i}
@@ -297,10 +297,10 @@
 										(question.content as Record<string, unknown>).text ||
 										(question.content as Record<string, unknown>).textToSpeak ||
 										(question.content as Record<string, unknown>).textToHear ||
-										t('admin.lessons.matchingPairsFallback')}
+										m["admin.lessons.matchingPairsFallback"]()}
 								</p>
 								<p class="mt-1 text-sm text-text-muted">
-									{t('admin.lessons.answer')}
+									{m["admin.lessons.answer"]()}
 									<span class="text-success">{question.correctAnswer}</span>
 								</p>
 							</div>
@@ -309,27 +309,27 @@
 									onclick={() => openEditModal(question as Question)}
 									class="text-sm text-primary hover:underline"
 								>
-									{t('common.edit')}
+									{m["common.edit"]()}
 								</button>
 								{#if deleteQuestionId === question.id}
 									<form method="POST" action="?/deleteQuestion" use:enhance class="inline">
 										<input type="hidden" name="questionId" value={question.id} />
 										<button type="submit" class="text-sm text-error hover:underline"
-											>{t('common.confirm')}</button
+											>{m["common.confirm"]()}</button
 										>
 									</form>
 									<button
 										onclick={() => (deleteQuestionId = null)}
 										class="text-sm text-text-muted hover:underline"
 									>
-										{t('common.cancel')}
+										{m["common.cancel"]()}
 									</button>
 								{:else}
 									<button
 										onclick={() => (deleteQuestionId = question.id)}
 										class="text-sm text-error hover:underline"
 									>
-										{t('common.delete')}
+										{m["common.delete"]()}
 									</button>
 								{/if}
 							</div>

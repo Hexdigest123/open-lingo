@@ -1,6 +1,6 @@
 <script lang="ts">
+	import * as m from '$lib/paraglide/messages.js';
 	import type { PageData } from './$types';
-	import { t } from '$lib/i18n/index.svelte';
 	import { goto } from '$app/navigation';
 	import { page } from '$app/stores';
 	import { Flame, Medal } from 'lucide-svelte';
@@ -15,6 +15,13 @@
 		goto(url.toString(), { replaceState: true });
 	}
 
+	const tabLabels: Record<string, () => string> = {
+		daily: () => m['leaderboard.tabs.daily'](),
+		weekly: () => m['leaderboard.tabs.weekly'](),
+		monthly: () => m['leaderboard.tabs.monthly'](),
+		all_time: () => m['leaderboard.tabs.allTime']()
+	};
+
 	function getRankClass(rank: number): string {
 		if (rank === 1) return 'bg-yellow/20 border-yellow';
 		if (rank === 2) return 'bg-gray-100 border-gray-300';
@@ -24,14 +31,14 @@
 </script>
 
 <svelte:head>
-	<title>{t('leaderboard.title')} - OpenLingo</title>
+	<title>{m['leaderboard.title']()} - OpenLingo</title>
 </svelte:head>
 
 <div class="space-y-6">
 	<!-- Header -->
 	<div class="text-center">
-		<h1 class="text-3xl font-bold text-text-light">{t('leaderboard.title')}</h1>
-		<p class="mt-2 text-text-muted">{t('leaderboard.subtitle')}</p>
+		<h1 class="text-3xl font-bold text-text-light">{m['leaderboard.title']()}</h1>
+		<p class="mt-2 text-text-muted">{m['leaderboard.subtitle']()}</p>
 	</div>
 
 	<!-- Timeframe Tabs -->
@@ -43,7 +50,7 @@
 					class="rounded-lg px-4 py-2 text-sm font-medium transition-colors
 						{data.timeframe === tf ? 'bg-white text-primary shadow' : 'text-text-muted hover:text-text-light'}"
 				>
-					{t(`leaderboard.tabs.${tf === 'all_time' ? 'allTime' : tf}`)}
+					{tabLabels[tf]?.() ?? tf}
 				</button>
 			{/each}
 		</div>
@@ -52,7 +59,7 @@
 	<!-- Leaderboard Table -->
 	{#if data.leaderboard.length === 0}
 		<div class="card text-center">
-			<p class="text-text-muted">{t('leaderboard.noData')}</p>
+			<p class="text-text-muted">{m['leaderboard.noData']()}</p>
 		</div>
 	{:else}
 		<!-- Mobile View (< sm: 640px) -->
@@ -83,7 +90,7 @@
 						<p class="truncate font-medium text-text-light">
 							{entry.displayName}
 							{#if entry.isCurrentUser}
-								<span class="text-xs text-primary">({t('leaderboard.you')})</span>
+								<span class="text-xs text-primary">({m['leaderboard.you']()})</span>
 							{/if}
 						</p>
 						<div class="flex items-center gap-3 text-sm">
@@ -103,18 +110,18 @@
 				<thead class="bg-bg-light-secondary">
 					<tr>
 						<th class="px-4 py-3 text-left text-sm font-medium text-text-muted"
-							>{t('leaderboard.rank')}</th
+							>{m['leaderboard.rank']()}</th
 						>
 						<th class="px-4 py-3 text-left text-sm font-medium text-text-muted"
-							>{t('leaderboard.player')}</th
+							>{m['leaderboard.player']()}</th
 						>
 						<th class="px-4 py-3 text-right text-sm font-medium text-text-muted"
-							>{t('leaderboard.xp')}</th
+							>{m['leaderboard.xp']()}</th
 						>
 						<th
 							class="hidden px-4 py-3 text-right text-sm font-medium text-text-muted sm:table-cell"
 						>
-							{t('gamification.streak')}
+							{m['gamification.streak']()}
 						</th>
 					</tr>
 				</thead>
@@ -150,7 +157,7 @@
 									>
 										{entry.displayName}
 										{#if entry.isCurrentUser}
-											<span class="ml-2 text-xs text-primary">({t('leaderboard.you')})</span>
+											<span class="ml-2 text-xs text-primary">({m['leaderboard.you']()})</span>
 										{/if}
 									</span>
 								</div>
@@ -183,7 +190,7 @@
 						</div>
 						<span class="font-medium text-primary">
 							{data.currentUser?.displayName || 'You'}
-							<span class="ml-2 text-xs">({t('leaderboard.you')})</span>
+							<span class="ml-2 text-xs">({m['leaderboard.you']()})</span>
 						</span>
 					</div>
 					<span class="font-bold text-yellow-dark">{data.currentUser?.xp || 0} XP</span>

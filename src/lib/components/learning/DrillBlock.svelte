@@ -1,12 +1,16 @@
 <script lang="ts">
-	import { i18n, t } from '$lib/i18n/index.svelte';
-	import MultipleChoiceQuestion from '../lessons/MultipleChoiceQuestion.svelte';
+	import * as m from '$lib/paraglide/messages.js';
+	import { getLocale } from '$lib/paraglide/runtime.js';
+import MultipleChoiceQuestion from '../lessons/MultipleChoiceQuestion.svelte';
 	import FillBlankQuestion from '../lessons/FillBlankQuestion.svelte';
 	import TranslationQuestion from '../lessons/TranslationQuestion.svelte';
 	import MatchingQuestion from '../lessons/MatchingQuestion.svelte';
 	import WordOrderQuestion from '../lessons/WordOrderQuestion.svelte';
 	import SpeakingQuestion from '../lessons/SpeakingQuestion.svelte';
 	import ListeningQuestion from '../lessons/ListeningQuestion.svelte';
+	import CharacterRecognitionQuestion from '../lessons/CharacterRecognitionQuestion.svelte';
+	import CharacterWritingQuestion from '../lessons/CharacterWritingQuestion.svelte';
+	import ScriptTransliterationQuestion from '../lessons/ScriptTransliterationQuestion.svelte';
 
 	interface Question {
 		id: number;
@@ -55,9 +59,9 @@
 
 		if (isCorrect) {
 			correctCount++;
-			feedbackMessage = t('lesson.correct');
+			feedbackMessage = m["lesson.correct"]();
 		} else {
-			feedbackMessage = t('lesson.incorrect');
+			feedbackMessage = m["lesson.incorrect"]();
 		}
 
 		showFeedback = true;
@@ -79,7 +83,7 @@
 	function getLocalized(content: Record<string, unknown>, keyPrefix: string) {
 		const en = content[`${keyPrefix}En`] as string;
 		const de = content[`${keyPrefix}De`] as string;
-		return i18n.locale === 'de' && de ? de : en;
+		return getLocale() === 'de' && de ? de : en;
 	}
 </script>
 
@@ -87,7 +91,7 @@
 	<!-- Progress Bar -->
 	<div class="mb-8">
 		<div class="mb-2 flex justify-between text-sm font-medium text-text-light">
-			<span>{t('lesson.progress')}</span>
+			<span>{m["lesson.progress"]()}</span>
 			<span>{currentIndex + 1} / {questions.length}</span>
 		</div>
 		<div class="bg-surface-200 h-3 w-full overflow-hidden rounded-full">
@@ -158,17 +162,41 @@
 					{hasApiKey}
 					onAnswer={handleAnswer}
 				/>
+			{:else if currentQuestion.type === 'character_recognition'}
+				<CharacterRecognitionQuestion
+					character={currentQuestion.content.character as string}
+					characterType={currentQuestion.content.characterType as string}
+					options={currentQuestion.content.options as string[]}
+					disabled={showFeedback || disabled}
+					onAnswer={handleAnswer}
+				/>
+			{:else if currentQuestion.type === 'character_writing'}
+				<CharacterWritingQuestion
+					reading={currentQuestion.content.reading as string}
+					characterType={currentQuestion.content.characterType as string}
+					hintEn={currentQuestion.content.hintEn as string}
+					hintDe={currentQuestion.content.hintDe as string}
+					disabled={showFeedback || disabled}
+					onAnswer={handleAnswer}
+				/>
+			{:else if currentQuestion.type === 'script_transliteration'}
+				<ScriptTransliterationQuestion
+					sourceText={currentQuestion.content.sourceText as string}
+					sourceScript={currentQuestion.content.sourceScript as string}
+					targetScript={currentQuestion.content.targetScript as string}
+					disabled={showFeedback || disabled}
+					onAnswer={handleAnswer}
+				/>
 			{:else}
-				<!-- Fallback for new/unsupported types -->
 				<div class="rounded-xl border-2 border-dashed border-text-muted/30 p-8 text-center">
 					<p class="text-lg font-medium text-text-light">
-						{t('lesson.unsupportedType')}: {currentQuestion.type}
+						{m["lesson.unsupportedType"]()}: {currentQuestion.type}
 					</p>
 					<button
 						onclick={() => handleAnswer(currentQuestion.correctAnswer)}
 						class="btn btn-secondary mt-4"
 					>
-						{t('lesson.skip')}
+						{m["lesson.skip"]()}
 					</button>
 				</div>
 			{/if}
@@ -202,7 +230,7 @@
 				{#if !isCorrect}
 					<div class="mb-6">
 						<p class="text-sm font-medium uppercase opacity-70">
-							{t('lesson.correctAnswer')}:
+							{m["lesson.correctAnswer"]()}:
 						</p>
 						<p class="text-lg font-medium">{currentQuestion.correctAnswer}</p>
 					</div>
@@ -213,7 +241,7 @@
 					class="btn btn-lg w-full shadow-md
 					{isCorrect ? 'btn-success' : 'btn-error'}"
 				>
-					{t('lesson.continue')}
+					{m["lesson.continue"]()}
 				</button>
 			</div>
 		</div>

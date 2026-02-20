@@ -1,7 +1,6 @@
 <script lang="ts">
-	import { i18n } from '$lib/i18n/index.svelte';
-
-	interface Props {
+	import { getLocale } from '$lib/paraglide/runtime.js';
+interface Props {
 		pattern: string;
 		exampleTarget: string;
 		exampleEn: string;
@@ -11,7 +10,7 @@
 
 	let { pattern, exampleTarget, exampleEn, exampleDe, parts }: Props = $props();
 
-	const translation = $derived(i18n.locale === 'de' ? exampleDe : exampleEn);
+	const translation = $derived(getLocale() === 'de' ? exampleDe : exampleEn);
 
 	// Default colors if parts not provided
 	const defaultColors = [

@@ -1,7 +1,7 @@
 <script lang="ts">
+	import * as m from '$lib/paraglide/messages.js';
 	import type { PageData, ActionData } from './$types';
-	import { t } from '$lib/i18n/index.svelte';
-	import { enhance } from '$app/forms';
+import { enhance } from '$app/forms';
 	import { Eye, EyeOff } from 'lucide-svelte';
 
 	let { data, form }: { data: PageData; form: ActionData } = $props();
@@ -11,17 +11,17 @@
 </script>
 
 <svelte:head>
-	<title>{t('settings.apiKey.title')} - OpenLingo</title>
+	<title>{m["settings.apiKey.title"]()} - OpenLingo</title>
 </svelte:head>
 
 <div class="mx-auto max-w-2xl space-y-6">
 	<div>
-		<a href="/settings" class="text-primary hover:underline">&larr; {t('common.back')}</a>
+		<a href="/settings" class="text-primary hover:underline">&larr; {m["common.back"]()}</a>
 	</div>
 
 	<div class="card">
-		<h1 class="text-2xl font-bold text-text-light">{t('settings.apiKey.title')}</h1>
-		<p class="mt-2 text-text-muted">{t('settings.apiKey.description')}</p>
+		<h1 class="text-2xl font-bold text-text-light">{m["settings.apiKey.title"]()}</h1>
+		<p class="mt-2 text-text-muted">{m["settings.apiKey.description"]()}</p>
 
 		<!-- Status -->
 		<div class="mt-4 flex items-center gap-2">
@@ -30,12 +30,12 @@
 					class="flex items-center gap-2 rounded-full bg-success/10 px-3 py-1 text-sm text-success"
 				>
 					<span>✓</span>
-					{t('settings.apiKey.status.configured')}
+					{m["settings.apiKey.status.configured"]()}
 				</span>
 			{:else}
 				<span class="flex items-center gap-2 rounded-full bg-error/10 px-3 py-1 text-sm text-error">
 					<span>✗</span>
-					{t('settings.apiKey.status.notConfigured')}
+					{m["settings.apiKey.status.notConfigured"]()}
 				</span>
 			{/if}
 		</div>
@@ -56,7 +56,7 @@
 		<form method="POST" action="?/save" use:enhance class="mt-6 space-y-4">
 			<div>
 				<label for="apiKey" class="block text-sm font-medium text-text-light">
-					{t('settings.apiKey.title')}
+					{m["settings.apiKey.title"]()}
 				</label>
 				<div class="relative mt-1">
 					<input
@@ -64,7 +64,7 @@
 						id="apiKey"
 						name="apiKey"
 						bind:value={apiKey}
-						placeholder={t('settings.apiKey.placeholder')}
+						placeholder={m["settings.apiKey.placeholder"]()}
 						class="input pr-12"
 					/>
 					<button
@@ -79,7 +79,7 @@
 
 			<div class="flex gap-4">
 				<button type="submit" class="btn btn-success btn-md" disabled={!apiKey}>
-					{t('settings.apiKey.save')}
+					{m["settings.apiKey.save"]()}
 				</button>
 			</div>
 		</form>
@@ -93,7 +93,7 @@
 				class="mt-4 border-t border-border-light pt-4"
 			>
 				<button type="submit" class="btn btn-error btn-sm">
-					{t('settings.apiKey.remove')}
+					{m["settings.apiKey.remove"]()}
 				</button>
 			</form>
 		{/if}
@@ -106,7 +106,7 @@
 				rel="noopener noreferrer"
 				class="text-primary hover:underline"
 			>
-				{t('settings.apiKey.getKey')} →
+				{m["settings.apiKey.getKey"]()} →
 			</a>
 		</div>
 	</div>

@@ -1,7 +1,8 @@
 <script lang="ts">
+	import * as m from '$lib/paraglide/messages.js';
+	import { getLocale } from '$lib/paraglide/runtime.js';
 	import type { PageData } from './$types';
-	import { i18n, t } from '$lib/i18n/index.svelte';
-	import { goto, invalidateAll } from '$app/navigation';
+import { goto, invalidateAll } from '$app/navigation';
 	import ConfirmModal from '$lib/components/ConfirmModal.svelte';
 	import { Key, MessageCircle, Mic } from 'lucide-svelte';
 
@@ -19,7 +20,7 @@
 			const response = await fetch('/api/chat/sessions', {
 				method: 'POST',
 				headers: { 'Content-Type': 'application/json' },
-				body: JSON.stringify({ mode: 'text', locale: i18n.locale })
+				body: JSON.stringify({ mode: 'text', locale: getLocale() })
 			});
 
 			const result = await response.json();
@@ -77,24 +78,24 @@
 </script>
 
 <svelte:head>
-	<title>{t('chat.title')} - OpenLingo</title>
+	<title>{m["chat.title"]()} - OpenLingo</title>
 </svelte:head>
 
 <div class="mx-auto max-w-2xl">
 	<div class="mb-6 flex items-center justify-between">
 		<div>
-			<h1 class="text-2xl font-bold text-text-light">{t('chat.title')}</h1>
-			<p class="text-text-muted">{t('chat.subtitle')}</p>
+			<h1 class="text-2xl font-bold text-text-light">{m["chat.title"]()}</h1>
+			<p class="text-text-muted">{m["chat.subtitle"]()}</p>
 		</div>
 	</div>
 
 	{#if !data.hasApiKey}
 		<div class="card text-center">
 			<div class="mb-4 flex justify-center"><Key size={32} class="text-primary" /></div>
-			<h2 class="mb-2 text-xl font-bold text-text-light">{t('chat.apiKeyRequired')}</h2>
-			<p class="mb-4 text-text-muted">{t('chat.apiKeyRequiredDesc')}</p>
+			<h2 class="mb-2 text-xl font-bold text-text-light">{m["chat.apiKeyRequired"]()}</h2>
+			<p class="mb-4 text-text-muted">{m["chat.apiKeyRequiredDesc"]()}</p>
 			<a href="/settings/api-key" class="btn btn-primary btn-md">
-				{t('settings.apiKey.title')}
+				{m["settings.apiKey.title"]()}
 			</a>
 		</div>
 	{:else}
@@ -108,7 +109,7 @@
 					class="mr-2 inline-block h-4 w-4 animate-spin rounded-full border-2 border-white border-t-transparent"
 				></span>
 			{/if}
-			{t('chat.newSession')}
+			{m["chat.newSession"]()}
 		</button>
 
 		{#if data.sessions.length === 0}
@@ -116,7 +117,7 @@
 				<div class="mb-4 flex justify-center">
 					<MessageCircle size={32} class="text-text-muted" />
 				</div>
-				<p class="text-text-muted">{t('chat.noSessions')}</p>
+				<p class="text-text-muted">{m["chat.noSessions"]()}</p>
 			</div>
 		{:else}
 			<div class="space-y-3">
@@ -128,7 +129,7 @@
 						<div class="flex items-center justify-between">
 							<div class="min-w-0 flex-1">
 								<h3 class="truncate font-medium text-text-light">
-									{session.title || t('chat.newSession')}
+									{session.title || m["chat.newSession"]()}
 								</h3>
 								<p class="text-sm text-text-muted">{formatDate(session.updatedAt)}</p>
 							</div>
@@ -145,7 +146,7 @@
 									session.id
 										? 'opacity-50'
 										: ''}"
-									title={t('common.delete')}
+									title={m["common.delete"]()}
 								>
 									{#if deletingSessionId === session.id}
 										<span
@@ -179,9 +180,9 @@
 
 <ConfirmModal
 	open={pendingDeleteSessionId !== null}
-	title={t('chat.deleteTitle')}
-	message={t('chat.confirmDelete')}
-	confirmText={t('common.delete')}
+	title={m["chat.deleteTitle"]()}
+	message={m["chat.confirmDelete"]()}
+	confirmText={m["common.delete"]()}
 	onConfirm={confirmDeleteSession}
 	onCancel={cancelDeleteSession}
 />

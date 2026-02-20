@@ -1,6 +1,6 @@
 <script lang="ts">
 	import type { PageData, ActionData } from './$types';
-	import { t } from '$lib/i18n/index.svelte';
+	import * as m from '$lib/paraglide/messages.js';
 	import { enhance } from '$app/forms';
 	import { goto } from '$app/navigation';
 	import { Monitor, Zap, AlertTriangle, Loader2, Lightbulb } from 'lucide-svelte';
@@ -38,18 +38,18 @@
 </script>
 
 <svelte:head>
-	<title>{t('admin.lessons.aiGenerate')} - OpenLingo</title>
+	<title>{m["admin.lessons.aiGenerate"]()} - OpenLingo</title>
 </svelte:head>
 
 <!-- Mobile: Show only desktop recommendation -->
 <div class="flex min-h-[60vh] flex-col items-center justify-center gap-4 text-center md:hidden">
 	<Monitor size={64} class="text-text-muted" />
 	<div>
-		<h1 class="text-xl font-bold text-text-light">{t('admin.desktopRecommended')}</h1>
-		<p class="mt-2 text-text-muted">{t('admin.desktopRecommendedDesc')}</p>
+		<h1 class="text-xl font-bold text-text-light">{m["admin.desktopRecommended"]()}</h1>
+		<p class="mt-2 text-text-muted">{m["admin.desktopRecommendedDesc"]()}</p>
 	</div>
 	<a href="/admin" class="btn btn-primary btn-md mt-4">
-		{t('common.back')}
+		{m["common.back"]()}
 	</a>
 </div>
 
@@ -57,9 +57,9 @@
 <div class="mx-auto hidden max-w-2xl space-y-6 md:block">
 	<div class="flex items-center gap-4">
 		<a href="/admin/lessons" class="text-text-muted hover:text-text-light">
-			&larr; {t('common.back')}
+			&larr; {m["common.back"]()}
 		</a>
-		<h1 class="text-2xl font-bold text-text-light">{t('admin.lessons.aiGenerate')}</h1>
+		<h1 class="text-2xl font-bold text-text-light">{m["admin.lessons.aiGenerate"]()}</h1>
 	</div>
 
 	{#if !data.hasApiKey}
@@ -67,10 +67,10 @@
 			<div class="flex items-start gap-4">
 				<AlertTriangle size={32} class="text-yellow-dark" />
 				<div>
-					<h3 class="font-bold text-text-light">{t('admin.lessons.apiKeyRequired')}</h3>
-					<p class="mt-1 text-text-muted">{t('admin.lessons.apiKeyRequiredDesc')}</p>
+					<h3 class="font-bold text-text-light">{m["admin.lessons.apiKeyRequired"]()}</h3>
+					<p class="mt-1 text-text-muted">{m["admin.lessons.apiKeyRequiredDesc"]()}</p>
 					<a href="/settings/api-key" class="btn btn-primary btn-sm mt-4">
-						{t('admin.lessons.configureApiKey')}
+						{m["admin.lessons.configureApiKey"]()}
 					</a>
 				</div>
 			</div>
@@ -85,8 +85,8 @@
 		{/if}
 
 		<div class="card">
-			<h2 class="text-lg font-bold text-text-light">{t('admin.lessons.generateNew')}</h2>
-			<p class="mt-1 text-sm text-text-muted">{t('admin.lessons.generateDesc')}</p>
+			<h2 class="text-lg font-bold text-text-light">{m["admin.lessons.generateNew"]()}</h2>
+			<p class="mt-1 text-sm text-text-muted">{m["admin.lessons.generateDesc"]()}</p>
 
 			<form
 				method="POST"
@@ -103,7 +103,7 @@
 				<!-- Unit Selection -->
 				<div>
 					<label for="unitId" class="block text-sm font-medium text-text-light">
-						{t('admin.lessons.form.unit')} *
+						{m["admin.lessons.form.unit"]()} *
 					</label>
 					<select
 						id="unitId"
@@ -113,7 +113,7 @@
 						class="input mt-1"
 						disabled={isGenerating}
 					>
-						<option value="">{t('admin.lessons.selectUnit')}</option>
+						<option value="">{m["admin.lessons.selectUnit"]()}</option>
 						{#each data.units as unit}
 							<option value={unit.id}>[{unit.levelCode}] {getTranslation(unit.title, 'en')}</option>
 						{/each}
@@ -123,7 +123,7 @@
 				<!-- Topic -->
 				<div>
 					<label for="topic" class="block text-sm font-medium text-text-light">
-						{t('admin.lessons.topic')} *
+						{m["admin.lessons.topic"]()} *
 					</label>
 					<input
 						type="text"
@@ -131,18 +131,18 @@
 						name="topic"
 						required
 						bind:value={topic}
-						placeholder={t('admin.lessons.topicPlaceholder')}
+						placeholder={m["admin.lessons.topicPlaceholder"]()}
 						class="input mt-1"
 						disabled={isGenerating}
 					/>
-					<p class="mt-1 text-xs text-text-muted">{t('admin.lessons.topicHint')}</p>
+					<p class="mt-1 text-xs text-text-muted">{m["admin.lessons.topicHint"]()}</p>
 				</div>
 
 				<!-- Question Count & Difficulty -->
 				<div class="grid grid-cols-2 gap-4">
 					<div>
 						<label for="questionCount" class="block text-sm font-medium text-text-light">
-							{t('admin.lessons.questionCount')}
+							{m["admin.lessons.questionCount"]()}
 						</label>
 						<select
 							id="questionCount"
@@ -151,15 +151,15 @@
 							class="input mt-1"
 							disabled={isGenerating}
 						>
-							<option value={10}>10 {t('admin.lessons.questions')}</option>
-							<option value={20}>20 {t('admin.lessons.questions')}</option>
-							<option value={30}>30 {t('admin.lessons.questions')}</option>
-							<option value={50}>50 {t('admin.lessons.questions')}</option>
+							<option value={10}>10 {m["admin.lessons.questions"]()}</option>
+							<option value={20}>20 {m["admin.lessons.questions"]()}</option>
+							<option value={30}>30 {m["admin.lessons.questions"]()}</option>
+							<option value={50}>50 {m["admin.lessons.questions"]()}</option>
 						</select>
 					</div>
 					<div>
 						<label for="difficulty" class="block text-sm font-medium text-text-light">
-							{t('admin.lessons.difficulty')}
+							{m["admin.lessons.difficulty"]()}
 						</label>
 						<select
 							id="difficulty"
@@ -168,23 +168,23 @@
 							class="input mt-1"
 							disabled={isGenerating}
 						>
-							<option value="beginner">{t('admin.lessons.difficultyBeginner')}</option>
-							<option value="intermediate">{t('admin.lessons.difficultyIntermediate')}</option>
-							<option value="advanced">{t('admin.lessons.difficultyAdvanced')}</option>
+							<option value="beginner">{m["admin.lessons.difficultyBeginner"]()}</option>
+							<option value="intermediate">{m["admin.lessons.difficultyIntermediate"]()}</option>
+							<option value="advanced">{m["admin.lessons.difficultyAdvanced"]()}</option>
 						</select>
 					</div>
 				</div>
 
 				<!-- Preview Info -->
 				<div class="rounded-xl bg-bg-light-secondary p-4">
-					<h3 class="text-sm font-medium text-text-light">{t('admin.lessons.willGenerate')}</h3>
+					<h3 class="text-sm font-medium text-text-light">{m["admin.lessons.willGenerate"]()}</h3>
 					<ul class="mt-2 space-y-1 text-sm text-text-muted">
-						<li>&#x2022; {Math.floor(questionCount * 0.2)} {t('admin.lessons.multipleChoice')}</li>
-						<li>&#x2022; {Math.floor(questionCount * 0.2)} {t('admin.lessons.fillBlank')}</li>
-						<li>&#x2022; {Math.floor(questionCount * 0.15)} {t('admin.lessons.translation')}</li>
-						<li>&#x2022; {Math.floor(questionCount * 0.15)} {t('admin.lessons.matching')}</li>
-						<li>&#x2022; {Math.floor(questionCount * 0.15)} {t('admin.lessons.wordOrder')}</li>
-						<li>&#x2022; {Math.floor(questionCount * 0.08)} {t('admin.lessons.speaking')}</li>
+						<li>&#x2022; {Math.floor(questionCount * 0.2)} {m["admin.lessons.multipleChoice"]()}</li>
+						<li>&#x2022; {Math.floor(questionCount * 0.2)} {m["admin.lessons.fillBlank"]()}</li>
+						<li>&#x2022; {Math.floor(questionCount * 0.15)} {m["admin.lessons.translation"]()}</li>
+						<li>&#x2022; {Math.floor(questionCount * 0.15)} {m["admin.lessons.matching"]()}</li>
+						<li>&#x2022; {Math.floor(questionCount * 0.15)} {m["admin.lessons.wordOrder"]()}</li>
+						<li>&#x2022; {Math.floor(questionCount * 0.08)} {m["admin.lessons.speaking"]()}</li>
 						<li>
 							&#x2022; {questionCount -
 								Math.floor(questionCount * 0.2) -
@@ -193,7 +193,7 @@
 								Math.floor(questionCount * 0.15) -
 								Math.floor(questionCount * 0.15) -
 								Math.floor(questionCount * 0.08)}
-							{t('admin.lessons.listening')}
+							{m["admin.lessons.listening"]()}
 						</li>
 					</ul>
 				</div>
@@ -206,15 +206,15 @@
 				>
 					{#if isGenerating}
 						<Loader2 size={20} class="animate-spin" />
-						{t('admin.lessons.generating')}
+						{m["admin.lessons.generating"]()}
 					{:else}
 						<Zap size={20} />
-						{t('admin.lessons.generateLesson')}
+						{m["admin.lessons.generateLesson"]()}
 					{/if}
 				</button>
 
 				{#if isGenerating}
-					<p class="text-center text-sm text-text-muted">{t('admin.lessons.generatingHint')}</p>
+					<p class="text-center text-sm text-text-muted">{m["admin.lessons.generatingHint"]()}</p>
 				{/if}
 			</form>
 		</div>
@@ -223,13 +223,13 @@
 		<div class="card bg-primary/5">
 			<h3 class="flex items-center gap-2 font-bold text-text-light">
 				<Lightbulb size={20} class="text-yellow-dark" />
-				{t('admin.lessons.tips')}
+				{m["admin.lessons.tips"]()}
 			</h3>
 			<ul class="mt-2 space-y-2 text-sm text-text-muted">
-				<li>&#x2022; {t('admin.lessons.tip1')}</li>
-				<li>&#x2022; {t('admin.lessons.tip2')}</li>
-				<li>&#x2022; {t('admin.lessons.tip3')}</li>
-				<li>&#x2022; {t('admin.lessons.tip4')}</li>
+				<li>&#x2022; {m["admin.lessons.tip1"]()}</li>
+				<li>&#x2022; {m["admin.lessons.tip2"]()}</li>
+				<li>&#x2022; {m["admin.lessons.tip3"]()}</li>
+				<li>&#x2022; {m["admin.lessons.tip4"]()}</li>
 			</ul>
 		</div>
 	{/if}

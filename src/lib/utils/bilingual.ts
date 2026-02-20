@@ -1,4 +1,6 @@
-import { i18n, type Locale } from '$lib/i18n/index.svelte';
+import { getLocale } from '$lib/paraglide/runtime.js';
+
+type Locale = 'en' | 'de';
 
 export type BilingualText = {
 	en: string;
@@ -21,7 +23,7 @@ export function getBilingualText(
 ): string {
 	if (!value) return fallback;
 
-	const currentLocale = locale ?? i18n.locale;
+	const currentLocale = (locale ?? getLocale()) as Locale;
 
 	try {
 		const parsed = JSON.parse(value) as BilingualText;
