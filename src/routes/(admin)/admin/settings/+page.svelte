@@ -2,6 +2,7 @@
 	import type { PageData, ActionData } from './$types';
 	import { t } from '$lib/i18n/index.svelte';
 	import { enhance } from '$app/forms';
+	import { Eye, EyeOff } from 'lucide-svelte';
 
 	let { data, form }: { data: PageData; form: ActionData } = $props();
 
@@ -44,7 +45,9 @@
 			{/if}
 
 			<form method="POST" action="?/updateSignupMode" use:enhance class="mt-4 space-y-3">
-				<label class="flex items-center gap-3 rounded-lg border border-border-light p-4 hover:bg-background-light cursor-pointer">
+				<label
+					class="hover:bg-background-light flex cursor-pointer items-center gap-3 rounded-lg border border-border-light p-4"
+				>
 					<input
 						type="radio"
 						name="signupMode"
@@ -58,7 +61,9 @@
 					</div>
 				</label>
 
-				<label class="flex items-center gap-3 rounded-lg border border-border-light p-4 hover:bg-background-light cursor-pointer">
+				<label
+					class="hover:bg-background-light flex cursor-pointer items-center gap-3 rounded-lg border border-border-light p-4"
+				>
 					<input
 						type="radio"
 						name="signupMode"
@@ -72,7 +77,9 @@
 					</div>
 				</label>
 
-				<label class="flex items-center gap-3 rounded-lg border border-border-light p-4 hover:bg-background-light cursor-pointer">
+				<label
+					class="hover:bg-background-light flex cursor-pointer items-center gap-3 rounded-lg border border-border-light p-4"
+				>
 					<input
 						type="radio"
 						name="signupMode"
@@ -86,9 +93,7 @@
 					</div>
 				</label>
 
-				<button type="submit" class="btn btn-primary btn-md">
-					Save Signup Mode
-				</button>
+				<button type="submit" class="btn btn-primary btn-md"> Save Signup Mode </button>
 			</form>
 
 			{#if data.signupMode === 'invitation'}
@@ -137,14 +142,10 @@
 						placeholder="example.com, company.org"
 						class="input mt-1"
 					/>
-					<p class="mt-1 text-xs text-text-muted">
-						Example: example.com, company.org
-					</p>
+					<p class="mt-1 text-xs text-text-muted">Example: example.com, company.org</p>
 				</div>
 
-				<button type="submit" class="btn btn-primary btn-md">
-					Save Domain Restriction
-				</button>
+				<button type="submit" class="btn btn-primary btn-md"> Save Domain Restriction </button>
 			</form>
 
 			{#if data.allowedDomains.length > 0}
@@ -185,15 +186,20 @@
 					Disabled globally
 				</span>
 			{:else}
-				<span class="rounded-full bg-success/10 px-3 py-1 text-sm text-success">
-					Enabled
-				</span>
+				<span class="rounded-full bg-success/10 px-3 py-1 text-sm text-success"> Enabled </span>
 			{/if}
 		</div>
 
 		<form method="POST" action="?/toggleGlobalHearts" use:enhance class="mt-4">
-			<input type="hidden" name="heartsDisabled" value={data.heartsDisabledGlobal ? 'false' : 'true'} />
-			<button type="submit" class="btn {data.heartsDisabledGlobal ? 'btn-success' : 'btn-error'} btn-md">
+			<input
+				type="hidden"
+				name="heartsDisabled"
+				value={data.heartsDisabledGlobal ? 'false' : 'true'}
+			/>
+			<button
+				type="submit"
+				class="btn {data.heartsDisabledGlobal ? 'btn-success' : 'btn-error'} btn-md"
+			>
 				{data.heartsDisabledGlobal ? 'Enable Hearts System' : 'Disable Hearts System'}
 			</button>
 		</form>
@@ -213,12 +219,16 @@
 		<!-- Status -->
 		<div class="mt-4 flex items-center gap-2">
 			{#if data.hasGlobalApiKey}
-				<span class="flex items-center gap-2 rounded-full bg-success/10 px-3 py-1 text-sm text-success">
+				<span
+					class="flex items-center gap-2 rounded-full bg-success/10 px-3 py-1 text-sm text-success"
+				>
 					<span>✓</span>
 					{t('admin.settings.globalApiKey.status.configured')}
 				</span>
 			{:else}
-				<span class="flex items-center gap-2 rounded-full bg-warning/10 px-3 py-1 text-sm text-warning">
+				<span
+					class="bg-warning/10 text-warning flex items-center gap-2 rounded-full px-3 py-1 text-sm"
+				>
 					<span>!</span>
 					{t('admin.settings.globalApiKey.status.notConfigured')}
 				</span>
@@ -261,9 +271,13 @@
 					<button
 						type="button"
 						onclick={() => (showKey = !showKey)}
-						class="absolute right-3 top-1/2 -translate-y-1/2 text-text-muted hover:text-text-light"
+						class="absolute top-1/2 right-3 -translate-y-1/2 text-text-muted hover:text-text-light"
 					>
-						{showKey ? '🙈' : '👁️'}
+						{#if showKey}
+							<EyeOff size={18} />
+						{:else}
+							<Eye size={18} />
+						{/if}
 					</button>
 				</div>
 			</div>
@@ -277,7 +291,12 @@
 
 		<!-- Remove Form -->
 		{#if data.hasGlobalApiKey}
-			<form method="POST" action="?/removeGlobalKey" use:enhance class="mt-4 border-t border-border-light pt-4">
+			<form
+				method="POST"
+				action="?/removeGlobalKey"
+				use:enhance
+				class="mt-4 border-t border-border-light pt-4"
+			>
 				<button type="submit" class="btn btn-error btn-sm">
 					{t('admin.settings.globalApiKey.remove')}
 				</button>
@@ -307,12 +326,16 @@
 		<!-- Status -->
 		<div class="mt-4 flex items-center gap-2">
 			{#if data.emailConfigured}
-				<span class="flex items-center gap-2 rounded-full bg-success/10 px-3 py-1 text-sm text-success">
+				<span
+					class="flex items-center gap-2 rounded-full bg-success/10 px-3 py-1 text-sm text-success"
+				>
 					<span>✓</span>
 					Email configured
 				</span>
 			{:else}
-				<span class="flex items-center gap-2 rounded-full bg-yellow/10 px-3 py-1 text-sm text-yellow-dark">
+				<span
+					class="flex items-center gap-2 rounded-full bg-yellow/10 px-3 py-1 text-sm text-yellow-dark"
+				>
 					<span>!</span>
 					Email not configured
 				</span>
@@ -333,9 +356,7 @@
 
 		{#if data.emailConfigured}
 			<form method="POST" action="?/testEmail" use:enhance class="mt-4">
-				<button type="submit" class="btn btn-primary btn-sm">
-					Test Email Connection
-				</button>
+				<button type="submit" class="btn btn-primary btn-sm"> Test Email Connection </button>
 			</form>
 		{:else}
 			<div class="mt-4 rounded-xl bg-yellow/10 p-4 text-sm text-yellow-dark">
