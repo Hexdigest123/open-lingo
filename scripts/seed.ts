@@ -9,7 +9,7 @@ import 'dotenv/config';
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
 
-const { levels, units, lessons, questions, achievements } = schema;
+const { languages, levels, units, lessons, questions, achievements } = schema;
 
 async function seed() {
 	const databaseUrl = process.env.DATABASE_URL;
@@ -43,21 +43,29 @@ async function seed() {
 	await db.delete(units);
 	await db.delete(levels);
 	await db.delete(achievements);
+	await db.delete(languages);
 	console.log('   ✓ Existing data cleared\n');
 
-	// Seed CEFR Levels
+	// Seed Languages
+	if (seedData.languages?.length) {
+		console.log('🌍 Seeding languages...');
+		await db.insert(languages).values(seedData.languages);
+		console.log(`   ✓ Inserted ${seedData.languages.length} languages\n`);
+	}
+
+	// Seed CEFR Levels (per language)
 	console.log('📚 Seeding CEFR levels...');
 	const insertedLevels = await db.insert(levels).values(seedData.levels).returning();
 	console.log(`   ✓ Inserted ${insertedLevels.length} levels\n`);
 
-	// Create level map for lookup
-	const levelMap = new Map(insertedLevels.map((l) => [l.code, l.id]));
+	// Create level map for lookup: "languageCode:levelCode" -> id
+	const levelMap = new Map(insertedLevels.map((l) => [`${l.languageCode}:${l.code}`, l.id]));
 
 	// Seed Units
 	console.log('📁 Seeding units...');
 	const unitsWithLevelIds = seedData.units.map((unit: any) => ({
 		...unit,
-		levelId: levelMap.get(unit.levelCode)
+		levelId: levelMap.get(`${unit.languageCode}:${unit.levelCode}`)
 	}));
 
 	const insertedUnits = await db.insert(units).values(unitsWithLevelIds).returning();
@@ -130,6 +138,7 @@ async function seed() {
 	console.log('═══════════════════════════════════════════════');
 	console.log('🎉 Database seeding complete!\n');
 	console.log(`📊 Summary:`);
+	console.log(`   • Languages: ${seedData.languages?.length ?? 0}`);
 	console.log(`   • Levels: ${insertedLevels.length}`);
 	console.log(`   • Units: ${insertedUnits.length}`);
 	console.log(`   • Lessons: ${totalLessons}`);

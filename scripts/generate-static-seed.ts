@@ -2,15 +2,79 @@ import * as fs from 'fs';
 import * as path from 'path';
 import { fileURLToPath } from 'url';
 import {
-	A1_UNITS,
-	A2_UNITS,
-	B1_UNITS,
-	B2_UNITS,
-	C1_UNITS,
-	C2_UNITS,
+	A1_UNITS as ES_A1,
+	A2_UNITS as ES_A2,
+	B1_UNITS as ES_B1,
+	B2_UNITS as ES_B2,
+	C1_UNITS as ES_C1,
+	C2_UNITS as ES_C2,
 	type VocabItem,
 	type UnitVocab
 } from '../src/lib/data/spanish-vocabulary';
+import {
+	A1_UNITS as JA_A1,
+	A2_UNITS as JA_A2,
+	B1_UNITS as JA_B1,
+	B2_UNITS as JA_B2,
+	C1_UNITS as JA_C1,
+	C2_UNITS as JA_C2
+} from '../src/lib/data/japanese-vocabulary';
+import {
+	A1_UNITS as IT_A1,
+	A2_UNITS as IT_A2,
+	B1_UNITS as IT_B1,
+	B2_UNITS as IT_B2,
+	C1_UNITS as IT_C1,
+	C2_UNITS as IT_C2
+} from '../src/lib/data/italian-vocabulary';
+
+interface LanguageConfig {
+	code: string;
+	name: string;
+	nativeName: string;
+	flagEmoji: string;
+	whisperCode: string;
+	tutorName: string;
+	tutorGreeting: string;
+	order: number;
+	units: Record<string, UnitVocab[]>;
+}
+
+const LANGUAGES: LanguageConfig[] = [
+	{
+		code: 'es',
+		name: 'Spanish',
+		nativeName: 'Español',
+		flagEmoji: '🇪🇸',
+		whisperCode: 'es',
+		tutorName: 'Profesora Ana',
+		tutorGreeting: '¡Hola',
+		order: 1,
+		units: { A1: ES_A1, A2: ES_A2, B1: ES_B1, B2: ES_B2, C1: ES_C1, C2: ES_C2 }
+	},
+	{
+		code: 'ja',
+		name: 'Japanese',
+		nativeName: '日本語',
+		flagEmoji: '🇯🇵',
+		whisperCode: 'ja',
+		tutorName: 'Tanaka-sensei',
+		tutorGreeting: 'こんにちは',
+		order: 2,
+		units: { A1: JA_A1, A2: JA_A2, B1: JA_B1, B2: JA_B2, C1: JA_C1, C2: JA_C2 }
+	},
+	{
+		code: 'it',
+		name: 'Italian',
+		nativeName: 'Italiano',
+		flagEmoji: '🇮🇹',
+		whisperCode: 'it',
+		tutorName: 'Professore Marco',
+		tutorGreeting: 'Ciao',
+		order: 3,
+		units: { A1: IT_A1, A2: IT_A2, B1: IT_B1, B2: IT_B2, C1: IT_C1, C2: IT_C2 }
+	}
+];
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
@@ -35,25 +99,32 @@ function getRandomItems<T>(array: T[], count: number): T[] {
 function generateMultipleChoiceQuestions(
 	vocabItems: VocabItem[],
 	startOrder: number,
-	count: number
+	count: number,
+	langName: string = 'Spanish'
 ): any[] {
 	const questions: any[] = [];
 	const shuffledVocab = shuffle(vocabItems);
+	const langNameDe: Record<string, string> = {
+		Spanish: 'Spanisch',
+		Japanese: 'Japanisch',
+		Italian: 'Italienisch'
+	};
+	const deLabel = langNameDe[langName] || langName;
 
 	for (let i = 0; i < count && i < shuffledVocab.length; i++) {
 		const item = shuffledVocab[i];
-		const otherItems = vocabItems.filter((v) => v.es !== item.es);
-		const wrongAnswers = getRandomItems(otherItems, 3).map((v) => v.es);
-		const options = shuffle([item.es, ...wrongAnswers]);
+		const otherItems = vocabItems.filter((v) => v.target !== item.target);
+		const wrongAnswers = getRandomItems(otherItems, 3).map((v) => v.target);
+		const options = shuffle([item.target, ...wrongAnswers]);
 
 		questions.push({
 			type: 'multiple_choice',
 			content: {
-				questionEn: `How do you say "${item.en}" in Spanish?`,
-				questionDe: `Wie sagt man "${item.de}" auf Spanisch?`,
+				questionEn: `How do you say "${item.en}" in ${langName}?`,
+				questionDe: `Wie sagt man "${item.de}" auf ${deLabel}?`,
 				options
 			},
-			correctAnswer: item.es,
+			correctAnswer: item.target,
 			audioUrl: null,
 			order: startOrder + i
 		});
@@ -65,21 +136,28 @@ function generateMultipleChoiceQuestions(
 // Generate fill in the blank questions (bilingual - store both English and German)
 function generateFillBlankQuestions(
 	vocabItems: VocabItem[],
-	sentences: { es: string; en: string; de: string }[],
+	sentences: { target: string; en: string; de: string }[],
 	startOrder: number,
-	count: number
+	count: number,
+	langName: string = 'Spanish'
 ): any[] {
 	const questions: any[] = [];
 	const shuffledSentences = shuffle(sentences);
 	const shuffledVocab = shuffle(vocabItems);
+	const langNameDe: Record<string, string> = {
+		Spanish: 'spanische',
+		Japanese: 'japanische',
+		Italian: 'italienische'
+	};
+	const deLabel = langNameDe[langName] || langName;
 
 	let added = 0;
 	for (const sentence of shuffledSentences) {
 		if (added >= count) break;
 
 		for (const vocab of vocabItems) {
-			if (sentence.es.toLowerCase().includes(vocab.es.toLowerCase())) {
-				const blankSentence = sentence.es.replace(new RegExp(vocab.es, 'i'), '_____');
+			if (sentence.target.toLowerCase().includes(vocab.target.toLowerCase())) {
+				const blankSentence = sentence.target.replace(new RegExp(vocab.target, 'i'), '_____');
 				questions.push({
 					type: 'fill_blank',
 					content: {
@@ -87,7 +165,7 @@ function generateFillBlankQuestions(
 						hintEn: vocab.en,
 						hintDe: vocab.de
 					},
-					correctAnswer: vocab.es,
+					correctAnswer: vocab.target,
 					audioUrl: null,
 					order: startOrder + added
 				});
@@ -103,12 +181,12 @@ function generateFillBlankQuestions(
 		questions.push({
 			type: 'fill_blank',
 			content: {
-				sentenceEn: `The Spanish word for "${item.en}" is _____.`,
-				sentenceDe: `Das spanische Wort für "${item.de}" ist _____.`,
-				hintEn: `Starts with "${item.es.charAt(0)}"`,
-				hintDe: `Beginnt mit "${item.es.charAt(0)}"`
+				sentenceEn: `The ${langName} word for "${item.en}" is _____.`,
+				sentenceDe: `Das ${deLabel} Wort für "${item.de}" ist _____.`,
+				hintEn: `Starts with "${item.target.charAt(0)}"`,
+				hintDe: `Beginnt mit "${item.target.charAt(0)}"`
 			},
-			correctAnswer: item.es,
+			correctAnswer: item.target,
 			audioUrl: null,
 			order: startOrder + added
 		});
@@ -121,38 +199,38 @@ function generateFillBlankQuestions(
 // Generate translation questions (unified directions - adapts to user's locale)
 function generateTranslationQuestions(
 	vocabItems: VocabItem[],
-	sentences: { es: string; en: string; de: string }[],
+	sentences: { target: string; en: string; de: string }[],
 	startOrder: number,
 	count: number
 ): any[] {
 	const questions: any[] = [];
 	const halfCount = Math.ceil(count / 2);
 
-	const nativeToEsItems = getRandomItems(vocabItems, halfCount);
-	for (let i = 0; i < nativeToEsItems.length; i++) {
-		const item = nativeToEsItems[i];
+	const nativeToTargetItems = getRandomItems(vocabItems, halfCount);
+	for (let i = 0; i < nativeToTargetItems.length; i++) {
+		const item = nativeToTargetItems[i];
 		questions.push({
 			type: 'translation',
 			content: {
 				textEn: item.en,
 				textDe: item.de,
-				direction: 'native_to_es'
+				direction: 'native_to_target'
 			},
-			correctAnswer: item.es,
+			correctAnswer: item.target,
 			audioUrl: null,
 			order: startOrder + i
 		});
 	}
 
-	const remainingVocab = vocabItems.filter((v) => !nativeToEsItems.includes(v));
-	const esToNativeItems = getRandomItems(remainingVocab, count - halfCount);
-	for (let i = 0; i < esToNativeItems.length; i++) {
-		const item = esToNativeItems[i];
+	const remainingVocab = vocabItems.filter((v) => !nativeToTargetItems.includes(v));
+	const targetToNativeItems = getRandomItems(remainingVocab, count - halfCount);
+	for (let i = 0; i < targetToNativeItems.length; i++) {
+		const item = targetToNativeItems[i];
 		questions.push({
 			type: 'translation',
 			content: {
-				text: item.es,
-				direction: 'es_to_native'
+				text: item.target,
+				direction: 'target_to_native'
 			},
 			correctAnswer: `${item.en}|${item.de}`,
 			audioUrl: null,
@@ -183,7 +261,7 @@ function generateMatchingQuestions(
 		}
 
 		const pairs = selectedVocab.map((v) => ({
-			spanish: v.es,
+			target: v.target,
 			english: v.en,
 			german: v.de
 		}));
@@ -203,7 +281,7 @@ function generateMatchingQuestions(
 // Generate word order questions (bilingual - arrange words to form sentences)
 function generateWordOrderQuestions(
 	vocabItems: VocabItem[],
-	sentences: { es: string; en: string; de: string }[],
+	sentences: { target: string; en: string; de: string }[],
 	startOrder: number,
 	count: number
 ): any[] {
@@ -213,7 +291,7 @@ function generateWordOrderQuestions(
 	for (let i = 0; i < count && i < shuffledSentences.length; i++) {
 		const sentence = shuffledSentences[i];
 
-		const words = sentence.es.split(/\s+/).filter(Boolean);
+		const words = sentence.target.split(/\s+/).filter(Boolean);
 		if (words.length < 3) continue;
 
 		const scrambledWords = shuffle(words);
@@ -225,7 +303,7 @@ function generateWordOrderQuestions(
 				instructionEn: `Arrange the words to form: "${sentence.en}"`,
 				instructionDe: `Ordne die Wörter, um zu bilden: "${sentence.de}"`
 			},
-			correctAnswer: sentence.es,
+			correctAnswer: sentence.target,
 			audioUrl: null,
 			order: startOrder + i
 		});
@@ -249,11 +327,11 @@ function generateSpeakingQuestions(
 		questions.push({
 			type: 'speaking',
 			content: {
-				textToSpeak: item.es,
+				textToSpeak: item.target,
 				hintEn: item.en,
 				hintDe: item.de
 			},
-			correctAnswer: item.es,
+			correctAnswer: item.target,
 			audioUrl: null,
 			order: startOrder + i
 		});
@@ -265,13 +343,13 @@ function generateSpeakingQuestions(
 // Generate listening questions (hear and identify)
 function generateListeningQuestions(
 	vocabItems: VocabItem[],
-	sentences: { es: string; en: string; de: string }[],
+	sentences: { target: string; en: string; de: string }[],
 	startOrder: number,
 	count: number
 ): any[] {
 	const questions: any[] = [];
 
-	const validSentences = sentences.filter((s) => s.es.split(/\s+/).length >= 3);
+	const validSentences = sentences.filter((s) => s.target.split(/\s+/).length >= 3);
 
 	const shuffledSentences = shuffle(validSentences);
 	const shuffledVocab = shuffle(vocabItems);
@@ -286,7 +364,7 @@ function generateListeningQuestions(
 		let optionsEn: string[] | undefined;
 		let optionsDe: string[] | undefined;
 		if (answerType === 'multiple_choice') {
-			const otherSentences = validSentences.filter((s) => s.es !== sentence.es);
+			const otherSentences = validSentences.filter((s) => s.target !== sentence.target);
 			const wrongSentences = getRandomItems(otherSentences, 3);
 			const wrongAnswersEn = wrongSentences.map((s) => s.en);
 			const wrongAnswersDe = wrongSentences.map((s) => s.de);
@@ -297,7 +375,7 @@ function generateListeningQuestions(
 		questions.push({
 			type: 'listening',
 			content: {
-				textToHear: sentence.es,
+				textToHear: sentence.target,
 				answerType,
 				optionsEn,
 				optionsDe,
@@ -311,7 +389,7 @@ function generateListeningQuestions(
 		added++;
 	}
 
-	const longVocab = shuffledVocab.filter((v) => v.es.split(/\s+/).length >= 3);
+	const longVocab = shuffledVocab.filter((v) => v.target.split(/\s+/).length >= 3);
 	for (let i = 0; i < longVocab.length && added < count; i++) {
 		const item = longVocab[i];
 
@@ -320,7 +398,7 @@ function generateListeningQuestions(
 		let optionsEn: string[] | undefined;
 		let optionsDe: string[] | undefined;
 		if (answerType === 'multiple_choice') {
-			const otherItems = longVocab.filter((v) => v.es !== item.es);
+			const otherItems = longVocab.filter((v) => v.target !== item.target);
 			const wrongItems = getRandomItems(otherItems, 3);
 			const wrongAnswersEn = wrongItems.map((v) => v.en);
 			const wrongAnswersDe = wrongItems.map((v) => v.de);
@@ -331,7 +409,7 @@ function generateListeningQuestions(
 		questions.push({
 			type: 'listening',
 			content: {
-				textToHear: item.es,
+				textToHear: item.target,
 				answerType,
 				optionsEn,
 				optionsDe,
@@ -349,7 +427,11 @@ function generateListeningQuestions(
 }
 
 // Generate all 50 questions for a lesson
-function generateLessonQuestions(unitVocab: UnitVocab, lessonNumber: number): any[] {
+function generateLessonQuestions(
+	unitVocab: UnitVocab,
+	lessonNumber: number,
+	langName: string = 'Spanish'
+): any[] {
 	const vocab = unitVocab.vocab;
 	const sentences = unitVocab.sentences;
 
@@ -367,8 +449,8 @@ function generateLessonQuestions(unitVocab: UnitVocab, lessonNumber: number): an
 		currentOrder += qs.length;
 	};
 
-	addQuestions(generateMultipleChoiceQuestions(rotatedVocab, currentOrder, 10));
-	addQuestions(generateFillBlankQuestions(rotatedVocab, sentences, currentOrder, 10));
+	addQuestions(generateMultipleChoiceQuestions(rotatedVocab, currentOrder, 10, langName));
+	addQuestions(generateFillBlankQuestions(rotatedVocab, sentences, currentOrder, 10, langName));
 	addQuestions(generateTranslationQuestions(rotatedVocab, sentences, currentOrder, 8));
 	addQuestions(generateMatchingQuestions(rotatedVocab, currentOrder, 6));
 	addQuestions(generateWordOrderQuestions(rotatedVocab, sentences, currentOrder, 6));
@@ -379,13 +461,13 @@ function generateLessonQuestions(unitVocab: UnitVocab, lessonNumber: number): an
 }
 
 // Generate exam questions
-function generateExamQuestions(unitVocab: UnitVocab): any[] {
+function generateExamQuestions(unitVocab: UnitVocab, langName: string = 'Spanish'): any[] {
 	const vocab = unitVocab.vocab;
 	const sentences = unitVocab.sentences;
 	const allQuestions: any[] = [];
 
-	allQuestions.push(...generateMultipleChoiceQuestions(shuffle(vocab), 1, 2));
-	allQuestions.push(...generateFillBlankQuestions(shuffle(vocab), sentences, 3, 2));
+	allQuestions.push(...generateMultipleChoiceQuestions(shuffle(vocab), 1, 2, langName));
+	allQuestions.push(...generateFillBlankQuestions(shuffle(vocab), sentences, 3, 2, langName));
 	allQuestions.push(...generateTranslationQuestions(shuffle(vocab), sentences, 5, 2));
 	allQuestions.push(...generateMatchingQuestions(shuffle(vocab), 7, 2));
 	allQuestions.push(...generateWordOrderQuestions(shuffle(vocab), sentences, 9, 2));
@@ -426,6 +508,7 @@ async function generateStaticSeed() {
 	console.log('🌱 Generating static seed data...\n');
 
 	const seedData: any = {
+		languages: [],
 		levels: [],
 		units: [],
 		lessons: [],
@@ -433,9 +516,23 @@ async function generateStaticSeed() {
 		achievements: []
 	};
 
-	// Generate levels
-	console.log('📚 Creating CEFR levels...');
-	const levelData = [
+	// Generate languages table data
+	console.log('🌍 Creating languages...');
+	seedData.languages = LANGUAGES.map((lang) => ({
+		code: lang.code,
+		name: lang.name,
+		nativeName: lang.nativeName,
+		flagEmoji: lang.flagEmoji,
+		whisperCode: lang.whisperCode,
+		tutorName: lang.tutorName,
+		tutorGreeting: lang.tutorGreeting,
+		isActive: true,
+		order: lang.order
+	}));
+	console.log(`   ✓ Created ${seedData.languages.length} languages\n`);
+
+	// CEFR level definitions (shared across all languages)
+	const CEFR_LEVELS = [
 		{
 			code: 'A1',
 			name: bilingual('Beginner', 'Anfänger'),
@@ -492,75 +589,108 @@ async function generateStaticSeed() {
 		}
 	];
 
-	seedData.levels = levelData;
-	console.log(`   ✓ Created ${levelData.length} levels\n`);
-
-	// All vocabulary data by level
-	const LEVEL_UNITS: Record<string, UnitVocab[]> = {
-		A1: A1_UNITS,
-		A2: A2_UNITS,
-		B1: B1_UNITS,
-		B2: B2_UNITS,
-		C1: C1_UNITS,
-		C2: C2_UNITS
-	};
-
 	let totalLessons = 0;
 	let totalQuestions = 0;
 	let unitIdCounter = 1;
 	let lessonIdCounter = 1;
 	let questionIdCounter = 1;
 
-	// Process each level
-	for (const [levelCode, unitVocabs] of Object.entries(LEVEL_UNITS)) {
-		console.log(`\n📖 Processing Level ${levelCode}...`);
-		console.log(`   Units to create: ${unitVocabs.length}`);
+	// Process each language
+	for (const lang of LANGUAGES) {
+		console.log(`\n🌐 Processing language: ${lang.name} (${lang.code})...`);
 
-		// Create units for this level
-		for (let unitIndex = 0; unitIndex < unitVocabs.length; unitIndex++) {
-			const unitVocab = unitVocabs[unitIndex];
+		// Create CEFR levels for this language (each language gets its own A1-C2)
+		const langLevels = CEFR_LEVELS.map((level) => ({
+			...level,
+			languageCode: lang.code
+		}));
+		seedData.levels.push(...langLevels);
+		console.log(`   ✓ Created ${langLevels.length} levels for ${lang.name}`);
 
-			const unit = {
-				id: unitIdCounter,
-				levelCode: levelCode,
-				title: bilingual(unitVocab.titleEn, unitVocab.titleDe),
-				description: bilingual(unitVocab.descriptionEn, unitVocab.descriptionDe),
-				order: unitIndex + 1,
-				themeColor: unitVocab.themeColor
-			};
+		// Process each level's units for this language
+		for (const [levelCode, unitVocabs] of Object.entries(lang.units)) {
+			console.log(`\n   📖 Processing ${lang.name} Level ${levelCode}...`);
+			console.log(`      Units to create: ${unitVocabs.length}`);
 
-			seedData.units.push(unit);
-			console.log(`   📁 Unit ${unitIndex + 1}: ${unitVocab.titleEn}`);
+			for (let unitIndex = 0; unitIndex < unitVocabs.length; unitIndex++) {
+				const unitVocab = unitVocabs[unitIndex];
 
-			// Create 20 lessons per unit
-			const lessonsPerUnit = 20;
+				const unit = {
+					id: unitIdCounter,
+					levelCode: levelCode,
+					languageCode: lang.code,
+					title: bilingual(unitVocab.titleEn, unitVocab.titleDe),
+					description: bilingual(unitVocab.descriptionEn, unitVocab.descriptionDe),
+					order: unitIndex + 1,
+					themeColor: unitVocab.themeColor
+				};
 
-			for (let lessonNum = 1; lessonNum <= lessonsPerUnit; lessonNum++) {
-				const titleTemplate = LESSON_TITLES[(lessonNum - 1) % LESSON_TITLES.length];
-				const titleEn = titleTemplate.en.replace('{topic}', unitVocab.titleEn);
-				const titleDe = titleTemplate.de.replace('{topic}', unitVocab.titleDe);
+				seedData.units.push(unit);
+				console.log(`      📁 Unit ${unitIndex + 1}: ${unitVocab.titleEn}`);
 
-				const lesson = {
+				// Create 20 lessons per unit
+				const lessonsPerUnit = 20;
+
+				for (let lessonNum = 1; lessonNum <= lessonsPerUnit; lessonNum++) {
+					const titleTemplate = LESSON_TITLES[(lessonNum - 1) % LESSON_TITLES.length];
+					const titleEn = titleTemplate.en.replace('{topic}', unitVocab.titleEn);
+					const titleDe = titleTemplate.de.replace('{topic}', unitVocab.titleDe);
+
+					const lesson = {
+						id: lessonIdCounter,
+						unitId: unitIdCounter,
+						title: bilingual(`${lessonNum}. ${titleEn}`, `${lessonNum}. ${titleDe}`),
+						description: bilingual(
+							`Lesson ${lessonNum} of ${unitVocab.titleEn}`,
+							`Lektion ${lessonNum} von ${unitVocab.titleDe}`
+						),
+						xpReward: 10 + Math.floor(lessonNum / 5) * 5,
+						order: lessonNum,
+						isPublished: true,
+						isExam: false,
+						examPassThreshold: null,
+						requiredLessonId: null
+					};
+
+					seedData.lessons.push(lesson);
+
+					// Generate questions for this lesson
+					const lessonQuestions = generateLessonQuestions(unitVocab, lessonNum, lang.name);
+					for (const question of lessonQuestions) {
+						seedData.questions.push({
+							id: questionIdCounter++,
+							lessonId: lessonIdCounter,
+							...question
+						});
+						totalQuestions++;
+					}
+
+					lessonIdCounter++;
+					totalLessons++;
+				}
+
+				// Add exam at the end
+				const examLesson = {
 					id: lessonIdCounter,
 					unitId: unitIdCounter,
-					title: bilingual(`${lessonNum}. ${titleEn}`, `${lessonNum}. ${titleDe}`),
+					title: bilingual(`${unitVocab.titleEn} - Unit Exam`, `${unitVocab.titleDe} - Prüfung`),
 					description: bilingual(
-						`Lesson ${lessonNum} of ${unitVocab.titleEn}`,
-						`Lektion ${lessonNum} von ${unitVocab.titleDe}`
+						`Final exam for ${unitVocab.titleEn}. Score 80% to pass.`,
+						`Abschlussprüfung für ${unitVocab.titleDe}. 80% zum Bestehen.`
 					),
-					xpReward: 10 + Math.floor(lessonNum / 5) * 5,
-					order: lessonNum,
+					xpReward: 50,
+					order: lessonsPerUnit + 1,
 					isPublished: true,
-					isExam: false,
-					examPassThreshold: null,
+					isExam: true,
+					examPassThreshold: 80,
 					requiredLessonId: null
 				};
 
-				seedData.lessons.push(lesson);
+				seedData.lessons.push(examLesson);
 
-				// Generate questions for this lesson
-				const lessonQuestions = generateLessonQuestions(unitVocab, lessonNum);
-				for (const question of lessonQuestions) {
+				// Generate exam questions
+				const examQuestions = generateExamQuestions(unitVocab, lang.name);
+				for (const question of examQuestions) {
 					seedData.questions.push({
 						id: questionIdCounter++,
 						lessonId: lessonIdCounter,
@@ -571,44 +701,11 @@ async function generateStaticSeed() {
 
 				lessonIdCounter++;
 				totalLessons++;
+
+				console.log(`         ✓ Created ${lessonsPerUnit + 1} lessons with questions`);
+
+				unitIdCounter++;
 			}
-
-			// Add exam at the end
-			const examLesson = {
-				id: lessonIdCounter,
-				unitId: unitIdCounter,
-				title: bilingual(`${unitVocab.titleEn} - Unit Exam`, `${unitVocab.titleDe} - Prüfung`),
-				description: bilingual(
-					`Final exam for ${unitVocab.titleEn}. Score 80% to pass.`,
-					`Abschlussprüfung für ${unitVocab.titleDe}. 80% zum Bestehen.`
-				),
-				xpReward: 50,
-				order: lessonsPerUnit + 1,
-				isPublished: true,
-				isExam: true,
-				examPassThreshold: 80,
-				requiredLessonId: null
-			};
-
-			seedData.lessons.push(examLesson);
-
-			// Generate exam questions
-			const examQuestions = generateExamQuestions(unitVocab);
-			for (const question of examQuestions) {
-				seedData.questions.push({
-					id: questionIdCounter++,
-					lessonId: lessonIdCounter,
-					...question
-				});
-				totalQuestions++;
-			}
-
-			lessonIdCounter++;
-			totalLessons++;
-
-			console.log(`      ✓ Created ${lessonsPerUnit + 1} lessons with questions`);
-
-			unitIdCounter++;
 		}
 	}
 
@@ -645,9 +742,9 @@ async function generateStaticSeed() {
 		},
 		{
 			code: 'lessons_500',
-			name: 'Spanish Scholar',
+			name: 'Language Scholar',
 			description: 'Complete 500 lessons',
-			iconUrl: '/achievements/spanish-scholar.svg',
+			iconUrl: '/achievements/language-scholar.svg',
 			criteria: { type: 'lessons_completed', count: 500 }
 		},
 		{
@@ -758,7 +855,7 @@ async function generateStaticSeed() {
 		{
 			code: 'level_c2',
 			name: 'C2 Complete',
-			description: 'Complete all C2 lessons - You are a Spanish Master!',
+			description: 'Complete all C2 lessons - You are a Language Master!',
 			iconUrl: '/achievements/c2-complete.svg',
 			criteria: { type: 'level_complete', level: 'C2' }
 		},
@@ -785,6 +882,7 @@ async function generateStaticSeed() {
 	console.log('═══════════════════════════════════════════════');
 	console.log('🎉 Static seed data generation complete!\n');
 	console.log(`📊 Summary:`);
+	console.log(`   • Languages: ${seedData.languages.length}`);
 	console.log(`   • Levels: ${seedData.levels.length}`);
 	console.log(`   • Units: ${seedData.units.length}`);
 	console.log(`   • Lessons: ${totalLessons}`);
