@@ -9,7 +9,7 @@ import 'dotenv/config';
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
 
-const { languages, levels, units, lessons, questions, achievements } = schema;
+const { languages, levels, units, lessons, questions, achievements, users } = schema;
 
 async function seed() {
 	const databaseUrl = process.env.DATABASE_URL;
@@ -36,20 +36,23 @@ async function seed() {
 	const seedData = JSON.parse(fs.readFileSync(seedDataPath, 'utf-8'));
 	console.log('   ✓ Static seed data loaded\n');
 
-	// Clear existing data (will cascade delete related records)
-	console.log('🗑️  Clearing existing data...');
+	console.log('🗑️  Clearing existing content data...');
 	await db.delete(questions);
 	await db.delete(lessons);
 	await db.delete(units);
 	await db.delete(levels);
 	await db.delete(achievements);
-	await db.delete(languages);
-	console.log('   ✓ Existing data cleared\n');
 
-	// Seed Languages
+	// Nullify user FK before deleting languages to preserve user accounts
+	await db.update(users).set({ activeLanguage: null });
+	await db.delete(languages);
+	console.log('   ✓ Existing content cleared (users preserved)\n');
+
 	if (seedData.languages?.length) {
 		console.log('🌍 Seeding languages...');
 		await db.insert(languages).values(seedData.languages);
+		// Restore default language for existing users
+		await db.update(users).set({ activeLanguage: 'es' });
 		console.log(`   ✓ Inserted ${seedData.languages.length} languages\n`);
 	}
 
