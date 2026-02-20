@@ -7,22 +7,27 @@
 		textDe?: string;
 		// For es_to_native direction: Spanish text only
 		text?: string;
-		direction: 'native_to_es' | 'es_to_native' | string;
+		direction: 'native_to_target' | 'target_to_native' | 'native_to_es' | 'es_to_native' | string;
+		targetLanguageName?: string;
 		disabled: boolean;
 		onAnswer: (answer: string) => void;
 	}
 
-	let { textEn, textDe, text, direction, disabled, onAnswer }: Props = $props();
+	let { textEn, textDe, text, direction, targetLanguageName, disabled, onAnswer }: Props = $props();
+
+	const resolvedTargetLanguageName = $derived(
+		targetLanguageName || t('lesson.languages.targetLanguage')
+	);
 
 	let answer = $state('');
 
 	// Get the display text based on direction and user's locale
 	const displayText = $derived(() => {
-		if (direction === 'native_to_es') {
+		if (direction === 'native_to_target' || direction === 'native_to_es') {
 			// Show the user's native language text
-			return i18n.locale === 'de' ? (textDe || textEn || '') : (textEn || textDe || '');
+			return i18n.locale === 'de' ? textDe || textEn || '' : textEn || textDe || '';
 		}
-		// es_to_native: show Spanish text
+		// target_to_native / es_to_native: show target language text
 		return text || textEn || '';
 	});
 
@@ -33,15 +38,15 @@
 
 	// Determine source and target languages based on direction
 	const fromLang = $derived(() => {
-		if (direction === 'native_to_es') {
+		if (direction === 'native_to_target' || direction === 'native_to_es') {
 			return nativeLang();
 		}
-		return t('lesson.languages.spanish');
+		return resolvedTargetLanguageName;
 	});
 
 	const toLang = $derived(() => {
-		if (direction === 'native_to_es') {
-			return t('lesson.languages.spanish');
+		if (direction === 'native_to_target' || direction === 'native_to_es') {
+			return resolvedTargetLanguageName;
 		}
 		return nativeLang();
 	});
@@ -81,18 +86,14 @@
 			bind:value={answer}
 			onkeydown={handleKeydown}
 			placeholder={t('lesson.typeTranslation')}
-			disabled={disabled}
+			{disabled}
 			rows="2"
 			class="input text-lg"
 		></textarea>
 	</div>
 
 	{#if !disabled}
-		<button
-			onclick={submit}
-			disabled={!answer.trim()}
-			class="btn btn-success btn-lg w-full"
-		>
+		<button onclick={submit} disabled={!answer.trim()} class="btn btn-success btn-lg w-full">
 			{t('lesson.checkAnswer')}
 		</button>
 	{/if}

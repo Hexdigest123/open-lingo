@@ -22,7 +22,17 @@
 		xpAwarded?: number;
 	};
 
-	let { data }: { data: PageData } = $props();
+	type ActiveLanguage = {
+		code: string;
+		name: string;
+		nativeName: string;
+		flagEmoji: string;
+		whisperCode: string;
+		tutorName: string;
+		tutorGreeting: string | null;
+	};
+
+	let { data }: { data: PageData & { activeLanguage?: ActiveLanguage } } = $props();
 
 	let currentIndex = $state(0);
 	let hearts = $state(data.hearts);
@@ -70,15 +80,16 @@
 	const localizedHint = $derived(getLocalizedText('hintEn', 'hintDe', 'hint'));
 
 	// Locale-aware pairs for matching (transform to use correct language)
-	function getLocalizedPairs(): Array<{ spanish: string; english: string }> {
+	function getLocalizedPairs(): Array<{ target: string; english: string }> {
 		if (!questionContent?.pairs) return [];
 		const pairs = questionContent.pairs as Array<{
+			target?: string;
 			spanish: string;
 			english: string;
 			german?: string;
 		}>;
 		return pairs.map((p) => ({
-			spanish: p.spanish,
+			target: p.target || p.spanish,
 			english: i18n.locale === 'de' && p.german ? p.german : p.english
 		}));
 	}
@@ -382,12 +393,14 @@
 					textEn={questionContent.textEn as string}
 					textDe={questionContent.textDe as string}
 					direction={questionContent.direction as string}
+					targetLanguageName={data.activeLanguage?.name || t('lesson.languages.targetLanguage')}
 					disabled={showFeedback || isSubmitting}
 					onAnswer={handleAnswer}
 				/>
 			{:else if currentQuestion.type === 'matching'}
 				<MatchingQuestion
 					pairs={localizedPairs}
+					targetLanguageName={data.activeLanguage?.name || t('lesson.languages.targetLanguage')}
 					disabled={showFeedback || isSubmitting}
 					onAnswer={handleAnswer}
 					onWrongMatch={handleWrongMatch}

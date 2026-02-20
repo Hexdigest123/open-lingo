@@ -2,36 +2,47 @@
 	import { i18n, t } from '$lib/i18n/index.svelte';
 
 	interface Pair {
-		spanish: string;
+		target: string;
 		english: string;
+		spanish?: string;
 	}
 
 	interface Props {
 		pairs: Pair[];
+		targetLanguageName?: string;
 		disabled: boolean;
 		onAnswer: (answer: string) => void;
 		onWrongMatch?: () => void;
 	}
 
-	let { pairs, disabled, onAnswer, onWrongMatch }: Props = $props();
+	let { pairs, targetLanguageName, disabled, onAnswer, onWrongMatch }: Props = $props();
+
+	const resolvedTargetLanguageName = $derived(
+		targetLanguageName || t('lesson.languages.targetLanguage')
+	);
 
 	// Show "German" or "English" based on locale
 	const targetLanguageLabel = $derived(
 		i18n.locale === 'de' ? t('lesson.languages.german') : t('lesson.languages.english')
 	);
 
-	let selectedSpanish = $state<string | null>(null);
+	let selectedTarget = $state<string | null>(null);
 	let selectedEnglish = $state<string | null>(null);
 	let matchedPairs = $state<Set<string>>(new Set());
-	let wrongMatchPair = $state<{ spanish: string; english: string } | null>(null);
+	let wrongMatchPair = $state<{ target: string; english: string } | null>(null);
 
 	// Shuffle arrays for display
-	const spanishWords = $derived(pairs.map((p) => p.spanish).sort(() => Math.random() - 0.5));
+	const targetWords = $derived(
+		pairs
+			.map((p) => p.target || p.spanish || '')
+			.filter(Boolean)
+			.sort(() => Math.random() - 0.5)
+	);
 	const englishWords = $derived(pairs.map((p) => p.english).sort(() => Math.random() - 0.5));
 
-	function selectSpanish(word: string) {
+	function selectTarget(word: string) {
 		if (disabled || matchedPairs.has(word)) return;
-		selectedSpanish = word;
+		selectedTarget = word;
 		checkMatch();
 	}
 
@@ -42,23 +53,25 @@
 	}
 
 	function checkMatch() {
-		if (selectedSpanish && selectedEnglish) {
-			const pair = pairs.find((p) => p.spanish === selectedSpanish && p.english === selectedEnglish);
+		if (selectedTarget && selectedEnglish) {
+			const pair = pairs.find(
+				(p) => (p.target || p.spanish) === selectedTarget && p.english === selectedEnglish
+			);
 			if (pair) {
-				matchedPairs = new Set([...matchedPairs, selectedSpanish, selectedEnglish]);
+				matchedPairs = new Set([...matchedPairs, selectedTarget, selectedEnglish]);
 				// Reset selections after a short delay
 				setTimeout(() => {
-					selectedSpanish = null;
+					selectedTarget = null;
 					selectedEnglish = null;
 				}, 300);
 			} else {
 				// Wrong match - show feedback and deduct heart
-				wrongMatchPair = { spanish: selectedSpanish, english: selectedEnglish };
+				wrongMatchPair = { target: selectedTarget, english: selectedEnglish };
 				onWrongMatch?.();
 				// Reset selections after showing error feedback
 				setTimeout(() => {
 					wrongMatchPair = null;
-					selectedSpanish = null;
+					selectedTarget = null;
 					selectedEnglish = null;
 				}, 600);
 			}
@@ -78,21 +91,22 @@
 	<p class="mb-6 text-text-muted">{t('lesson.tapToMatch')}</p>
 
 	<div class="grid grid-cols-2 gap-4">
-		<!-- Spanish Column -->
 		<div class="space-y-2">
-			<div class="mb-2 text-center text-sm font-medium text-primary">{t('lesson.languages.spanish')}</div>
-			{#each spanishWords as word}
+			<div class="mb-2 text-center text-sm font-medium text-primary">
+				{resolvedTargetLanguageName}
+			</div>
+			{#each targetWords as word}
 				<button
-					onclick={() => selectSpanish(word)}
+					onclick={() => selectTarget(word)}
 					disabled={disabled || matchedPairs.has(word)}
 					class="w-full rounded-xl border-2 p-3 text-center font-medium transition-all
 						{matchedPairs.has(word)
-							? 'border-success/50 bg-success/10 text-success opacity-50'
-							: wrongMatchPair?.spanish === word
-								? 'border-error bg-error/10 text-error animate-shake'
-								: selectedSpanish === word
-									? 'border-primary bg-primary/10 text-primary'
-									: 'border-border-light text-text-light hover:border-primary/50'}
+						? 'border-success/50 bg-success/10 text-success opacity-50'
+						: wrongMatchPair?.target === word
+							? 'animate-shake border-error bg-error/10 text-error'
+							: selectedTarget === word
+								? 'border-primary bg-primary/10 text-primary'
+								: 'border-border-light text-text-light hover:border-primary/50'}
 						{disabled ? 'cursor-not-allowed' : 'cursor-pointer'}"
 				>
 					{word}
@@ -109,12 +123,12 @@
 					disabled={disabled || matchedPairs.has(word)}
 					class="w-full rounded-xl border-2 p-3 text-center font-medium transition-all
 						{matchedPairs.has(word)
-							? 'border-success/50 bg-success/10 text-success opacity-50'
-							: wrongMatchPair?.english === word
-								? 'border-error bg-error/10 text-error animate-shake'
-								: selectedEnglish === word
-									? 'border-success bg-success/10 text-success'
-									: 'border-border-light text-text-light hover:border-success/50'}
+						? 'border-success/50 bg-success/10 text-success opacity-50'
+						: wrongMatchPair?.english === word
+							? 'animate-shake border-error bg-error/10 text-error'
+							: selectedEnglish === word
+								? 'border-success bg-success/10 text-success'
+								: 'border-border-light text-text-light hover:border-success/50'}
 						{disabled ? 'cursor-not-allowed' : 'cursor-pointer'}"
 				>
 					{word}
