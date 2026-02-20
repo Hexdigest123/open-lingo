@@ -27,6 +27,14 @@ import {
 	C1_UNITS as IT_C1,
 	C2_UNITS as IT_C2
 } from '../src/lib/data/italian-vocabulary';
+import {
+	A1_UNITS as EN_A1,
+	A2_UNITS as EN_A2,
+	B1_UNITS as EN_B1,
+	B2_UNITS as EN_B2,
+	C1_UNITS as EN_C1,
+	C2_UNITS as EN_C2
+} from '../src/lib/data/english-vocabulary';
 
 interface LanguageConfig {
 	code: string;
@@ -73,6 +81,17 @@ const LANGUAGES: LanguageConfig[] = [
 		tutorGreeting: 'Ciao',
 		order: 3,
 		units: { A1: IT_A1, A2: IT_A2, B1: IT_B1, B2: IT_B2, C1: IT_C1, C2: IT_C2 }
+	},
+	{
+		code: 'en',
+		name: 'English',
+		nativeName: 'English',
+		flagEmoji: '🇬🇧',
+		whisperCode: 'en',
+		tutorName: 'Teacher Emma',
+		tutorGreeting: 'Hello',
+		order: 4,
+		units: { A1: EN_A1, A2: EN_A2, B1: EN_B1, B2: EN_B2, C1: EN_C1, C2: EN_C2 }
 	}
 ];
 
@@ -107,7 +126,8 @@ function generateMultipleChoiceQuestions(
 	const langNameDe: Record<string, string> = {
 		Spanish: 'Spanisch',
 		Japanese: 'Japanisch',
-		Italian: 'Italienisch'
+		Italian: 'Italienisch',
+		English: 'Englisch'
 	};
 	const deLabel = langNameDe[langName] || langName;
 
@@ -147,7 +167,8 @@ function generateFillBlankQuestions(
 	const langNameDe: Record<string, string> = {
 		Spanish: 'spanische',
 		Japanese: 'japanische',
-		Italian: 'italienische'
+		Italian: 'italienische',
+		English: 'englische'
 	};
 	const deLabel = langNameDe[langName] || langName;
 
