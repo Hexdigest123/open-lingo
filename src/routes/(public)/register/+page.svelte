@@ -54,7 +54,9 @@
 			{/if}
 
 			<div>
-				<label for="displayName" class="mb-2 block font-medium text-text-light">{t('auth.displayName')}</label>
+				<label for="displayName" class="mb-2 block font-medium text-text-light"
+					>{t('auth.displayName')}</label
+				>
 				<input
 					type="text"
 					id="displayName"
@@ -111,7 +113,9 @@
 			{/if}
 
 			<div>
-				<label for="password" class="mb-2 block font-medium text-text-light">{t('auth.password')}</label>
+				<label for="password" class="mb-2 block font-medium text-text-light"
+					>{t('auth.password')}</label
+				>
 				<input
 					type="password"
 					id="password"
@@ -121,14 +125,16 @@
 					placeholder={t('auth.passwordMinChars')}
 					minlength="8"
 					maxlength="50"
-					pattern="[a-zA-Z0-9!@#$%^&*()\-_./]+"
+					pattern="[a-zA-Z0-9!@#$%^&*\(\)\-_.\/]+"
 					title="Only ASCII characters allowed: letters, numbers, and !@#$%^&*()-_./"
 				/>
 				<p class="mt-1 text-sm text-text-muted">{t('auth.passwordHint')}</p>
 			</div>
 
 			<div>
-				<label for="confirmPassword" class="mb-2 block font-medium text-text-light">{t('auth.confirmPassword')}</label>
+				<label for="confirmPassword" class="mb-2 block font-medium text-text-light"
+					>{t('auth.confirmPassword')}</label
+				>
 				<input
 					type="password"
 					id="confirmPassword"
@@ -138,7 +144,7 @@
 					placeholder={t('auth.confirmPasswordPlaceholder')}
 					minlength="8"
 					maxlength="50"
-					pattern="[a-zA-Z0-9!@#$%^&*()\-_./]+"
+					pattern="[a-zA-Z0-9!@#$%^&*\(\)\-_.\/]+"
 					title="Only ASCII characters allowed: letters, numbers, and !@#$%^&*()-_./"
 				/>
 			</div>

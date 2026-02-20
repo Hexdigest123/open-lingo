@@ -35,7 +35,7 @@
 		"loginTitle": "Willkommen zurück!",
 		"loginSubtitle": "Melde dich an, um deine Lernreise fortzusetzen",
 		"registerTitle": "Erstelle dein Konto",
-		"registerSubtitle": "Lerne kostenlos Spanisch",
+		"registerSubtitle": "Lerne kostenlos Sprachen",
 		"loginButton": "Anmelden",
 		"registerButton": "Konto erstellen",
 		"noAccount": "Noch kein Konto?",
@@ -91,7 +91,7 @@
 	},
 	"landing": {
 		"title": "Der kostenlose, unterhaltsame und effektive Weg,",
-		"titleHighlight": "Spanisch zu lernen!",
+		"titleHighlight": "Sprachen zu lernen!",
 		"accountDeleted": "Dein Konto wurde erfolgreich gelöscht. Schade, dass du gehst!",
 		"subtitle": "Lerne mit KI-gestützten Lektionen, übe das Sprechen mit dem Sprachmodus und bleibe motiviert durch Spielerische inhalte.",
 		"getStarted": "Kostenlos starten",
@@ -137,12 +137,13 @@
 		"levelsTitle": "Vom Anfänger zum Fließend",
 		"levelsSubtitle": "Unser Lehrplan deckt alle CEFR-Stufen von A1 bis C2 ab",
 		"ctaTitle": "Bereit zu lernen?",
-		"ctaSubtitle": "Schließe dich Tausenden von Lernenden an und beginne deine Spanisch-Reise noch heute.",
+		"ctaSubtitle": "Schließe dich Tausenden von Lernenden an und beginne deine Sprachreise noch heute.",
 		"ctaButton": "Kostenloses Konto erstellen",
-		"footer": "OpenLingo - Lerne Spanisch auf die unterhaltsame Art"
+		"footer": "OpenLingo - Lerne Sprachen auf die unterhaltsame Art"
 	},
 	"dashboard": {
 		"welcome": "Willkommen zurück",
+		"greeting": "Willkommen zurück, {name}!",
 		"continueTitle": "Weiter lernen",
 		"continueSubtitle": "Mach dort weiter, wo du aufgehört hast",
 		"startButton": "Lernen starten",
@@ -170,7 +171,7 @@
 		}
 	},
 	"lessons": {
-		"title": "Spanisch lernen",
+		"title": "Sprachen lernen",
 		"subtitle": "Wähle ein Level, um mit dem Lernen zu beginnen",
 		"startLearning": "Lernen starten",
 		"comingSoon": "Demnächst verfügbar",
@@ -200,7 +201,8 @@
 		}
 	},
 	"lesson": {
-		"spanishLessons": "Spanisch-Lektionen",
+		"spanishLessons": "Lektionen",
+		"languageLessons": "{language} Lektionen",
 		"chooseLevelToStart": "Wähle ein Level, um mit dem Lernen zu beginnen",
 		"startLearning": "Lernen starten",
 		"comingSoon": "Demnächst verfügbar",
@@ -230,10 +232,13 @@
 		},
 		"typeAnswer": "Gib deine Antwort ein...",
 		"typeTranslation": "Gib deine Übersetzung ein...",
-		"tapToMatch": "Tippe, um die spanischen Wörter mit ihren englischen Übersetzungen zu verbinden",
+		"tapToMatch": "Tippe, um die Wörter der Zielsprache mit ihren englischen Übersetzungen zu verbinden",
 		"matched": "Zugeordnet",
 		"languages": {
 			"spanish": "Spanisch",
+			"japanese": "Japanisch",
+			"italian": "Italienisch",
+			"targetLanguage": "Zielsprache",
 			"english": "Englisch",
 			"german": "Deutsch"
 		},
@@ -354,6 +359,9 @@
 		"title": "Einstellungen",
 		"language": "Sprache",
 		"languageDescription": "Wähle deine bevorzugte Oberflächensprache",
+		"learningLanguage": "Lernsprache",
+		"learningLanguageDescription": "Wähle aus, welche Sprache du lernen möchtest. Dein Fortschritt wird für jede Sprache separat gespeichert.",
+		"learningLanguageChanged": "Lernsprache geändert!",
 		"profileDescription": "Aktualisiere deinen Anzeigenamen und Profilinformationen.",
 		"profileUpdated": "Profil erfolgreich aktualisiert!",
 		"emailCannotChange": "E-Mail kann nicht geändert werden.",
@@ -420,7 +428,7 @@
 			"apiKeyRequiredDesc": "Du musst deinen OpenAI API-Schlüssel konfigurieren, um den KI-Lektionsgenerator zu verwenden.",
 			"configureApiKey": "API-Schlüssel konfigurieren",
 			"generateNew": "Neue Lektion generieren",
-			"generateDesc": "Verwende KI, um automatisch eine vollständige Spanisch-Lektion mit Fragen zu erstellen.",
+			"generateDesc": "Verwende KI, um automatisch eine vollständige Sprachlektion mit Fragen zu erstellen.",
 			"selectUnit": "Einheit auswählen...",
 			"topic": "Lektionsthema",
 			"topicPlaceholder": "z.B. Restaurant-Vokabular, Vorstellungsgespräch-Phrasen",
@@ -498,10 +506,10 @@
 	},
 	"chat": {
 		"title": "Übungs-Chat",
-		"subtitle": "Übe Spanisch mit KI",
+		"subtitle": "Übe mit KI",
 		"newSession": "Neue Unterhaltung",
 		"noSessions": "Noch keine Unterhaltungen",
-		"startConversation": "Starte eine Unterhaltung, um Spanisch zu üben!",
+		"startConversation": "Starte eine Unterhaltung zum Üben!",
 		"typeMessage": "Schreibe deine Nachricht...",
 		"send": "Senden",
 		"voiceMode": "Sprache",

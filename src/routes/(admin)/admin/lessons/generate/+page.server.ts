@@ -1,36 +1,36 @@
 import type { PageServerLoad, Actions } from './$types';
 import { fail } from '@sveltejs/kit';
 import { db } from '$lib/server/db';
-import { lessons, units, levels, questions } from '$lib/server/db/schema';
+import { lessons, units, levels, questions, languages } from '$lib/server/db/schema';
 import { eq, desc } from 'drizzle-orm';
 import { getEffectiveApiKey, hasGlobalApiKey } from '$lib/server/openai/getApiKey';
 
 interface GeneratedQuestion {
-	type: 'multiple_choice' | 'fill_blank' | 'translation' | 'matching' | 'word_order' | 'speaking' | 'listening';
+	type:
+		| 'multiple_choice'
+		| 'fill_blank'
+		| 'translation'
+		| 'matching'
+		| 'word_order'
+		| 'speaking'
+		| 'listening';
 	content: {
-		// Multiple choice
 		questionEn?: string;
 		questionDe?: string;
 		options?: string[];
-		// Fill blank
 		sentenceEn?: string;
 		sentenceDe?: string;
 		hintEn?: string;
 		hintDe?: string;
-		// Translation
 		textEn?: string;
 		textDe?: string;
 		text?: string;
-		direction?: 'native_to_es' | 'es_to_native';
-		// Matching
-		pairs?: { spanish: string; english: string; german?: string }[];
-		// Word order
+		direction?: 'native_to_target' | 'target_to_native';
+		pairs?: { target: string; english: string; german?: string }[];
 		words?: string[];
 		instructionEn?: string;
 		instructionDe?: string;
-		// Speaking
 		textToSpeak?: string;
-		// Listening
 		textToHear?: string;
 		answerType?: 'type' | 'multiple_choice';
 	};
@@ -51,17 +51,19 @@ export const load: PageServerLoad = async ({ locals }) => {
 	const apiKey = await getEffectiveApiKey(userId);
 	const hasGlobal = await hasGlobalApiKey();
 
-	// Get all units for selection
 	const unitList = await db
 		.select({
 			id: units.id,
 			title: units.title,
 			levelCode: levels.code,
-			levelName: levels.name
+			levelName: levels.name,
+			languageCode: levels.languageCode,
+			languageName: languages.name
 		})
 		.from(units)
 		.innerJoin(levels, eq(units.levelId, levels.id))
-		.orderBy(levels.order, units.order);
+		.innerJoin(languages, eq(levels.languageCode, languages.code))
+		.orderBy(languages.order, levels.order, units.order);
 
 	return {
 		hasApiKey: !!apiKey,
@@ -88,17 +90,22 @@ export const actions: Actions = {
 		const apiKey = await getEffectiveApiKey(userId);
 
 		if (!apiKey) {
-			return fail(400, { error: 'Please configure your OpenAI API key in Settings, or ask an administrator to set a global key.' });
+			return fail(400, {
+				error:
+					'Please configure your OpenAI API key in Settings, or ask an administrator to set a global key.'
+			});
 		}
 
-		// Get unit info for context
 		const [unitInfo] = await db
 			.select({
 				title: units.title,
-				levelCode: levels.code
+				levelCode: levels.code,
+				languageCode: levels.languageCode,
+				languageName: languages.name
 			})
 			.from(units)
 			.innerJoin(levels, eq(units.levelId, levels.id))
+			.innerJoin(languages, eq(levels.languageCode, languages.code))
 			.where(eq(units.id, unitId))
 			.limit(1);
 
@@ -106,14 +113,16 @@ export const actions: Actions = {
 			return fail(400, { error: 'Unit not found' });
 		}
 
+		const langName = unitInfo.languageName;
+
 		try {
-			// Generate lesson content using OpenAI
 			const generatedLesson = await generateLessonWithAI(
 				apiKey,
 				topic,
 				unitInfo.levelCode,
 				questionCount,
-				difficulty
+				difficulty,
+				langName
 			);
 
 			// Get the highest order for this unit
@@ -180,20 +189,21 @@ async function generateLessonWithAI(
 	topic: string,
 	level: string,
 	questionCount: number,
-	difficulty: string
+	difficulty: string,
+	langName: string = 'Spanish'
 ): Promise<GeneratedLesson> {
-	// Distribution for all 7 question types
-	const mcCount = Math.floor(questionCount * 0.2); // 20% multiple choice
-	const fillCount = Math.floor(questionCount * 0.2); // 20% fill in blank
-	const transCount = Math.floor(questionCount * 0.15); // 15% translation
-	const matchCount = Math.floor(questionCount * 0.15); // 15% matching
-	const wordOrderCount = Math.floor(questionCount * 0.15); // 15% word order
-	const speakingCount = Math.floor(questionCount * 0.08); // 8% speaking
-	const listeningCount = questionCount - mcCount - fillCount - transCount - matchCount - wordOrderCount - speakingCount; // Rest listening
+	const mcCount = Math.floor(questionCount * 0.2);
+	const fillCount = Math.floor(questionCount * 0.2);
+	const transCount = Math.floor(questionCount * 0.15);
+	const matchCount = Math.floor(questionCount * 0.15);
+	const wordOrderCount = Math.floor(questionCount * 0.15);
+	const speakingCount = Math.floor(questionCount * 0.08);
+	const listeningCount =
+		questionCount - mcCount - fillCount - transCount - matchCount - wordOrderCount - speakingCount;
 
-	const prompt = `You are a Spanish language teacher creating a lesson about "${topic}" for CEFR level ${level} (${difficulty} difficulty).
+	const prompt = `You are a ${langName} language teacher creating a lesson about "${topic}" for CEFR level ${level} (${difficulty} difficulty).
 
-Generate a complete Spanish lesson in JSON format with:
+Generate a complete ${langName} lesson in JSON format with:
 1. A lesson title in English (short and descriptive)
 2. A lesson title in German (translation of the English title)
 3. A brief description in English (1-2 sentences)
@@ -225,47 +235,47 @@ Return ONLY valid JSON in this exact format (note the En/De suffixes for bilingu
     {
       "type": "multiple_choice",
       "content": {
-        "questionEn": "How do you say 'hello' in Spanish?",
-        "questionDe": "Wie sagt man 'Hallo' auf Spanisch?",
-        "options": ["Hola", "Adiós", "Gracias", "Por favor"]
+        "questionEn": "How do you say 'hello' in ${langName}?",
+        "questionDe": "Wie sagt man 'Hallo' auf ${langName}?",
+        "options": ["Option1", "Option2", "Option3", "Option4"]
       },
-      "correctAnswer": "Hola"
+      "correctAnswer": "Option1"
     },
     {
       "type": "fill_blank",
       "content": {
-        "sentenceEn": "Complete: _____ días, señor.",
-        "sentenceDe": "Vervollständige: _____ días, señor.",
-        "hintEn": "Good morning",
-        "hintDe": "Guten Morgen"
+        "sentenceEn": "Complete: _____ ...",
+        "sentenceDe": "Vervollständige: _____ ...",
+        "hintEn": "English hint",
+        "hintDe": "German hint"
       },
-      "correctAnswer": "Buenos"
+      "correctAnswer": "answer"
     },
     {
       "type": "translation",
       "content": {
-        "textEn": "Good night",
-        "textDe": "Gute Nacht",
-        "direction": "native_to_es"
+        "textEn": "English text",
+        "textDe": "German text",
+        "direction": "native_to_target"
       },
-      "correctAnswer": "Buenas noches"
+      "correctAnswer": "target language answer"
     },
     {
       "type": "translation",
       "content": {
-        "text": "Buenas noches",
-        "direction": "es_to_native"
+        "text": "Target language text",
+        "direction": "target_to_native"
       },
-      "correctAnswer": "Good night|Gute Nacht"
+      "correctAnswer": "English|German"
     },
     {
       "type": "matching",
       "content": {
         "pairs": [
-          {"spanish": "Hola", "english": "Hello", "german": "Hallo"},
-          {"spanish": "Adiós", "english": "Goodbye", "german": "Auf Wiedersehen"},
-          {"spanish": "Gracias", "english": "Thank you", "german": "Danke"},
-          {"spanish": "Por favor", "english": "Please", "german": "Bitte"}
+          {"target": "word1", "english": "Hello", "german": "Hallo"},
+          {"target": "word2", "english": "Goodbye", "german": "Auf Wiedersehen"},
+          {"target": "word3", "english": "Thank you", "german": "Danke"},
+          {"target": "word4", "english": "Please", "german": "Bitte"}
         ]
       },
       "correctAnswer": "all_matched"
@@ -273,28 +283,28 @@ Return ONLY valid JSON in this exact format (note the En/De suffixes for bilingu
     {
       "type": "word_order",
       "content": {
-        "words": ["Hola", "cómo", "estás"],
-        "instructionEn": "Arrange to say: 'Hello, how are you?'",
-        "instructionDe": "Ordne: 'Hallo, wie geht es dir?'"
+        "words": ["word1", "word2", "word3"],
+        "instructionEn": "Arrange to say: 'phrase'",
+        "instructionDe": "Ordne: 'phrase'"
       },
-      "correctAnswer": "Hola cómo estás"
+      "correctAnswer": "word1 word2 word3"
     },
     {
       "type": "speaking",
       "content": {
-        "textToSpeak": "Buenos días",
-        "hintEn": "Good morning",
-        "hintDe": "Guten Morgen"
+        "textToSpeak": "target language phrase",
+        "hintEn": "English hint",
+        "hintDe": "German hint"
       },
-      "correctAnswer": "Buenos días"
+      "correctAnswer": "target language phrase"
     },
     {
       "type": "listening",
       "content": {
-        "textToHear": "Gracias",
+        "textToHear": "target language phrase",
         "answerType": "type"
       },
-      "correctAnswer": "Gracias"
+      "correctAnswer": "target language phrase"
     }
   ]
 }
@@ -302,12 +312,12 @@ Return ONLY valid JSON in this exact format (note the En/De suffixes for bilingu
 IMPORTANT RULES:
 - All multiple_choice questions must have exactly 4 options
 - Fill_blank sentences MUST contain "_____" (5 underscores) for the blank
-- Translation direction: use "native_to_es" (English/German to Spanish) or "es_to_native" (Spanish to English/German)
-- For es_to_native translations, correctAnswer can have alternatives separated by | (e.g., "Hello|Hallo")
-- Matching questions must have exactly 4 pairs with spanish, english, and german fields
+- Translation direction: use "native_to_target" (English/German to ${langName}) or "target_to_native" (${langName} to English/German)
+- For target_to_native translations, correctAnswer can have alternatives separated by | (e.g., "Hello|Hallo")
+- Matching questions must have exactly 4 pairs with target, english, and german fields
 - Word_order: provide words array and both English and German instructions
-- Speaking: textToSpeak is the Spanish text to pronounce, with English/German hints
-- Listening: textToHear is Spanish, answerType is always "type"
+- Speaking: textToSpeak is the ${langName} text to pronounce, with English/German hints
+- Listening: textToHear is ${langName}, answerType is always "type"
 - Make content educational and appropriate for ${level} level
 - Use vocabulary related to "${topic}"
 - Ensure German translations are accurate and natural`;
@@ -323,8 +333,7 @@ IMPORTANT RULES:
 			messages: [
 				{
 					role: 'system',
-					content:
-						'You are a helpful Spanish language teacher. Always respond with valid JSON only, no markdown formatting.'
+					content: `You are a helpful ${langName} language teacher. Always respond with valid JSON only, no markdown formatting.`
 				},
 				{ role: 'user', content: prompt }
 			],
@@ -406,25 +415,24 @@ function transformQuestion(q: GeneratedQuestion): GeneratedQuestion {
 			}
 			break;
 
-		case 'translation':
-			// Convert old direction values (cast to string for comparison with old format)
-			if ((content.direction as string) === 'en_to_es') {
-				content.direction = 'native_to_es';
-			} else if ((content.direction as string) === 'es_to_en') {
-				content.direction = 'es_to_native';
+		case 'translation': {
+			const dir = content.direction as string;
+			if (dir === 'en_to_es' || dir === 'native_to_es') {
+				content.direction = 'native_to_target';
+			} else if (dir === 'es_to_en' || dir === 'es_to_native') {
+				content.direction = 'target_to_native';
 			}
-			// Convert old 'text' field for native_to_es direction
-			if (content.direction === 'native_to_es' && 'text' in content && !content.textEn) {
+			if (content.direction === 'native_to_target' && 'text' in content && !content.textEn) {
 				content.textEn = content.text as string;
 				delete content.text;
 			}
 			break;
+		}
 
 		case 'matching':
-			// Ensure pairs have german field (even if empty)
 			if (content.pairs) {
-				content.pairs = content.pairs.map(p => ({
-					spanish: p.spanish,
+				content.pairs = content.pairs.map((p: Record<string, string>) => ({
+					target: p.target || p.spanish,
 					english: p.english,
 					german: p.german || ''
 				}));

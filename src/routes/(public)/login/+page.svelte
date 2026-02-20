@@ -55,7 +55,9 @@
 			</div>
 
 			<div>
-				<label for="password" class="mb-2 block font-medium text-text-light">{t('auth.password')}</label>
+				<label for="password" class="mb-2 block font-medium text-text-light"
+					>{t('auth.password')}</label
+				>
 				<input
 					type="password"
 					id="password"
@@ -65,7 +67,7 @@
 					placeholder={t('auth.passwordPlaceholder')}
 					minlength="8"
 					maxlength="50"
-					pattern="[a-zA-Z0-9!@#$%^&*()\-_./]+"
+					pattern="[a-zA-Z0-9!@#$%^&*\(\)\-_.\/]+"
 					title="Only ASCII characters allowed: letters, numbers, and !@#$%^&*()-_./"
 				/>
 			</div>

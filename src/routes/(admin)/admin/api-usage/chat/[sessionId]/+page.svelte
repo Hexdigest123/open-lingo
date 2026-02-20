@@ -18,7 +18,7 @@
 	</a>
 
 	<!-- Session Info -->
-	<div class="mb-6 rounded-xl bg-card-bg p-4">
+	<div class="bg-card-bg mb-6 rounded-xl p-4">
 		<h1 class="mb-2 text-xl font-bold text-text-light">
 			{data.session.title || 'Untitled Session'}
 		</h1>
@@ -56,7 +56,12 @@
 		</h2>
 
 		{#each data.messages as message}
-			{@const bgClass = message.role === 'assistant' ? 'bg-primary/10' : message.role === 'user' ? 'bg-success/10' : 'bg-card-bg'}
+			{@const bgClass =
+				message.role === 'assistant'
+					? 'bg-primary/10'
+					: message.role === 'user'
+						? 'bg-success/10'
+						: 'bg-card-bg'}
 			<div class="rounded-xl p-4 {bgClass}">
 				<div class="mb-2 flex items-center justify-between">
 					<span
@@ -65,7 +70,11 @@
 						class:text-success={message.role === 'user'}
 						class:text-text-muted={message.role === 'system'}
 					>
-						{message.role === 'assistant' ? 'Profesora Ana' : message.role === 'user' ? 'User' : 'System'}
+						{message.role === 'assistant'
+							? 'AI Tutor'
+							: message.role === 'user'
+								? 'User'
+								: 'System'}
 					</span>
 					<span class="text-xs text-text-muted">
 						{formatDate(message.createdAt)}
@@ -76,7 +85,7 @@
 		{/each}
 
 		{#if data.messages.length === 0}
-			<div class="rounded-xl bg-card-bg p-8 text-center text-text-muted">
+			<div class="bg-card-bg rounded-xl p-8 text-center text-text-muted">
 				No messages in this session
 			</div>
 		{/if}

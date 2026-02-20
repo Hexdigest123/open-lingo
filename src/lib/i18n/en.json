@@ -35,7 +35,7 @@
 		"loginTitle": "Welcome back!",
 		"loginSubtitle": "Log in to continue your learning journey",
 		"registerTitle": "Create your account",
-		"registerSubtitle": "Start learning Spanish for free",
+		"registerSubtitle": "Start learning languages for free",
 		"loginButton": "Log in",
 		"registerButton": "Create account",
 		"noAccount": "Don't have an account?",
@@ -91,7 +91,7 @@
 	},
 	"landing": {
 		"title": "The free, fun, and effective way to learn",
-		"titleHighlight": "Spanish",
+		"titleHighlight": "Languages",
 		"accountDeleted": "Your account has been successfully deleted. We're sorry to see you go!",
 		"subtitle": "Learn with AI-powered lessons, practice speaking with voice mode, and stay motivated with gamification.",
 		"getStarted": "Get started for free",
@@ -137,12 +137,13 @@
 		"levelsTitle": "From Beginner to Fluent",
 		"levelsSubtitle": "Our curriculum covers all CEFR levels from A1 to C2",
 		"ctaTitle": "Ready to start learning?",
-		"ctaSubtitle": "Join thousands of learners and start your Spanish journey today.",
+		"ctaSubtitle": "Join thousands of learners and start your language journey today.",
 		"ctaButton": "Create free account",
-		"footer": "OpenLingo - Learn Spanish the fun way"
+		"footer": "OpenLingo - Learn languages the fun way"
 	},
 	"dashboard": {
 		"welcome": "Welcome back",
+		"greeting": "Welcome back, {name}!",
 		"continueTitle": "Continue Learning",
 		"continueSubtitle": "Pick up where you left off",
 		"startButton": "Start Learning",
@@ -170,7 +171,7 @@
 		}
 	},
 	"lessons": {
-		"title": "Learn Spanish",
+		"title": "Learn Languages",
 		"subtitle": "Choose a level to start learning",
 		"startLearning": "Start Learning",
 		"comingSoon": "Coming soon",
@@ -197,7 +198,8 @@
 		}
 	},
 	"lesson": {
-		"spanishLessons": "Spanish Lessons",
+		"spanishLessons": "Lessons",
+		"languageLessons": "{language} Lessons",
 		"chooseLevelToStart": "Choose a level to start learning",
 		"startLearning": "Start Learning",
 		"comingSoon": "Coming soon",
@@ -227,10 +229,13 @@
 		},
 		"typeAnswer": "Type your answer...",
 		"typeTranslation": "Type your translation...",
-		"tapToMatch": "Tap to match the Spanish words with their English translations",
+		"tapToMatch": "Tap to match the target language words with their English translations",
 		"matched": "Matched",
 		"languages": {
 			"spanish": "Spanish",
+			"japanese": "Japanese",
+			"italian": "Italian",
+			"targetLanguage": "Target Language",
 			"english": "English",
 			"german": "German"
 		},
@@ -351,6 +356,9 @@
 		"title": "Settings",
 		"language": "Language",
 		"languageDescription": "Choose your preferred interface language",
+		"learningLanguage": "Learning Language",
+		"learningLanguageDescription": "Choose which language you want to learn. Your progress is saved separately for each language.",
+		"learningLanguageChanged": "Learning language changed!",
 		"profileDescription": "Update your display name and profile information.",
 		"profileUpdated": "Profile updated successfully!",
 		"emailCannotChange": "Email cannot be changed.",
@@ -417,7 +425,7 @@
 			"apiKeyRequiredDesc": "You need to configure your OpenAI API key to use the AI lesson generator.",
 			"configureApiKey": "Configure API Key",
 			"generateNew": "Generate New Lesson",
-			"generateDesc": "Use AI to automatically create a complete Spanish lesson with questions.",
+			"generateDesc": "Use AI to automatically create a complete language lesson with questions.",
 			"selectUnit": "Select a unit...",
 			"topic": "Lesson Topic",
 			"topicPlaceholder": "e.g., Restaurant vocabulary, Job interview phrases",
@@ -495,10 +503,10 @@
 	},
 	"chat": {
 		"title": "Practice Chat",
-		"subtitle": "Practice Spanish with AI",
+		"subtitle": "Practice with AI",
 		"newSession": "New Conversation",
 		"noSessions": "No conversations yet",
-		"startConversation": "Start a conversation to practice Spanish!",
+		"startConversation": "Start a conversation to practice!",
 		"typeMessage": "Type your message...",
 		"send": "Send",
 		"voiceMode": "Voice",

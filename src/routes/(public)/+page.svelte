@@ -9,10 +9,10 @@
 </script>
 
 <svelte:head>
-	<title>OpenLingo - Learn Spanish for Free</title>
+	<title>OpenLingo - Learn Languages for Free</title>
 	<meta
 		name="description"
-		content="Learn Spanish with AI-powered lessons, voice practice, and gamification. Free and fun!"
+		content="Learn languages with AI-powered lessons, voice practice, and gamification. Practice Spanish, Japanese, and Italian for free."
 	/>
 </svelte:head>
 

@@ -29,7 +29,9 @@ export function isEmailConfigured(): boolean {
  */
 function getTransporter(): Transporter | null {
 	if (!isEmailConfigured()) {
-		console.warn('Email not configured. Set SMTP_HOST, SMTP_USER, and SMTP_PASS environment variables.');
+		console.warn(
+			'Email not configured. Set SMTP_HOST, SMTP_USER, and SMTP_PASS environment variables.'
+		);
 		return null;
 	}
 
@@ -53,7 +55,12 @@ function getTransporter(): Transporter | null {
 /**
  * Send an email
  */
-async function sendEmail(to: string, subject: string, html: string, text?: string): Promise<boolean> {
+async function sendEmail(
+	to: string,
+	subject: string,
+	html: string,
+	text?: string
+): Promise<boolean> {
 	const transport = getTransporter();
 	if (!transport) {
 		console.log(`[Email] Would send to ${to}: ${subject}`);
@@ -80,11 +87,15 @@ async function sendEmail(to: string, subject: string, html: string, text?: strin
 /**
  * Send an invitation email
  */
-export async function sendInvitationEmail(to: string, code: string, inviterName?: string): Promise<boolean> {
+export async function sendInvitationEmail(
+	to: string,
+	code: string,
+	inviterName?: string
+): Promise<boolean> {
 	const appUrl = publicEnv.PUBLIC_APP_URL || 'http://localhost:5173';
 	const inviteUrl = `${appUrl}/register?invite=${code}`;
 
-	const subject = 'You\'ve been invited to OpenLingo!';
+	const subject = "You've been invited to OpenLingo!";
 	const html = `
 		<!DOCTYPE html>
 		<html>
@@ -95,13 +106,13 @@ export async function sendInvitationEmail(to: string, code: string, inviterName?
 		<body style="font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif; line-height: 1.6; color: #3c3c3c; max-width: 600px; margin: 0 auto; padding: 20px;">
 			<div style="text-align: center; margin-bottom: 30px;">
 				<h1 style="color: #58cc02; margin: 0;">OpenLingo</h1>
-				<p style="color: #6b7280; margin-top: 5px;">Learn Spanish the fun way</p>
+				<p style="color: #6b7280; margin-top: 5px;">Learn languages the fun way</p>
 			</div>
 
 			<div style="background: #f7f7f7; border-radius: 12px; padding: 30px; margin-bottom: 20px;">
 				<h2 style="margin-top: 0; color: #3c3c3c;">You're Invited!</h2>
-				<p>${inviterName ? `<strong>${escapeHtml(inviterName)}</strong> has invited you to join OpenLingo.` : 'You\'ve been invited to join OpenLingo.'}</p>
-				<p>Start learning Spanish today with AI-powered lessons, voice practice, and gamification.</p>
+				<p>${inviterName ? `<strong>${escapeHtml(inviterName)}</strong> has invited you to join OpenLingo.` : "You've been invited to join OpenLingo."}</p>
+				<p>Start learning languages today with AI-powered lessons, voice practice, and gamification.</p>
 
 				<div style="text-align: center; margin: 30px 0;">
 					<a href="${inviteUrl}" style="display: inline-block; background: #58cc02; color: white; text-decoration: none; padding: 14px 28px; border-radius: 12px; font-weight: bold; font-size: 16px;">
@@ -125,7 +136,10 @@ export async function sendInvitationEmail(to: string, code: string, inviterName?
 /**
  * Send approval notification email
  */
-export async function sendApprovalNotificationEmail(to: string, displayName: string): Promise<boolean> {
+export async function sendApprovalNotificationEmail(
+	to: string,
+	displayName: string
+): Promise<boolean> {
 	const appUrl = publicEnv.PUBLIC_APP_URL || 'http://localhost:5173';
 	const loginUrl = `${appUrl}/login`;
 
@@ -140,13 +154,13 @@ export async function sendApprovalNotificationEmail(to: string, displayName: str
 		<body style="font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif; line-height: 1.6; color: #3c3c3c; max-width: 600px; margin: 0 auto; padding: 20px;">
 			<div style="text-align: center; margin-bottom: 30px;">
 				<h1 style="color: #58cc02; margin: 0;">OpenLingo</h1>
-				<p style="color: #6b7280; margin-top: 5px;">Learn Spanish the fun way</p>
+				<p style="color: #6b7280; margin-top: 5px;">Learn languages the fun way</p>
 			</div>
 
 			<div style="background: #f7f7f7; border-radius: 12px; padding: 30px; margin-bottom: 20px;">
 				<h2 style="margin-top: 0; color: #3c3c3c;">Welcome, ${escapeHtml(displayName)}!</h2>
 				<p>Great news! Your OpenLingo account has been approved by an administrator.</p>
-				<p>You can now log in and start your Spanish learning journey.</p>
+				<p>You can now log in and start your language learning journey.</p>
 
 				<div style="text-align: center; margin: 30px 0;">
 					<a href="${loginUrl}" style="display: inline-block; background: #58cc02; color: white; text-decoration: none; padding: 14px 28px; border-radius: 12px; font-weight: bold; font-size: 16px;">
@@ -168,7 +182,10 @@ export async function sendApprovalNotificationEmail(to: string, displayName: str
 /**
  * Send rejection notification email
  */
-export async function sendRejectionNotificationEmail(to: string, displayName: string): Promise<boolean> {
+export async function sendRejectionNotificationEmail(
+	to: string,
+	displayName: string
+): Promise<boolean> {
 	const subject = 'OpenLingo account update';
 	const html = `
 		<!DOCTYPE html>
@@ -180,7 +197,7 @@ export async function sendRejectionNotificationEmail(to: string, displayName: st
 		<body style="font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif; line-height: 1.6; color: #3c3c3c; max-width: 600px; margin: 0 auto; padding: 20px;">
 			<div style="text-align: center; margin-bottom: 30px;">
 				<h1 style="color: #58cc02; margin: 0;">OpenLingo</h1>
-				<p style="color: #6b7280; margin-top: 5px;">Learn Spanish the fun way</p>
+				<p style="color: #6b7280; margin-top: 5px;">Learn languages the fun way</p>
 			</div>
 
 			<div style="background: #f7f7f7; border-radius: 12px; padding: 30px; margin-bottom: 20px;">
@@ -217,7 +234,7 @@ export async function sendPasswordResetEmail(to: string, resetToken: string): Pr
 		<body style="font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif; line-height: 1.6; color: #3c3c3c; max-width: 600px; margin: 0 auto; padding: 20px;">
 			<div style="text-align: center; margin-bottom: 30px;">
 				<h1 style="color: #58cc02; margin: 0;">OpenLingo</h1>
-				<p style="color: #6b7280; margin-top: 5px;">Learn Spanish the fun way</p>
+				<p style="color: #6b7280; margin-top: 5px;">Learn languages the fun way</p>
 			</div>
 
 			<div style="background: #f7f7f7; border-radius: 12px; padding: 30px; margin-bottom: 20px;">
