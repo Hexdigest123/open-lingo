@@ -25,13 +25,13 @@
 
 	<!-- Registration Settings Section -->
 	<div class="card">
-		<h2 class="text-xl font-bold text-text-light">Registration Settings</h2>
-		<p class="mt-2 text-text-muted">Control how new users can register for the platform.</p>
+		<h2 class="text-xl font-bold text-text-light">{t('admin.settings.registration.title')}</h2>
+		<p class="mt-2 text-text-muted">{t('admin.settings.registration.description')}</p>
 
 		<!-- Signup Mode -->
 		<div class="mt-6">
-			<h3 class="font-semibold text-text-light">Signup Mode</h3>
-			<p class="mt-1 text-sm text-text-muted">Choose how users can create accounts.</p>
+			<h3 class="font-semibold text-text-light">{t('admin.settings.signupMode.title')}</h3>
+			<p class="mt-1 text-sm text-text-muted">{t('admin.settings.signupMode.description')}</p>
 
 			{#if form?.success && lastAction === 'updateSignupMode'}
 				<div class="mt-3 rounded-xl bg-success/10 p-3 text-sm text-success">
@@ -56,8 +56,8 @@
 						class="h-4 w-4 text-primary"
 					/>
 					<div>
-						<div class="font-medium text-text-light">Open Registration</div>
-						<div class="text-sm text-text-muted">Anyone can create an account</div>
+						<div class="font-medium text-text-light">{t('admin.settings.signupMode.open')}</div>
+						<div class="text-sm text-text-muted">{t('admin.settings.signupMode.openDesc')}</div>
 					</div>
 				</label>
 
@@ -72,8 +72,12 @@
 						class="h-4 w-4 text-primary"
 					/>
 					<div>
-						<div class="font-medium text-text-light">Invitation Only</div>
-						<div class="text-sm text-text-muted">Users need an invitation code to register</div>
+						<div class="font-medium text-text-light">
+							{t('admin.settings.signupMode.invitation')}
+						</div>
+						<div class="text-sm text-text-muted">
+							{t('admin.settings.signupMode.invitationDesc')}
+						</div>
 					</div>
 				</label>
 
@@ -88,34 +92,40 @@
 						class="h-4 w-4 text-primary"
 					/>
 					<div>
-						<div class="font-medium text-text-light">Requires Approval</div>
-						<div class="text-sm text-text-muted">New accounts must be approved by an admin</div>
+						<div class="font-medium text-text-light">{t('admin.settings.signupMode.approval')}</div>
+						<div class="text-sm text-text-muted">{t('admin.settings.signupMode.approvalDesc')}</div>
 					</div>
 				</label>
 
-				<button type="submit" class="btn btn-primary btn-md"> Save Signup Mode </button>
+				<button type="submit" class="btn btn-primary btn-md"
+					>{t('admin.settings.signupMode.save')}</button
+				>
 			</form>
 
 			{#if data.signupMode === 'invitation'}
 				<div class="mt-4 rounded-xl bg-primary/10 p-4 text-sm text-primary">
-					<strong>Note:</strong> Manage invitations in the
-					<a href="/admin/invitations" class="underline">Invitations</a> page.
+					<strong>{t('common.note')}</strong>
+					{@html t('admin.settings.signupMode.invitationsNote', {
+						link: `<a href="/admin/invitations" class="underline">${t('admin.nav.invitations')}</a>`
+					})}
 				</div>
 			{/if}
 
 			{#if data.signupMode === 'approval'}
 				<div class="mt-4 rounded-xl bg-primary/10 p-4 text-sm text-primary">
-					<strong>Note:</strong> Approve pending users in the
-					<a href="/admin/approvals" class="underline">Pending Approvals</a> page.
+					<strong>{t('common.note')}</strong>
+					{@html t('admin.settings.signupMode.approvalsNote', {
+						link: `<a href="/admin/approvals" class="underline">${t('admin.nav.approvals')}</a>`
+					})}
 				</div>
 			{/if}
 		</div>
 
 		<!-- Domain Restriction -->
 		<div class="mt-8 border-t border-border-light pt-6">
-			<h3 class="font-semibold text-text-light">Email Domain Restriction</h3>
+			<h3 class="font-semibold text-text-light">{t('admin.settings.domainRestriction.title')}</h3>
 			<p class="mt-1 text-sm text-text-muted">
-				Restrict registration to specific email domains. Leave empty to allow all domains.
+				{t('admin.settings.domainRestriction.description')}
 			</p>
 
 			{#if form?.success && lastAction === 'updateAllowedDomains'}
@@ -132,7 +142,7 @@
 			<form method="POST" action="?/updateAllowedDomains" use:enhance class="mt-4 space-y-4">
 				<div>
 					<label for="allowedDomains" class="block text-sm font-medium text-text-light">
-						Allowed Domains (comma-separated)
+						{t('admin.settings.domainRestriction.label')}
 					</label>
 					<input
 						type="text"
@@ -145,12 +155,16 @@
 					<p class="mt-1 text-xs text-text-muted">Example: example.com, company.org</p>
 				</div>
 
-				<button type="submit" class="btn btn-primary btn-md"> Save Domain Restriction </button>
+				<button type="submit" class="btn btn-primary btn-md"
+					>{t('admin.settings.domainRestriction.save')}</button
+				>
 			</form>
 
 			{#if data.allowedDomains.length > 0}
 				<div class="mt-4">
-					<span class="text-sm text-text-muted">Currently restricted to:</span>
+					<span class="text-sm text-text-muted"
+						>{t('admin.settings.domainRestriction.currentlyRestricted')}</span
+					>
 					<div class="mt-2 flex flex-wrap gap-2">
 						{#each data.allowedDomains as domain}
 							<span class="rounded-full bg-primary/10 px-3 py-1 text-sm text-primary">
@@ -165,8 +179,8 @@
 
 	<!-- Hearts System Settings -->
 	<div class="card">
-		<h2 class="text-xl font-bold text-text-light">Hearts System</h2>
-		<p class="mt-2 text-text-muted">Control the gamification hearts system for all users.</p>
+		<h2 class="text-xl font-bold text-text-light">{t('admin.settings.hearts.title')}</h2>
+		<p class="mt-2 text-text-muted">{t('admin.settings.hearts.description')}</p>
 
 		{#if form?.success && lastAction === 'toggleGlobalHearts'}
 			<div class="mt-3 rounded-xl bg-success/10 p-3 text-sm text-success">
@@ -180,13 +194,15 @@
 		{/if}
 
 		<div class="mt-4 flex items-center gap-2">
-			<span class="text-sm text-text-muted">Current status:</span>
+			<span class="text-sm text-text-muted">{t('admin.settings.hearts.currentStatus')}</span>
 			{#if data.heartsDisabledGlobal}
 				<span class="rounded-full bg-error/10 px-3 py-1 text-sm text-error">
-					Disabled globally
+					{t('admin.settings.hearts.disabledGlobally')}
 				</span>
 			{:else}
-				<span class="rounded-full bg-success/10 px-3 py-1 text-sm text-success"> Enabled </span>
+				<span class="rounded-full bg-success/10 px-3 py-1 text-sm text-success">
+					{t('admin.settings.hearts.enabled')}
+				</span>
 			{/if}
 		</div>
 
@@ -200,14 +216,17 @@
 				type="submit"
 				class="btn {data.heartsDisabledGlobal ? 'btn-success' : 'btn-error'} btn-md"
 			>
-				{data.heartsDisabledGlobal ? 'Enable Hearts System' : 'Disable Hearts System'}
+				{data.heartsDisabledGlobal
+					? t('admin.settings.hearts.enable')
+					: t('admin.settings.hearts.disable')}
 			</button>
 		</form>
 
 		<div class="mt-4 rounded-xl bg-yellow/10 p-4 text-sm text-yellow-dark">
-			<strong>Note:</strong> When disabled globally, users won't lose hearts for incorrect answers.
-			You can also disable hearts for individual users in the
-			<a href="/admin/users" class="underline">Users</a> page.
+			<strong>{t('common.note')}</strong>
+			{@html t('admin.settings.hearts.note', {
+				link: `<a href="/admin/users" class="underline">${t('admin.nav.users')}</a>`
+			})}
 		</div>
 	</div>
 
@@ -318,9 +337,9 @@
 
 	<!-- Email Configuration Section -->
 	<div class="card">
-		<h2 class="text-xl font-bold text-text-light">Email Configuration</h2>
+		<h2 class="text-xl font-bold text-text-light">{t('admin.settings.emailConfig.title')}</h2>
 		<p class="mt-2 text-text-muted">
-			Email is used to send invitation links and approval notifications.
+			{t('admin.settings.emailConfig.description')}
 		</p>
 
 		<!-- Status -->
@@ -330,14 +349,14 @@
 					class="flex items-center gap-2 rounded-full bg-success/10 px-3 py-1 text-sm text-success"
 				>
 					<span>✓</span>
-					Email configured
+					{t('admin.settings.emailConfig.configured')}
 				</span>
 			{:else}
 				<span
 					class="flex items-center gap-2 rounded-full bg-yellow/10 px-3 py-1 text-sm text-yellow-dark"
 				>
 					<span>!</span>
-					Email not configured
+					{t('admin.settings.emailConfig.notConfigured')}
 				</span>
 			{/if}
 		</div>
@@ -356,11 +375,13 @@
 
 		{#if data.emailConfigured}
 			<form method="POST" action="?/testEmail" use:enhance class="mt-4">
-				<button type="submit" class="btn btn-primary btn-sm"> Test Email Connection </button>
+				<button type="submit" class="btn btn-primary btn-sm"
+					>{t('admin.settings.emailConfig.testConnection')}</button
+				>
 			</form>
 		{:else}
 			<div class="mt-4 rounded-xl bg-yellow/10 p-4 text-sm text-yellow-dark">
-				<p class="font-medium">To enable email, set these environment variables:</p>
+				<p class="font-medium">{t('admin.settings.emailConfig.envVarsTitle')}</p>
 				<ul class="mt-2 space-y-1 font-mono text-xs">
 					<li>SMTP_HOST - SMTP server hostname</li>
 					<li>SMTP_PORT - SMTP port (default: 587)</li>

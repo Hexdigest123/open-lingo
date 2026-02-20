@@ -11,7 +11,7 @@
 		{ href: '/admin', label: 'admin.nav.dashboard', icon: 'BarChart3' },
 		{ href: '/admin/lessons', label: 'admin.nav.lessons', icon: 'BookOpen' },
 		{ href: '/admin/users', label: 'admin.nav.users', icon: 'Users' },
-		{ href: '/admin/api-usage', label: 'API Usage', icon: 'TrendingUp' },
+		{ href: '/admin/api-usage', label: 'admin.nav.apiUsage', icon: 'TrendingUp' },
 		{ href: '/admin/settings', label: 'admin.nav.settings', icon: 'Settings' }
 	];
 

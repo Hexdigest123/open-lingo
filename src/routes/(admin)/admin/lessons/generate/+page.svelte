@@ -182,9 +182,18 @@
 						<li>&#x2022; {Math.floor(questionCount * 0.2)} {t('admin.lessons.fillBlank')}</li>
 						<li>&#x2022; {Math.floor(questionCount * 0.15)} {t('admin.lessons.translation')}</li>
 						<li>&#x2022; {Math.floor(questionCount * 0.15)} {t('admin.lessons.matching')}</li>
-						<li>&#x2022; {Math.floor(questionCount * 0.15)} Word Order</li>
-						<li>&#x2022; {Math.floor(questionCount * 0.08)} Speaking</li>
-						<li>&#x2022; {questionCount - Math.floor(questionCount * 0.2) - Math.floor(questionCount * 0.2) - Math.floor(questionCount * 0.15) - Math.floor(questionCount * 0.15) - Math.floor(questionCount * 0.15) - Math.floor(questionCount * 0.08)} Listening</li>
+						<li>&#x2022; {Math.floor(questionCount * 0.15)} {t('admin.lessons.wordOrder')}</li>
+						<li>&#x2022; {Math.floor(questionCount * 0.08)} {t('admin.lessons.speaking')}</li>
+						<li>
+							&#x2022; {questionCount -
+								Math.floor(questionCount * 0.2) -
+								Math.floor(questionCount * 0.2) -
+								Math.floor(questionCount * 0.15) -
+								Math.floor(questionCount * 0.15) -
+								Math.floor(questionCount * 0.15) -
+								Math.floor(questionCount * 0.08)}
+							{t('admin.lessons.listening')}
+						</li>
 					</ul>
 				</div>
 
@@ -195,7 +204,7 @@
 					class="btn btn-success btn-lg w-full"
 				>
 					{#if isGenerating}
-						<span class="inline-block animate-spin mr-2">&#9881;</span>
+						<span class="mr-2 inline-block animate-spin">&#9881;</span>
 						{t('admin.lessons.generating')}
 					{:else}
 						&#9889; {t('admin.lessons.generateLesson')}

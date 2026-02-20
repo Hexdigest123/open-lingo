@@ -1,6 +1,7 @@
 <script lang="ts">
 	import { enhance } from '$app/forms';
 	import type { QuestionType } from '$lib/server/db/schema';
+	import { t } from '$lib/i18n/index.svelte';
 
 	type Question = {
 		id: number;
@@ -17,13 +18,13 @@
 	}
 
 	const QUESTION_TYPES: { value: QuestionType; label: string }[] = [
-		{ value: 'multiple_choice', label: 'Multiple Choice' },
-		{ value: 'fill_blank', label: 'Fill in the Blank' },
-		{ value: 'translation', label: 'Translation' },
-		{ value: 'matching', label: 'Matching' },
-		{ value: 'word_order', label: 'Word Order' },
-		{ value: 'speaking', label: 'Speaking' },
-		{ value: 'listening', label: 'Listening' }
+		{ value: 'multiple_choice', label: 'admin.questions.types.multipleChoice' },
+		{ value: 'fill_blank', label: 'admin.questions.types.fillBlank' },
+		{ value: 'translation', label: 'admin.questions.types.translation' },
+		{ value: 'matching', label: 'admin.questions.types.matching' },
+		{ value: 'word_order', label: 'admin.questions.types.wordOrder' },
+		{ value: 'speaking', label: 'admin.questions.types.speaking' },
+		{ value: 'listening', label: 'admin.questions.types.listening' }
 	];
 
 	let { mode, question, lessonId, onClose }: Props = $props();
@@ -223,11 +224,11 @@
 				} else {
 					// Try to extract error
 					const match = text.match(/"error":"([^"]+)"/);
-					formError = match ? match[1] : 'An error occurred';
+					formError = match ? match[1] : t('admin.questions.errors.generic');
 				}
 			})
 			.catch(() => {
-				formError = 'Network error. Please try again.';
+				formError = t('admin.questions.errors.network');
 			})
 			.finally(() => {
 				isSubmitting = false;
@@ -236,10 +237,10 @@
 </script>
 
 <div class="fixed inset-0 z-50 flex items-center justify-center bg-black/50 p-4">
-	<div class="card max-h-[90vh] w-full max-w-2xl overflow-y-auto">
+	<div class="max-h-[90vh] w-full max-w-2xl overflow-y-auto card">
 		<div class="mb-4 flex items-center justify-between">
 			<h2 class="text-xl font-bold text-text-light">
-				{mode === 'add' ? 'Add Question' : 'Edit Question'}
+				{mode === 'add' ? t('admin.questions.addTitle') : t('admin.questions.editTitle')}
 			</h2>
 			<button onclick={onClose} class="text-2xl text-text-muted hover:text-text-light">
 				&times;
@@ -259,7 +260,7 @@
 			<!-- Question Type Selector -->
 			<div>
 				<label for="questionType" class="mb-1 block text-sm font-medium text-text-light">
-					Question Type
+					{t('admin.questions.questionType')}
 				</label>
 				<select
 					id="questionType"
@@ -268,7 +269,7 @@
 					class="input"
 				>
 					{#each QUESTION_TYPES as qtype}
-						<option value={qtype.value}>{qtype.label}</option>
+						<option value={qtype.value}>{t(qtype.label)}</option>
 					{/each}
 				</select>
 			</div>
@@ -276,9 +277,11 @@
 			<!-- Type-specific content -->
 			{#if selectedType === 'multiple_choice'}
 				<div class="space-y-3 rounded-xl bg-bg-light-secondary p-3">
-					<h3 class="font-medium text-text-light">Multiple Choice Content</h3>
+					<h3 class="font-medium text-text-light">{t('admin.questions.section.multipleChoice')}</h3>
 					<div>
-						<label class="mb-1 block text-sm text-text-muted">Question (English)</label>
+						<label class="mb-1 block text-sm text-text-muted"
+							>{t('admin.questions.labels.questionEn')}</label
+						>
 						<input
 							type="text"
 							bind:value={mcQuestionEn}
@@ -287,7 +290,9 @@
 						/>
 					</div>
 					<div>
-						<label class="mb-1 block text-sm text-text-muted">Question (German) - optional</label>
+						<label class="mb-1 block text-sm text-text-muted"
+							>{t('admin.questions.labels.questionDe')}</label
+						>
 						<input
 							type="text"
 							bind:value={mcQuestionDe}
@@ -296,7 +301,9 @@
 						/>
 					</div>
 					<div>
-						<label class="mb-1 block text-sm text-text-muted">Options</label>
+						<label class="mb-1 block text-sm text-text-muted"
+							>{t('admin.questions.labels.options')}</label
+						>
 						{#each mcOptions as option, i}
 							<div class="mb-2 flex gap-2">
 								<input
@@ -322,17 +329,17 @@
 								onclick={() => addOption(mcOptions, (v) => (mcOptions = v))}
 								class="text-sm text-primary hover:underline"
 							>
-								+ Add Option
+								{t('admin.questions.buttons.addOption')}
 							</button>
 						{/if}
 					</div>
 				</div>
 			{:else if selectedType === 'fill_blank'}
 				<div class="space-y-3 rounded-xl bg-bg-light-secondary p-3">
-					<h3 class="font-medium text-text-light">Fill in the Blank Content</h3>
+					<h3 class="font-medium text-text-light">{t('admin.questions.section.fillBlank')}</h3>
 					<div>
 						<label class="mb-1 block text-sm text-text-muted"
-							>Sentence (English) - use _____ for blank</label
+							>{t('admin.questions.labels.sentenceEn')}</label
 						>
 						<input
 							type="text"
@@ -342,7 +349,9 @@
 						/>
 					</div>
 					<div>
-						<label class="mb-1 block text-sm text-text-muted">Sentence (German) - optional</label>
+						<label class="mb-1 block text-sm text-text-muted"
+							>{t('admin.questions.labels.sentenceDe')}</label
+						>
 						<input
 							type="text"
 							bind:value={fbSentenceDe}
@@ -352,7 +361,9 @@
 					</div>
 					<div class="grid grid-cols-2 gap-3">
 						<div>
-							<label class="mb-1 block text-sm text-text-muted">Hint (English)</label>
+							<label class="mb-1 block text-sm text-text-muted"
+								>{t('admin.questions.labels.hintEn')}</label
+							>
 							<input
 								type="text"
 								bind:value={fbHintEn}
@@ -361,7 +372,9 @@
 							/>
 						</div>
 						<div>
-							<label class="mb-1 block text-sm text-text-muted">Hint (German)</label>
+							<label class="mb-1 block text-sm text-text-muted"
+								>{t('admin.questions.labels.hintDe')}</label
+							>
 							<input
 								type="text"
 								bind:value={fbHintDe}
@@ -373,35 +386,41 @@
 				</div>
 			{:else if selectedType === 'translation'}
 				<div class="space-y-3 rounded-xl bg-bg-light-secondary p-3">
-					<h3 class="font-medium text-text-light">Translation Content</h3>
+					<h3 class="font-medium text-text-light">{t('admin.questions.section.translation')}</h3>
 					<div>
-						<label class="mb-1 block text-sm text-text-muted">Direction</label>
+						<label class="mb-1 block text-sm text-text-muted"
+							>{t('admin.questions.labels.direction')}</label
+						>
 						<select bind:value={transDirection} class="input">
-							<option value="native_to_target">Native Language to Target Language</option>
-							<option value="target_to_native">Target Language to Native Language</option>
+							<option value="native_to_target">{t('admin.questions.labels.nativeToTarget')}</option>
+							<option value="target_to_native">{t('admin.questions.labels.targetToNative')}</option>
 						</select>
 					</div>
 					{#if transDirection === 'native_to_target'}
 						<div>
-							<label class="mb-1 block text-sm text-text-muted">Source Text (English)</label>
+							<label class="mb-1 block text-sm text-text-muted"
+								>{t('admin.questions.labels.sourceTextEn')}</label
+							>
 							<input type="text" bind:value={transTextEn} class="input" placeholder="Hello" />
 						</div>
 						<div>
 							<label class="mb-1 block text-sm text-text-muted"
-								>Source Text (German) - optional</label
+								>{t('admin.questions.labels.sourceTextDe')}</label
 							>
 							<input type="text" bind:value={transTextDe} class="input" placeholder="Hallo" />
 						</div>
 					{:else}
 						<div>
-							<label class="mb-1 block text-sm text-text-muted">Target Language Text</label>
+							<label class="mb-1 block text-sm text-text-muted"
+								>{t('admin.questions.labels.targetLangText')}</label
+							>
 							<input type="text" bind:value={transText} class="input" placeholder="Hola" />
 						</div>
 					{/if}
 				</div>
 			{:else if selectedType === 'matching'}
 				<div class="space-y-3 rounded-xl bg-bg-light-secondary p-3">
-					<h3 class="font-medium text-text-light">Matching Pairs</h3>
+					<h3 class="font-medium text-text-light">{t('admin.questions.section.matching')}</h3>
 					{#each matchingPairs as pair, i}
 						<div class="flex items-start gap-2">
 							<div class="grid flex-1 grid-cols-3 gap-2">
@@ -437,15 +456,17 @@
 					{/each}
 					{#if matchingPairs.length < 6}
 						<button type="button" onclick={addPair} class="text-sm text-primary hover:underline">
-							+ Add Pair
+							{t('admin.questions.buttons.addPair')}
 						</button>
 					{/if}
 				</div>
 			{:else if selectedType === 'word_order'}
 				<div class="space-y-3 rounded-xl bg-bg-light-secondary p-3">
-					<h3 class="font-medium text-text-light">Word Order Content</h3>
+					<h3 class="font-medium text-text-light">{t('admin.questions.section.wordOrder')}</h3>
 					<div>
-						<label class="mb-1 block text-sm text-text-muted">Words (will be scrambled)</label>
+						<label class="mb-1 block text-sm text-text-muted"
+							>{t('admin.questions.labels.wordsScrambled')}</label
+						>
 						{#each woWords as word, i}
 							<div class="mb-2 flex gap-2">
 								<input

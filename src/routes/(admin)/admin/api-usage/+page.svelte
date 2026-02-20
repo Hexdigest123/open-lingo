@@ -31,45 +31,49 @@
 
 <!-- Desktop: Show full content -->
 <div class="mx-auto hidden max-w-7xl p-4 md:block">
-	<h1 class="mb-6 text-2xl font-bold text-text-light">API Usage Audit</h1>
+	<h1 class="mb-6 text-2xl font-bold text-text-light">{t('admin.apiUsage.title')}</h1>
 
 	<!-- Summary Stats -->
 	<div class="mb-8 grid grid-cols-2 gap-4 lg:grid-cols-5">
-		<div class="rounded-xl bg-card-bg p-4">
-			<p class="text-sm text-text-muted">Total Requests (30d)</p>
+		<div class="bg-card-bg rounded-xl p-4">
+			<p class="text-sm text-text-muted">{t('admin.apiUsage.totalRequests30d')}</p>
 			<p class="text-2xl font-bold text-text-light">{formatNumber(data.stats.totalRequests)}</p>
 		</div>
-		<div class="rounded-xl bg-card-bg p-4">
-			<p class="text-sm text-text-muted">Total Tokens</p>
+		<div class="bg-card-bg rounded-xl p-4">
+			<p class="text-sm text-text-muted">{t('admin.apiUsage.totalTokens')}</p>
 			<p class="text-2xl font-bold text-text-light">{formatNumber(data.stats.totalTokens)}</p>
 		</div>
-		<div class="rounded-xl bg-card-bg p-4">
-			<p class="text-sm text-text-muted">Chat Requests</p>
+		<div class="bg-card-bg rounded-xl p-4">
+			<p class="text-sm text-text-muted">{t('admin.apiUsage.chatRequests')}</p>
 			<p class="text-2xl font-bold text-primary">{formatNumber(data.stats.chatRequests)}</p>
 		</div>
-		<div class="rounded-xl bg-card-bg p-4">
-			<p class="text-sm text-text-muted">Voice Sessions</p>
+		<div class="bg-card-bg rounded-xl p-4">
+			<p class="text-sm text-text-muted">{t('admin.apiUsage.voiceSessions')}</p>
 			<p class="text-2xl font-bold text-success">{formatNumber(data.stats.voiceRequests)}</p>
 		</div>
-		<div class="rounded-xl bg-card-bg p-4">
-			<p class="text-sm text-text-muted">Explain Requests</p>
+		<div class="bg-card-bg rounded-xl p-4">
+			<p class="text-sm text-text-muted">{t('admin.apiUsage.explainRequests')}</p>
 			<p class="text-2xl font-bold text-yellow">{formatNumber(data.stats.explainRequests)}</p>
 		</div>
 	</div>
 
 	<!-- Per-User Stats -->
 	<div class="mb-8">
-		<h2 class="mb-4 text-xl font-bold text-text-light">Top Users (30 days)</h2>
-		<div class="overflow-x-auto rounded-xl bg-card-bg">
+		<h2 class="mb-4 text-xl font-bold text-text-light">{t('admin.apiUsage.topUsers')}</h2>
+		<div class="bg-card-bg overflow-x-auto rounded-xl">
 			<table class="w-full text-left">
 				<thead>
 					<tr class="border-b border-text-muted/20">
-						<th class="p-4 text-sm font-medium text-text-muted">User</th>
-						<th class="p-4 text-sm font-medium text-text-muted">Total Requests</th>
-						<th class="p-4 text-sm font-medium text-text-muted">Total Tokens</th>
-						<th class="p-4 text-sm font-medium text-text-muted">Chat</th>
-						<th class="p-4 text-sm font-medium text-text-muted">Voice</th>
-						<th class="p-4 text-sm font-medium text-text-muted">Explain</th>
+						<th class="p-4 text-sm font-medium text-text-muted">{t('admin.apiUsage.user')}</th>
+						<th class="p-4 text-sm font-medium text-text-muted"
+							>{t('admin.apiUsage.totalRequests')}</th
+						>
+						<th class="p-4 text-sm font-medium text-text-muted"
+							>{t('admin.apiUsage.totalTokens')}</th
+						>
+						<th class="p-4 text-sm font-medium text-text-muted">{t('admin.apiUsage.chat')}</th>
+						<th class="p-4 text-sm font-medium text-text-muted">{t('admin.apiUsage.voice')}</th>
+						<th class="p-4 text-sm font-medium text-text-muted">{t('admin.apiUsage.explain')}</th>
 					</tr>
 				</thead>
 				<tbody>
@@ -90,7 +94,9 @@
 					{/each}
 					{#if data.userStats.length === 0}
 						<tr>
-							<td colspan="6" class="p-8 text-center text-text-muted">No usage data yet</td>
+							<td colspan="6" class="p-8 text-center text-text-muted"
+								>{t('admin.apiUsage.noUsageData')}</td
+							>
 						</tr>
 					{/if}
 				</tbody>
@@ -100,17 +106,17 @@
 
 	<!-- Recent Activity -->
 	<div>
-		<h2 class="mb-4 text-xl font-bold text-text-light">Recent Activity</h2>
-		<div class="overflow-x-auto rounded-xl bg-card-bg">
+		<h2 class="mb-4 text-xl font-bold text-text-light">{t('admin.apiUsage.recentActivity')}</h2>
+		<div class="bg-card-bg overflow-x-auto rounded-xl">
 			<table class="w-full text-left">
 				<thead>
 					<tr class="border-b border-text-muted/20">
-						<th class="p-4 text-sm font-medium text-text-muted">Time</th>
-						<th class="p-4 text-sm font-medium text-text-muted">User</th>
-						<th class="p-4 text-sm font-medium text-text-muted">Type</th>
-						<th class="p-4 text-sm font-medium text-text-muted">Model</th>
-						<th class="p-4 text-sm font-medium text-text-muted">Tokens</th>
-						<th class="p-4 text-sm font-medium text-text-muted">Actions</th>
+						<th class="p-4 text-sm font-medium text-text-muted">{t('admin.apiUsage.time')}</th>
+						<th class="p-4 text-sm font-medium text-text-muted">{t('admin.apiUsage.user')}</th>
+						<th class="p-4 text-sm font-medium text-text-muted">{t('admin.apiUsage.type')}</th>
+						<th class="p-4 text-sm font-medium text-text-muted">{t('admin.apiUsage.model')}</th>
+						<th class="p-4 text-sm font-medium text-text-muted">{t('admin.apiUsage.tokens')}</th>
+						<th class="p-4 text-sm font-medium text-text-muted">{t('common.actions')}</th>
 					</tr>
 				</thead>
 				<tbody>
@@ -142,7 +148,7 @@
 										href="/admin/api-usage/chat/{log.sessionId}"
 										class="text-primary hover:underline"
 									>
-										View Chat
+										{t('admin.apiUsage.viewChat')}
 									</a>
 								{:else}
 									<span class="text-text-muted">-</span>
@@ -152,7 +158,9 @@
 					{/each}
 					{#if data.logs.length === 0}
 						<tr>
-							<td colspan="6" class="p-8 text-center text-text-muted">No usage logs yet</td>
+							<td colspan="6" class="p-8 text-center text-text-muted"
+								>{t('admin.apiUsage.noUsageLogs')}</td
+							>
 						</tr>
 					{/if}
 				</tbody>
@@ -163,13 +171,13 @@
 		{#if data.totalPages > 1}
 			<div class="mt-4 flex items-center justify-center gap-2">
 				{#if data.page > 1}
-					<a href="?page={data.page - 1}" class="btn btn-secondary">Previous</a>
+					<a href="?page={data.page - 1}" class="btn btn-secondary">{t('common.previous')}</a>
 				{/if}
 				<span class="px-4 text-text-muted">
-					Page {data.page} of {data.totalPages}
+					{t('common.page', { page: data.page, total: data.totalPages })}
 				</span>
 				{#if data.page < data.totalPages}
-					<a href="?page={data.page + 1}" class="btn btn-secondary">Next</a>
+					<a href="?page={data.page + 1}" class="btn btn-secondary">{t('common.next')}</a>
 				{/if}
 			</div>
 		{/if}

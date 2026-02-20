@@ -25,7 +25,19 @@
 		"search": "Suchen",
 		"noResults": "Keine Ergebnisse gefunden",
 		"error": "Ein Fehler ist aufgetreten",
-		"success": "Erfolgreich"
+		"success": "Erfolgreich",
+		"confirm": "Bestätigen",
+		"actions": "Aktionen",
+		"previous": "Zurück",
+		"saveChanges": "Änderungen speichern",
+		"confirmDelete": "Löschen bestätigen",
+		"copied": "Kopiert!",
+		"copy": "Kopieren",
+		"copyLink": "Link kopieren",
+		"note": "Hinweis:",
+		"changeSettings": "Einstellungen ändern",
+		"saving": "Speichert...",
+		"page": "Seite {page} von {total}"
 	},
 	"auth": {
 		"email": "E-Mail",
@@ -141,6 +153,34 @@
 		"ctaButton": "Kostenloses Konto erstellen",
 		"footer": "OpenLingo - Lerne Sprachen auf die unterhaltsame Art"
 	},
+	"onboarding": {
+		"title": "Los geht's",
+		"subtitle": "Richte dein Lernerlebnis ein",
+		"steps": {
+			"language": "Sprache",
+			"apiKey": "API-Schlüssel",
+			"done": "Fertig"
+		},
+		"language": {
+			"title": "Wähle eine Sprache zum Lernen",
+			"subtitle": "Du kannst dies später jederzeit in den Einstellungen ändern",
+			"select": "Wähle eine Sprache, um fortzufahren"
+		},
+		"apiKey": {
+			"title": "Verbinde deine KI",
+			"subtitle": "Füge deinen OpenAI API-Schlüssel für KI-gestützte Funktionen wie Feedback und Sprachübungen hinzu",
+			"placeholder": "sk-...",
+			"hint": "Dein Schlüssel wird verschlüsselt und sicher gespeichert",
+			"getKey": "Hole dir einen API-Schlüssel von OpenAI",
+			"skip": "Vorerst überspringen",
+			"save": "Schlüssel speichern"
+		},
+		"done": {
+			"title": "Alles bereit!",
+			"subtitle": "Deine Lernreise beginnt jetzt. Los geht's!",
+			"start": "Lernen starten"
+		}
+	},
 	"dashboard": {
 		"welcome": "Willkommen zurück",
 		"greeting": "Willkommen zurück, {name}!",
@@ -149,6 +189,8 @@
 		"startButton": "Lernen starten",
 		"quickActions": "Schnellaktionen",
 		"nextFreeze": "Nächster Freeze",
+		"learningPath": "Lernpfad",
+		"changeLanguage": "Sprache wechseln",
 		"stats": {
 			"xp": "Gesamt-XP",
 			"streak": "Tage-Streak",
@@ -168,7 +210,12 @@
 				"title": "KI-Einstellungen",
 				"description": "OpenAI API konfigurieren"
 			}
-		}
+		},
+		"conceptsLearned": "Gelernte Konzepte",
+		"dueReviews": "Fällige Wiederholungen",
+		"reviewNow": "Jetzt wiederholen",
+		"skillProgress": "Fähigkeiten-Fortschritt",
+		"skillsUnlocked": "{unlocked} von {total} Fähigkeiten freigeschaltet"
 	},
 	"lessons": {
 		"title": "Sprachen lernen",
@@ -404,7 +451,8 @@
 			"users": "Benutzer",
 			"invitations": "Einladungen",
 			"approvals": "Genehmigungen",
-			"settings": "Einstellungen"
+			"settings": "Einstellungen",
+			"apiUsage": "API-Nutzung"
 		},
 		"stats": {
 			"totalUsers": "Gesamtbenutzer",
@@ -427,7 +475,11 @@
 				"unit": "Einheit",
 				"type": "Typ",
 				"xpReward": "XP-Belohnung",
-				"isPublished": "Veröffentlicht"
+				"isPublished": "Veröffentlicht",
+				"placeholderTitleEn": "Englischer Titel",
+				"placeholderTitleDe": "Deutscher Titel (optional)",
+				"placeholderDescEn": "Englische Beschreibung",
+				"placeholderDescDe": "Deutsche Beschreibung (optional)"
 			},
 			"aiGenerate": "KI-Lektionsgenerator",
 			"apiKeyRequired": "API-Schlüssel erforderlich",
@@ -456,7 +508,25 @@
 			"tip1": "Wähle ein spezifisches Thema (z.B. 'Hotel-Vokabular' statt nur 'Reisen')",
 			"tip2": "Passe die Schwierigkeit an das CEFR-Level der Einheit an",
 			"tip3": "Generierte Lektionen werden als Entwürfe gespeichert - überprüfe vor der Veröffentlichung",
-			"tip4": "Du kannst Fragen nach der Generierung im Lektionseditor bearbeiten"
+			"tip4": "Du kannst Fragen nach der Generierung im Lektionseditor bearbeiten",
+			"level": "Level",
+			"status": "Status",
+			"actions": "Aktionen",
+			"untitled": "Ohne Titel",
+			"editLesson": "Lektion bearbeiten",
+			"deleteLessonConfirm": "Diese Lektion und alle ihre Fragen löschen?",
+			"deleteLesson": "Lektion löschen",
+			"questionsCount": "Fragen ({count})",
+			"addQuestion": "+ Frage hinzufügen",
+			"noQuestions": "Noch keine Fragen in dieser Lektion.",
+			"answer": "Antwort:",
+			"examPassThreshold": "Prüfungsbestehensgrenze (%)",
+			"isExam": "Dies ist eine Prüfung",
+			"matchingPairsFallback": "Zuordnungspaare",
+			"wordOrder": "Wortstellung",
+			"speaking": "Sprechen",
+			"listening": "Hören",
+			"description": "Lektionen erstellen und verwalten"
 		},
 		"users": {
 			"title": "Benutzerverwaltung",
@@ -468,7 +538,15 @@
 			"makeAdmin": "Zum Admin machen",
 			"removeAdmin": "Admin entfernen",
 			"deleteUser": "Benutzer löschen",
-			"noUsers": "Keine Benutzer gefunden"
+			"noUsers": "Keine Benutzer gefunden",
+			"user": "Benutzer",
+			"hearts": "Herzen",
+			"actions": "Aktionen",
+			"heartsDisabled": "Deaktiviert",
+			"restoreHearts": "Herzen wiederherstellen",
+			"enableHearts": "Herzen aktivieren",
+			"disableHearts": "Herzen deaktivieren",
+			"description": "Benutzer anzeigen und verwalten"
 		},
 		"approvals": {
 			"title": "Benutzer-Genehmigungen",
@@ -490,10 +568,92 @@
 			"reject": "Ablehnen",
 			"allow": "Erlauben",
 			"delete": "Löschen",
-			"confirmDelete": "Löschen bestätigen"
+			"confirmDelete": "Löschen bestätigen",
+			"signupModeNote": "Der Anmeldemodus ist derzeit auf „{mode}\" eingestellt. Neue Benutzer benötigen nur eine Genehmigung, wenn der Modus auf „approval\" gesetzt ist."
+		},
+		"invitations": {
+			"title": "Einladungen",
+			"signupModeNote": "Der Anmeldemodus ist derzeit auf „{mode}\" eingestellt. Einladungen werden nur benötigt, wenn der Modus auf „invitation\" gesetzt ist.",
+			"create": "Einladung erstellen",
+			"createDesc": "Einen neuen Einladungscode für die Registrierung generieren.",
+			"emailOptional": "E-Mail (optional)",
+			"emailHint": "Falls angegeben, kann die Einladung nur von dieser E-Mail-Adresse verwendet werden",
+			"expiresInDays": "Läuft ab in (Tage)",
+			"sendEmailTo": "Einladungs-E-Mail an {email} senden",
+			"emailNotConfigured": "E-Mail ist nicht konfiguriert. Die Einladung wird erstellt, aber es wird keine E-Mail gesendet.",
+			"configureEmail": "E-Mail-Einstellungen konfigurieren",
+			"createAndSend": "Einladung erstellen & senden",
+			"allInvitations": "Alle Einladungen",
+			"noInvitations": "Noch keine Einladungen erstellt.",
+			"code": "Code",
+			"status": "Status",
+			"createdBy": "Erstellt von",
+			"expires": "Läuft ab",
+			"usedBy": "Verwendet von {name}",
+			"expired": "Abgelaufen",
+			"active": "Aktiv"
+		},
+		"questions": {
+			"addTitle": "Frage hinzufügen",
+			"editTitle": "Frage bearbeiten",
+			"questionType": "Fragetyp",
+			"types": {
+				"multipleChoice": "Multiple Choice",
+				"fillBlank": "Lückentext",
+				"translation": "Übersetzung",
+				"matching": "Zuordnung",
+				"wordOrder": "Wortstellung",
+				"speaking": "Sprechen",
+				"listening": "Hören"
+			},
+			"section": {
+				"multipleChoice": "Multiple-Choice-Inhalt",
+				"fillBlank": "Lückentext-Inhalt",
+				"translation": "Übersetzungsinhalt",
+				"matching": "Zuordnungspaare",
+				"wordOrder": "Wortstellungs-Inhalt",
+				"speaking": "Sprechinhalt",
+				"listening": "Hörinhalt"
+			},
+			"labels": {
+				"questionEn": "Frage (Englisch)",
+				"questionDe": "Frage (Deutsch) - optional",
+				"options": "Optionen",
+				"sentenceEn": "Satz (Englisch) - verwende _____ für die Lücke",
+				"sentenceDe": "Satz (Deutsch) - optional",
+				"hintEn": "Hinweis (Englisch)",
+				"hintDe": "Hinweis (Deutsch)",
+				"direction": "Richtung",
+				"nativeToTarget": "Muttersprache zu Zielsprache",
+				"targetToNative": "Zielsprache zu Muttersprache",
+				"sourceTextEn": "Ausgangstext (Englisch)",
+				"sourceTextDe": "Ausgangstext (Deutsch) - optional",
+				"targetLangText": "Zielsprache-Text",
+				"wordsScrambled": "Wörter (werden gemischt)",
+				"instructionEn": "Anweisung (Englisch)",
+				"instructionDe": "Anweisung (Deutsch) - optional",
+				"textToSpeak": "Auszusprechender Text (Zielsprache)",
+				"textToHear": "Zu hörender Text (Zielsprache)",
+				"answerType": "Antworttyp",
+				"answerTypeType": "Antwort eintippen",
+				"answerTypeMC": "Multiple Choice",
+				"correctAnswer": "Richtige Antwort",
+				"autoMatched": "(automatisch auf \"all_matched\" gesetzt)",
+				"separateAnswers": "(verwende | für mehrere gültige Antworten)"
+			},
+			"buttons": {
+				"addOption": "+ Option hinzufügen",
+				"addPair": "+ Paar hinzufügen",
+				"addWord": "+ Wort hinzufügen"
+			},
+			"errors": {
+				"generic": "Ein Fehler ist aufgetreten",
+				"network": "Netzwerkfehler. Bitte versuche es erneut."
+			}
 		},
 		"settings": {
 			"title": "Einstellungen",
+			"description": "Globale Anwendungseinstellungen",
 			"globalApiKey": {
 				"title": "Globaler OpenAI API-Schlüssel",
 				"description": "Lege einen globalen OpenAI API-Schlüssel fest, der als Fallback für Benutzer verwendet wird, die keinen eigenen Schlüssel konfiguriert haben.",
@@ -507,6 +667,84 @@
 				"noteText": "Wenn ein Benutzer seinen eigenen API-Schlüssel konfiguriert hat, wird dieser anstelle des globalen Schlüssels verwendet. Der globale Schlüssel wird nur als Fallback verwendet.",
 				"save": "Globalen API-Schlüssel speichern",
 				"remove": "Globalen API-Schlüssel entfernen"
+			},
+			"registration": {
+				"title": "Registrierungseinstellungen",
+				"description": "Steuere, wie sich neue Benutzer auf der Plattform registrieren können."
+			},
+			"signupMode": {
+				"title": "Anmeldemodus",
+				"description": "Wähle, wie Benutzer Konten erstellen können.",
+				"open": "Offene Registrierung",
+				"openDesc": "Jeder kann ein Konto erstellen",
+				"invitation": "Nur mit Einladung",
+				"invitationDesc": "Benutzer benötigen einen Einladungscode zur Registrierung",
+				"approval": "Genehmigung erforderlich",
+				"approvalDesc": "Neue Konten müssen von einem Admin genehmigt werden",
+				"save": "Anmeldemodus speichern",
+				"invitationsNote": "Verwalte Einladungen auf der Seite {link}.",
+				"approvalsNote": "Genehmige ausstehende Benutzer auf der Seite {link}."
+			},
+			"domainRestriction": {
+				"title": "E-Mail-Domain-Einschränkung",
+				"description": "Registrierung auf bestimmte E-Mail-Domains einschränken. Leer lassen, um alle Domains zu erlauben.",
+				"label": "Erlaubte Domains (kommagetrennt)",
+				"save": "Domain-Einschränkung speichern",
+				"currentlyRestricted": "Derzeit eingeschränkt auf:"
+			},
+			"hearts": {
+				"title": "Herzen-System",
+				"description": "Steuere das spielerische Herzen-System für alle Benutzer.",
+				"currentStatus": "Aktueller Status:",
+				"disabledGlobally": "Global deaktiviert",
+				"enabled": "Aktiviert",
+				"enable": "Herzen-System aktivieren",
+				"disable": "Herzen-System deaktivieren",
+				"note": "Wenn global deaktiviert, verlieren Benutzer bei falschen Antworten keine Herzen. Du kannst Herzen auch für einzelne Benutzer auf der Seite {link} deaktivieren."
+			},
+			"emailConfig": {
+				"title": "E-Mail-Konfiguration",
+				"description": "E-Mail wird zum Versenden von Einladungslinks und Genehmigungsbenachrichtigungen verwendet.",
+				"configured": "E-Mail konfiguriert",
+				"notConfigured": "E-Mail nicht konfiguriert",
+				"testConnection": "E-Mail-Verbindung testen",
+				"envVarsTitle": "Um E-Mail zu aktivieren, setze diese Umgebungsvariablen:"
+			}
+		},
+		"apiUsage": {
+			"title": "API-Nutzungsübersicht",
+			"description": "Globale API-Schlüssel-Nutzung überwachen",
+			"totalRequests30d": "Anfragen gesamt (30 Tage)",
+			"totalTokens": "Tokens gesamt",
+			"chatRequests": "Chat-Anfragen",
+			"voiceSessions": "Sprachsitzungen",
+			"explainRequests": "Erklärungsanfragen",
+			"topUsers": "Top-Benutzer (30 Tage)",
+			"user": "Benutzer",
+			"totalRequests": "Anfragen gesamt",
+			"chat": "Chat",
+			"voice": "Sprache",
+			"explain": "Erklärung",
+			"noUsageData": "Noch keine Nutzungsdaten",
+			"recentActivity": "Letzte Aktivität",
+			"time": "Zeit",
+			"type": "Typ",
+			"model": "Modell",
+			"tokens": "Tokens",
+			"viewChat": "Chat ansehen",
+			"noUsageLogs": "Noch keine Nutzungsprotokolle",
+			"chatSession": {
+				"back": "Zurück zur API-Nutzung",
+				"untitled": "Unbenannte Sitzung",
+				"user": "Benutzer:",
+				"mode": "Modus:",
+				"created": "Erstellt:",
+				"lastUpdated": "Zuletzt aktualisiert:",
+				"conversation": "Unterhaltung ({count} Nachrichten)",
+				"aiTutor": "KI-Tutor",
+				"userRole": "Benutzer",
+				"system": "System",
+				"noMessages": "Keine Nachrichten in dieser Sitzung"
 			}
 		}
 	},
@@ -618,5 +856,84 @@
 			"imprint": "Impressum",
 			"privacy": "Datenschutz"
 		}
+	},
+	"skills": {
+		"title": "Fähigkeitenbaum",
+		"subtitle": "Dein Lernpfad für {language}",
+		"locked": "Gesperrt",
+		"unlocked": "Bereit zum Lernen",
+		"inProgress": "In Bearbeitung",
+		"mastered": "Gemeistert",
+		"mastery": "Beherrschung: {percent}%",
+		"prerequisites": "Voraussetzungen",
+		"concepts": "{count} Konzepte",
+		"startSkill": "Lernen beginnen",
+		"continueSkill": "Fortfahren",
+		"reviewSkill": "Wiederholen",
+		"noSkills": "Noch keine Fähigkeiten für diese Sprache verfügbar."
+	},
+	"learn": {
+		"title": "Geführte Lektion",
+		"teachTitle": "Lernen",
+		"drillTitle": "Üben",
+		"checkpointTitle": "Prüfpunkt",
+		"gotIt": "Verstanden!",
+		"continue": "Weiter",
+		"correct": "Richtig!",
+		"incorrect": "Nicht ganz",
+		"correctAnswerWas": "Die richtige Antwort war: {answer}",
+		"progress": "Frage {current} von {total}",
+		"drillComplete": "Übung abgeschlossen",
+		"drillScore": "Du hast {correct} von {total} richtig beantwortet",
+		"lessonComplete": "Lektion abgeschlossen!",
+		"skillUnlocked": "Neue Fähigkeit freigeschaltet: {skill}",
+		"conceptsLearned": "Gelernte Konzepte: {count}",
+		"nextLesson": "Nächste Lektion",
+		"backToSkills": "Zurück zum Fähigkeitenbaum",
+		"tips": "Tipps",
+		"examples": "Beispiele",
+		"pattern": "Muster",
+		"strokeOrder": "Strichreihenfolge",
+		"strokes": "Striche: {count}",
+		"hiragana": "Hiragana",
+		"katakana": "Katakana",
+		"kanji": "Kanji",
+		"conjugationTable": "Konjugationstabelle",
+		"infinitive": "Infinitiv",
+		"typeCharacter": "Gib das Zeichen ein",
+		"selectParticle": "Wähle das richtige Partikel",
+		"transformSentence": "Wandle den Satz um",
+		"selectRadicals": "Wähle die Radikale, die dieses Kanji bilden",
+		"listenAndChoose": "Höre zu und wähle",
+		"writeWhat": "Schreibe: {text}",
+		"conjugate": "Konjugiere: {verb} ({tense})",
+		"unsupportedType": "Nicht unterstützter Fragetyp"
+	},
+	"review": {
+		"title": "Wiederholungssitzung",
+		"subtitle": "Stärke dein Gedächtnis",
+		"dueCount": "{count} Elemente zur Wiederholung fällig",
+		"noDue": "Keine Wiederholungen fällig. Gut gemacht!",
+		"startReview": "Wiederholung starten",
+		"reviewOf": "Wiederholung {current} von {total}",
+		"concept": "Konzept: {name}",
+		"complete": "Wiederholung abgeschlossen!",
+		"accuracy": "Genauigkeit: {percent}%",
+		"reviewed": "Wiederholt: {count} Konzepte",
+		"nextReview": "Nächste Wiederholung fällig: {time}",
+		"backToDashboard": "Zurück zum Dashboard"
+	},
+	"placement": {
+		"title": "Einstufungstest",
+		"subtitle": "Finden wir dein Niveau in {language}",
+		"description": "Beantworte ein paar Fragen, damit wir dich richtig einstufen können. Das dauert etwa 5 Minuten.",
+		"start": "Test starten",
+		"skip": "Überspringen — Von vorne beginnen",
+		"questionOf": "Frage {current} von {total}",
+		"estimatedLevel": "Geschätztes Niveau: {level}",
+		"complete": "Einstufung abgeschlossen!",
+		"yourLevel": "Dein geschätztes Niveau: {level}",
+		"explanation": "Wir haben Fähigkeiten bis zu diesem Niveau für dich freigeschaltet. Du kannst jederzeit frühere Fähigkeiten üben.",
+		"goToSkills": "Deinen Fähigkeitenbaum ansehen"
 	}
 }

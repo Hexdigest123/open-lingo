@@ -70,16 +70,28 @@
 			<p class="text-text-muted">{t('admin.lessons.noLessons')}</p>
 		</div>
 	{:else}
-		<div class="card overflow-hidden p-0">
+		<div class="overflow-hidden card p-0">
 			<table class="w-full">
 				<thead class="bg-bg-light-secondary">
 					<tr>
-						<th class="px-4 py-3 text-left text-sm font-medium text-text-muted">{t('admin.lessons.form.title')} (EN)</th>
-						<th class="px-4 py-3 text-left text-sm font-medium text-text-muted lg:table-cell">{t('admin.lessons.form.title')} (DE)</th>
-						<th class="px-4 py-3 text-left text-sm font-medium text-text-muted">Level</th>
-						<th class="px-4 py-3 text-center text-sm font-medium text-text-muted">{t('admin.lessons.questions')}</th>
-						<th class="px-4 py-3 text-center text-sm font-medium text-text-muted">Status</th>
-						<th class="px-4 py-3 text-right text-sm font-medium text-text-muted">Actions</th>
+						<th class="px-4 py-3 text-left text-sm font-medium text-text-muted"
+							>{t('admin.lessons.form.title')} (EN)</th
+						>
+						<th class="px-4 py-3 text-left text-sm font-medium text-text-muted lg:table-cell"
+							>{t('admin.lessons.form.title')} (DE)</th
+						>
+						<th class="px-4 py-3 text-left text-sm font-medium text-text-muted"
+							>{t('admin.lessons.level')}</th
+						>
+						<th class="px-4 py-3 text-center text-sm font-medium text-text-muted"
+							>{t('admin.lessons.questions')}</th
+						>
+						<th class="px-4 py-3 text-center text-sm font-medium text-text-muted"
+							>{t('admin.lessons.status')}</th
+						>
+						<th class="px-4 py-3 text-right text-sm font-medium text-text-muted"
+							>{t('admin.lessons.actions')}</th
+						>
 					</tr>
 				</thead>
 				<tbody class="divide-y divide-border-light">
@@ -87,7 +99,9 @@
 						<tr class="hover:bg-bg-light-secondary">
 							<td class="px-4 py-3">
 								<div>
-									<div class="font-medium text-text-light">{getTranslation(lesson.title, 'en') || 'Untitled'}</div>
+									<div class="font-medium text-text-light">
+										{getTranslation(lesson.title, 'en') || t('admin.lessons.untitled')}
+									</div>
 									<div class="text-xs text-text-muted">{lesson.unitTitle}</div>
 								</div>
 							</td>
@@ -126,13 +140,21 @@
 									{#if deleteConfirm === lesson.id}
 										<form method="POST" action="?/delete" use:enhance class="inline">
 											<input type="hidden" name="lessonId" value={lesson.id} />
-											<button type="submit" class="text-error hover:underline">Confirm</button>
+											<button type="submit" class="text-error hover:underline"
+												>{t('common.confirm')}</button
+											>
 										</form>
-										<button onclick={() => (deleteConfirm = null)} class="text-text-muted hover:underline">
+										<button
+											onclick={() => (deleteConfirm = null)}
+											class="text-text-muted hover:underline"
+										>
 											{t('common.cancel')}
 										</button>
 									{:else}
-										<button onclick={() => (deleteConfirm = lesson.id)} class="text-error hover:underline">
+										<button
+											onclick={() => (deleteConfirm = lesson.id)}
+											class="text-error hover:underline"
+										>
 											{t('common.delete')}
 										</button>
 									{/if}
@@ -149,7 +171,7 @@
 <!-- Create Modal -->
 {#if showCreateModal}
 	<div class="fixed inset-0 z-50 flex items-center justify-center bg-black/50 p-4">
-		<div class="card w-full max-w-lg">
+		<div class="w-full max-w-lg card">
 			<h2 class="text-xl font-bold text-text-light">{t('admin.lessons.create')}</h2>
 
 			<form method="POST" action="?/create" use:enhance class="mt-4 space-y-4">
@@ -159,13 +181,26 @@
 						<label for="title" class="block text-sm font-medium text-text-light">
 							{t('admin.lessons.form.title')} (EN) *
 						</label>
-						<input type="text" id="title" name="title" required class="input mt-1" placeholder="English title" />
+						<input
+							type="text"
+							id="title"
+							name="title"
+							required
+							class="input mt-1"
+							placeholder={t('admin.lessons.form.placeholderTitleEn')}
+						/>
 					</div>
 					<div>
 						<label for="titleDe" class="block text-sm font-medium text-text-light">
 							{t('admin.lessons.form.title')} (DE)
 						</label>
-						<input type="text" id="titleDe" name="titleDe" class="input mt-1" placeholder="German title (optional)" />
+						<input
+							type="text"
+							id="titleDe"
+							name="titleDe"
+							class="input mt-1"
+							placeholder={t('admin.lessons.form.placeholderTitleDe')}
+						/>
 					</div>
 				</div>
 
@@ -175,13 +210,25 @@
 						<label for="description" class="block text-sm font-medium text-text-light">
 							{t('admin.lessons.form.description')} (EN)
 						</label>
-						<textarea id="description" name="description" rows="2" class="input mt-1" placeholder="English description"></textarea>
+						<textarea
+							id="description"
+							name="description"
+							rows="2"
+							class="input mt-1"
+							placeholder={t('admin.lessons.form.placeholderDescEn')}
+						></textarea>
 					</div>
 					<div>
 						<label for="descriptionDe" class="block text-sm font-medium text-text-light">
 							{t('admin.lessons.form.description')} (DE)
 						</label>
-						<textarea id="descriptionDe" name="descriptionDe" rows="2" class="input mt-1" placeholder="German description (optional)"></textarea>
+						<textarea
+							id="descriptionDe"
+							name="descriptionDe"
+							rows="2"
+							class="input mt-1"
+							placeholder={t('admin.lessons.form.placeholderDescDe')}
+						></textarea>
 					</div>
 				</div>
 
@@ -190,7 +237,7 @@
 						{t('admin.lessons.form.unit')} *
 					</label>
 					<select id="unitId" name="unitId" required class="input mt-1">
-						<option value="">Select a unit...</option>
+						<option value="">{t('admin.lessons.selectUnit')}</option>
 						{#each data.units as unit}
 							<option value={unit.id}>[{unit.levelCode}] {getTranslation(unit.title, 'en')}</option>
 						{/each}
@@ -201,7 +248,14 @@
 					<label for="xpReward" class="block text-sm font-medium text-text-light">
 						{t('admin.lessons.form.xpReward')}
 					</label>
-					<input type="number" id="xpReward" name="xpReward" value="10" min="1" class="input mt-1" />
+					<input
+						type="number"
+						id="xpReward"
+						name="xpReward"
+						value="10"
+						min="1"
+						class="input mt-1"
+					/>
 				</div>
 
 				<div class="flex items-center gap-2">
@@ -212,7 +266,11 @@
 				</div>
 
 				<div class="flex justify-end gap-4 pt-4">
-					<button type="button" onclick={() => (showCreateModal = false)} class="btn btn-ghost btn-md">
+					<button
+						type="button"
+						onclick={() => (showCreateModal = false)}
+						class="btn btn-ghost btn-md"
+					>
 						{t('common.cancel')}
 					</button>
 					<button type="submit" class="btn btn-success btn-md">

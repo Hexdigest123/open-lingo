@@ -35,46 +35,46 @@
 
 	<!-- Quick Actions -->
 	<div class="grid gap-4 md:grid-cols-2">
-		<a href="/admin/lessons" class="card flex items-center gap-4 transition-shadow hover:shadow-lg">
+		<a href="/admin/lessons" class="flex items-center gap-4 card transition-shadow hover:shadow-lg">
 			<div class="flex h-12 w-12 items-center justify-center rounded-xl bg-success/10 text-2xl">
 				<BookOpen size={24} />
 			</div>
 			<div>
 				<h3 class="font-bold text-text-light">{t('admin.lessons.title')}</h3>
-				<p class="text-sm text-text-muted">Create and manage lessons</p>
+				<p class="text-sm text-text-muted">{t('admin.lessons.description')}</p>
 			</div>
 		</a>
-		<a href="/admin/users" class="card flex items-center gap-4 transition-shadow hover:shadow-lg">
+		<a href="/admin/users" class="flex items-center gap-4 card transition-shadow hover:shadow-lg">
 			<div class="flex h-12 w-12 items-center justify-center rounded-xl bg-primary/10 text-2xl">
 				<Users size={24} />
 			</div>
 			<div>
 				<h3 class="font-bold text-text-light">{t('admin.users.title')}</h3>
-				<p class="text-sm text-text-muted">View and manage users</p>
+				<p class="text-sm text-text-muted">{t('admin.users.description')}</p>
 			</div>
 		</a>
 		<a
 			href="/admin/settings"
-			class="card flex items-center gap-4 transition-shadow hover:shadow-lg"
+			class="flex items-center gap-4 card transition-shadow hover:shadow-lg"
 		>
 			<div class="flex h-12 w-12 items-center justify-center rounded-xl bg-purple/10 text-2xl">
 				<Settings size={24} />
 			</div>
 			<div>
 				<h3 class="font-bold text-text-light">{t('admin.settings.title')}</h3>
-				<p class="text-sm text-text-muted">Global application settings</p>
+				<p class="text-sm text-text-muted">{t('admin.settings.description')}</p>
 			</div>
 		</a>
 		<a
 			href="/admin/api-usage"
-			class="card flex items-center gap-4 transition-shadow hover:shadow-lg"
+			class="flex items-center gap-4 card transition-shadow hover:shadow-lg"
 		>
 			<div class="flex h-12 w-12 items-center justify-center rounded-xl bg-yellow/10 text-2xl">
 				<BarChart3 size={24} />
 			</div>
 			<div>
-				<h3 class="font-bold text-text-light">API Usage</h3>
-				<p class="text-sm text-text-muted">Monitor global API key usage</p>
+				<h3 class="font-bold text-text-light">{t('admin.apiUsage.title')}</h3>
+				<p class="text-sm text-text-muted">{t('admin.apiUsage.description')}</p>
 			</div>
 		</a>
 	</div>

@@ -25,7 +25,19 @@
 		"search": "Search",
 		"noResults": "No results found",
 		"error": "An error occurred",
-		"success": "Success"
+		"success": "Success",
+		"confirm": "Confirm",
+		"actions": "Actions",
+		"previous": "Previous",
+		"saveChanges": "Save Changes",
+		"confirmDelete": "Confirm Delete",
+		"copied": "Copied!",
+		"copy": "Copy",
+		"copyLink": "Copy Link",
+		"note": "Note:",
+		"changeSettings": "Change settings",
+		"saving": "Saving...",
+		"page": "Page {page} of {total}"
 	},
 	"auth": {
 		"email": "Email",
@@ -141,6 +153,34 @@
 		"ctaButton": "Create free account",
 		"footer": "OpenLingo - Learn languages the fun way"
 	},
+	"onboarding": {
+		"title": "Get Started",
+		"subtitle": "Set up your learning experience",
+		"steps": {
+			"language": "Language",
+			"apiKey": "API Key",
+			"done": "Done"
+		},
+		"language": {
+			"title": "Choose a language to learn",
+			"subtitle": "You can always change this later in settings",
+			"select": "Select a language to continue"
+		},
+		"apiKey": {
+			"title": "Connect your AI",
+			"subtitle": "Add your OpenAI API key for AI-powered features like feedback and voice practice",
+			"placeholder": "sk-...",
+			"hint": "Your key is encrypted and stored securely",
+			"getKey": "Get an API key from OpenAI",
+			"skip": "Skip for now",
+			"save": "Save Key"
+		},
+		"done": {
+			"title": "You're all set!",
+			"subtitle": "Your learning journey starts now. Let's begin!",
+			"start": "Start Learning"
+		}
+	},
 	"dashboard": {
 		"welcome": "Welcome back",
 		"greeting": "Welcome back, {name}!",
@@ -149,6 +189,8 @@
 		"startButton": "Start Learning",
 		"quickActions": "Quick Actions",
 		"nextFreeze": "Next freeze",
+		"learningPath": "Learning Path",
+		"changeLanguage": "Change Language",
 		"stats": {
 			"xp": "Total XP",
 			"streak": "Day Streak",
@@ -168,7 +210,12 @@
 				"title": "AI Settings",
 				"description": "Configure OpenAI API"
 			}
-		}
+		},
+		"conceptsLearned": "Concepts Learned",
+		"dueReviews": "Due Reviews",
+		"reviewNow": "Review Now",
+		"skillProgress": "Skill Progress",
+		"skillsUnlocked": "{unlocked} of {total} skills unlocked"
 	},
 	"lessons": {
 		"title": "Learn Languages",
@@ -401,7 +448,8 @@
 			"users": "Users",
 			"invitations": "Invitations",
 			"approvals": "Approvals",
-			"settings": "Settings"
+			"settings": "Settings",
+			"apiUsage": "API Usage"
 		},
 		"stats": {
 			"totalUsers": "Total Users",
@@ -424,7 +472,11 @@
 				"unit": "Unit",
 				"type": "Type",
 				"xpReward": "XP Reward",
-				"isPublished": "Published"
+				"isPublished": "Published",
+				"placeholderTitleEn": "English title",
+				"placeholderTitleDe": "German title (optional)",
+				"placeholderDescEn": "English description",
+				"placeholderDescDe": "German description (optional)"
 			},
 			"aiGenerate": "AI Lesson Generator",
 			"apiKeyRequired": "API Key Required",
@@ -453,7 +505,25 @@
 			"tip1": "Choose a specific topic (e.g., 'hotel vocabulary' not just 'travel')",
 			"tip2": "Match the difficulty to the CEFR level of the unit",
 			"tip3": "Generated lessons are saved as drafts - review before publishing",
-			"tip4": "You can edit questions after generation in the lesson editor"
+			"tip4": "You can edit questions after generation in the lesson editor",
+			"level": "Level",
+			"status": "Status",
+			"actions": "Actions",
+			"untitled": "Untitled",
+			"editLesson": "Edit Lesson",
+			"deleteLessonConfirm": "Delete this lesson and all its questions?",
+			"deleteLesson": "Delete Lesson",
+			"questionsCount": "Questions ({count})",
+			"addQuestion": "+ Add Question",
+			"noQuestions": "No questions in this lesson yet.",
+			"answer": "Answer:",
+			"examPassThreshold": "Exam Pass Threshold (%)",
+			"isExam": "This is an exam",
+			"matchingPairsFallback": "Matching pairs",
+			"wordOrder": "Word Order",
+			"speaking": "Speaking",
+			"listening": "Listening",
+			"description": "Create and manage lessons"
 		},
 		"users": {
 			"title": "User Management",
@@ -465,7 +535,15 @@
 			"makeAdmin": "Make Admin",
 			"removeAdmin": "Remove Admin",
 			"deleteUser": "Delete User",
-			"noUsers": "No users found"
+			"noUsers": "No users found",
+			"user": "User",
+			"hearts": "Hearts",
+			"actions": "Actions",
+			"heartsDisabled": "Disabled",
+			"restoreHearts": "Restore Hearts",
+			"enableHearts": "Enable Hearts",
+			"disableHearts": "Disable Hearts",
+			"description": "View and manage users"
 		},
 		"approvals": {
 			"title": "User Approvals",
@@ -487,10 +565,92 @@
 			"reject": "Reject",
 			"allow": "Allow",
 			"delete": "Delete",
-			"confirmDelete": "Confirm Delete"
+			"confirmDelete": "Confirm Delete",
+			"signupModeNote": "The signup mode is currently set to \"{mode}\". New users will only need approval when the mode is set to \"approval\"."
+		},
+		"invitations": {
+			"title": "Invitations",
+			"signupModeNote": "The signup mode is currently set to \"{mode}\". Invitations will only be required when the mode is set to \"invitation\".",
+			"create": "Create Invitation",
+			"createDesc": "Generate a new invitation code for users to register.",
+			"emailOptional": "Email (optional)",
+			"emailHint": "If specified, the invitation can only be used by this email address",
+			"expiresInDays": "Expires in (days)",
+			"sendEmailTo": "Send invitation email to {email}",
+			"emailNotConfigured": "Email is not configured. The invitation will be created but no email will be sent.",
+			"configureEmail": "Configure email settings",
+			"createAndSend": "Create & Send Invitation",
+			"allInvitations": "All Invitations",
+			"noInvitations": "No invitations created yet.",
+			"code": "Code",
+			"status": "Status",
+			"createdBy": "Created By",
+			"expires": "Expires",
+			"usedBy": "Used by {name}",
+			"expired": "Expired",
+			"active": "Active"
+		},
+		"questions": {
+			"addTitle": "Add Question",
+			"editTitle": "Edit Question",
+			"questionType": "Question Type",
+			"types": {
+				"multipleChoice": "Multiple Choice",
+				"fillBlank": "Fill in the Blank",
+				"translation": "Translation",
+				"matching": "Matching",
+				"wordOrder": "Word Order",
+				"speaking": "Speaking",
+				"listening": "Listening"
+			},
+			"section": {
+				"multipleChoice": "Multiple Choice Content",
+				"fillBlank": "Fill in the Blank Content",
+				"translation": "Translation Content",
+				"matching": "Matching Pairs",
+				"wordOrder": "Word Order Content",
+				"speaking": "Speaking Content",
+				"listening": "Listening Content"
+			},
+			"labels": {
+				"questionEn": "Question (English)",
+				"questionDe": "Question (German) - optional",
+				"options": "Options",
+				"sentenceEn": "Sentence (English) - use _____ for blank",
+				"sentenceDe": "Sentence (German) - optional",
+				"hintEn": "Hint (English)",
+				"hintDe": "Hint (German)",
+				"direction": "Direction",
+				"nativeToTarget": "Native Language to Target Language",
+				"targetToNative": "Target Language to Native Language",
+				"sourceTextEn": "Source Text (English)",
+				"sourceTextDe": "Source Text (German) - optional",
+				"targetLangText": "Target Language Text",
+				"wordsScrambled": "Words (will be scrambled)",
+				"instructionEn": "Instruction (English)",
+				"instructionDe": "Instruction (German) - optional",
+				"textToSpeak": "Text to Speak (Target Language)",
+				"textToHear": "Text to Hear (Target Language)",
+				"answerType": "Answer Type",
+				"answerTypeType": "Type Answer",
+				"answerTypeMC": "Multiple Choice",
+				"correctAnswer": "Correct Answer",
+				"autoMatched": "(auto-set to \"all_matched\")",
+				"separateAnswers": "(use | to separate multiple valid answers)"
+			},
+			"buttons": {
+				"addOption": "+ Add Option",
+				"addPair": "+ Add Pair",
+				"addWord": "+ Add Word"
+			},
+			"errors": {
+				"generic": "An error occurred",
+				"network": "Network error. Please try again."
+			}
 		},
 		"settings": {
 			"title": "Settings",
+			"description": "Global application settings",
 			"globalApiKey": {
 				"title": "Global OpenAI API Key",
 				"description": "Set a global OpenAI API key that will be used as a fallback for users who haven't configured their own key.",
@@ -504,6 +664,84 @@
 				"noteText": "If a user has their own API key configured, it will be used instead of the global key. The global key is only used as a fallback.",
 				"save": "Save Global API Key",
 				"remove": "Remove Global API Key"
+			},
+			"registration": {
+				"title": "Registration Settings",
+				"description": "Control how new users can register for the platform."
+			},
+			"signupMode": {
+				"title": "Signup Mode",
+				"description": "Choose how users can create accounts.",
+				"open": "Open Registration",
+				"openDesc": "Anyone can create an account",
+				"invitation": "Invitation Only",
+				"invitationDesc": "Users need an invitation code to register",
+				"approval": "Requires Approval",
+				"approvalDesc": "New accounts must be approved by an admin",
+				"save": "Save Signup Mode",
+				"invitationsNote": "Manage invitations in the {link} page.",
+				"approvalsNote": "Approve pending users in the {link} page."
+			},
+			"domainRestriction": {
+				"title": "Email Domain Restriction",
+				"description": "Restrict registration to specific email domains. Leave empty to allow all domains.",
+				"label": "Allowed Domains (comma-separated)",
+				"save": "Save Domain Restriction",
+				"currentlyRestricted": "Currently restricted to:"
+			},
+			"hearts": {
+				"title": "Hearts System",
+				"description": "Control the gamification hearts system for all users.",
+				"currentStatus": "Current status:",
+				"disabledGlobally": "Disabled globally",
+				"enabled": "Enabled",
+				"enable": "Enable Hearts System",
+				"disable": "Disable Hearts System",
+				"note": "When disabled globally, users won't lose hearts for incorrect answers. You can also disable hearts for individual users in the {link} page."
+			},
+			"emailConfig": {
+				"title": "Email Configuration",
+				"description": "Email is used to send invitation links and approval notifications.",
+				"configured": "Email configured",
+				"notConfigured": "Email not configured",
+				"testConnection": "Test Email Connection",
+				"envVarsTitle": "To enable email, set these environment variables:"
+			}
+		},
+		"apiUsage": {
+			"title": "API Usage Audit",
+			"description": "Monitor global API key usage",
+			"totalRequests30d": "Total Requests (30d)",
+			"totalTokens": "Total Tokens",
+			"chatRequests": "Chat Requests",
+			"voiceSessions": "Voice Sessions",
+			"explainRequests": "Explain Requests",
+			"topUsers": "Top Users (30 days)",
+			"user": "User",
+			"totalRequests": "Total Requests",
+			"chat": "Chat",
+			"voice": "Voice",
+			"explain": "Explain",
+			"noUsageData": "No usage data yet",
+			"recentActivity": "Recent Activity",
+			"time": "Time",
+			"type": "Type",
+			"model": "Model",
+			"tokens": "Tokens",
+			"viewChat": "View Chat",
+			"noUsageLogs": "No usage logs yet",
+			"chatSession": {
+				"back": "Back to API Usage",
+				"untitled": "Untitled Session",
+				"user": "User:",
+				"mode": "Mode:",
+				"created": "Created:",
+				"lastUpdated": "Last Updated:",
+				"conversation": "Conversation ({count} messages)",
+				"aiTutor": "AI Tutor",
+				"userRole": "User",
+				"system": "System",
+				"noMessages": "No messages in this session"
 			}
 		}
 	},
@@ -615,5 +853,84 @@
 			"imprint": "Imprint",
 			"privacy": "Privacy Policy"
 		}
+	},
+	"skills": {
+		"title": "Skill Tree",
+		"subtitle": "Your learning path for {language}",
+		"locked": "Locked",
+		"unlocked": "Ready to learn",
+		"inProgress": "In progress",
+		"mastered": "Mastered",
+		"mastery": "Mastery: {percent}%",
+		"prerequisites": "Prerequisites",
+		"concepts": "{count} concepts",
+		"startSkill": "Start Learning",
+		"continueSkill": "Continue",
+		"reviewSkill": "Review",
+		"noSkills": "No skills available for this language yet."
+	},
+	"learn": {
+		"title": "Guided Lesson",
+		"teachTitle": "Learn",
+		"drillTitle": "Practice",
+		"checkpointTitle": "Checkpoint",
+		"gotIt": "Got it!",
+		"continue": "Continue",
+		"correct": "Correct!",
+		"incorrect": "Not quite",
+		"correctAnswerWas": "The correct answer was: {answer}",
+		"progress": "Question {current} of {total}",
+		"drillComplete": "Practice Complete",
+		"drillScore": "You got {correct} out of {total} correct",
+		"lessonComplete": "Lesson Complete!",
+		"skillUnlocked": "New skill unlocked: {skill}",
+		"conceptsLearned": "Concepts learned: {count}",
+		"nextLesson": "Next Lesson",
+		"backToSkills": "Back to Skill Tree",
+		"tips": "Tips",
+		"examples": "Examples",
+		"pattern": "Pattern",
+		"strokeOrder": "Stroke Order",
+		"strokes": "Strokes: {count}",
+		"hiragana": "Hiragana",
+		"katakana": "Katakana",
+		"kanji": "Kanji",
+		"conjugationTable": "Conjugation Table",
+		"infinitive": "Infinitive",
+		"typeCharacter": "Type the character",
+		"selectParticle": "Select the correct particle",
+		"transformSentence": "Transform the sentence",
+		"selectRadicals": "Select the radicals that form this kanji",
+		"listenAndChoose": "Listen and choose",
+		"writeWhat": "Write: {text}",
+		"conjugate": "Conjugate: {verb} ({tense})",
+		"unsupportedType": "Unsupported question type"
+	},
+	"review": {
+		"title": "Review Session",
+		"subtitle": "Strengthen your memory",
+		"dueCount": "{count} items due for review",
+		"noDue": "No items due for review. Great job!",
+		"startReview": "Start Review",
+		"reviewOf": "Review {current} of {total}",
+		"concept": "Concept: {name}",
+		"complete": "Review Complete!",
+		"accuracy": "Accuracy: {percent}%",
+		"reviewed": "Reviewed: {count} concepts",
+		"nextReview": "Next review due: {time}",
+		"backToDashboard": "Back to Dashboard"
+	},
+	"placement": {
+		"title": "Placement Test",
+		"subtitle": "Let's find your level in {language}",
+		"description": "Answer a few questions so we can place you at the right level. This takes about 5 minutes.",
+		"start": "Start Test",
+		"skip": "Skip — Start from the beginning",
+		"questionOf": "Question {current} of {total}",
+		"estimatedLevel": "Estimated level: {level}",
+		"complete": "Placement Complete!",
+		"yourLevel": "Your estimated level: {level}",
+		"explanation": "We've unlocked skills up to this level for you. You can always go back and practice earlier skills.",
+		"goToSkills": "View Your Skill Tree"
 	}
 }

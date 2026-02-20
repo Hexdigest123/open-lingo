@@ -75,7 +75,7 @@
 			<a href="/admin/lessons" class="text-text-muted hover:text-text-light">
 				&larr; {t('common.back')}
 			</a>
-			<h1 class="text-2xl font-bold text-text-light">Edit Lesson</h1>
+			<h1 class="text-2xl font-bold text-text-light">{t('admin.lessons.editLesson')}</h1>
 		</div>
 	</div>
 
@@ -88,7 +88,7 @@
 	{/if}
 
 	<!-- Lesson Edit Form -->
-	<form method="POST" action="?/update" use:enhance class="card space-y-4">
+	<form method="POST" action="?/update" use:enhance class="space-y-4 card">
 		<!-- Title (English and German) -->
 		<div class="grid gap-4 md:grid-cols-2">
 			<div>
@@ -102,7 +102,7 @@
 					value={getTranslation(data.lesson.title, 'en')}
 					required
 					class="input mt-1"
-					placeholder="English title"
+					placeholder={t('admin.lessons.form.placeholderTitleEn')}
 				/>
 			</div>
 			<div>
@@ -115,7 +115,7 @@
 					name="titleDe"
 					value={getTranslation(data.lesson.title, 'de')}
 					class="input mt-1"
-					placeholder="German title (optional)"
+					placeholder={t('admin.lessons.form.placeholderTitleDe')}
 				/>
 			</div>
 		</div>
@@ -126,7 +126,12 @@
 				<label for="description" class="block text-sm font-medium text-text-light">
 					{t('admin.lessons.form.description')} (EN)
 				</label>
-				<textarea id="description" name="description" rows="2" class="input mt-1" placeholder="English description"
+				<textarea
+					id="description"
+					name="description"
+					rows="2"
+					class="input mt-1"
+					placeholder={t('admin.lessons.form.placeholderDescEn')}
 					>{getTranslation(data.lesson.description, 'en')}</textarea
 				>
 			</div>
@@ -134,7 +139,12 @@
 				<label for="descriptionDe" class="block text-sm font-medium text-text-light">
 					{t('admin.lessons.form.description')} (DE)
 				</label>
-				<textarea id="descriptionDe" name="descriptionDe" rows="2" class="input mt-1" placeholder="German description (optional)"
+				<textarea
+					id="descriptionDe"
+					name="descriptionDe"
+					rows="2"
+					class="input mt-1"
+					placeholder={t('admin.lessons.form.placeholderDescDe')}
 					>{getTranslation(data.lesson.description, 'de')}</textarea
 				>
 			</div>
@@ -170,7 +180,7 @@
 
 			<div>
 				<label for="examPassThreshold" class="block text-sm font-medium text-text-light">
-					Exam Pass Threshold (%)
+					{t('admin.lessons.examPassThreshold')}
 				</label>
 				<input
 					type="number"
@@ -204,18 +214,22 @@
 					checked={data.lesson.isExam}
 					class="h-4 w-4"
 				/>
-				<span class="text-sm text-text-light">This is an exam</span>
+				<span class="text-sm text-text-light">{t('admin.lessons.isExam')}</span>
 			</label>
 		</div>
 
 		<div class="flex justify-between pt-4">
 			<div>
-				<button type="button" onclick={() => (deleteConfirm = true)} class="btn btn-ghost btn-md text-error">
-					{t('common.delete')} Lesson
+				<button
+					type="button"
+					onclick={() => (deleteConfirm = true)}
+					class="btn btn-ghost btn-md text-error"
+				>
+					{t('admin.lessons.deleteLesson')}
 				</button>
 			</div>
 			<button type="submit" class="btn btn-success btn-md">
-				{t('common.save')} Changes
+				{t('common.saveChanges')}
 			</button>
 		</div>
 	</form>
@@ -223,14 +237,16 @@
 	<!-- Delete Confirmation (outside form) -->
 	{#if deleteConfirm}
 		<div class="fixed inset-0 z-50 flex items-center justify-center bg-black/50 p-4">
-			<div class="card w-full max-w-sm text-center">
-				<p class="text-lg font-medium text-text-light mb-4">Delete this lesson and all its questions?</p>
+			<div class="w-full max-w-sm card text-center">
+				<p class="mb-4 text-lg font-medium text-text-light">
+					{t('admin.lessons.deleteLessonConfirm')}
+				</p>
 				<div class="flex justify-center gap-4">
 					<button onclick={() => (deleteConfirm = false)} class="btn btn-ghost btn-md">
 						{t('common.cancel')}
 					</button>
 					<form method="POST" action="?/delete" use:enhance>
-						<button type="submit" class="btn btn-error btn-md">Confirm Delete</button>
+						<button type="submit" class="btn btn-error btn-md">{t('common.confirmDelete')}</button>
 					</form>
 				</div>
 			</div>
@@ -239,27 +255,28 @@
 
 	<!-- Questions Section -->
 	<div class="card">
-		<div class="flex items-center justify-between mb-4">
+		<div class="mb-4 flex items-center justify-between">
 			<h2 class="text-xl font-bold text-text-light">
-				Questions ({data.questions.length})
+				{t('admin.lessons.questionsCount', { count: data.questions.length })}
 			</h2>
 			<button onclick={openAddModal} class="btn btn-success btn-sm">
-				+ Add Question
+				{t('admin.lessons.addQuestion')}
 			</button>
 		</div>
 
 		{#if data.questions.length === 0}
-			<p class="text-center text-text-muted py-8">No questions in this lesson yet.</p>
+			<p class="py-8 text-center text-text-muted">{t('admin.lessons.noQuestions')}</p>
 		{:else}
 			<div class="space-y-3">
 				{#each data.questions as question, i}
 					<div class="rounded-xl bg-bg-light-secondary p-4">
 						<div class="flex items-start justify-between gap-4">
 							<div class="flex-1">
-								<div class="flex items-center gap-2 mb-1">
+								<div class="mb-1 flex items-center gap-2">
 									<span class="text-xs font-medium text-text-muted">#{i + 1}</span>
 									<span
-										class="rounded-lg px-2 py-0.5 text-xs font-medium {question.type === 'multiple_choice'
+										class="rounded-lg px-2 py-0.5 text-xs font-medium {question.type ===
+										'multiple_choice'
 											? 'bg-primary/10 text-primary'
 											: question.type === 'fill_blank'
 												? 'bg-success/10 text-success'
@@ -270,33 +287,46 @@
 										{question.type}
 									</span>
 								</div>
-								<p class="font-medium text-text-light">{(question.content as Record<string, unknown>).questionEn || (question.content as Record<string, unknown>).question || (question.content as Record<string, unknown>).sentenceEn || (question.content as Record<string, unknown>).sentence || (question.content as Record<string, unknown>).textEn || (question.content as Record<string, unknown>).text || (question.content as Record<string, unknown>).textToSpeak || (question.content as Record<string, unknown>).textToHear || 'Matching pairs'}</p>
-								<p class="text-sm text-text-muted mt-1">
-									Answer: <span class="text-success">{question.correctAnswer}</span>
+								<p class="font-medium text-text-light">
+									{(question.content as Record<string, unknown>).questionEn ||
+										(question.content as Record<string, unknown>).question ||
+										(question.content as Record<string, unknown>).sentenceEn ||
+										(question.content as Record<string, unknown>).sentence ||
+										(question.content as Record<string, unknown>).textEn ||
+										(question.content as Record<string, unknown>).text ||
+										(question.content as Record<string, unknown>).textToSpeak ||
+										(question.content as Record<string, unknown>).textToHear ||
+										t('admin.lessons.matchingPairsFallback')}
+								</p>
+								<p class="mt-1 text-sm text-text-muted">
+									{t('admin.lessons.answer')}
+									<span class="text-success">{question.correctAnswer}</span>
 								</p>
 							</div>
 							<div class="flex items-center gap-2">
 								<button
 									onclick={() => openEditModal(question as Question)}
-									class="text-primary text-sm hover:underline"
+									class="text-sm text-primary hover:underline"
 								>
 									{t('common.edit')}
 								</button>
 								{#if deleteQuestionId === question.id}
 									<form method="POST" action="?/deleteQuestion" use:enhance class="inline">
 										<input type="hidden" name="questionId" value={question.id} />
-										<button type="submit" class="text-error text-sm hover:underline">Confirm</button>
+										<button type="submit" class="text-sm text-error hover:underline"
+											>{t('common.confirm')}</button
+										>
 									</form>
 									<button
 										onclick={() => (deleteQuestionId = null)}
-										class="text-text-muted text-sm hover:underline"
+										class="text-sm text-text-muted hover:underline"
 									>
 										{t('common.cancel')}
 									</button>
 								{:else}
 									<button
 										onclick={() => (deleteQuestionId = question.id)}
-										class="text-error text-sm hover:underline"
+										class="text-sm text-error hover:underline"
 									>
 										{t('common.delete')}
 									</button>

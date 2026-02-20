@@ -28,12 +28,14 @@
 		<div class="flex items-center gap-2">
 			{#if data.pendingUsers.length > 0}
 				<span class="rounded-full bg-yellow/10 px-3 py-1 text-sm font-medium text-yellow-dark">
-					{data.pendingUsers.length} {t('admin.approvals.pending')}
+					{data.pendingUsers.length}
+					{t('admin.approvals.pending')}
 				</span>
 			{/if}
 			{#if data.rejectedUsers.length > 0}
 				<span class="rounded-full bg-error/10 px-3 py-1 text-sm font-medium text-error">
-					{data.rejectedUsers.length} {t('admin.approvals.declined')}
+					{data.rejectedUsers.length}
+					{t('admin.approvals.declined')}
 				</span>
 			{/if}
 		</div>
@@ -41,9 +43,9 @@
 
 	{#if data.signupMode !== 'approval'}
 		<div class="rounded-xl bg-yellow/10 p-4 text-yellow-dark">
-			<strong>Note:</strong> The signup mode is currently set to "{data.signupMode}".
-			New users will only need approval when the mode is set to "approval".
-			<a href="/admin/settings" class="underline">Change settings</a>
+			<strong>{t('common.note')}</strong>
+			{t('admin.approvals.signupModeNote', { mode: data.signupMode })}
+			<a href="/admin/settings" class="underline">{t('common.changeSettings')}</a>
 		</div>
 	{/if}
 
@@ -60,13 +62,15 @@
 
 	<!-- Pending Approvals Section -->
 	<div class="card">
-		<h2 class="text-lg font-semibold text-text-light mb-4">{t('admin.approvals.pendingTitle')}</h2>
+		<h2 class="mb-4 text-lg font-semibold text-text-light">{t('admin.approvals.pendingTitle')}</h2>
 		{#if data.pendingUsers.length === 0}
-			<div class="text-center py-8">
+			<div class="py-8 text-center">
 				<div class="mx-auto flex h-16 w-16 items-center justify-center rounded-full bg-success/10">
 					<span class="text-2xl">✓</span>
 				</div>
-				<h3 class="mt-4 text-xl font-semibold text-text-light">{t('admin.approvals.allCaughtUp')}</h3>
+				<h3 class="mt-4 text-xl font-semibold text-text-light">
+					{t('admin.approvals.allCaughtUp')}
+				</h3>
 				<p class="mt-2 text-text-muted">{t('admin.approvals.noPending')}</p>
 			</div>
 		{:else}
@@ -74,9 +78,9 @@
 				<table class="w-full">
 					<thead>
 						<tr class="border-b border-border-light text-left text-sm text-text-muted">
-							<th class="pb-3 pr-4">{t('admin.approvals.user')}</th>
-							<th class="pb-3 pr-4">{t('admin.approvals.email')}</th>
-							<th class="pb-3 pr-4">{t('admin.approvals.requested')}</th>
+							<th class="pr-4 pb-3">{t('admin.approvals.user')}</th>
+							<th class="pr-4 pb-3">{t('admin.approvals.email')}</th>
+							<th class="pr-4 pb-3">{t('admin.approvals.requested')}</th>
 							<th class="pb-3">{t('admin.approvals.actions')}</th>
 						</tr>
 					</thead>
@@ -85,7 +89,9 @@
 							<tr class="border-b border-border-light">
 								<td class="py-4 pr-4">
 									<div class="flex items-center gap-3">
-										<div class="flex h-10 w-10 items-center justify-center rounded-full bg-primary/10 font-semibold text-primary">
+										<div
+											class="flex h-10 w-10 items-center justify-center rounded-full bg-primary/10 font-semibold text-primary"
+										>
 											{user.displayName.charAt(0).toUpperCase()}
 										</div>
 										<span class="font-medium text-text-light">{user.displayName}</span>
@@ -123,24 +129,28 @@
 
 	<!-- Declined Approvals Section -->
 	<div class="card">
-		<h2 class="text-lg font-semibold text-text-light mb-4">{t('admin.approvals.declinedTitle')}</h2>
+		<h2 class="mb-4 text-lg font-semibold text-text-light">{t('admin.approvals.declinedTitle')}</h2>
 		{#if data.rejectedUsers.length === 0}
-			<div class="text-center py-8">
-				<div class="mx-auto flex h-16 w-16 items-center justify-center rounded-full bg-border-light/50">
+			<div class="py-8 text-center">
+				<div
+					class="mx-auto flex h-16 w-16 items-center justify-center rounded-full bg-border-light/50"
+				>
 					<span class="text-2xl text-text-muted">-</span>
 				</div>
-				<h3 class="mt-4 text-xl font-semibold text-text-light">{t('admin.approvals.noDeclined')}</h3>
+				<h3 class="mt-4 text-xl font-semibold text-text-light">
+					{t('admin.approvals.noDeclined')}
+				</h3>
 				<p class="mt-2 text-text-muted">{t('admin.approvals.noDeclinedDesc')}</p>
 			</div>
 		{:else}
-			<p class="text-sm text-text-muted mb-4">{t('admin.approvals.declinedDesc')}</p>
+			<p class="mb-4 text-sm text-text-muted">{t('admin.approvals.declinedDesc')}</p>
 			<div class="overflow-x-auto">
 				<table class="w-full">
 					<thead>
 						<tr class="border-b border-border-light text-left text-sm text-text-muted">
-							<th class="pb-3 pr-4">{t('admin.approvals.user')}</th>
-							<th class="pb-3 pr-4">{t('admin.approvals.email')}</th>
-							<th class="pb-3 pr-4">{t('admin.approvals.rejectedOn')}</th>
+							<th class="pr-4 pb-3">{t('admin.approvals.user')}</th>
+							<th class="pr-4 pb-3">{t('admin.approvals.email')}</th>
+							<th class="pr-4 pb-3">{t('admin.approvals.rejectedOn')}</th>
 							<th class="pb-3">{t('admin.approvals.actions')}</th>
 						</tr>
 					</thead>
@@ -149,7 +159,9 @@
 							<tr class="border-b border-border-light">
 								<td class="py-4 pr-4">
 									<div class="flex items-center gap-3">
-										<div class="flex h-10 w-10 items-center justify-center rounded-full bg-error/10 font-semibold text-error">
+										<div
+											class="flex h-10 w-10 items-center justify-center rounded-full bg-error/10 font-semibold text-error"
+										>
 											{user.displayName.charAt(0).toUpperCase()}
 										</div>
 										<span class="font-medium text-text-light">{user.displayName}</span>
@@ -170,12 +182,16 @@
 											</button>
 										</form>
 										{#if deleteConfirm === user.id}
-											<form method="POST" action="?/deleteRejectedUser" use:enhance={() => {
-												return async ({ update }) => {
-													deleteConfirm = null;
-													await update();
-												};
-											}}>
+											<form
+												method="POST"
+												action="?/deleteRejectedUser"
+												use:enhance={() => {
+													return async ({ update }) => {
+														deleteConfirm = null;
+														await update();
+													};
+												}}
+											>
 												<input type="hidden" name="userId" value={user.id} />
 												<button type="submit" class="btn btn-sm btn-error">
 													{t('admin.approvals.confirmDelete')}
@@ -184,7 +200,7 @@
 											<button
 												type="button"
 												class="btn btn-sm btn-secondary"
-												onclick={() => deleteConfirm = null}
+												onclick={() => (deleteConfirm = null)}
 											>
 												{t('common.cancel')}
 											</button>
@@ -192,7 +208,7 @@
 											<button
 												type="button"
 												class="btn btn-sm btn-ghost text-error"
-												onclick={() => deleteConfirm = user.id}
+												onclick={() => (deleteConfirm = user.id)}
 											>
 												{t('admin.approvals.delete')}
 											</button>
