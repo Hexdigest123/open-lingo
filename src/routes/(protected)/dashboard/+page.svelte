@@ -151,7 +151,7 @@
 		<div class="card">
 			<div class="flex items-center gap-4">
 				<div class="flex h-12 w-12 items-center justify-center rounded-xl bg-yellow/10">
-					<Star size={24} />
+					<Star size={24} class="text-yellow-dark" />
 				</div>
 				<div>
 					<p class="text-sm text-text-muted">{t('dashboard.stats.xp')}</p>
@@ -163,7 +163,7 @@
 		<div class="card">
 			<div class="flex items-center gap-4">
 				<div class="flex h-12 w-12 items-center justify-center rounded-xl bg-orange/10">
-					<Flame size={24} />
+					<Flame size={24} class="text-orange" />
 				</div>
 				<div>
 					<p class="text-sm text-text-muted">{t('dashboard.stats.streak')}</p>
@@ -175,7 +175,7 @@
 		<div class="card">
 			<div class="flex items-center gap-4">
 				<div class="flex h-12 w-12 items-center justify-center rounded-xl bg-error/10">
-					<Heart size={24} />
+					<Heart size={24} class="text-error" />
 				</div>
 				<div>
 					<p class="text-sm text-text-muted">{t('dashboard.stats.hearts')}</p>
@@ -193,7 +193,7 @@
 						? 'animate-freeze-earned'
 						: ''}"
 				>
-					<Snowflake size={24} />
+					<Snowflake size={24} class="text-primary" />
 				</div>
 				<div class="flex-1">
 					<p class="text-sm text-text-muted">{t('gamification.streakFreezes')}</p>
@@ -218,7 +218,7 @@
 		<div class="card">
 			<div class="flex items-center gap-4">
 				<div class="flex h-12 w-12 items-center justify-center rounded-xl bg-purple/10">
-					<Trophy size={24} />
+					<Trophy size={24} class="text-purple" />
 				</div>
 				<div>
 					<p class="text-sm text-text-muted">{t('dashboard.stats.bestStreak')}</p>
@@ -230,7 +230,7 @@
 
 	<!-- Continue Learning Section -->
 	<div>
-		<h2 class="mb-4 text-xl font-bold text-text-light">Continue Learning</h2>
+		<h2 class="mb-4 text-xl font-bold text-text-light">{t('dashboard.continueTitle')}</h2>
 		<div class="card">
 			<div class="flex flex-col items-center justify-between gap-4 sm:flex-row sm:items-start">
 				<div class="flex items-center gap-4">
@@ -267,11 +267,11 @@
 
 	<!-- Quick Actions -->
 	<div>
-		<h2 class="mb-4 text-xl font-bold text-text-light">Quick Actions</h2>
+		<h2 class="mb-4 text-xl font-bold text-text-light">{t('dashboard.quickActions')}</h2>
 		<div class="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
 			<a href="/skills" class="card transition-shadow hover:shadow-lg">
 				<div class="flex items-center gap-4">
-					<TreePine size={32} />
+					<TreePine size={32} class="shrink-0 text-success" />
 					<div>
 						<h3 class="font-bold text-text-light">{t('skills.title')}</h3>
 						<p class="text-sm text-text-muted">{t('dashboard.skillProgress')}</p>
@@ -281,7 +281,7 @@
 
 			<a href="/review" class="card transition-shadow hover:shadow-lg">
 				<div class="flex items-center gap-4">
-					<RefreshCw size={32} />
+					<RefreshCw size={32} class="shrink-0 text-primary" />
 					<div>
 						<div class="flex items-center gap-2">
 							<h3 class="font-bold text-text-light">{t('review.title')}</h3>
@@ -304,30 +304,30 @@
 
 			<a href="/lessons" class="card transition-shadow hover:shadow-lg">
 				<div class="flex items-center gap-4">
-					<BookOpen size={32} />
+					<BookOpen size={32} class="shrink-0 text-primary" />
 					<div>
-						<h3 class="font-bold text-text-light">Browse Lessons</h3>
-						<p class="text-sm text-text-muted">Explore all available lessons</p>
+						<h3 class="font-bold text-text-light">{t('lesson.spanishLessons')}</h3>
+						<p class="text-sm text-text-muted">{t('lesson.chooseLevelToStart')}</p>
 					</div>
 				</div>
 			</a>
 
 			<a href="/leaderboard" class="card transition-shadow hover:shadow-lg">
 				<div class="flex items-center gap-4">
-					<Trophy size={32} />
+					<Trophy size={32} class="shrink-0 text-yellow-dark" />
 					<div>
-						<h3 class="font-bold text-text-light">Leaderboard</h3>
-						<p class="text-sm text-text-muted">See how you rank</p>
+						<h3 class="font-bold text-text-light">{t('dashboard.actions.leaderboard.title')}</h3>
+						<p class="text-sm text-text-muted">{t('dashboard.actions.leaderboard.description')}</p>
 					</div>
 				</div>
 			</a>
 
 			<a href="/settings/api-key" class="card transition-shadow hover:shadow-lg">
 				<div class="flex items-center gap-4">
-					<Bot size={32} />
+					<Bot size={32} class="shrink-0 text-purple" />
 					<div>
-						<h3 class="font-bold text-text-light">AI Settings</h3>
-						<p class="text-sm text-text-muted">Configure your OpenAI key</p>
+						<h3 class="font-bold text-text-light">{t('dashboard.actions.aiSettings.title')}</h3>
+						<p class="text-sm text-text-muted">{t('dashboard.actions.aiSettings.description')}</p>
 					</div>
 				</div>
 			</a>

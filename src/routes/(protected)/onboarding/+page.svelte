@@ -214,9 +214,11 @@
 			</p>
 
 			<div class="mx-auto flex w-full max-w-sm flex-col gap-3">
-				<a href="/placement" class="btn btn-primary btn-lg w-full">
-					{t('placement.start')}
-				</a>
+				<form method="POST" action="?/completeAndTest" use:enhance={handleEnhance}>
+					<button type="submit" class="btn btn-primary btn-lg w-full">
+						{t('placement.start')}
+					</button>
+				</form>
 				<form method="POST" action="?/complete" use:enhance={handleEnhance}>
 					<button type="submit" class="btn btn-success btn-lg w-full">
 						{t('placement.skip')}

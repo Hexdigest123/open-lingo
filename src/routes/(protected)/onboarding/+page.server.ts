@@ -103,5 +103,16 @@ export const actions: Actions = {
 			.where(eq(users.id, userId));
 
 		redirect(303, '/dashboard');
+	},
+
+	completeAndTest: async ({ locals }) => {
+		const userId = locals.user!.id;
+
+		await db
+			.update(users)
+			.set({ onboardingCompleted: true, updatedAt: new Date() })
+			.where(eq(users.id, userId));
+
+		redirect(303, '/placement');
 	}
 };
