@@ -6,9 +6,14 @@ import { GRAMMAR_A1 as SPANISH_GRAMMAR_A1 } from '../src/lib/data/learning/spani
 import { SPANISH_SKILL_GRAPH } from '../src/lib/data/learning/spanish/skill-graph';
 import { GRAMMAR_A1 as ITALIAN_GRAMMAR_A1 } from '../src/lib/data/learning/italian/grammar-points';
 import { ITALIAN_SKILL_GRAPH } from '../src/lib/data/learning/italian/skill-graph';
+import { GRAMMAR_N5 as JAPANESE_GRAMMAR_N5 } from '../src/lib/data/learning/japanese/grammar-points';
+import { JAPANESE_SKILL_GRAPH } from '../src/lib/data/learning/japanese/skill-graph';
+import { HIRAGANA_BASE } from '../src/lib/data/learning/japanese/hiragana';
+import { KATAKANA_BASE } from '../src/lib/data/learning/japanese/katakana';
+import { KANJI_N5 } from '../src/lib/data/learning/japanese/kanji-n5';
 import 'dotenv/config';
 
-import type { SkillGraphDefinition } from '../src/lib/learning/types';
+import type { SkillGraphDefinition, GrammarPointData } from '../src/lib/learning/types';
 import type { ConceptType, SkillType } from '../src/lib/server/db/schema';
 
 const { concepts, skills, skillConcepts, skillPrerequisites } = schema;
@@ -26,8 +31,8 @@ type SeedConcept = {
 };
 
 type SeedLanguage = {
-	code: 'es' | 'it';
-	grammarPoints: typeof SPANISH_GRAMMAR_A1;
+	code: 'es' | 'it' | 'ja';
+	grammarPoints: GrammarPointData[];
 	skillGraph: SkillGraphDefinition;
 	vocabConcepts: SeedConcept[];
 	extraConcepts: SeedConcept[];
@@ -345,6 +350,231 @@ const ITALIAN_EXTRA_CONCEPTS: SeedConcept[] = [
 	}
 ];
 
+// --- Japanese concept builders ---
+
+function buildHiraganaConcepts(): SeedConcept[] {
+	return HIRAGANA_BASE.map((h) => ({
+		key: `ja.hira.${h.romaji}`,
+		type: 'writing_char' as ConceptType,
+		titleEn: `${h.char} (${h.romaji})`,
+		titleDe: `${h.char} (${h.romaji})`,
+		descriptionEn: h.mnemonicEn,
+		descriptionDe: h.mnemonicDe,
+		cefrLevel: 'A1' as const,
+		order: h.order,
+		data: { char: h.char, romaji: h.romaji, strokeCount: h.strokeCount, row: h.row }
+	}));
+}
+
+function buildKatakanaConcepts(): SeedConcept[] {
+	return KATAKANA_BASE.map((k) => ({
+		key: `ja.kata.${k.romaji}`,
+		type: 'writing_char' as ConceptType,
+		titleEn: `${k.char} (${k.romaji})`,
+		titleDe: `${k.char} (${k.romaji})`,
+		descriptionEn: k.mnemonicEn,
+		descriptionDe: k.mnemonicDe,
+		cefrLevel: 'A1' as const,
+		order: 100 + k.order,
+		data: { char: k.char, romaji: k.romaji, strokeCount: k.strokeCount, row: k.row }
+	}));
+}
+
+const KANJI_KEY_MAP: Record<string, string> = {
+	一: 'ichi',
+	二: 'ni',
+	三: 'san',
+	四: 'yon',
+	五: 'go',
+	六: 'rok',
+	七: 'nana',
+	八: 'hachi',
+	九: 'kyuu',
+	十: 'juu',
+	百: 'hyaku',
+	千: 'sen',
+	万: 'man',
+	円: 'en',
+	日: 'nichi',
+	月: 'getsu',
+	火: 'ka',
+	水: 'sui',
+	木: 'moku',
+	金: 'kin'
+};
+
+function buildKanjiConcepts(): SeedConcept[] {
+	return KANJI_N5.slice(0, 20).map((k) => {
+		const slug = KANJI_KEY_MAP[k.char] ?? k.meanings[0].toLowerCase().replace(/\s+/g, '-');
+		return {
+			key: `ja.kanji.${slug}`,
+			type: 'kanji' as ConceptType,
+			titleEn: `${k.char} (${k.meanings.join(', ')})`,
+			titleDe: `${k.char} (${k.meanings.join(', ')})`,
+			descriptionEn: `Kanji for ${k.meanings.join('/')} with ${k.strokeCount} strokes.`,
+			descriptionDe: `Kanji fuer ${k.meanings.join('/')} mit ${k.strokeCount} Strichen.`,
+			cefrLevel: 'A2' as const,
+			order: 200 + k.order,
+			data: {
+				char: k.char,
+				meanings: k.meanings,
+				readingsOn: k.readingsOn,
+				readingsKun: k.readingsKun,
+				strokeCount: k.strokeCount,
+				radicals: k.radicals
+			}
+		};
+	});
+}
+
+const JAPANESE_VOCAB_CONCEPTS: SeedConcept[] = [
+	{
+		key: 'ja.vocab.ohayou',
+		type: 'vocab',
+		titleEn: 'ohayou gozaimasu',
+		titleDe: 'guten Morgen',
+		descriptionEn: 'Polite morning greeting.',
+		descriptionDe: 'Hoefliche Morgenbegrussung.',
+		cefrLevel: 'A1',
+		order: 1001
+	},
+	{
+		key: 'ja.vocab.konnichiwa',
+		type: 'vocab',
+		titleEn: 'konnichiwa',
+		titleDe: 'guten Tag',
+		descriptionEn: 'Standard daytime greeting.',
+		descriptionDe: 'Standardbegrussung tagsueber.',
+		cefrLevel: 'A1',
+		order: 1002
+	},
+	{
+		key: 'ja.vocab.konbanwa',
+		type: 'vocab',
+		titleEn: 'konbanwa',
+		titleDe: 'guten Abend',
+		descriptionEn: 'Evening greeting.',
+		descriptionDe: 'Abendbegrussung.',
+		cefrLevel: 'A1',
+		order: 1003
+	},
+	{
+		key: 'ja.vocab.arigatou',
+		type: 'vocab',
+		titleEn: 'arigatou gozaimasu',
+		titleDe: 'vielen Dank',
+		descriptionEn: 'Polite thank you.',
+		descriptionDe: 'Hoefliches Dankeschoen.',
+		cefrLevel: 'A1',
+		order: 1004
+	}
+];
+
+const JAPANESE_NUMBER_CONCEPTS: SeedConcept[] = [
+	{
+		key: 'ja.num.ichi',
+		type: 'vocab',
+		titleEn: 'ichi (1)',
+		titleDe: 'ichi (1)',
+		descriptionEn: 'Number one.',
+		descriptionDe: 'Die Zahl eins.',
+		cefrLevel: 'A1',
+		order: 1010
+	},
+	{
+		key: 'ja.num.ni',
+		type: 'vocab',
+		titleEn: 'ni (2)',
+		titleDe: 'ni (2)',
+		descriptionEn: 'Number two.',
+		descriptionDe: 'Die Zahl zwei.',
+		cefrLevel: 'A1',
+		order: 1011
+	},
+	{
+		key: 'ja.num.san',
+		type: 'vocab',
+		titleEn: 'san (3)',
+		titleDe: 'san (3)',
+		descriptionEn: 'Number three.',
+		descriptionDe: 'Die Zahl drei.',
+		cefrLevel: 'A1',
+		order: 1012
+	},
+	{
+		key: 'ja.num.yon',
+		type: 'vocab',
+		titleEn: 'yon (4)',
+		titleDe: 'yon (4)',
+		descriptionEn: 'Number four.',
+		descriptionDe: 'Die Zahl vier.',
+		cefrLevel: 'A1',
+		order: 1013
+	},
+	{
+		key: 'ja.num.go',
+		type: 'vocab',
+		titleEn: 'go (5)',
+		titleDe: 'go (5)',
+		descriptionEn: 'Number five.',
+		descriptionDe: 'Die Zahl fuenf.',
+		cefrLevel: 'A1',
+		order: 1014
+	},
+	{
+		key: 'ja.num.rok',
+		type: 'vocab',
+		titleEn: 'roku (6)',
+		titleDe: 'roku (6)',
+		descriptionEn: 'Number six.',
+		descriptionDe: 'Die Zahl sechs.',
+		cefrLevel: 'A1',
+		order: 1015
+	},
+	{
+		key: 'ja.num.nana',
+		type: 'vocab',
+		titleEn: 'nana (7)',
+		titleDe: 'nana (7)',
+		descriptionEn: 'Number seven.',
+		descriptionDe: 'Die Zahl sieben.',
+		cefrLevel: 'A1',
+		order: 1016
+	},
+	{
+		key: 'ja.num.hachi',
+		type: 'vocab',
+		titleEn: 'hachi (8)',
+		titleDe: 'hachi (8)',
+		descriptionEn: 'Number eight.',
+		descriptionDe: 'Die Zahl acht.',
+		cefrLevel: 'A1',
+		order: 1017
+	},
+	{
+		key: 'ja.num.kyuu',
+		type: 'vocab',
+		titleEn: 'kyuu (9)',
+		titleDe: 'kyuu (9)',
+		descriptionEn: 'Number nine.',
+		descriptionDe: 'Die Zahl neun.',
+		cefrLevel: 'A1',
+		order: 1018
+	},
+	{
+		key: 'ja.num.juu',
+		type: 'vocab',
+		titleEn: 'juu (10)',
+		titleDe: 'juu (10)',
+		descriptionEn: 'Number ten.',
+		descriptionDe: 'Die Zahl zehn.',
+		cefrLevel: 'A1',
+		order: 1019
+	}
+];
+
+const JAPANESE_EXTRA_CONCEPTS: SeedConcept[] = [];
+
 const LANGUAGES: SeedLanguage[] = [
 	{
 		code: 'es',
@@ -359,10 +589,22 @@ const LANGUAGES: SeedLanguage[] = [
 		skillGraph: ITALIAN_SKILL_GRAPH,
 		vocabConcepts: ITALIAN_VOCAB_CONCEPTS,
 		extraConcepts: ITALIAN_EXTRA_CONCEPTS
+	},
+	{
+		code: 'ja',
+		grammarPoints: JAPANESE_GRAMMAR_N5,
+		skillGraph: JAPANESE_SKILL_GRAPH,
+		vocabConcepts: [...JAPANESE_VOCAB_CONCEPTS, ...JAPANESE_NUMBER_CONCEPTS],
+		extraConcepts: [
+			...buildHiraganaConcepts(),
+			...buildKatakanaConcepts(),
+			...buildKanjiConcepts(),
+			...JAPANESE_EXTRA_CONCEPTS
+		]
 	}
 ];
 
-function buildGrammarConcepts(grammarPoints: typeof SPANISH_GRAMMAR_A1): SeedConcept[] {
+function buildGrammarConcepts(grammarPoints: GrammarPointData[]): SeedConcept[] {
 	return grammarPoints.map((point) => ({
 		key: point.key,
 		type: 'grammar_rule',
