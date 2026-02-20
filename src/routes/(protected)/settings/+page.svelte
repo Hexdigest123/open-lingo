@@ -3,8 +3,21 @@
 	import { t, i18n } from '$lib/i18n/index.svelte';
 	import type { Locale } from '$lib/i18n/index.svelte';
 	import { enhance } from '$app/forms';
+	import { invalidateAll } from '$app/navigation';
 
-	let { data, form }: { data: PageData; form: ActionData } = $props();
+	type LearningLanguage = {
+		code: string;
+		name: string;
+		nativeName: string;
+		flagEmoji: string;
+	};
+
+	type ExtendedPageData = PageData & {
+		availableLanguages?: LearningLanguage[];
+		currentActiveLanguage?: string;
+	};
+
+	let { data, form }: { data: ExtendedPageData; form: ActionData } = $props();
 
 	let displayName = $state(data.profile.displayName);
 	let currentPassword = $state('');
@@ -26,6 +39,20 @@
 			});
 		} catch (error) {
 			console.error('Failed to save locale preference:', error);
+		}
+	}
+
+	async function setActiveLanguage(code: string) {
+		const formData = new FormData();
+		formData.append('languageCode', code);
+		try {
+			await fetch('?/updateActiveLanguage', {
+				method: 'POST',
+				body: formData
+			});
+			await invalidateAll();
+		} catch (error) {
+			console.error('Failed to save active language:', error);
 		}
 	}
 
@@ -167,7 +194,7 @@
 					bind:value={currentPassword}
 					required
 					maxlength="50"
-					pattern="[a-zA-Z0-9!@#$%^&*()\-_./]+"
+					pattern="[a-zA-Z0-9!@#$%^&*\(\)\-_.\/]+"
 					title="Only ASCII characters allowed: letters, numbers, and !@#$%^&*()-_./"
 					class="input mt-1"
 				/>
@@ -185,7 +212,7 @@
 					required
 					minlength="8"
 					maxlength="50"
-					pattern="[a-zA-Z0-9!@#$%^&*()\-_./]+"
+					pattern="[a-zA-Z0-9!@#$%^&*\(\)\-_.\/]+"
 					title="Only ASCII characters allowed: letters, numbers, and !@#$%^&*()-_./"
 					class="input mt-1"
 				/>
@@ -206,7 +233,7 @@
 					required
 					minlength="8"
 					maxlength="50"
-					pattern="[a-zA-Z0-9!@#$%^&*()\-_./]+"
+					pattern="[a-zA-Z0-9!@#$%^&*\(\)\-_.\/]+"
 					title="Only ASCII characters allowed: letters, numbers, and !@#$%^&*()-_./"
 					class="input mt-1"
 				/>
@@ -227,6 +254,30 @@
 	</div>
 
 	<!-- Language Settings -->
+	<div class="card">
+		<h2 class="text-xl font-bold text-text-light">Learning Language</h2>
+		<p class="mt-1 text-text-muted">Choose the language you want to learn.</p>
+		<div class="mt-4 grid gap-3 sm:grid-cols-2 lg:grid-cols-3">
+			{#each data.availableLanguages || [] as language}
+				<button
+					onclick={() => setActiveLanguage(language.code)}
+					class="flex cursor-pointer items-center gap-3 rounded-xl border-2 px-4 py-3 text-left font-medium transition-colors
+						{data.currentActiveLanguage === language.code
+						? 'border-primary bg-primary/10 text-primary'
+						: 'border-border-light text-text-light hover:border-primary/50'}"
+				>
+					<span class="text-2xl">{language.flagEmoji}</span>
+					<div>
+						<div>{language.name}</div>
+						{#if language.nativeName && language.nativeName !== language.name}
+							<div class="text-xs text-text-muted">{language.nativeName}</div>
+						{/if}
+					</div>
+				</button>
+			{/each}
+		</div>
+	</div>
+
 	<div class="card">
 		<h2 class="text-xl font-bold text-text-light">{t('settings.language')}</h2>
 		<p class="mt-1 text-text-muted">{t('settings.languageDescription')}</p>

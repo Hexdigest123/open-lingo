@@ -14,7 +14,21 @@
 		unitCount?: number;
 	};
 
-	let { data }: { data: PageData } = $props();
+	type ActiveLanguage = {
+		code: string;
+		name: string;
+		nativeName: string;
+		flagEmoji: string;
+		whisperCode: string;
+		tutorName: string;
+		tutorGreeting: string | null;
+	};
+
+	let { data }: { data: PageData & { activeLanguage?: ActiveLanguage } } = $props();
+
+	const activeLanguageName = $derived(
+		data.activeLanguage?.name || t('lesson.languages.targetLanguage')
+	);
 
 	// Handle error messages - use $derived to react to data.error changes from navigation
 	let showError = $derived(!!data.error);
@@ -70,7 +84,9 @@
 </script>
 
 <svelte:head>
-	<title>{data.selectedLevel ? `${getBilingualText(data.selectedLevel.name)} - ` : ''}{t('nav.learn')} - OpenLingo</title>
+	<title
+		>{data.selectedLevel ? `${getBilingualText(data.selectedLevel.name)} - ` : ''}{t('nav.learn')} - OpenLingo</title
+	>
 </svelte:head>
 
 {#if showError && data.error === 'no_hearts'}
@@ -114,7 +130,7 @@
 						>
 							<div class="flex items-center gap-4">
 								<div
-									class="flex h-12 w-12 items-center justify-center rounded-xl text-white text-lg font-bold"
+									class="flex h-12 w-12 items-center justify-center rounded-xl text-lg font-bold text-white"
 									style="background-color: {unit.themeColor || 'var(--color-primary)'};"
 								>
 									{unit.order}
@@ -124,23 +140,30 @@
 									{#if unit.description}
 										<p class="text-sm text-text-muted">{getBilingualText(unit.description)}</p>
 									{/if}
-									<p class="text-xs text-text-muted mt-1">
-										{unit.lessons.length} {unit.lessons.length === 1 ? 'lesson' : 'lessons'}
+									<p class="mt-1 text-xs text-text-muted">
+										{unit.lessons.length}
+										{unit.lessons.length === 1 ? 'lesson' : 'lessons'}
 									</p>
 								</div>
 							</div>
-							<span class="text-2xl text-text-muted transition-transform {expandedUnits.has(unit.id) ? 'rotate-180' : ''}">
+							<span
+								class="text-2xl text-text-muted transition-transform {expandedUnits.has(unit.id)
+									? 'rotate-180'
+									: ''}"
+							>
 								▼
 							</span>
 						</button>
 
 						<!-- Lessons List (Expandable) -->
 						{#if expandedUnits.has(unit.id)}
-							<div class="mt-4 border-t border-border-light pt-4 space-y-2">
+							<div class="mt-4 space-y-2 border-t border-border-light pt-4">
 								{#each unit.lessons as lesson}
 									{@const progress = getLessonProgress(lesson.id)}
 									{@const status = progress?.status}
-									<div class="flex flex-col gap-2 sm:flex-row sm:items-center sm:justify-between rounded-xl bg-bg-light-secondary p-3">
+									<div
+										class="flex flex-col gap-2 rounded-xl bg-bg-light-secondary p-3 sm:flex-row sm:items-center sm:justify-between"
+									>
 										<div class="flex items-center gap-3">
 											<span class="text-lg {getStatusColor(status)}">
 												{getStatusIcon(status)}
@@ -148,31 +171,45 @@
 											<div>
 												<p class="font-medium text-text-light">{getBilingualText(lesson.title)}</p>
 												{#if lesson.description}
-													<p class="text-xs text-text-muted">{getBilingualText(lesson.description)}</p>
+													<p class="text-xs text-text-muted">
+														{getBilingualText(lesson.description)}
+													</p>
 												{/if}
 											</div>
 										</div>
-										<div class="flex items-center gap-2 flex-wrap">
+										<div class="flex flex-wrap items-center gap-2">
 											{#if status === 'completed' || status === 'mastered'}
-												<span class="text-xs text-success font-medium">
+												<span class="text-xs font-medium text-success">
 													{progress?.score}%
 												</span>
 											{/if}
 											<a
 												href="/lessons/{lesson.id}"
-												class="btn btn-sm {status === 'completed' || status === 'mastered' ? 'btn-ghost' : 'btn-success'}"
+												class="btn btn-sm {status === 'completed' || status === 'mastered'
+													? 'btn-ghost'
+													: 'btn-success'}"
 											>
-												{status === 'completed' || status === 'mastered' ? t('lesson.practice') : t('lesson.start')}
+												{status === 'completed' || status === 'mastered'
+													? t('lesson.practice')
+													: t('lesson.start')}
 											</a>
 											{#if status !== 'completed' && status !== 'mastered'}
-												<form method="POST" action="?/skip" use:enhance={() => {
-													return async ({ update }) => {
-														await update();
-														await invalidateAll();
-													};
-												}} class="inline">
+												<form
+													method="POST"
+													action="?/skip"
+													use:enhance={() => {
+														return async ({ update }) => {
+															await update();
+															await invalidateAll();
+														};
+													}}
+													class="inline"
+												>
 													<input type="hidden" name="lessonId" value={lesson.id} />
-													<button type="submit" class="btn btn-sm btn-ghost text-text-muted cursor-pointer">
+													<button
+														type="submit"
+														class="btn btn-sm btn-ghost cursor-pointer text-text-muted"
+													>
 														{t('lesson.skip')}
 													</button>
 												</form>
@@ -191,7 +228,7 @@
 			</div>
 		{:else}
 			<!-- No Units Yet -->
-			<div class="card text-center py-12">
+			<div class="card py-12 text-center">
 				<span class="text-6xl">🚧</span>
 				<h3 class="mt-4 text-xl font-bold text-text-light">{t('lesson.comingSoon')}</h3>
 				<p class="mt-2 text-text-muted">
@@ -205,7 +242,9 @@
 	{:else}
 		<!-- No Level Selected - Show Level Selection -->
 		<div>
-			<h1 class="text-2xl font-bold text-text-light">{t('lesson.spanishLessons')}</h1>
+			<h1 class="text-2xl font-bold text-text-light">
+				{t('lesson.languageLessons', { language: activeLanguageName })}
+			</h1>
 			<p class="text-text-muted">{t('lesson.chooseLevelToStart')}</p>
 		</div>
 
@@ -215,7 +254,7 @@
 				<div class="card">
 					<div class="flex items-start gap-4">
 						<div
-							class="flex h-16 w-16 flex-shrink-0 items-center justify-center rounded-2xl text-white text-2xl font-bold"
+							class="flex h-16 w-16 flex-shrink-0 items-center justify-center rounded-2xl text-2xl font-bold text-white"
 							style="background: linear-gradient(135deg, var(--color-success) 0%, var(--color-success-dark) 100%);"
 						>
 							{level.code}
@@ -224,7 +263,8 @@
 							<h3 class="font-bold text-text-light">{getBilingualText(level.name)}</h3>
 							<p class="mt-1 text-sm text-text-muted">{getBilingualText(level.description)}</p>
 							<p class="mt-1 text-xs text-text-muted">
-								{level.unitCount || 0} {(level.unitCount || 0) === 1 ? 'unit' : 'units'}
+								{level.unitCount || 0}
+								{(level.unitCount || 0) === 1 ? 'unit' : 'units'}
 							</p>
 							<div class="mt-4">
 								{#if (level.unitCount || 0) > 0}
@@ -243,7 +283,7 @@
 
 		<!-- Empty State -->
 		{#if levelsWithCount.length === 0}
-			<div class="card text-center py-12">
+			<div class="card py-12 text-center">
 				<span class="text-6xl">📚</span>
 				<h3 class="mt-4 text-xl font-bold text-text-light">{t('lesson.noLessons')}</h3>
 				<p class="mt-2 text-text-muted">

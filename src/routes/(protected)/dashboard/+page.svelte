@@ -2,7 +2,26 @@
 	import type { PageData } from './$types';
 	import { t } from '$lib/i18n/index.svelte';
 
-	let { data }: { data: PageData } = $props();
+	type ActiveLanguage = {
+		code: string;
+		name: string;
+		nativeName: string;
+		flagEmoji: string;
+		whisperCode: string;
+		tutorName: string;
+		tutorGreeting: string | null;
+	};
+
+	let { data }: { data: PageData & { activeLanguage?: ActiveLanguage } } = $props();
+
+	const activeLanguageName = $derived(
+		data.activeLanguage?.name || t('lesson.languages.targetLanguage')
+	);
+	const greeting = $derived(
+		data.activeLanguage?.tutorGreeting ||
+			t('dashboard.greeting', { name: data.user?.displayName ?? '' })
+	);
+	const learningSubtitle = $derived(`Start learning ${activeLanguageName} with the basics`);
 
 	// Calculate progress to next freeze (every 50 correct answers)
 	const answersToNextFreeze = 50 - (data.stats.totalCorrectAnswers % 50);
@@ -18,7 +37,7 @@
 	<div class="flex items-center justify-between">
 		<div>
 			<h1 class="text-2xl font-bold text-text-light">
-				¡Hola, {data.user?.displayName}!
+				{greeting}
 			</h1>
 			<p class="text-text-muted">{t('dashboard.continueSubtitle')}</p>
 		</div>
@@ -65,7 +84,12 @@
 		<!-- Streak Freezes - Enhanced Display -->
 		<div class="card {data.stats.streakFreezes > 0 ? 'border-primary/30 bg-primary/5' : ''}">
 			<div class="flex items-center gap-4">
-				<div class="flex h-12 w-12 items-center justify-center rounded-xl bg-primary/10 {data.stats.streakFreezes > 0 ? 'animate-freeze-earned' : ''}">
+				<div
+					class="flex h-12 w-12 items-center justify-center rounded-xl bg-primary/10 {data.stats
+						.streakFreezes > 0
+						? 'animate-freeze-earned'
+						: ''}"
+				>
 					<span class="text-2xl">❄️</span>
 				</div>
 				<div class="flex-1">
@@ -75,12 +99,15 @@
 			</div>
 			<!-- Progress to next freeze -->
 			<div class="mt-3">
-				<div class="flex justify-between text-xs text-text-muted mb-1">
+				<div class="mb-1 flex justify-between text-xs text-text-muted">
 					<span>{t('dashboard.nextFreeze')}</span>
 					<span>{50 - answersToNextFreeze}/50</span>
 				</div>
-				<div class="h-1.5 bg-border-light rounded-full overflow-hidden">
-					<div class="h-full bg-primary rounded-full transition-all" style="width: {freezeProgress}%"></div>
+				<div class="h-1.5 overflow-hidden rounded-full bg-border-light">
+					<div
+						class="h-full rounded-full bg-primary transition-all"
+						style="width: {freezeProgress}%"
+					></div>
 				</div>
 			</div>
 		</div>
@@ -104,17 +131,17 @@
 		<div class="card">
 			<div class="flex flex-col items-center justify-between gap-4 sm:flex-row">
 				<div class="flex items-center gap-4">
-					<div class="flex h-16 w-16 items-center justify-center rounded-2xl bg-gradient-to-br from-success to-success-dark text-white text-2xl font-bold">
+					<div
+						class="flex h-16 w-16 items-center justify-center rounded-2xl bg-gradient-to-br from-success to-success-dark text-2xl font-bold text-white"
+					>
 						A1
 					</div>
 					<div>
-						<h3 class="font-bold text-text-light">Beginner Spanish</h3>
-						<p class="text-text-muted">Start with the basics</p>
+						<h3 class="font-bold text-text-light">Beginner {activeLanguageName}</h3>
+						<p class="text-text-muted">{learningSubtitle}</p>
 					</div>
 				</div>
-				<a href="/lessons" class="btn btn-success btn-md w-full sm:w-auto">
-					Start Learning
-				</a>
+				<a href="/lessons" class="btn btn-success btn-md w-full sm:w-auto"> Start Learning </a>
 			</div>
 		</div>
 	</div>
