@@ -1,34 +1,79 @@
 import type { PageServerLoad, Actions } from './$types';
 import { db } from '$lib/server/db';
-import { levels, units, lessons, userLessonProgress } from '$lib/server/db/schema';
+import {
+	languages,
+	levels,
+	units,
+	lessons,
+	userLessonProgress,
+	users
+} from '$lib/server/db/schema';
 import { and, asc, eq, inArray } from 'drizzle-orm';
 
 export const load: PageServerLoad = async ({ url, locals }) => {
 	const levelCode = url.searchParams.get('level');
 	const errorParam = url.searchParams.get('error');
 
+	const [userLanguage] = await db
+		.select({ activeLanguage: users.activeLanguage })
+		.from(users)
+		.where(eq(users.id, locals.user!.id))
+		.limit(1);
+
+	let activeLanguageCode = userLanguage?.activeLanguage ?? 'es';
+
+	let [activeLanguage] = await db
+		.select({ code: languages.code, name: languages.name })
+		.from(languages)
+		.where(eq(languages.code, activeLanguageCode))
+		.limit(1);
+
+	if (!activeLanguage && activeLanguageCode !== 'es') {
+		[activeLanguage] = await db
+			.select({ code: languages.code, name: languages.name })
+			.from(languages)
+			.where(eq(languages.code, 'es'))
+			.limit(1);
+		activeLanguageCode = activeLanguage?.code ?? 'es';
+	}
+
 	if (levelCode) {
-		// Load specific level with units and lessons
 		const [level] = await db
 			.select()
 			.from(levels)
-			.where(eq(levels.code, levelCode as 'A1' | 'A2' | 'B1' | 'B2' | 'C1' | 'C2'))
+			.where(
+				and(
+					eq(levels.code, levelCode as 'A1' | 'A2' | 'B1' | 'B2' | 'C1' | 'C2'),
+					eq(levels.languageCode, activeLanguageCode)
+				)
+			)
 			.limit(1);
 
 		if (!level) {
-			// Level not found, return to level selection
-			const allLevels = await db.select().from(levels).orderBy(asc(levels.order));
-			return { levels: allLevels, selectedLevel: null, units: [], userProgress: [], error: errorParam };
+			const allLevels = await db
+				.select()
+				.from(levels)
+				.where(eq(levels.languageCode, activeLanguageCode))
+				.orderBy(asc(levels.order));
+			return {
+				levels: allLevels,
+				selectedLevel: null,
+				units: [],
+				userProgress: [],
+				error: errorParam,
+				activeLanguage: {
+					code: activeLanguage?.code ?? activeLanguageCode,
+					name: activeLanguage?.name ?? 'Target Language'
+				}
+			};
 		}
 
-		// Get units for this level
 		const levelUnits = await db
 			.select()
 			.from(units)
 			.where(eq(units.levelId, level.id))
 			.orderBy(asc(units.order));
 
-		// Get all lessons for these units
 		const unitIds = levelUnits.map((u) => u.id);
 		const levelLessons =
 			unitIds.length > 0
@@ -39,7 +84,6 @@ export const load: PageServerLoad = async ({ url, locals }) => {
 						.orderBy(asc(lessons.order))
 				: [];
 
-		// Get user progress for these lessons
 		const lessonIds = levelLessons.map((l) => l.id);
 		const userProgress =
 			lessonIds.length > 0 && locals.user
@@ -49,7 +93,6 @@ export const load: PageServerLoad = async ({ url, locals }) => {
 						.where(eq(userLessonProgress.userId, locals.user.id))
 				: [];
 
-		// Group lessons by unit
 		const unitsWithLessons = levelUnits.map((unit) => ({
 			...unit,
 			lessons: levelLessons.filter((lesson) => lesson.unitId === unit.id)
@@ -60,14 +103,20 @@ export const load: PageServerLoad = async ({ url, locals }) => {
 			units: unitsWithLessons,
 			userProgress,
 			levels: null,
-			error: errorParam
+			error: errorParam,
+			activeLanguage: {
+				code: activeLanguage?.code ?? activeLanguageCode,
+				name: activeLanguage?.name ?? 'Target Language'
+			}
 		};
 	}
 
-	// No level selected - show level selection
-	const allLevels = await db.select().from(levels).orderBy(asc(levels.order));
+	const allLevels = await db
+		.select()
+		.from(levels)
+		.where(eq(levels.languageCode, activeLanguageCode))
+		.orderBy(asc(levels.order));
 
-	// Fetch units count for each level
 	const levelsWithUnitCount = await Promise.all(
 		allLevels.map(async (level) => {
 			const levelUnits = await db
@@ -88,7 +137,11 @@ export const load: PageServerLoad = async ({ url, locals }) => {
 		selectedLevel: null,
 		units: [],
 		userProgress: [],
-		error: errorParam
+		error: errorParam,
+		activeLanguage: {
+			code: activeLanguage?.code ?? activeLanguageCode,
+			name: activeLanguage?.name ?? 'Target Language'
+		}
 	};
 };
 

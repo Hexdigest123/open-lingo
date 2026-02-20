@@ -1,10 +1,14 @@
 import type { PageServerLoad, Actions } from './$types';
 import { fail } from '@sveltejs/kit';
 import { db } from '$lib/server/db';
-import { users } from '$lib/server/db/schema';
-import { eq } from 'drizzle-orm';
+import { languages, users } from '$lib/server/db/schema';
+import { asc, eq } from 'drizzle-orm';
 import { verifyPassword, hashPassword } from '$lib/server/auth/password';
-import { isValidInputWithSpaces, isValidInput, MAX_INPUT_LENGTH } from '$lib/server/validation/input';
+import {
+	isValidInputWithSpaces,
+	isValidInput,
+	MAX_INPUT_LENGTH
+} from '$lib/server/validation/input';
 
 export const load: PageServerLoad = async ({ locals }) => {
 	const userId = locals.user!.id;
@@ -13,14 +17,32 @@ export const load: PageServerLoad = async ({ locals }) => {
 		.select({
 			id: users.id,
 			email: users.email,
-			displayName: users.displayName
+			displayName: users.displayName,
+			activeLanguage: users.activeLanguage
 		})
 		.from(users)
 		.where(eq(users.id, userId))
 		.limit(1);
 
+	const availableLanguages = await db
+		.select({
+			code: languages.code,
+			name: languages.name,
+			nativeName: languages.nativeName,
+			flagEmoji: languages.flagEmoji
+		})
+		.from(languages)
+		.where(eq(languages.isActive, true))
+		.orderBy(asc(languages.order));
+
 	return {
-		profile: user
+		profile: {
+			id: user?.id ?? userId,
+			email: user?.email ?? '',
+			displayName: user?.displayName ?? ''
+		},
+		availableLanguages,
+		activeLanguage: user?.activeLanguage ?? 'es'
 	};
 };
 
@@ -80,6 +102,41 @@ export const actions: Actions = {
 		} catch (error) {
 			console.error('Failed to update locale:', error);
 			return fail(500, { localeError: 'Failed to update locale' });
+		}
+	},
+
+	updateActiveLanguage: async ({ request, locals }) => {
+		const userId = locals.user!.id;
+		const data = await request.formData();
+		const languageCode = data.get('languageCode')?.toString().trim();
+
+		if (!languageCode) {
+			return fail(400, { languageError: 'Language is required' });
+		}
+
+		const [language] = await db
+			.select({ code: languages.code })
+			.from(languages)
+			.where(eq(languages.code, languageCode))
+			.limit(1);
+
+		if (!language) {
+			return fail(400, { languageError: 'Invalid language' });
+		}
+
+		try {
+			await db
+				.update(users)
+				.set({
+					activeLanguage: languageCode,
+					updatedAt: new Date()
+				})
+				.where(eq(users.id, userId));
+
+			return { languageSuccess: true };
+		} catch (error) {
+			console.error('Failed to update active language:', error);
+			return fail(500, { languageError: 'Failed to update active language' });
 		}
 	},
 
