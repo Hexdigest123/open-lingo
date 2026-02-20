@@ -3,6 +3,7 @@
 	import { t } from '$lib/i18n/index.svelte';
 	import { goto } from '$app/navigation';
 	import { page } from '$app/stores';
+	import { Flame } from 'lucide-svelte';
 
 	let { data }: { data: PageData } = $props();
 
@@ -64,21 +65,31 @@
 		<!-- Mobile View (< sm: 640px) -->
 		<div class="space-y-3 sm:hidden">
 			{#each data.leaderboard as entry}
-				<div class="card flex items-center gap-3 p-3 {entry.isCurrentUser ? 'border-primary border-2' : ''} {getRankClass(entry.rank)}">
-					<span class="text-lg font-bold w-8 text-center">{getRankEmoji(entry.rank) || entry.rank}</span>
-					<div class="flex h-10 w-10 flex-shrink-0 items-center justify-center rounded-full bg-gradient-to-br from-success to-primary text-sm font-bold text-white">
+				<div
+					class="card flex items-center gap-3 p-3 {entry.isCurrentUser
+						? 'border-2 border-primary'
+						: ''} {getRankClass(entry.rank)}"
+				>
+					<span class="w-8 text-center text-lg font-bold"
+						>{getRankEmoji(entry.rank) || entry.rank}</span
+					>
+					<div
+						class="flex h-10 w-10 flex-shrink-0 items-center justify-center rounded-full bg-gradient-to-br from-success to-primary text-sm font-bold text-white"
+					>
 						{entry.displayName.charAt(0).toUpperCase()}
 					</div>
-					<div class="flex-1 min-w-0">
-						<p class="font-medium text-text-light truncate">
+					<div class="min-w-0 flex-1">
+						<p class="truncate font-medium text-text-light">
 							{entry.displayName}
 							{#if entry.isCurrentUser}
 								<span class="text-xs text-primary">({t('leaderboard.you')})</span>
 							{/if}
 						</p>
 						<div class="flex items-center gap-3 text-sm">
-							<span class="text-yellow-dark font-bold">{entry.xp} XP</span>
-							<span class="flex items-center gap-1 text-orange">🔥 {entry.streak || 0}</span>
+							<span class="font-bold text-yellow-dark">{entry.xp} XP</span>
+							<span class="flex items-center gap-1 text-orange"
+								><Flame size={14} /> {entry.streak || 0}</span
+							>
 						</div>
 					</div>
 				</div>
@@ -86,7 +97,7 @@
 		</div>
 
 		<!-- Desktop View (>= sm: 640px) -->
-		<div class="hidden sm:block card overflow-hidden p-0">
+		<div class="card hidden overflow-hidden p-0 sm:block">
 			<table class="w-full">
 				<thead class="bg-bg-light-secondary">
 					<tr>
@@ -141,7 +152,7 @@
 							</td>
 							<td class="hidden px-4 py-3 text-right sm:table-cell">
 								<span class="flex items-center justify-end gap-1">
-									<span>🔥</span>
+									<span><Flame size={14} /></span>
 									<span class="font-medium text-orange">{entry.streak || 0}</span>
 								</span>
 							</td>

@@ -5,6 +5,7 @@
 	import ChatInput from '$lib/components/chat/ChatInput.svelte';
 	import ModeToggle from '$lib/components/chat/ModeToggle.svelte';
 	import VoiceRecorder from '$lib/components/chat/VoiceRecorder.svelte';
+	import { MessageCircle, Bot } from 'lucide-svelte';
 
 	let { data }: { data: PageData } = $props();
 
@@ -124,7 +125,7 @@
 	<title>{data.session.title || t('chat.title')} - OpenLingo</title>
 </svelte:head>
 
-<div class="mx-auto max-w-3xl flex flex-col h-[calc(100vh-10rem)]">
+<div class="mx-auto flex h-[calc(100vh-10rem)] max-w-3xl flex-col">
 	<!-- Header -->
 	<div class="mb-2 flex flex-col gap-2">
 		<div class="flex items-center gap-3">
@@ -132,7 +133,7 @@
 				← {t('common.back')}
 			</a>
 			<span class="text-text-muted">|</span>
-			<h1 class="font-medium text-text-light truncate max-w-xs">
+			<h1 class="max-w-xs truncate font-medium text-text-light">
 				{data.session.title || t('chat.newSession')}
 			</h1>
 		</div>
@@ -150,34 +151,41 @@
 	</div>
 
 	<!-- Messages -->
-	<div
-		bind:this={chatContainer}
-		class="flex-1 overflow-y-auto space-y-4 pb-4"
-	>
+	<div bind:this={chatContainer} class="flex-1 space-y-4 overflow-y-auto pb-4">
 		{#if messages.length === 0}
-			<div class="text-center py-8">
-				<div class="text-4xl mb-4">💬</div>
+			<div class="py-8 text-center">
+				<div class="mb-4 flex justify-center">
+					<MessageCircle size={32} class="text-text-muted" />
+				</div>
 				<p class="text-text-muted">{t('chat.startConversation')}</p>
 			</div>
 		{:else}
 			{#each messages as message (message.id)}
-				<ChatMessage
-					role={message.role}
-					content={message.content}
-				/>
+				<ChatMessage role={message.role} content={message.content} />
 			{/each}
 		{/if}
 
 		{#if isLoading}
 			<div class="flex gap-3">
-				<div class="flex h-8 w-8 shrink-0 items-center justify-center rounded-full bg-primary text-white">
-					🤖
+				<div
+					class="flex h-8 w-8 shrink-0 items-center justify-center rounded-full bg-primary text-white"
+				>
+					<Bot size={16} class="text-white" />
 				</div>
 				<div class="rounded-2xl bg-bg-light-secondary px-4 py-3">
 					<div class="flex gap-1">
-						<span class="w-2 h-2 bg-text-muted rounded-full animate-bounce" style="animation-delay: 0ms"></span>
-						<span class="w-2 h-2 bg-text-muted rounded-full animate-bounce" style="animation-delay: 150ms"></span>
-						<span class="w-2 h-2 bg-text-muted rounded-full animate-bounce" style="animation-delay: 300ms"></span>
+						<span
+							class="h-2 w-2 animate-bounce rounded-full bg-text-muted"
+							style="animation-delay: 0ms"
+						></span>
+						<span
+							class="h-2 w-2 animate-bounce rounded-full bg-text-muted"
+							style="animation-delay: 150ms"
+						></span>
+						<span
+							class="h-2 w-2 animate-bounce rounded-full bg-text-muted"
+							style="animation-delay: 300ms"
+						></span>
 					</div>
 				</div>
 			</div>
@@ -185,7 +193,7 @@
 	</div>
 
 	<!-- Input -->
-	<div class="mt-auto pt-4 border-t border-border-light">
+	<div class="mt-auto border-t border-border-light pt-4">
 		{#if mode === 'voice'}
 			<!-- Voice Mode -->
 			<div class="py-4">

@@ -1,5 +1,6 @@
 <script lang="ts">
 	import { t } from '$lib/i18n/index.svelte';
+	import { Headphones } from 'lucide-svelte';
 
 	interface Props {
 		textToHear: string;
@@ -150,14 +151,11 @@
 	{#if !hasApiKey}
 		<!-- No API key - show skip option -->
 		<div class="rounded-xl bg-yellow/10 p-6 text-center">
-			<div class="mb-4 text-4xl">🎧</div>
+			<div class="mb-4 flex justify-center"><Headphones size={32} class="text-yellow-dark" /></div>
 			<p class="font-medium text-yellow-dark">{t('lesson.listening.noApiKey')}</p>
 			<p class="mt-2 text-sm text-text-muted">{t('lesson.listening.noApiKeyHint')}</p>
 			{#if onSkip}
-				<button
-					onclick={onSkip}
-					class="btn btn-primary mt-4"
-				>
+				<button onclick={onSkip} class="btn btn-primary mt-4">
 					{t('lesson.listening.skip')}
 				</button>
 			{/if}
@@ -234,8 +232,8 @@
 							onclick={() => setSpeed(speed)}
 							class="rounded-lg px-2 py-1 text-xs transition-all
 								{playbackSpeed === speed
-									? 'bg-primary text-white'
-									: 'bg-border-light text-text-muted hover:bg-primary/20'}"
+								? 'bg-primary text-white'
+								: 'bg-border-light text-text-muted hover:bg-primary/20'}"
 						>
 							{speed}x
 						</button>
@@ -262,7 +260,7 @@
 					bind:value={answer}
 					onkeydown={handleKeydown}
 					placeholder={t('lesson.listening.typeAnswer')}
-					disabled={disabled}
+					{disabled}
 					class="input w-full"
 				/>
 				<button
@@ -278,11 +276,11 @@
 				{#each options as option}
 					<button
 						onclick={() => handleOptionSelect(option)}
-						disabled={disabled}
+						{disabled}
 						class="w-full rounded-xl border-2 p-4 text-left font-medium transition-all
 							{selectedOption === option
-								? 'border-primary bg-primary/10 text-primary'
-								: 'border-border-light text-text-light hover:border-primary/50'}
+							? 'border-primary bg-primary/10 text-primary'
+							: 'border-border-light text-text-light hover:border-primary/50'}
 							{disabled ? 'cursor-not-allowed opacity-50' : 'cursor-pointer'}"
 					>
 						{option}

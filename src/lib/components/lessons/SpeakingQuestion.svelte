@@ -1,5 +1,6 @@
 <script lang="ts">
 	import { i18n, t } from '$lib/i18n/index.svelte';
+	import { Mic } from 'lucide-svelte';
 
 	interface Props {
 		textToSpeak: string;
@@ -131,14 +132,11 @@
 	{#if !hasApiKey}
 		<!-- No API key - show skip option -->
 		<div class="rounded-xl bg-yellow/10 p-6 text-center">
-			<div class="mb-4 text-4xl">🎤</div>
+			<div class="mb-4 flex justify-center"><Mic size={32} class="text-yellow-dark" /></div>
 			<p class="font-medium text-yellow-dark">{t('lesson.speaking.noApiKey')}</p>
 			<p class="mt-2 text-sm text-text-muted">{t('lesson.speaking.noApiKeyHint')}</p>
 			{#if onSkip}
-				<button
-					onclick={onSkip}
-					class="btn btn-primary mt-4"
-				>
+				<button onclick={onSkip} class="btn btn-primary mt-4">
 					{t('lesson.speaking.skip')}
 				</button>
 			{/if}
@@ -157,7 +155,7 @@
 			{#if isRecording}
 				<button
 					onclick={stopRecording}
-					disabled={disabled}
+					{disabled}
 					aria-label={t('lesson.speaking.stopRecording')}
 					class="flex h-20 w-20 items-center justify-center rounded-full bg-error text-white shadow-lg transition-all hover:bg-error/90 active:scale-95"
 				>
@@ -206,7 +204,7 @@
 			{:else}
 				<button
 					onclick={startRecording}
-					disabled={disabled}
+					{disabled}
 					aria-label={t('lesson.speaking.tapToRecord')}
 					class="flex h-20 w-20 items-center justify-center rounded-full bg-primary text-white shadow-lg transition-all hover:bg-primary/90 active:scale-95
 						{disabled ? 'cursor-not-allowed opacity-50' : ''}"

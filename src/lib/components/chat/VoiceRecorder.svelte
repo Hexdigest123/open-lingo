@@ -1,6 +1,7 @@
 <script lang="ts">
 	import { t } from '$lib/i18n/index.svelte';
 	import { onDestroy } from 'svelte';
+	import { Mic } from 'lucide-svelte';
 
 	interface Props {
 		sessionId: string;
@@ -94,7 +95,7 @@
 				{
 					method: 'POST',
 					headers: {
-						'Authorization': `Bearer ${client_secret.value}`,
+						Authorization: `Bearer ${client_secret.value}`,
 						'Content-Type': 'application/sdp'
 					},
 					body: offer.sdp
@@ -193,38 +194,36 @@
 
 <div class="flex flex-col items-center gap-4">
 	{#if status === 'disconnected'}
-		<button
-			onclick={connect}
-			class="btn btn-primary btn-lg flex items-center gap-2"
-		>
-			<span class="text-2xl">🎙️</span>
+		<button onclick={connect} class="btn btn-primary btn-lg flex items-center gap-2">
+			<Mic size={24} />
 			<span>Start Voice Chat</span>
 		</button>
 		<p class="text-sm text-text-muted">{t('chat.holdToSpeak')}</p>
 	{:else if status === 'connecting'}
 		<div class="flex flex-col items-center gap-2">
-			<div class="h-16 w-16 animate-pulse rounded-full bg-primary/20 flex items-center justify-center">
-				<span class="text-2xl">🎙️</span>
+			<div
+				class="flex h-16 w-16 animate-pulse items-center justify-center rounded-full bg-primary/20"
+			>
+				<Mic size={24} />
 			</div>
 			<p class="text-sm text-text-muted">{t('chat.connecting')}</p>
 		</div>
 	{:else}
 		<div class="flex flex-col items-center gap-4">
 			<div class="relative">
-				<div class="h-20 w-20 rounded-full bg-primary flex items-center justify-center animate-pulse">
-					<span class="text-3xl">🎙️</span>
+				<div
+					class="flex h-20 w-20 animate-pulse items-center justify-center rounded-full bg-primary"
+				>
+					<Mic size={28} />
 				</div>
 				{#if isRecording}
-					<div class="absolute -bottom-1 -right-1 h-4 w-4 rounded-full bg-error animate-pulse"></div>
+					<div
+						class="absolute -right-1 -bottom-1 h-4 w-4 animate-pulse rounded-full bg-error"
+					></div>
 				{/if}
 			</div>
 			<p class="text-sm font-medium text-primary">{t('chat.connected')}</p>
-			<button
-				onclick={disconnect}
-				class="btn btn-error btn-sm"
-			>
-				End Call
-			</button>
+			<button onclick={disconnect} class="btn btn-error btn-sm"> End Call </button>
 		</div>
 	{/if}
 </div>

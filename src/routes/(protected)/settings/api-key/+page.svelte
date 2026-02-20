@@ -2,6 +2,7 @@
 	import type { PageData, ActionData } from './$types';
 	import { t } from '$lib/i18n/index.svelte';
 	import { enhance } from '$app/forms';
+	import { Eye, EyeOff } from 'lucide-svelte';
 
 	let { data, form }: { data: PageData; form: ActionData } = $props();
 
@@ -25,7 +26,9 @@
 		<!-- Status -->
 		<div class="mt-4 flex items-center gap-2">
 			{#if data.hasApiKey}
-				<span class="flex items-center gap-2 rounded-full bg-success/10 px-3 py-1 text-sm text-success">
+				<span
+					class="flex items-center gap-2 rounded-full bg-success/10 px-3 py-1 text-sm text-success"
+				>
 					<span>✓</span>
 					{t('settings.apiKey.status.configured')}
 				</span>
@@ -67,9 +70,9 @@
 					<button
 						type="button"
 						onclick={() => (showKey = !showKey)}
-						class="absolute right-3 top-1/2 -translate-y-1/2 text-text-muted hover:text-text-light"
+						class="absolute top-1/2 right-3 -translate-y-1/2 text-text-muted hover:text-text-light"
 					>
-						{showKey ? '🙈' : '👁️'}
+						{#if showKey}<EyeOff size={18} />{:else}<Eye size={18} />{/if}
 					</button>
 				</div>
 			</div>
@@ -83,7 +86,12 @@
 
 		<!-- Remove Form -->
 		{#if data.hasApiKey}
-			<form method="POST" action="?/remove" use:enhance class="mt-4 border-t border-border-light pt-4">
+			<form
+				method="POST"
+				action="?/remove"
+				use:enhance
+				class="mt-4 border-t border-border-light pt-4"
+			>
 				<button type="submit" class="btn btn-error btn-sm">
 					{t('settings.apiKey.remove')}
 				</button>

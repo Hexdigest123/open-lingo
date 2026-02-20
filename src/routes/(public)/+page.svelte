@@ -2,6 +2,7 @@
 	import { page } from '$app/stores';
 	import { t } from '$lib/i18n/index.svelte';
 	import type { PageData } from './$types';
+	import { Gamepad2, Mic, Bot } from 'lucide-svelte';
 
 	let { data }: { data: PageData } = $props();
 
@@ -129,7 +130,7 @@
 					<div
 						class="mx-auto mb-4 flex h-16 w-16 items-center justify-center rounded-full bg-success/10 transition-colors group-hover:bg-success/20"
 					>
-						<span class="text-3xl">🎮</span>
+						<Gamepad2 size={28} class="text-success" />
 					</div>
 					<h3 class="text-xl font-bold text-text-light">{t('landing.features.gamified.title')}</h3>
 					<p class="mt-2 text-text-muted">
@@ -142,7 +143,7 @@
 					<div
 						class="mx-auto mb-4 flex h-16 w-16 items-center justify-center rounded-full bg-primary/10 transition-colors group-hover:bg-primary/20"
 					>
-						<span class="text-3xl">🎤</span>
+						<Mic size={28} class="text-primary" />
 					</div>
 					<h3 class="text-xl font-bold text-text-light">{t('landing.features.voice.title')}</h3>
 					<p class="mt-2 text-text-muted">
@@ -155,7 +156,7 @@
 					<div
 						class="mx-auto mb-4 flex h-16 w-16 items-center justify-center rounded-full bg-purple/10 transition-colors group-hover:bg-purple/20"
 					>
-						<span class="text-3xl">🤖</span>
+						<Bot size={28} class="text-purple" />
 					</div>
 					<h3 class="text-xl font-bold text-text-light">{t('landing.features.ai.title')}</h3>
 					<p class="mt-2 text-text-muted">

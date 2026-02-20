@@ -1,6 +1,7 @@
 <script lang="ts">
 	import type { PageData } from './$types';
 	import { t } from '$lib/i18n/index.svelte';
+	import { Trophy, Lock } from 'lucide-svelte';
 
 	let { data }: { data: PageData } = $props();
 
@@ -71,17 +72,22 @@
 <div class="space-y-8">
 	<!-- Profile Header -->
 	<div class="card flex flex-col items-center gap-4 text-center sm:flex-row sm:text-left">
-		<div class="flex h-24 w-24 items-center justify-center rounded-full bg-gradient-to-br from-success to-primary text-4xl text-white">
+		<div
+			class="flex h-24 w-24 items-center justify-center rounded-full bg-gradient-to-br from-success to-primary text-4xl text-white"
+		>
 			{data.profile.displayName.charAt(0).toUpperCase()}
 		</div>
 		<div class="flex-1">
 			<h1 class="text-2xl font-bold text-text-light">{data.profile.displayName}</h1>
 			<p class="text-text-muted">{data.profile.email}</p>
 			<p class="mt-1 text-sm text-text-muted">
-				{t('profile.memberSince')} {formatDate(data.profile.createdAt)}
+				{t('profile.memberSince')}
+				{formatDate(data.profile.createdAt)}
 			</p>
 			{#if data.profile.role === 'admin'}
-				<span class="mt-2 inline-block rounded-full bg-purple/10 px-3 py-1 text-sm font-medium text-purple">
+				<span
+					class="mt-2 inline-block rounded-full bg-purple/10 px-3 py-1 text-sm font-medium text-purple"
+				>
 					Admin
 				</span>
 			{/if}
@@ -131,15 +137,25 @@
 				{@const isEarned = earnedIds.has(achievement.id)}
 				<div class="card relative {isEarned ? '' : 'opacity-50 grayscale'}">
 					<div class="flex flex-col items-center gap-2 text-center">
-						<div class="flex h-16 w-16 items-center justify-center rounded-full {isEarned ? 'bg-yellow/20' : 'bg-border-light'}">
-							<span class="text-3xl">{isEarned ? '🏆' : '🔒'}</span>
+						<div
+							class="flex h-16 w-16 items-center justify-center rounded-full {isEarned
+								? 'bg-yellow/20'
+								: 'bg-border-light'}"
+						>
+							<span class="text-3xl"
+								>{#if isEarned}<Trophy size={28} class="text-yellow" />{:else}<Lock
+										size={28}
+										class="text-text-muted"
+									/>{/if}</span
+							>
 						</div>
 						<h3 class="font-bold text-text-light">{achievement.name}</h3>
 						<p class="text-xs text-text-muted">{achievement.description}</p>
 						{#if isEarned}
 							{@const earned = data.earnedAchievements.find((a) => a.id === achievement.id)}
 							<span class="text-xs text-success">
-								{t('profile.achievements.earned')} {formatDate(earned!.earnedAt)}
+								{t('profile.achievements.earned')}
+								{formatDate(earned!.earnedAt)}
 							</span>
 						{:else}
 							<span class="text-xs text-text-muted">{t('profile.achievements.locked')}</span>
