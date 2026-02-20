@@ -1,7 +1,10 @@
 import { json } from '@sveltejs/kit';
 import type { RequestHandler } from './$types';
+import { db } from '$lib/server/db';
+import { languages, users } from '$lib/server/db/schema';
 import { getEffectiveApiKeyWithSource } from '$lib/server/openai/getApiKey';
 import { logApiUsage } from '$lib/server/audit/apiUsage';
+import { eq } from 'drizzle-orm';
 import { z } from 'zod';
 
 // Input validation schema
@@ -69,6 +72,30 @@ export const POST: RequestHandler = async ({ request, locals }) => {
 
 	const { expectedText, audioBase64, locale } = parseResult.data;
 
+	const [userLanguage] = await db
+		.select({ activeLanguage: users.activeLanguage })
+		.from(users)
+		.where(eq(users.id, userId))
+		.limit(1);
+
+	const activeLanguageCode = userLanguage?.activeLanguage ?? 'es';
+
+	let [language] = await db
+		.select({ whisperCode: languages.whisperCode })
+		.from(languages)
+		.where(eq(languages.code, activeLanguageCode))
+		.limit(1);
+
+	if (!language && activeLanguageCode !== 'es') {
+		[language] = await db
+			.select({ whisperCode: languages.whisperCode })
+			.from(languages)
+			.where(eq(languages.code, 'es'))
+			.limit(1);
+	}
+
+	const whisperCode = language?.whisperCode ?? 'es';
+
 	// Get effective API key (user's key or global fallback)
 	const { key: apiKey, isGlobalKey } = await getEffectiveApiKeyWithSource(userId);
 
@@ -87,7 +114,7 @@ export const POST: RequestHandler = async ({ request, locals }) => {
 		const formData = new FormData();
 		formData.append('file', new Blob([audioBuffer], { type: 'audio/webm' }), 'audio.webm');
 		formData.append('model', 'whisper-1');
-		formData.append('language', 'es'); // Spanish transcription
+		formData.append('language', whisperCode);
 
 		const response = await fetch('https://api.openai.com/v1/audio/transcriptions', {
 			method: 'POST',

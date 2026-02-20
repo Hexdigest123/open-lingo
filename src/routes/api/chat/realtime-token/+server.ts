@@ -1,7 +1,10 @@
 import { json } from '@sveltejs/kit';
 import type { RequestHandler } from './$types';
+import { db } from '$lib/server/db';
+import { languages, users } from '$lib/server/db/schema';
 import { getEffectiveApiKeyWithSource } from '$lib/server/openai/getApiKey';
 import { logApiUsage } from '$lib/server/audit/apiUsage';
+import { eq } from 'drizzle-orm';
 
 // Map locale code to full language name
 function getMotherLanguage(locale: string): string {
@@ -13,31 +16,35 @@ function getMotherLanguage(locale: string): string {
 }
 
 // Generate voice teacher system prompt based on user's mother language
-function getVoiceSystemPrompt(motherLanguage: string): string {
-	return `You are "Profesora Ana", a warm and experienced Spanish language teacher conducting a voice conversation. Your student's native language is ${motherLanguage}.
+function getVoiceSystemPrompt(
+	motherLanguage: string,
+	targetLanguage: string,
+	tutorName: string
+): string {
+	return `You are "${tutorName}", a warm and experienced ${targetLanguage} language teacher conducting a voice conversation. Your student's native language is ${motherLanguage}.
 
 Voice Teaching Style:
 - Speak clearly and at a moderate pace - this is a spoken conversation
-- Greet students warmly in Spanish to set an immersive tone
+- Greet students warmly in ${targetLanguage} to set an immersive tone
 - When students make mistakes, first acknowledge their effort, then gently correct
 - Provide explanations in ${motherLanguage} when the student seems confused or asks for help
-- Use encouraging phrases like "¡Muy bien!", "¡Excelente intento!", "Casi perfecto"
+- Use encouraging phrases in ${targetLanguage}
 - Keep responses concise - aim for 2-3 sentences to maintain natural conversation flow
 
 Teaching Approach:
-- Focus on conversational Spanish and pronunciation practice
+- Focus on conversational ${targetLanguage} and pronunciation practice
 - Introduce new vocabulary naturally within context
 - After corrections, invite the student to try the phrase again
 - Ask follow-up questions to keep the conversation flowing
 
 Communication Rules:
-- Speak primarily in Spanish (70-80% of your responses)
+- Speak primarily in ${targetLanguage} (70-80% of your responses)
 - Keep sentences short and clear
-- Use common, everyday Spanish - avoid obscure vocabulary
+- Use common, everyday ${targetLanguage} - avoid obscure vocabulary
 - When explaining grammar, use simple terms in ${motherLanguage}
 - Adapt your pace and complexity to the student's level
 
-Begin by greeting the student warmly in Spanish and asking what they'd like to practice today.`;
+Begin by greeting the student warmly in ${targetLanguage} and asking what they'd like to practice today.`;
 }
 
 export const POST: RequestHandler = async ({ locals, request }) => {
@@ -51,11 +58,42 @@ export const POST: RequestHandler = async ({ locals, request }) => {
 	const locale = body.locale || 'en';
 	const motherLanguage = getMotherLanguage(locale);
 
+	const [userLanguage] = await db
+		.select({ activeLanguage: users.activeLanguage })
+		.from(users)
+		.where(eq(users.id, userId))
+		.limit(1);
+
+	const activeLanguageCode = userLanguage?.activeLanguage ?? 'es';
+
+	let [language] = await db
+		.select({ name: languages.name, tutorName: languages.tutorName })
+		.from(languages)
+		.where(eq(languages.code, activeLanguageCode))
+		.limit(1);
+
+	if (!language && activeLanguageCode !== 'es') {
+		[language] = await db
+			.select({ name: languages.name, tutorName: languages.tutorName })
+			.from(languages)
+			.where(eq(languages.code, 'es'))
+			.limit(1);
+	}
+
+	const targetLanguageName = language?.name ?? 'Target Language';
+	const tutorName = language?.tutorName ?? 'AI Tutor';
+
 	// Get effective API key (user's key or global fallback)
 	const { key: apiKey, isGlobalKey } = await getEffectiveApiKeyWithSource(userId);
 
 	if (!apiKey) {
-		return json({ error: 'OpenAI API key not configured. Please set your API key in settings or contact an administrator.' }, { status: 400 });
+		return json(
+			{
+				error:
+					'OpenAI API key not configured. Please set your API key in settings or contact an administrator.'
+			},
+			{ status: 400 }
+		);
 	}
 
 	try {
@@ -63,13 +101,13 @@ export const POST: RequestHandler = async ({ locals, request }) => {
 		const response = await fetch('https://api.openai.com/v1/realtime/sessions', {
 			method: 'POST',
 			headers: {
-				'Authorization': `Bearer ${apiKey}`,
+				Authorization: `Bearer ${apiKey}`,
 				'Content-Type': 'application/json'
 			},
 			body: JSON.stringify({
 				model: 'gpt-4o-mini-realtime-preview-2024-12-17',
 				voice: 'verse',
-				instructions: getVoiceSystemPrompt(motherLanguage),
+				instructions: getVoiceSystemPrompt(motherLanguage, targetLanguageName, tutorName),
 				input_audio_transcription: {
 					model: 'whisper-1'
 				},

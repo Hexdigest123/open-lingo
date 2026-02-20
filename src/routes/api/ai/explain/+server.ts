@@ -1,7 +1,7 @@
 import { json } from '@sveltejs/kit';
 import type { RequestHandler } from './$types';
 import { db } from '$lib/server/db';
-import { questions, userQuestionAttempts } from '$lib/server/db/schema';
+import { languages, questions, userQuestionAttempts, users } from '$lib/server/db/schema';
 import { eq, and, desc } from 'drizzle-orm';
 import { getEffectiveApiKeyWithSource } from '$lib/server/openai/getApiKey';
 import { logApiUsage, extractTokenUsage } from '$lib/server/audit/apiUsage';
@@ -38,34 +38,69 @@ export const POST: RequestHandler = async ({ request, locals }) => {
 
 	const { questionId, userAnswer, locale } = parseResult.data;
 
+	const [userLanguage] = await db
+		.select({ activeLanguage: users.activeLanguage })
+		.from(users)
+		.where(eq(users.id, userId))
+		.limit(1);
+
+	const activeLanguageCode = userLanguage?.activeLanguage ?? 'es';
+
+	let [activeLanguage] = await db
+		.select({ name: languages.name })
+		.from(languages)
+		.where(eq(languages.code, activeLanguageCode))
+		.limit(1);
+
+	if (!activeLanguage && activeLanguageCode !== 'es') {
+		[activeLanguage] = await db
+			.select({ name: languages.name })
+			.from(languages)
+			.where(eq(languages.code, 'es'))
+			.limit(1);
+	}
+
+	const targetLanguageName = activeLanguage?.name ?? 'Target Language';
+
 	// Get effective API key (user's key or global fallback)
 	const { key: apiKey, isGlobalKey } = await getEffectiveApiKeyWithSource(userId);
 
 	if (!apiKey) {
-		return json({ error: 'OpenAI API key not configured. Please set your API key in settings or contact an administrator.' }, { status: 400 });
+		return json(
+			{
+				error:
+					'OpenAI API key not configured. Please set your API key in settings or contact an administrator.'
+			},
+			{ status: 400 }
+		);
 	}
 
 	// Verify user has attempted this question (prevents information disclosure)
 	const [hasAttempted] = await db
 		.select({ id: userQuestionAttempts.id })
 		.from(userQuestionAttempts)
-		.where(and(eq(userQuestionAttempts.userId, userId), eq(userQuestionAttempts.questionId, questionId)))
+		.where(
+			and(eq(userQuestionAttempts.userId, userId), eq(userQuestionAttempts.questionId, questionId))
+		)
 		.limit(1);
 
 	if (!hasAttempted) {
-		return json({ error: 'You must attempt this question before requesting an explanation' }, { status: 403 });
+		return json(
+			{ error: 'You must attempt this question before requesting an explanation' },
+			{ status: 403 }
+		);
 	}
 
 	// Build locale-specific system prompt
 	const systemPrompt =
 		locale === 'de'
-			? `Du bist ein hilfreicher Spanisch-Tutor. Ein Schüler hat eine Frage falsch beantwortet und braucht Hilfe. Gib eine kurze, ermutigende Erklärung (2-3 Sätze):
+			? `Du bist ein hilfreicher ${targetLanguageName}-Tutor. Ein Schüler hat eine Frage falsch beantwortet und braucht Hilfe. Gib eine kurze, ermutigende Erklärung (2-3 Sätze):
 1. Warum die Antwort falsch war
 2. Warum die richtige Antwort korrekt ist
 3. Einen hilfreichen Tipp, um sich dieses Konzept zu merken
 
 Sei knapp, freundlich und lehrreich. Verwende einfache Sprache.`
-			: `You are a helpful Spanish language tutor. A student got a question wrong and needs help understanding why. Provide a brief, encouraging explanation (2-3 sentences) about:
+			: `You are a helpful ${targetLanguageName} language tutor. A student got a question wrong and needs help understanding why. Provide a brief, encouraging explanation (2-3 sentences) about:
 1. Why their answer was incorrect
 2. Why the correct answer is right
 3. A helpful tip to remember this concept
@@ -73,11 +108,7 @@ Sei knapp, freundlich und lehrreich. Verwende einfache Sprache.`
 Be concise, friendly, and educational. Use simple language.`;
 
 	// Get the question details
-	const [question] = await db
-		.select()
-		.from(questions)
-		.where(eq(questions.id, questionId))
-		.limit(1);
+	const [question] = await db.select().from(questions).where(eq(questions.id, questionId)).limit(1);
 
 	if (!question) {
 		return json({ error: 'Question not found' }, { status: 404 });
@@ -95,10 +126,16 @@ Be concise, friendly, and educational. Use simple language.`;
 			questionContext = `Fill in the blank: ${content.sentence}${content.hint ? `\nHint: ${content.hint}` : ''}`;
 			break;
 		case 'translation':
-			questionContext = `Translate from ${content.direction === 'en_to_es' ? 'English to Spanish' : 'Spanish to English'}: "${content.text}"`;
+			questionContext = `Translate from ${
+				content.direction === 'en_to_es'
+					? `English to ${targetLanguageName}`
+					: content.direction === 'es_to_en'
+						? `${targetLanguageName} to English`
+						: String(content.direction ?? targetLanguageName)
+			}: "${content.text}"`;
 			break;
 		case 'matching':
-			questionContext = `Match Spanish words with English translations`;
+			questionContext = `Match ${targetLanguageName} words with English translations`;
 			break;
 		default:
 			questionContext = `Question type: ${question.type}`;
@@ -157,7 +194,10 @@ ${locale === 'de' ? 'Bitte erkläre, warum das falsch war und hilf mir, die rich
 			.select()
 			.from(userQuestionAttempts)
 			.where(
-				and(eq(userQuestionAttempts.userId, userId), eq(userQuestionAttempts.questionId, questionId))
+				and(
+					eq(userQuestionAttempts.userId, userId),
+					eq(userQuestionAttempts.questionId, questionId)
+				)
 			)
 			.orderBy(desc(userQuestionAttempts.createdAt))
 			.limit(1);

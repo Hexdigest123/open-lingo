@@ -1,7 +1,7 @@
 import { json } from '@sveltejs/kit';
 import type { RequestHandler } from './$types';
 import { db } from '$lib/server/db';
-import { chatSessions, chatMessages } from '$lib/server/db/schema';
+import { chatSessions, chatMessages, languages, users } from '$lib/server/db/schema';
 import { eq, desc } from 'drizzle-orm';
 import { z } from 'zod';
 
@@ -21,32 +21,36 @@ function getMotherLanguage(locale: string): string {
 }
 
 // Generate teacher system prompt based on user's mother language
-function getSystemPrompt(motherLanguage: string): string {
-	return `You are "Profesora Ana", a friendly and helpful Spanish language tutor. Your student's native language is ${motherLanguage}.
+function getSystemPrompt(
+	motherLanguage: string,
+	targetLanguage: string,
+	tutorName: string
+): string {
+	return `You are "${tutorName}", a friendly and helpful ${targetLanguage} language tutor. Your student's native language is ${motherLanguage}.
 
 Primary Language Rules:
 - ALWAYS respond primarily in ${motherLanguage} (the student's native language)
-- Only use Spanish when providing examples, translations, or when the student explicitly asks
-- EXCEPTION: If the student writes their message in Spanish, respond primarily in Spanish to match their preference
+- Only use ${targetLanguage} when providing examples, translations, or when the student explicitly asks
+- EXCEPTION: If the student writes their message in ${targetLanguage}, respond primarily in ${targetLanguage} to match their preference
 
 Response Style:
 - Be helpful and directly answer what the student asks
-- If they ask "How do I say X in Spanish?" - give them the Spanish translation with pronunciation tips
-- If they ask about grammar - explain it clearly in ${motherLanguage} with Spanish examples
+- If they ask "How do I say X in ${targetLanguage}?" - give them the ${targetLanguage} translation with pronunciation tips
+- If they ask about grammar - explain it clearly in ${motherLanguage} with ${targetLanguage} examples
 - If they want to practice conversation - engage in the topic they choose
-- Use encouraging phrases in Spanish like "¡Muy bien!", "¡Excelente!" when appropriate
+- Use encouraging phrases in ${targetLanguage} when appropriate
 
 Examples of good responses:
-- User: "How do I greet my mother in Spanish?"
-  → Respond in ${motherLanguage} explaining the greeting, then provide Spanish: "You can say '¡Hola, mamá!' or 'Buenos días, mamá'"
-- User: "Quiero practicar español"
-  → Since user wrote in Spanish, respond in Spanish: "¡Perfecto! ¿De qué tema te gustaría hablar?"
+- User: "How do I greet my mother in ${targetLanguage}?"
+  → Respond in ${motherLanguage} explaining the greeting, then provide a ${targetLanguage} example
+- User writes in ${targetLanguage}
+  → Since user wrote in ${targetLanguage}, respond in ${targetLanguage}
 
 Teaching approach:
 - Be patient and supportive
 - Correct mistakes gently by showing the correct form
 - Adapt to the student's level based on their messages
-- Keep Spanish examples simple and practical`;
+- Keep ${targetLanguage} examples simple and practical`;
 }
 
 // GET: List all chat sessions for the current user
@@ -91,6 +95,31 @@ export const POST: RequestHandler = async ({ request, locals }) => {
 
 	const { mode, locale } = parseResult.data;
 
+	const [userLanguage] = await db
+		.select({ activeLanguage: users.activeLanguage })
+		.from(users)
+		.where(eq(users.id, userId))
+		.limit(1);
+
+	const activeLanguageCode = userLanguage?.activeLanguage ?? 'es';
+
+	let [language] = await db
+		.select({ name: languages.name, tutorName: languages.tutorName })
+		.from(languages)
+		.where(eq(languages.code, activeLanguageCode))
+		.limit(1);
+
+	if (!language && activeLanguageCode !== 'es') {
+		[language] = await db
+			.select({ name: languages.name, tutorName: languages.tutorName })
+			.from(languages)
+			.where(eq(languages.code, 'es'))
+			.limit(1);
+	}
+
+	const targetLanguageName = language?.name ?? 'Target Language';
+	const tutorName = language?.tutorName ?? 'AI Tutor';
+
 	const [session] = await db
 		.insert(chatSessions)
 		.values({
@@ -105,18 +134,18 @@ export const POST: RequestHandler = async ({ request, locals }) => {
 	await db.insert(chatMessages).values({
 		sessionId: session.id,
 		role: 'system',
-		content: getSystemPrompt(motherLanguage)
+		content: getSystemPrompt(motherLanguage, targetLanguageName, tutorName)
 	});
 
 	// Add assistant intro message to kick off the conversation (in user's native language)
 	const introMessages: Record<string, { text: string; voice: string }> = {
 		en: {
-			text: "Hi! I'm Ana, your Spanish tutor. How can I help you today? You can ask me things like:\n• \"How do I say 'hello' in Spanish?\"\n• \"Explain the difference between ser and estar\"\n• \"I want to practice ordering food\"\n\nWhat would you like to learn?",
-			voice: "Hi! I'm Ana, your Spanish tutor. When you're ready, click the microphone button to start speaking. What would you like to practice today?"
+			text: `Hi! I'm ${tutorName}, your ${targetLanguageName} tutor. How can I help you today? You can ask me things like:\n• "How do I say 'hello' in ${targetLanguageName}?"\n• "Explain this ${targetLanguageName} grammar rule"\n• "I want to practice ordering food"\n\nWhat would you like to learn?`,
+			voice: `Hi! I'm ${tutorName}, your ${targetLanguageName} tutor. When you're ready, click the microphone button to start speaking. What would you like to practice today?`
 		},
 		de: {
-			text: 'Hallo! Ich bin Ana, deine Spanischlehrerin. Wie kann ich dir heute helfen? Du kannst mich zum Beispiel fragen:\n- "Wie sagt man \'Guten Tag\' auf Spanisch?"\n- "Erkl\u00e4re den Unterschied zwischen ser und estar"\n- "Ich m\u00f6chte \u00fcben, Essen zu bestellen"\n\nWas m\u00f6chtest du lernen?',
-			voice: 'Hallo! Ich bin Ana, deine Spanischlehrerin. Wenn du bereit bist, klicke auf den Mikrofon-Button, um zu sprechen. Was m\u00f6chtest du heute \u00fcben?'
+			text: `Hallo! Ich bin ${tutorName}, deine ${targetLanguageName}-Lehrkraft. Wie kann ich dir heute helfen? Du kannst mich zum Beispiel fragen:\n- "Wie sagt man 'Guten Tag' auf ${targetLanguageName}?"\n- "Erkläre mir diese ${targetLanguageName}-Grammatikregel"\n- "Ich möchte üben, Essen zu bestellen"\n\nWas möchtest du lernen?`,
+			voice: `Hallo! Ich bin ${tutorName}, deine ${targetLanguageName}-Lehrkraft. Wenn du bereit bist, klicke auf den Mikrofon-Button, um zu sprechen. Was möchtest du heute üben?`
 		}
 	};
 
