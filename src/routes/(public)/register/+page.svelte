@@ -18,7 +18,7 @@
 </svelte:head>
 
 <div class="flex min-h-[calc(100vh-200px)] items-center justify-center px-4 py-12">
-	<div class="w-full max-w-md">
+	<div class="w-full max-w-md animate-fade-in-up">
 		<div class="text-center">
 			<h1 class="text-3xl font-bold text-text-light">{t('auth.registerTitle')}</h1>
 			<p class="mt-2 text-text-muted">{t('auth.registerSubtitle')}</p>
@@ -48,7 +48,7 @@
 			}}
 		>
 			{#if form?.error}
-				<div class="rounded-xl bg-error/10 p-4 text-center text-error">
+				<div class="animate-shake rounded-xl bg-error/10 p-4 text-center text-error">
 					{t(form.error)}
 				</div>
 			{/if}
@@ -62,7 +62,7 @@
 					id="displayName"
 					name="displayName"
 					required
-					class="input"
+					class="input transition-all duration-200 focus:scale-[1.01]"
 					placeholder={t('auth.displayNamePlaceholder')}
 					value={form?.displayName ?? ''}
 					minlength="2"
@@ -77,7 +77,7 @@
 					id="email"
 					name="email"
 					required
-					class="input"
+					class="input transition-all duration-200 focus:scale-[1.01]"
 					placeholder={t('auth.emailPlaceholder')}
 					value={form?.email ?? ''}
 					maxlength="50"
@@ -95,7 +95,7 @@
 						id="inviteCode"
 						name="inviteCode"
 						required
-						class="input"
+						class="input transition-all duration-200 focus:scale-[1.01]"
 						placeholder={t('auth.invitationCodePlaceholder')}
 						value={data.inviteCode}
 						readonly={!!data.inviteCode}
@@ -121,7 +121,7 @@
 					id="password"
 					name="password"
 					required
-					class="input"
+					class="input transition-all duration-200 focus:scale-[1.01]"
 					placeholder={t('auth.passwordMinChars')}
 					minlength="8"
 					maxlength="50"
@@ -140,7 +140,7 @@
 					id="confirmPassword"
 					name="confirmPassword"
 					required
-					class="input"
+					class="input transition-all duration-200 focus:scale-[1.01]"
 					placeholder={t('auth.confirmPasswordPlaceholder')}
 					minlength="8"
 					maxlength="50"
@@ -149,7 +149,11 @@
 				/>
 			</div>
 
-			<button type="submit" class="btn btn-success btn-lg w-full" disabled={loading}>
+			<button
+				type="submit"
+				class="btn btn-success btn-lg w-full transform transition-transform hover:scale-[1.02] active:scale-[0.98]"
+				disabled={loading}
+			>
 				{#if loading}
 					{t('auth.creatingAccount')}
 				{:else if requiresApproval}
@@ -170,3 +174,20 @@
 		</p>
 	</div>
 </div>
+
+<style>
+	@keyframes fade-in-up {
+		0% {
+			opacity: 0;
+			transform: translateY(20px);
+		}
+		100% {
+			opacity: 1;
+			transform: translateY(0);
+		}
+	}
+
+	.animate-fade-in-up {
+		animation: fade-in-up 0.4s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+	}
+</style>

@@ -7,7 +7,7 @@
 </svelte:head>
 
 <div class="flex min-h-[calc(100vh-200px)] items-center justify-center px-4 py-12">
-	<div class="w-full max-w-md text-center">
+	<div class="w-full max-w-md animate-fade-in-up text-center">
 		<div class="mx-auto flex h-24 w-24 items-center justify-center rounded-full bg-error/10">
 			<span class="text-5xl">
 				<svg
@@ -48,7 +48,28 @@
 		</div>
 
 		<div class="mt-8 space-y-4">
-			<a href="/" class="btn btn-primary btn-lg w-full">{t('auth.rejected.backHome')}</a>
+			<a
+				href="/"
+				class="btn btn-primary btn-lg w-full transform transition-transform hover:scale-[1.02] active:scale-[0.98]"
+				>{t('auth.rejected.backHome')}</a
+			>
 		</div>
 	</div>
 </div>
+
+<style>
+	@keyframes fade-in-up {
+		0% {
+			opacity: 0;
+			transform: translateY(20px);
+		}
+		100% {
+			opacity: 1;
+			transform: translateY(0);
+		}
+	}
+
+	.animate-fade-in-up {
+		animation: fade-in-up 0.4s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+	}
+</style>

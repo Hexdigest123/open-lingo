@@ -106,13 +106,13 @@
 		<!-- Stats Section -->
 		{#if data.stats.totalUsers > 0 || data.stats.totalLessons > 0}
 			<div class="mt-16 flex justify-center gap-8 sm:gap-16">
-				<div class="text-center">
+				<div class="animate-fade-in-up text-center delay-100">
 					<div class="text-4xl font-bold text-success">
 						{data.stats.totalUsers.toLocaleString()}+
 					</div>
 					<div class="text-text-muted">{t('landing.stats.users')}</div>
 				</div>
-				<div class="text-center">
+				<div class="animate-fade-in-up text-center delay-200">
 					<div class="text-4xl font-bold text-primary">
 						{data.stats.totalLessons.toLocaleString()}+
 					</div>
@@ -126,7 +126,9 @@
 			<h2 class="text-center text-3xl font-bold text-text-light">{t('landing.whyTitle')}</h2>
 			<div class="mt-12 grid gap-8 md:grid-cols-3">
 				<!-- Feature 1: Gamified Learning -->
-				<div class="card group text-center transition-shadow duration-300 hover:shadow-xl">
+				<div
+					class="card animate-fade-in-up group text-center transition-shadow duration-300 hover:shadow-xl delay-100"
+				>
 					<div
 						class="mx-auto mb-4 flex h-16 w-16 items-center justify-center rounded-full bg-success/10 transition-colors group-hover:bg-success/20"
 					>
@@ -139,7 +141,9 @@
 				</div>
 
 				<!-- Feature 2: Voice Practice -->
-				<div class="card group text-center transition-shadow duration-300 hover:shadow-xl">
+				<div
+					class="card animate-fade-in-up group text-center transition-shadow duration-300 hover:shadow-xl delay-200"
+				>
 					<div
 						class="mx-auto mb-4 flex h-16 w-16 items-center justify-center rounded-full bg-primary/10 transition-colors group-hover:bg-primary/20"
 					>
@@ -152,7 +156,9 @@
 				</div>
 
 				<!-- Feature 3: AI Tutor -->
-				<div class="card group text-center transition-shadow duration-300 hover:shadow-xl">
+				<div
+					class="card animate-fade-in-up group text-center transition-shadow duration-300 hover:shadow-xl delay-300"
+				>
 					<div
 						class="mx-auto mb-4 flex h-16 w-16 items-center justify-center rounded-full bg-purple/10 transition-colors group-hover:bg-purple/20"
 					>
@@ -172,7 +178,7 @@
 				{t('landing.howItWorks.title')}
 			</h2>
 			<div class="mt-12 grid gap-8 md:grid-cols-4">
-				<div class="text-center">
+				<div class="animate-fade-in-up text-center delay-100">
 					<div
 						class="mx-auto mb-4 flex h-12 w-12 items-center justify-center rounded-full bg-success text-xl font-bold text-white"
 					>
@@ -181,7 +187,7 @@
 					<h3 class="font-bold text-text-light">{t('landing.howItWorks.step1.title')}</h3>
 					<p class="mt-1 text-sm text-text-muted">{t('landing.howItWorks.step1.description')}</p>
 				</div>
-				<div class="text-center">
+				<div class="animate-fade-in-up text-center delay-200">
 					<div
 						class="mx-auto mb-4 flex h-12 w-12 items-center justify-center rounded-full bg-success text-xl font-bold text-white"
 					>
@@ -190,7 +196,7 @@
 					<h3 class="font-bold text-text-light">{t('landing.howItWorks.step2.title')}</h3>
 					<p class="mt-1 text-sm text-text-muted">{t('landing.howItWorks.step2.description')}</p>
 				</div>
-				<div class="text-center">
+				<div class="animate-fade-in-up text-center delay-300">
 					<div
 						class="mx-auto mb-4 flex h-12 w-12 items-center justify-center rounded-full bg-success text-xl font-bold text-white"
 					>
@@ -199,7 +205,7 @@
 					<h3 class="font-bold text-text-light">{t('landing.howItWorks.step3.title')}</h3>
 					<p class="mt-1 text-sm text-text-muted">{t('landing.howItWorks.step3.description')}</p>
 				</div>
-				<div class="text-center">
+				<div class="animate-fade-in-up text-center delay-400">
 					<div
 						class="mx-auto mb-4 flex h-12 w-12 items-center justify-center rounded-full bg-success text-xl font-bold text-white"
 					>
@@ -228,9 +234,10 @@
 						'from-purple to-error'
 					]}
 					<div
-						class="flex h-20 w-20 items-center justify-center rounded-2xl bg-gradient-to-br {colors[
+						class="animate-fade-in-up flex h-20 w-20 transform cursor-default items-center justify-center rounded-2xl bg-gradient-to-br {colors[
 							i
-						]} transform cursor-default text-xl font-bold text-white shadow-lg transition-transform hover:scale-110"
+						]} text-xl font-bold text-white shadow-lg transition-transform hover:scale-110"
+						style="animation-delay: {i * 100}ms"
 					>
 						{level}
 					</div>
@@ -246,7 +253,10 @@
 			<p class="mt-4 text-lg opacity-90">
 				{t('landing.ctaSubtitle')}
 			</p>
-			<a href="/register" class="btn btn-lg mt-8 bg-white text-success hover:bg-gray-100">
+			<a
+				href="/register"
+				class="btn btn-lg mt-8 transform bg-white text-success transition-transform hover:scale-105 hover:bg-gray-100"
+			>
 				{t('landing.ctaButton')}
 			</a>
 		</div>
@@ -266,5 +276,34 @@
 
 	.animate-float {
 		animation: float 4s ease-in-out infinite;
+	}
+
+	@keyframes fade-in-up {
+		0% {
+			opacity: 0;
+			transform: translateY(20px);
+		}
+		100% {
+			opacity: 1;
+			transform: translateY(0);
+		}
+	}
+
+	.animate-fade-in-up {
+		opacity: 0; /* Start hidden */
+		animation: fade-in-up 0.6s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+	}
+
+	.delay-100 {
+		animation-delay: 100ms;
+	}
+	.delay-200 {
+		animation-delay: 200ms;
+	}
+	.delay-300 {
+		animation-delay: 300ms;
+	}
+	.delay-400 {
+		animation-delay: 400ms;
 	}
 </style>
