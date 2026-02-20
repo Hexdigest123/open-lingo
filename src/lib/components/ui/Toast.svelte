@@ -4,8 +4,19 @@
 		dismissNotification,
 		type Notification
 	} from '$lib/stores/notifications.svelte';
+	import { Trophy, Flame, Snowflake, Star, CircleX, CircleCheck } from 'lucide-svelte';
+	import type { Component } from 'svelte';
 
 	const notifications = $derived(getNotifications());
+
+	const iconComponents: Record<string, typeof Trophy> = {
+		Trophy,
+		Flame,
+		Snowflake,
+		Star,
+		CircleX,
+		CircleCheck
+	};
 
 	function getNotificationStyles(type: Notification['type']): string {
 		switch (type) {
@@ -44,25 +55,32 @@
 </script>
 
 {#if notifications.length > 0}
-	<div class="fixed top-4 right-4 z-50 flex flex-col gap-3 max-w-sm w-full pointer-events-none">
+	<div class="pointer-events-none fixed top-4 right-4 z-50 flex w-full max-w-sm flex-col gap-3">
 		{#each notifications as notification (notification.id)}
 			<div
-				class="pointer-events-auto flex items-start gap-3 p-4 rounded-xl border-2 shadow-lg {getNotificationStyles(
+				class="pointer-events-auto flex items-start gap-3 rounded-xl border-2 p-4 shadow-lg {getNotificationStyles(
 					notification.type
 				)} {getAnimationClass(notification)}"
 			>
 				{#if notification.icon}
-					<span class="text-2xl flex-shrink-0">{notification.icon}</span>
+					{@const IconComp = iconComponents[notification.icon]}
+					{#if IconComp}
+						<span class="flex-shrink-0">
+							<IconComp size={24} class={notification.icon === 'Star' ? 'fill-current' : ''} />
+						</span>
+					{:else}
+						<span class="flex-shrink-0 text-2xl">{notification.icon}</span>
+					{/if}
 				{/if}
-				<div class="flex-1 min-w-0">
+				<div class="min-w-0 flex-1">
 					<h4 class="font-bold">{notification.title}</h4>
 					{#if notification.message}
-						<p class="text-sm opacity-80 mt-0.5">{notification.message}</p>
+						<p class="mt-0.5 text-sm opacity-80">{notification.message}</p>
 					{/if}
 				</div>
 				<button
 					onclick={() => dismissNotification(notification.id)}
-					class="flex-shrink-0 opacity-60 hover:opacity-100 transition-opacity"
+					class="flex-shrink-0 opacity-60 transition-opacity hover:opacity-100"
 					aria-label="Dismiss notification"
 				>
 					<svg

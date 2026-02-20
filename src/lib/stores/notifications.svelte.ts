@@ -60,7 +60,7 @@ export function showAchievement(title: string, message?: string): string {
 		type: 'achievement',
 		title,
 		message,
-		icon: '🏆',
+		icon: 'Trophy',
 		duration: 5000
 	});
 }
@@ -70,7 +70,7 @@ export function showStreakUpdate(currentStreak: number): string {
 		type: 'streak',
 		title: `${currentStreak} Day Streak!`,
 		message: 'Keep it up!',
-		icon: '🔥',
+		icon: 'Flame',
 		duration: 4000
 	});
 }
@@ -80,7 +80,7 @@ export function showStreakFreeze(freezesRemaining: number): string {
 		type: 'freeze',
 		title: 'Streak Freeze Earned!',
 		message: `You now have ${freezesRemaining} freeze${freezesRemaining !== 1 ? 's' : ''}`,
-		icon: '❄️',
+		icon: 'Snowflake',
 		duration: 4000
 	});
 }
@@ -89,7 +89,7 @@ export function showXPGain(amount: number): string {
 	return showNotification({
 		type: 'xp',
 		title: `+${amount} XP`,
-		icon: '⭐',
+		icon: 'Star',
 		duration: 2000
 	});
 }
@@ -99,7 +99,7 @@ export function showError(title: string, message?: string): string {
 		type: 'error',
 		title,
 		message,
-		icon: '❌',
+		icon: 'CircleX',
 		duration: 5000
 	});
 }
@@ -109,7 +109,7 @@ export function showSuccess(title: string, message?: string): string {
 		type: 'success',
 		title,
 		message,
-		icon: '✅',
+		icon: 'CircleCheck',
 		duration: 3000
 	});
 }
