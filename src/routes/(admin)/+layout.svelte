@@ -46,12 +46,12 @@
 
 			<nav class="hidden items-center gap-2 md:flex">
 				{#each navItems as item}
+					{@const IconComponent = iconMap[item.icon]}
 					<a
 						href={item.href}
 						class="flex items-center gap-2 rounded-xl px-4 py-2 font-medium whitespace-nowrap transition-colors
-							{isActive(item.href) ? 'bg-white/20 text-white' : 'text-white/70 hover:text-white'}"
+						{isActive(item.href) ? 'bg-white/20 text-white' : 'text-white/70 hover:text-white'}"
 					>
-						{@const IconComponent = iconMap[item.icon]}
 						{#if IconComponent}
 							<IconComponent size={16} />
 						{:else}
@@ -79,12 +79,12 @@
 	<nav class="fixed right-0 bottom-0 left-0 z-50 border-t border-border-light bg-white md:hidden">
 		<div class="flex items-center justify-around py-2">
 			{#each navItems as item}
+				{@const IconComponent = iconMap[item.icon]}
 				<a
 					href={item.href}
 					class="flex flex-col items-center gap-1 rounded-xl px-4 py-2 whitespace-nowrap transition-colors
-						{isActive(item.href) ? 'text-purple' : 'text-text-muted'}"
+					{isActive(item.href) ? 'text-purple' : 'text-text-muted'}"
 				>
-					{@const IconComponent = iconMap[item.icon]}
 					{#if IconComponent}
 						<IconComponent size={20} />
 					{:else}

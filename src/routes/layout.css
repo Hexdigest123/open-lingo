@@ -91,9 +91,9 @@ body {
 
 /* Button base styles */
 .btn {
-	@apply inline-flex items-center justify-center font-bold rounded-xl transition-all;
-	@apply focus:outline-none focus:ring-2 focus:ring-offset-2;
-	@apply disabled:opacity-50 disabled:cursor-not-allowed;
+	@apply inline-flex items-center justify-center rounded-xl font-bold transition-all;
+	@apply focus:ring-2 focus:ring-offset-2 focus:outline-none;
+	@apply disabled:cursor-not-allowed disabled:opacity-50;
 	min-height: var(--spacing-touch);
 }
 
@@ -153,7 +153,7 @@ body {
 }
 
 .btn-ghost {
-	@apply bg-transparent text-text-light border-2 border-border-light;
+	@apply border-2 border-border-light bg-transparent text-text-light;
 }
 
 .btn-ghost:hover:not(:disabled) {
@@ -161,15 +161,15 @@ body {
 }
 
 /* Card styles */
-.card {
-	@apply bg-surface-light rounded-xl p-6;
+@utility card {
+	@apply rounded-xl bg-surface-light p-6;
 	@apply border border-border-light;
 	box-shadow: var(--shadow-md);
 }
 
 /* Input styles */
 .input {
-	@apply w-full px-4 py-3 rounded-xl border-2 border-border-light;
+	@apply w-full rounded-xl border-2 border-border-light px-4 py-3;
 	@apply bg-bg-light text-text-light;
 	@apply focus:border-primary focus:ring-0 focus:outline-none;
 	@apply transition-colors duration-150;
@@ -186,11 +186,11 @@ body {
 
 /* Progress bar */
 .progress-bar {
-	@apply h-2 bg-border-light rounded-full overflow-hidden;
+	@apply h-2 overflow-hidden rounded-full bg-border-light;
 }
 
 .progress-bar-fill {
-	@apply h-full bg-success rounded-full transition-all duration-300;
+	@apply h-full rounded-full bg-success transition-all duration-300;
 }
 
 /* Animations */
@@ -329,11 +329,14 @@ body {
 
 /* Freeze earned animation */
 @keyframes freeze-earned {
-	0%, 100% {
+	0%,
+	100% {
 		box-shadow: 0 0 5px rgba(28, 176, 246, 0.5);
 	}
 	50% {
-		box-shadow: 0 0 20px rgba(28, 176, 246, 0.8), 0 0 40px rgba(28, 176, 246, 0.4);
+		box-shadow:
+			0 0 20px rgba(28, 176, 246, 0.8),
+			0 0 40px rgba(28, 176, 246, 0.4);
 	}
 }
 
