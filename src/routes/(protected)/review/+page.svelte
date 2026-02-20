@@ -1,9 +1,8 @@
 <script lang="ts">
 	import * as m from '$lib/paraglide/messages.js';
-	import { getLocale } from '$lib/paraglide/runtime.js';
 	import type { PageData } from './$types';
 	import { deserialize } from '$app/forms';
-import MultipleChoiceQuestion from '$lib/components/lessons/MultipleChoiceQuestion.svelte';
+	import MultipleChoiceQuestion from '$lib/components/lessons/MultipleChoiceQuestion.svelte';
 	import FillBlankQuestion from '$lib/components/lessons/FillBlankQuestion.svelte';
 	import TranslationQuestion from '$lib/components/lessons/TranslationQuestion.svelte';
 	import MatchingQuestion from '$lib/components/lessons/MatchingQuestion.svelte';
@@ -21,15 +20,14 @@ import MultipleChoiceQuestion from '$lib/components/lessons/MultipleChoiceQuesti
 	type ReviewItem = {
 		concept: {
 			id: number;
-			titleEn: string;
-			titleDe: string;
+			title: string;
 		};
 		question: ReviewQuestion;
 	};
 
 	let { data }: { data: PageData } = $props();
 
-	const reviews = data.reviews as ReviewItem[];
+	const reviews = data.reviews as unknown as ReviewItem[];
 
 	let currentIndex = $state(0);
 	let correctCount = $state(0);
@@ -44,58 +42,7 @@ import MultipleChoiceQuestion from '$lib/components/lessons/MultipleChoiceQuesti
 	const currentQuestion = $derived(currentItem?.question);
 
 	function getConceptTitle(item: ReviewItem): string {
-		return getLocale() === 'de' ? item.concept.titleDe : item.concept.titleEn;
-	}
-
-	function getLocalized(content: Record<string, unknown>, keyPrefix: string): string {
-		const en = content[`${keyPrefix}En`];
-		const de = content[`${keyPrefix}De`];
-		const fallback = content[keyPrefix];
-
-		if (getLocale() === 'de' && typeof de === 'string') return de;
-		if (typeof en === 'string') return en;
-		return typeof fallback === 'string' ? fallback : '';
-	}
-
-	function getOptions(content: Record<string, unknown>): string[] {
-		const deOptions = content.optionsDe;
-		const enOptions = content.optionsEn;
-		const fallback = content.options;
-
-		if (getLocale() === 'de' && Array.isArray(deOptions)) {
-			return deOptions.filter((value): value is string => typeof value === 'string');
-		}
-		if (Array.isArray(enOptions)) {
-			return enOptions.filter((value): value is string => typeof value === 'string');
-		}
-		if (Array.isArray(fallback)) {
-			return fallback.filter((value): value is string => typeof value === 'string');
-		}
-		return [];
-	}
-
-	function getPairs(content: Record<string, unknown>): Array<{ target: string; english: string }> {
-		const pairs = content.pairs;
-		if (!Array.isArray(pairs)) return [];
-
-		return pairs
-			.filter(
-				(value): value is Record<string, unknown> => typeof value === 'object' && value !== null
-			)
-			.map((pair) => ({
-				target:
-					typeof pair.target === 'string'
-						? pair.target
-						: typeof pair.spanish === 'string'
-							? pair.spanish
-							: '',
-				english:
-					getLocale() === 'de' && typeof pair.german === 'string'
-						? pair.german
-						: typeof pair.english === 'string'
-							? pair.english
-							: ''
-			}));
+		return item.concept.title;
 	}
 
 	async function submitAnswer(answer: string) {
@@ -154,7 +101,7 @@ import MultipleChoiceQuestion from '$lib/components/lessons/MultipleChoiceQuesti
 </script>
 
 <svelte:head>
-	<title>{m["review.title"]()} - OpenLingo</title>
+	<title>{m['review.title']()} - OpenLingo</title>
 </svelte:head>
 
 {#if reviews.length === 0}
@@ -176,9 +123,9 @@ import MultipleChoiceQuestion from '$lib/components/lessons/MultipleChoiceQuesti
 			</svg>
 		</div>
 		<h1 class="mt-4 text-2xl font-bold text-text-light">
-			{m["review.noDue"]()}
+			{m['review.noDue']()}
 		</h1>
-		<a href="/skills" class="btn btn-primary mt-6">{m["learn.backToSkills"]()}</a>
+		<a href="/skills" class="btn btn-primary mt-6">{m['learn.backToSkills']()}</a>
 	</div>
 {:else if reviewDone}
 	<div class="mx-auto max-w-2xl space-y-4 card text-center">
@@ -199,60 +146,54 @@ import MultipleChoiceQuestion from '$lib/components/lessons/MultipleChoiceQuesti
 			</svg>
 		</div>
 		<h1 class="text-2xl font-bold text-text-light">
-			{m["review.complete"]()}
+			{m['review.complete']()}
 		</h1>
 		<p class="text-text-muted">
-			{m["review.reviewed"]({ count: reviews.length })}
+			{m['review.reviewed']({ count: reviews.length })}
 		</p>
 		<p class="text-lg font-semibold text-success">
-			{m["review.accuracy"]({ percent: accuracy })}
+			{m['review.accuracy']({ percent: accuracy })}
 		</p>
 		<p class="text-sm text-text-muted">
-			{m["review.nextReview"]({ time: m["common.tomorrow"]() })}
+			{m['review.nextReview']({ time: m['common.tomorrow']() })}
 		</p>
-		<a href="/skills" class="btn btn-primary">{m["learn.backToSkills"]()}</a>
+		<a href="/skills" class="btn btn-primary">{m['learn.backToSkills']()}</a>
 	</div>
 {:else if currentItem && currentQuestion}
 	<div class="mx-auto max-w-2xl space-y-6">
 		<div class="flex items-center justify-between">
 			<a href="/skills" class="text-sm text-text-muted hover:text-text-light"
-				>← {m["learn.backToSkills"]()}</a
+				>← {m['learn.backToSkills']()}</a
 			>
 			<p class="text-sm text-text-muted">
-				{m["review.reviewOf"]({ current: currentIndex + 1, total: reviews.length })}
+				{m['review.reviewOf']({ current: currentIndex + 1, total: reviews.length })}
 			</p>
 		</div>
 
 		<div class="card">
 			<p class="text-xs tracking-wide text-text-muted uppercase">
-				{m["review.concept"]({ name: getConceptTitle(currentItem) })}
+				{m['review.concept']({ name: getConceptTitle(currentItem) })}
 			</p>
 			<h2 class="mt-1 text-lg font-bold text-text-light">{getConceptTitle(currentItem)}</h2>
 		</div>
 
 		{#if currentQuestion.type === 'multiple_choice'}
 			<MultipleChoiceQuestion
-				questionText={getLocalized(currentQuestion.content, 'question')}
-				options={getOptions(currentQuestion.content)}
+				questionText={(currentQuestion.content.question as string) ?? ''}
+				options={(currentQuestion.content.options as string[]) ?? []}
 				disabled={showFeedback || isSubmitting}
 				onAnswer={submitAnswer}
 			/>
 		{:else if currentQuestion.type === 'fill_blank'}
 			<FillBlankQuestion
-				sentence={getLocalized(currentQuestion.content, 'sentence')}
-				hint={getLocalized(currentQuestion.content, 'hint')}
+				sentence={(currentQuestion.content.sentence as string) ?? ''}
+				hint={(currentQuestion.content.hint as string) ?? ''}
 				disabled={showFeedback || isSubmitting}
 				onAnswer={submitAnswer}
 			/>
 		{:else if currentQuestion.type === 'translation'}
 			<TranslationQuestion
 				text={typeof currentQuestion.content.text === 'string' ? currentQuestion.content.text : ''}
-				textEn={typeof currentQuestion.content.textEn === 'string'
-					? currentQuestion.content.textEn
-					: ''}
-				textDe={typeof currentQuestion.content.textDe === 'string'
-					? currentQuestion.content.textDe
-					: ''}
 				direction={typeof currentQuestion.content.direction === 'string'
 					? currentQuestion.content.direction
 					: ''}
@@ -262,7 +203,9 @@ import MultipleChoiceQuestion from '$lib/components/lessons/MultipleChoiceQuesti
 			/>
 		{:else if currentQuestion.type === 'matching'}
 			<MatchingQuestion
-				pairs={getPairs(currentQuestion.content)}
+				pairs={Array.isArray(currentQuestion.content.pairs)
+					? (currentQuestion.content.pairs as any[])
+					: []}
 				targetLanguageName={data.languageCode.toUpperCase()}
 				disabled={showFeedback || isSubmitting}
 				onAnswer={submitAnswer}
@@ -274,11 +217,8 @@ import MultipleChoiceQuestion from '$lib/components/lessons/MultipleChoiceQuesti
 							(value): value is string => typeof value === 'string'
 						)
 					: []}
-				instructionEn={typeof currentQuestion.content.instructionEn === 'string'
-					? currentQuestion.content.instructionEn
-					: ''}
-				instructionDe={typeof currentQuestion.content.instructionDe === 'string'
-					? currentQuestion.content.instructionDe
+				instruction={typeof currentQuestion.content.instruction === 'string'
+					? currentQuestion.content.instruction
 					: ''}
 				disabled={showFeedback || isSubmitting}
 				onAnswer={submitAnswer}
@@ -288,12 +228,7 @@ import MultipleChoiceQuestion from '$lib/components/lessons/MultipleChoiceQuesti
 				textToSpeak={typeof currentQuestion.content.textToSpeak === 'string'
 					? currentQuestion.content.textToSpeak
 					: ''}
-				hintEn={typeof currentQuestion.content.hintEn === 'string'
-					? currentQuestion.content.hintEn
-					: ''}
-				hintDe={typeof currentQuestion.content.hintDe === 'string'
-					? currentQuestion.content.hintDe
-					: ''}
+				hint={typeof currentQuestion.content.hint === 'string' ? currentQuestion.content.hint : ''}
 				hasApiKey={false}
 				disabled={showFeedback || isSubmitting}
 				onAnswer={submitAnswer}
@@ -308,7 +243,7 @@ import MultipleChoiceQuestion from '$lib/components/lessons/MultipleChoiceQuesti
 					currentQuestion.content.answerType === 'multiple_choice')
 					? currentQuestion.content.answerType
 					: 'type'}
-				options={getOptions(currentQuestion.content)}
+				options={(currentQuestion.content.options as string[]) ?? []}
 				hasApiKey={false}
 				disabled={showFeedback || isSubmitting}
 				onAnswer={submitAnswer}
@@ -316,11 +251,12 @@ import MultipleChoiceQuestion from '$lib/components/lessons/MultipleChoiceQuesti
 		{:else}
 			<div class="card text-center">
 				<p class="text-text-muted">
-					{m["learn.unsupportedType"]()}
+					{m['learn.unsupportedType']()}
 				</p>
 				<button
 					class="btn btn-primary mt-4"
-					onclick={() => submitAnswer(currentQuestion.correctAnswer)}>{m["learn.continue"]()}</button
+					onclick={() => submitAnswer(currentQuestion.correctAnswer)}
+					>{m['learn.continue']()}</button
 				>
 			</div>
 		{/if}
@@ -332,18 +268,18 @@ import MultipleChoiceQuestion from '$lib/components/lessons/MultipleChoiceQuesti
 					: 'border-error bg-error/10'}"
 			>
 				<p class="font-semibold {feedback.isCorrect ? 'text-success' : 'text-error'}">
-					{feedback.isCorrect ? m["learn.correct"]() : m["learn.incorrect"]()}
+					{feedback.isCorrect ? m['learn.correct']() : m['learn.incorrect']()}
 				</p>
 				{#if !feedback.isCorrect}
 					<p class="mt-1 text-sm text-text-muted">
-						{m["learn.correctAnswerWas"]({ answer: feedback.correctAnswer })}
+						{m['learn.correctAnswerWas']({ answer: feedback.correctAnswer })}
 					</p>
 				{/if}
 				<p class="mt-1 text-sm text-text-muted">
-					{m["skills.mastery"]({ percent: Math.round(feedback.mastery * 100) })}
+					{m['skills.mastery']({ percent: Math.round(feedback.mastery * 100) })}
 				</p>
 				<button class="btn btn-primary mt-4 w-full" onclick={nextReview}
-					>{m["learn.continue"]()}</button
+					>{m['learn.continue']()}</button
 				>
 			</div>
 		{/if}

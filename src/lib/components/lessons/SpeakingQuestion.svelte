@@ -1,22 +1,18 @@
 <script lang="ts">
 	import * as m from '$lib/paraglide/messages.js';
 	import { getLocale } from '$lib/paraglide/runtime.js';
-import { Mic } from 'lucide-svelte';
+	import { Mic } from 'lucide-svelte';
 
 	interface Props {
 		textToSpeak: string;
-		hintEn?: string;
-		hintDe?: string;
+		hint?: string;
 		disabled: boolean;
 		hasApiKey: boolean;
 		onAnswer: (answer: string) => void;
 		onSkip?: () => void;
 	}
 
-	let { textToSpeak, hintEn, hintDe, disabled, hasApiKey, onAnswer, onSkip }: Props = $props();
-
-	// Get locale-specific hint
-	const hint = $derived(getLocale() === 'de' && hintDe ? hintDe : hintEn);
+	let { textToSpeak, hint, disabled, hasApiKey, onAnswer, onSkip }: Props = $props();
 
 	let isRecording = $state(false);
 	let isProcessing = $state(false);
@@ -47,7 +43,9 @@ import { Mic } from 'lucide-svelte';
 
 			recorder.onstop = async () => {
 				// Stop all tracks
-				stream.getTracks().forEach((track) => track.stop());
+				stream.getTracks().forEach((track) => {
+					track.stop();
+				});
 
 				// Process the recorded audio
 				await processAudio();
@@ -58,7 +56,7 @@ import { Mic } from 'lucide-svelte';
 			isRecording = true;
 		} catch (err) {
 			console.error('Failed to start recording:', err);
-			error = m["chat.error.microphoneAccess"]();
+			error = m['chat.error.microphoneAccess']();
 		}
 	}
 
@@ -103,7 +101,7 @@ import { Mic } from 'lucide-svelte';
 			const result = await response.json();
 
 			if (!response.ok) {
-				error = result.error || m["common.error"]();
+				error = result.error || m['common.error']();
 				return;
 			}
 
@@ -119,7 +117,7 @@ import { Mic } from 'lucide-svelte';
 			}
 		} catch (err) {
 			console.error('Failed to process audio:', err);
-			error = m["common.error"]();
+			error = m['common.error']();
 		} finally {
 			isProcessing = false;
 		}
@@ -127,18 +125,18 @@ import { Mic } from 'lucide-svelte';
 </script>
 
 <div class="card">
-	<h2 class="mb-2 text-lg font-bold text-text-light">{m["lesson.types.speaking"]()}</h2>
-	<p class="mb-4 text-text-muted">{m["lesson.speaking.speakNow"]()}</p>
+	<h2 class="mb-2 text-lg font-bold text-text-light">{m['lesson.types.speaking']()}</h2>
+	<p class="mb-4 text-text-muted">{m['lesson.speaking.speakNow']()}</p>
 
 	{#if !hasApiKey}
 		<!-- No API key - show skip option -->
 		<div class="rounded-xl bg-yellow/10 p-6 text-center">
 			<div class="mb-4 flex justify-center"><Mic size={32} class="text-yellow-dark" /></div>
-			<p class="font-medium text-yellow-dark">{m["lesson.speaking.noApiKey"]()}</p>
-			<p class="mt-2 text-sm text-text-muted">{m["lesson.speaking.noApiKeyHint"]()}</p>
+			<p class="font-medium text-yellow-dark">{m['lesson.speaking.noApiKey']()}</p>
+			<p class="mt-2 text-sm text-text-muted">{m['lesson.speaking.noApiKeyHint']()}</p>
 			{#if onSkip}
 				<button onclick={onSkip} class="btn btn-primary mt-4">
-					{m["lesson.speaking.skip"]()}
+					{m['lesson.speaking.skip']()}
 				</button>
 			{/if}
 		</div>
@@ -157,7 +155,7 @@ import { Mic } from 'lucide-svelte';
 				<button
 					onclick={stopRecording}
 					{disabled}
-					aria-label={m["lesson.speaking.stopRecording"]()}
+					aria-label={m['lesson.speaking.stopRecording']()}
 					class="flex h-20 w-20 items-center justify-center rounded-full bg-error text-white shadow-lg transition-all hover:bg-error/90 active:scale-95"
 				>
 					<svg
@@ -171,7 +169,7 @@ import { Mic } from 'lucide-svelte';
 						<path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12" />
 					</svg>
 				</button>
-				<p class="text-sm font-medium text-error">{m["lesson.speaking.recording"]()}</p>
+				<p class="text-sm font-medium text-error">{m['lesson.speaking.recording']()}</p>
 				<div class="flex gap-1">
 					{#each Array(5) as _, i}
 						<div
@@ -201,12 +199,12 @@ import { Mic } from 'lucide-svelte';
 						></path>
 					</svg>
 				</div>
-				<p class="text-sm font-medium text-primary">{m["lesson.speaking.processing"]()}</p>
+				<p class="text-sm font-medium text-primary">{m['lesson.speaking.processing']()}</p>
 			{:else}
 				<button
 					onclick={startRecording}
 					{disabled}
-					aria-label={m["lesson.speaking.tapToRecord"]()}
+					aria-label={m['lesson.speaking.tapToRecord']()}
 					class="flex h-20 w-20 items-center justify-center rounded-full bg-primary text-white shadow-lg transition-all hover:bg-primary/90 active:scale-95
 						{disabled ? 'cursor-not-allowed opacity-50' : ''}"
 				>
@@ -225,7 +223,7 @@ import { Mic } from 'lucide-svelte';
 						/>
 					</svg>
 				</button>
-				<p class="text-sm text-text-muted">{m["lesson.speaking.tapToRecord"]()}</p>
+				<p class="text-sm text-text-muted">{m['lesson.speaking.tapToRecord']()}</p>
 			{/if}
 		</div>
 

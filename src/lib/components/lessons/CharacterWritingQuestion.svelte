@@ -1,16 +1,14 @@
 <script lang="ts">
 	import * as m from '$lib/paraglide/messages.js';
-	import { getLocale } from '$lib/paraglide/runtime.js';
-interface Props {
+	interface Props {
 		reading: string;
 		characterType: string;
-		hintEn?: string;
-		hintDe?: string;
+		hint?: string;
 		disabled: boolean;
 		onAnswer: (answer: string) => void;
 	}
 
-	let { reading, characterType, hintEn, hintDe, disabled, onAnswer }: Props = $props();
+	let { reading, characterType, hint, disabled, onAnswer }: Props = $props();
 
 	let answer = $state('');
 
@@ -25,12 +23,10 @@ interface Props {
 			submit();
 		}
 	}
-
-	let currentHint = $derived(getLocale() === 'de' ? hintDe : hintEn);
 </script>
 
 <div class="card">
-	<h2 class="mb-2 text-lg font-bold text-text-light">{m["lesson.types.characterWriting"]()}</h2>
+	<h2 class="mb-2 text-lg font-bold text-text-light">{m['lesson.types.characterWriting']()}</h2>
 
 	<div class="mb-8 flex flex-col items-center justify-center">
 		<span
@@ -41,9 +37,9 @@ interface Props {
 		<p class="text-3xl font-bold text-text-light">{reading}</p>
 	</div>
 
-	{#if currentHint}
+	{#if hint}
 		<p class="mb-4 text-sm text-text-muted">
-			{m["lesson.hint"]()}: {currentHint}
+			{m['lesson.hint']()}: {hint}
 		</p>
 	{/if}
 
@@ -51,14 +47,14 @@ interface Props {
 		type="text"
 		bind:value={answer}
 		onkeydown={handleKeydown}
-		placeholder={m["lesson.typeAnswer"]()}
+		placeholder={m['lesson.typeAnswer']()}
 		{disabled}
 		class="input text-lg"
 	/>
 
 	{#if !disabled}
 		<button onclick={submit} disabled={!answer.trim()} class="btn btn-success btn-lg mt-6 w-full">
-			{m["lesson.checkAnswer"]()}
+			{m['lesson.checkAnswer']()}
 		</button>
 	{/if}
 </div>

@@ -10,6 +10,28 @@ import {
 } from '$lib/server/learning/placement-service';
 import { isAnswerCorrect } from '$lib/server/validation/answers';
 import { and, desc, eq, isNull } from 'drizzle-orm';
+import { resolveQuestionContent } from '$lib/server/i18n/resolve';
+
+type Locale = 'en' | 'de';
+
+function resolveNextQuestion(
+	result: {
+		question: { id: number; content: unknown; [key: string]: unknown };
+		estimatedLevel: string;
+	} | null,
+	locale: Locale
+) {
+	if (!result) return null;
+	return {
+		...result,
+		question: {
+			...result.question,
+			content: result.question.content
+				? resolveQuestionContent(result.question.content as Record<string, unknown>, locale)
+				: result.question.content
+		}
+	};
+}
 
 const MAX_QUESTIONS = 25;
 
@@ -61,7 +83,9 @@ export const load: PageServerLoad = async ({ locals, url }) => {
 				.orderBy(desc(placementSessions.id))
 				.limit(1);
 
-	const nextQuestion = activeSession ? await getNextPlacementQuestion(activeSession.id) : null;
+	const locale = locals.locale;
+	const rawNextQuestion = activeSession ? await getNextPlacementQuestion(activeSession.id) : null;
+	const nextQuestion = resolveNextQuestion(rawNextQuestion, locale);
 
 	return {
 		languageCode,
@@ -80,6 +104,7 @@ export const load: PageServerLoad = async ({ locals, url }) => {
 export const actions: Actions = {
 	start: async ({ locals }) => {
 		const userId = locals.user!.id;
+		const locale = locals.locale;
 
 		const [userLanguage] = await db
 			.select({ activeLanguage: users.activeLanguage })
@@ -89,7 +114,8 @@ export const actions: Actions = {
 
 		const languageCode = userLanguage?.activeLanguage ?? 'es';
 		const sessionId = await startPlacement(userId, languageCode);
-		const nextQuestion = await getNextPlacementQuestion(sessionId);
+		const rawNextQuestion = await getNextPlacementQuestion(sessionId);
+		const nextQuestion = resolveNextQuestion(rawNextQuestion, locale);
 
 		return {
 			sessionId,
@@ -148,7 +174,8 @@ export const actions: Actions = {
 			.where(eq(placementSessions.id, sessionId))
 			.limit(1);
 
-		const nextQuestion = await getNextPlacementQuestion(sessionId);
+		const rawNextQuestion = await getNextPlacementQuestion(sessionId);
+		const nextQuestion = resolveNextQuestion(rawNextQuestion, locals.locale);
 
 		return {
 			isCorrect,

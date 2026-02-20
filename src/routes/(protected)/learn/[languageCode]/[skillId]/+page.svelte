@@ -1,9 +1,8 @@
 <script lang="ts">
 	import * as m from '$lib/paraglide/messages.js';
-	import { getLocale } from '$lib/paraglide/runtime.js';
 	import type { PageData } from './$types';
 	import { deserialize } from '$app/forms';
-import TeachBlock from '$lib/components/learning/TeachBlock.svelte';
+	import TeachBlock from '$lib/components/learning/TeachBlock.svelte';
 	import DrillBlock from '$lib/components/learning/DrillBlock.svelte';
 
 	type BlockType = 'teach' | 'drill' | 'checkpoint' | 'review' | 'exam';
@@ -11,8 +10,7 @@ import TeachBlock from '$lib/components/learning/TeachBlock.svelte';
 	type LearnBlock = {
 		id: number;
 		blockType: BlockType;
-		titleEn: string | null;
-		titleDe: string | null;
+		title: string | null;
 		config: Record<string, unknown>;
 	};
 
@@ -35,7 +33,7 @@ import TeachBlock from '$lib/components/learning/TeachBlock.svelte';
 	const allConceptIds = $derived(data.concepts.map((concept) => concept.id));
 
 	const blockSequence = $derived.by(() => {
-		const incoming = (data.blocks as LearnBlock[]) ?? [];
+		const incoming = (data.blocks as unknown as LearnBlock[]) ?? [];
 		if (incoming.length > 0) {
 			return incoming;
 		}
@@ -44,8 +42,7 @@ import TeachBlock from '$lib/components/learning/TeachBlock.svelte';
 			{
 				id: -1,
 				blockType: 'drill' as const,
-				titleEn: data.skill.titleEn,
-				titleDe: data.skill.titleDe,
+				title: (data.skill as Record<string, unknown>).title as string,
 				config: {
 					conceptIds: allConceptIds,
 					questionCount: data.questions.length,
@@ -70,13 +67,13 @@ import TeachBlock from '$lib/components/learning/TeachBlock.svelte';
 	});
 
 	function getLocalizedSkillTitle() {
-		return getLocale() === 'de' ? data.skill.titleDe : data.skill.titleEn;
+		return (data.skill as Record<string, unknown>).title as string;
 	}
 
 	function getLocalizedConceptTitle(conceptId: number): string {
 		const concept = conceptById.get(conceptId);
 		if (!concept) return '';
-		return getLocale() === 'de' ? concept.titleDe : concept.titleEn;
+		return ((concept as Record<string, unknown>).title as string) ?? '';
 	}
 
 	function getBlockQuestions(block: LearnBlock): LearnQuestion[] {
@@ -174,8 +171,7 @@ import TeachBlock from '$lib/components/learning/TeachBlock.svelte';
 	function getTeachContent(block: LearnBlock) {
 		const config = block.config;
 		const examplesRaw = config.examples;
-		const tipsEnRaw = config.tipsEn;
-		const tipsDeRaw = config.tipsDe;
+		const tipsRaw = config.tips;
 
 		const examples = Array.isArray(examplesRaw)
 			? examplesRaw
@@ -184,25 +180,20 @@ import TeachBlock from '$lib/components/learning/TeachBlock.svelte';
 					)
 					.map((example) => ({
 						target: (example.target as string) ?? '',
-						en: (example.en as string) ?? '',
-						de: (example.de as string) ?? ''
+						translation: (example.translation as string) ?? ''
 					}))
 			: [];
 
-		const tipsEn = Array.isArray(tipsEnRaw)
-			? tipsEnRaw.filter((value): value is string => typeof value === 'string')
-			: [];
-		const tipsDe = Array.isArray(tipsDeRaw)
-			? tipsDeRaw.filter((value): value is string => typeof value === 'string')
+		const tips = Array.isArray(tipsRaw)
+			? tipsRaw.filter((value): value is string => typeof value === 'string')
 			: [];
 
+		const skillTitle = (data.skill as Record<string, unknown>).title as string;
+
 		return {
-			titleEn: block.titleEn ?? data.skill.titleEn,
-			titleDe: block.titleDe ?? data.skill.titleDe,
-			explanationEn:
-				typeof config.explanationEn === 'string' ? config.explanationEn : m["learn.teachTitle"](),
-			explanationDe:
-				typeof config.explanationDe === 'string' ? config.explanationDe : m["learn.teachTitle"](),
+			title: block.title ?? skillTitle,
+			explanation:
+				typeof config.explanation === 'string' ? config.explanation : m['learn.teachTitle'](),
 			examples,
 			visualAid:
 				typeof config.visualAid === 'object' && config.visualAid !== null
@@ -211,8 +202,7 @@ import TeachBlock from '$lib/components/learning/TeachBlock.svelte';
 							payload: Record<string, unknown>;
 						})
 					: undefined,
-			tipsEn,
-			tipsDe
+			tips
 		};
 	}
 </script>
@@ -240,7 +230,7 @@ import TeachBlock from '$lib/components/learning/TeachBlock.svelte';
 			</svg>
 		</div>
 		<h1 class="text-2xl font-bold text-text-light">
-			{m["learn.lessonComplete"]()}
+			{m['learn.lessonComplete']()}
 		</h1>
 		<p class="text-text-muted">{getLocalizedSkillTitle()}</p>
 
@@ -248,33 +238,33 @@ import TeachBlock from '$lib/components/learning/TeachBlock.svelte';
 			<div class="bg-surface-100 rounded-xl p-4">
 				<p class="text-2xl font-bold text-success">{totalCorrect}/{totalAnswered}</p>
 				<p class="text-xs text-text-muted">
-					{m["learn.drillScore"]({ correct: totalCorrect, total: totalAnswered })}
+					{m['learn.drillScore']({ correct: totalCorrect, total: totalAnswered })}
 				</p>
 			</div>
 			<div class="bg-surface-100 rounded-xl p-4">
 				<p class="text-2xl font-bold text-primary">{data.concepts.length}</p>
 				<p class="text-xs text-text-muted">
-					{m["learn.conceptsLearned"]({ count: data.concepts.length })}
+					{m['learn.conceptsLearned']({ count: data.concepts.length })}
 				</p>
 			</div>
 			<div class="bg-surface-100 rounded-xl p-4">
 				<p class="text-2xl font-bold text-yellow-dark">{averageMasteryGain}%</p>
 				<p class="text-xs text-text-muted">
-					{m["skills.mastery"]({ percent: averageMasteryGain })}
+					{m['skills.mastery']({ percent: averageMasteryGain })}
 				</p>
 			</div>
 		</div>
 
-		<a href="/skills" class="btn btn-primary">← {m["learn.backToSkills"]()}</a>
+		<a href="/skills" class="btn btn-primary">← {m['learn.backToSkills']()}</a>
 	</div>
 {:else}
 	<div class="mx-auto max-w-3xl space-y-6">
 		<div class="flex items-center justify-between gap-4">
 			<a href="/skills" class="text-sm text-text-muted hover:text-text-light"
-				>← {m["learn.backToSkills"]()}</a
+				>← {m['learn.backToSkills']()}</a
 			>
 			<p class="text-sm text-text-muted">
-				{m["learn.progress"]({ current: blockIndex + 1, total: blockSequence.length })}
+				{m['learn.progress']({ current: blockIndex + 1, total: blockSequence.length })}
 			</p>
 		</div>
 
@@ -286,14 +276,11 @@ import TeachBlock from '$lib/components/learning/TeachBlock.svelte';
 			{#if currentBlock.blockType === 'teach'}
 				{@const teach = getTeachContent(currentBlock)}
 				<TeachBlock
-					titleEn={teach.titleEn}
-					titleDe={teach.titleDe}
-					explanationEn={teach.explanationEn}
-					explanationDe={teach.explanationDe}
+					title={teach.title}
+					explanation={teach.explanation}
 					examples={teach.examples}
 					visualAid={teach.visualAid}
-					tipsEn={teach.tipsEn}
-					tipsDe={teach.tipsDe}
+					tips={teach.tips}
 					onContinue={nextBlock}
 				/>
 			{:else if currentBlock.blockType === 'drill' || currentBlock.blockType === 'review'}
@@ -301,9 +288,10 @@ import TeachBlock from '$lib/components/learning/TeachBlock.svelte';
 				{#if blockQuestions.length === 0}
 					<div class="card text-center">
 						<p class="text-text-muted">
-							{m["learn.unsupportedType"]()}
+							{m['learn.unsupportedType']()}
 						</p>
-						<button class="btn btn-primary mt-4" onclick={nextBlock}>{m["learn.continue"]()}</button>
+						<button class="btn btn-primary mt-4" onclick={nextBlock}>{m['learn.continue']()}</button
+						>
 					</div>
 				{:else}
 					{#key `${currentBlock.id}-${checkpointAttempt}`}
@@ -320,11 +308,11 @@ import TeachBlock from '$lib/components/learning/TeachBlock.svelte';
 				<div class="space-y-4">
 					<div class="card bg-yellow/10">
 						<p class="font-semibold text-yellow-dark">
-							{m["learn.checkpointTitle"]()}
+							{m['learn.checkpointTitle']()}
 						</p>
 						{#if checkpointFailed}
 							<p class="mt-2 text-sm text-error">
-								{m["learn.checkpointFailed"]()}
+								{m['learn.checkpointFailed']()}
 							</p>
 						{/if}
 						{#if currentBlock.config.conceptIds}
@@ -339,9 +327,10 @@ import TeachBlock from '$lib/components/learning/TeachBlock.svelte';
 					{#if checkpointQuestions.length === 0}
 						<div class="card text-center">
 							<p class="text-text-muted">
-								{m["learn.unsupportedType"]()}
+								{m['learn.unsupportedType']()}
 							</p>
-							<button class="btn btn-primary mt-4" onclick={nextBlock}>{m["learn.continue"]()}</button
+							<button class="btn btn-primary mt-4" onclick={nextBlock}
+								>{m['learn.continue']()}</button
 							>
 						</div>
 					{:else}

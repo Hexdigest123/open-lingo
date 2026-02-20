@@ -1,20 +1,13 @@
 <script lang="ts">
 	import * as m from '$lib/paraglide/messages.js';
-	import { getLocale } from '$lib/paraglide/runtime.js';
-interface Props {
+	interface Props {
 		words: string[];
-		instructionEn?: string;
-		instructionDe?: string;
+		instruction: string;
 		disabled: boolean;
 		onAnswer: (answer: string) => void;
 	}
 
-	let { words, instructionEn, instructionDe, disabled, onAnswer }: Props = $props();
-
-	// Get locale-specific instruction
-	const instruction = $derived(
-		getLocale() === 'de' && instructionDe ? instructionDe : instructionEn
-	);
+	let { words, instruction, disabled, onAnswer }: Props = $props();
 
 	// State for selected words (the answer being built)
 	let selectedWords = $state<string[]>([]);
@@ -63,11 +56,11 @@ interface Props {
 </script>
 
 <div class="card">
-	<h2 class="mb-2 text-lg font-bold text-text-light">{m["lesson.types.wordOrder"]()}</h2>
+	<h2 class="mb-2 text-lg font-bold text-text-light">{m['lesson.types.wordOrder']()}</h2>
 	{#if instruction}
 		<p class="mb-4 text-text-muted">{instruction}</p>
 	{:else}
-		<p class="mb-4 text-text-muted">{m["lesson.wordOrder.tapToArrange"]()}</p>
+		<p class="mb-4 text-text-muted">{m['lesson.wordOrder.tapToArrange']()}</p>
 	{/if}
 
 	<!-- Answer area - selected words -->
@@ -75,7 +68,7 @@ interface Props {
 		class="mb-6 min-h-16 rounded-xl border-2 border-dashed border-border-light bg-bg-light/50 p-4"
 	>
 		{#if selectedWords.length === 0}
-			<p class="text-center text-text-muted">{m["lesson.wordOrder.tapWordsHere"]()}</p>
+			<p class="text-center text-text-muted">{m['lesson.wordOrder.tapWordsHere']()}</p>
 		{:else}
 			<div class="flex flex-wrap gap-2">
 				{#each selectedWords as word, index}
@@ -110,7 +103,7 @@ interface Props {
 	{#if selectedWords.length > 0 && !disabled}
 		<div class="mt-4 text-center">
 			<button onclick={reset} class="text-sm text-text-muted hover:text-primary hover:underline">
-				{m["lesson.wordOrder.reset"]()}
+				{m['lesson.wordOrder.reset']()}
 			</button>
 		</div>
 	{/if}
@@ -122,7 +115,7 @@ interface Props {
 			disabled={selectedWords.length !== words.length}
 			class="btn btn-success btn-lg mt-6 w-full"
 		>
-			{m["lesson.checkAnswer"]()}
+			{m['lesson.checkAnswer']()}
 		</button>
 	{/if}
 </div>

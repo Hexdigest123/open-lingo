@@ -1,10 +1,9 @@
 <script lang="ts">
 	import * as m from '$lib/paraglide/messages.js';
-	import { getLocale } from '$lib/paraglide/runtime.js';
 	import type { PageData } from './$types';
 	import { deserialize } from '$app/forms';
 	import { goto } from '$app/navigation';
-import MultipleChoiceQuestion from '$lib/components/lessons/MultipleChoiceQuestion.svelte';
+	import MultipleChoiceQuestion from '$lib/components/lessons/MultipleChoiceQuestion.svelte';
 	import FillBlankQuestion from '$lib/components/lessons/FillBlankQuestion.svelte';
 	import TranslationQuestion from '$lib/components/lessons/TranslationQuestion.svelte';
 	import MatchingQuestion from '$lib/components/lessons/MatchingQuestion.svelte';
@@ -47,57 +46,6 @@ import MultipleChoiceQuestion from '$lib/components/lessons/MultipleChoiceQuesti
 
 	const maxQuestions = data.maxQuestions ?? 25;
 	const currentQuestion = $derived(nextQuestionPayload?.question ?? null);
-
-	function getLocalized(content: Record<string, unknown>, keyPrefix: string): string {
-		const en = content[`${keyPrefix}En`];
-		const de = content[`${keyPrefix}De`];
-		const fallback = content[keyPrefix];
-
-		if (getLocale() === 'de' && typeof de === 'string') return de;
-		if (typeof en === 'string') return en;
-		return typeof fallback === 'string' ? fallback : '';
-	}
-
-	function getOptions(content: Record<string, unknown>): string[] {
-		const deOptions = content.optionsDe;
-		const enOptions = content.optionsEn;
-		const fallback = content.options;
-
-		if (getLocale() === 'de' && Array.isArray(deOptions)) {
-			return deOptions.filter((value): value is string => typeof value === 'string');
-		}
-		if (Array.isArray(enOptions)) {
-			return enOptions.filter((value): value is string => typeof value === 'string');
-		}
-		if (Array.isArray(fallback)) {
-			return fallback.filter((value): value is string => typeof value === 'string');
-		}
-		return [];
-	}
-
-	function getPairs(content: Record<string, unknown>): Array<{ target: string; english: string }> {
-		const pairs = content.pairs;
-		if (!Array.isArray(pairs)) return [];
-
-		return pairs
-			.filter(
-				(value): value is Record<string, unknown> => typeof value === 'object' && value !== null
-			)
-			.map((pair) => ({
-				target:
-					typeof pair.target === 'string'
-						? pair.target
-						: typeof pair.spanish === 'string'
-							? pair.spanish
-							: '',
-				english:
-					getLocale() === 'de' && typeof pair.german === 'string'
-						? pair.german
-						: typeof pair.english === 'string'
-							? pair.english
-							: ''
-			}));
-	}
 
 	async function beginPlacement() {
 		if (isSubmitting) return;
@@ -197,7 +145,7 @@ import MultipleChoiceQuestion from '$lib/components/lessons/MultipleChoiceQuesti
 </script>
 
 <svelte:head>
-	<title>{m["placement.title"]()} - OpenLingo</title>
+	<title>{m['placement.title']()} - OpenLingo</title>
 </svelte:head>
 
 {#if isComplete}
@@ -206,16 +154,16 @@ import MultipleChoiceQuestion from '$lib/components/lessons/MultipleChoiceQuesti
 			<Flag size={64} class="text-success" />
 		</div>
 		<h1 class="text-2xl font-bold text-text-light">
-			{m["placement.complete"]()}
+			{m['placement.complete']()}
 		</h1>
 		<p class="text-lg text-text-light">
-			{m["placement.yourLevel"]({ level: completedLevel || estimatedLevel })}
+			{m['placement.yourLevel']({ level: completedLevel || estimatedLevel })}
 		</p>
 		<p class="text-sm text-text-muted">
-			{m["placement.explanation"]()}
+			{m['placement.explanation']()}
 		</p>
 		<button class="btn btn-primary" onclick={() => goto('/skills')}
-			>{m["placement.goToSkills"]()}</button
+			>{m['placement.goToSkills']()}</button
 		>
 	</div>
 {:else if !activeSession}
@@ -224,13 +172,13 @@ import MultipleChoiceQuestion from '$lib/components/lessons/MultipleChoiceQuesti
 			<Compass size={64} class="text-primary" />
 		</div>
 		<h1 class="text-2xl font-bold text-text-light">
-			{m["placement.title"]()}
+			{m['placement.title']()}
 		</h1>
 		<p class="text-text-muted">
-			{m["placement.description"]()}
+			{m['placement.description']()}
 		</p>
 		<button class="btn btn-primary" onclick={beginPlacement} disabled={isSubmitting}
-			>{m["placement.start"]()}</button
+			>{m['placement.start']()}</button
 		>
 	</div>
 {:else if currentQuestion}
@@ -238,40 +186,34 @@ import MultipleChoiceQuestion from '$lib/components/lessons/MultipleChoiceQuesti
 		<div class="card">
 			<div class="flex items-center justify-between gap-3">
 				<p class="text-sm text-text-muted">
-					{m["placement.questionOf"]({
+					{m['placement.questionOf']({
 						current: Math.min(questionsAnswered + 1, maxQuestions),
 						total: maxQuestions
 					})}
 				</p>
 				<p class="rounded-full bg-primary/15 px-3 py-1 text-sm font-semibold text-primary">
-					{m["placement.estimatedLevel"]({ level: estimatedLevel })}
+					{m['placement.estimatedLevel']({ level: estimatedLevel })}
 				</p>
 			</div>
 		</div>
 
 		{#if currentQuestion.type === 'multiple_choice'}
 			<MultipleChoiceQuestion
-				questionText={getLocalized(currentQuestion.content, 'question')}
-				options={getOptions(currentQuestion.content)}
+				questionText={(currentQuestion.content.question as string) ?? ''}
+				options={(currentQuestion.content.options as string[]) ?? []}
 				disabled={showFeedback || isSubmitting}
 				onAnswer={submitAnswer}
 			/>
 		{:else if currentQuestion.type === 'fill_blank'}
 			<FillBlankQuestion
-				sentence={getLocalized(currentQuestion.content, 'sentence')}
-				hint={getLocalized(currentQuestion.content, 'hint')}
+				sentence={(currentQuestion.content.sentence as string) ?? ''}
+				hint={(currentQuestion.content.hint as string) ?? ''}
 				disabled={showFeedback || isSubmitting}
 				onAnswer={submitAnswer}
 			/>
 		{:else if currentQuestion.type === 'translation'}
 			<TranslationQuestion
 				text={typeof currentQuestion.content.text === 'string' ? currentQuestion.content.text : ''}
-				textEn={typeof currentQuestion.content.textEn === 'string'
-					? currentQuestion.content.textEn
-					: ''}
-				textDe={typeof currentQuestion.content.textDe === 'string'
-					? currentQuestion.content.textDe
-					: ''}
 				direction={typeof currentQuestion.content.direction === 'string'
 					? currentQuestion.content.direction
 					: ''}
@@ -281,7 +223,9 @@ import MultipleChoiceQuestion from '$lib/components/lessons/MultipleChoiceQuesti
 			/>
 		{:else if currentQuestion.type === 'matching'}
 			<MatchingQuestion
-				pairs={getPairs(currentQuestion.content)}
+				pairs={Array.isArray(currentQuestion.content.pairs)
+					? (currentQuestion.content.pairs as any[])
+					: []}
 				targetLanguageName={data.languageCode.toUpperCase()}
 				disabled={showFeedback || isSubmitting}
 				onAnswer={submitAnswer}
@@ -293,11 +237,8 @@ import MultipleChoiceQuestion from '$lib/components/lessons/MultipleChoiceQuesti
 							(value): value is string => typeof value === 'string'
 						)
 					: []}
-				instructionEn={typeof currentQuestion.content.instructionEn === 'string'
-					? currentQuestion.content.instructionEn
-					: ''}
-				instructionDe={typeof currentQuestion.content.instructionDe === 'string'
-					? currentQuestion.content.instructionDe
+				instruction={typeof currentQuestion.content.instruction === 'string'
+					? currentQuestion.content.instruction
 					: ''}
 				disabled={showFeedback || isSubmitting}
 				onAnswer={submitAnswer}
@@ -307,12 +248,7 @@ import MultipleChoiceQuestion from '$lib/components/lessons/MultipleChoiceQuesti
 				textToSpeak={typeof currentQuestion.content.textToSpeak === 'string'
 					? currentQuestion.content.textToSpeak
 					: ''}
-				hintEn={typeof currentQuestion.content.hintEn === 'string'
-					? currentQuestion.content.hintEn
-					: ''}
-				hintDe={typeof currentQuestion.content.hintDe === 'string'
-					? currentQuestion.content.hintDe
-					: ''}
+				hint={typeof currentQuestion.content.hint === 'string' ? currentQuestion.content.hint : ''}
 				hasApiKey={false}
 				disabled={showFeedback || isSubmitting}
 				onAnswer={submitAnswer}
@@ -327,7 +263,7 @@ import MultipleChoiceQuestion from '$lib/components/lessons/MultipleChoiceQuesti
 					currentQuestion.content.answerType === 'multiple_choice')
 					? currentQuestion.content.answerType
 					: 'type'}
-				options={getOptions(currentQuestion.content)}
+				options={(currentQuestion.content.options as string[]) ?? []}
 				hasApiKey={false}
 				disabled={showFeedback || isSubmitting}
 				onAnswer={submitAnswer}
@@ -335,11 +271,12 @@ import MultipleChoiceQuestion from '$lib/components/lessons/MultipleChoiceQuesti
 		{:else}
 			<div class="card text-center">
 				<p class="text-text-muted">
-					{m["learn.unsupportedType"]()}
+					{m['learn.unsupportedType']()}
 				</p>
 				<button
 					class="btn btn-primary mt-4"
-					onclick={() => submitAnswer(currentQuestion.correctAnswer)}>{m["learn.continue"]()}</button
+					onclick={() => submitAnswer(currentQuestion.correctAnswer)}
+					>{m['learn.continue']()}</button
 				>
 			</div>
 		{/if}
@@ -351,16 +288,16 @@ import MultipleChoiceQuestion from '$lib/components/lessons/MultipleChoiceQuesti
 					: 'border-error bg-error/10'}"
 			>
 				<p class="font-semibold {feedback.isCorrect ? 'text-success' : 'text-error'}">
-					{feedback.isCorrect ? m["learn.correct"]() : m["learn.incorrect"]()}
+					{feedback.isCorrect ? m['learn.correct']() : m['learn.incorrect']()}
 				</p>
 				{#if !feedback.isCorrect}
 					<p class="mt-1 text-sm text-text-muted">
-						{m["learn.correctAnswerWas"]({ answer: feedback.correctAnswer })}
+						{m['learn.correctAnswerWas']({ answer: feedback.correctAnswer })}
 					</p>
 				{/if}
 				{#if !isComplete}
 					<button class="btn btn-primary mt-4 w-full" onclick={nextStep}
-						>{m["learn.continue"]()}</button
+						>{m['learn.continue']()}</button
 					>
 				{/if}
 			</div>

@@ -1,32 +1,20 @@
 <script lang="ts">
 	import * as m from '$lib/paraglide/messages.js';
-	import { getLocale } from '$lib/paraglide/runtime.js';
-interface Radical {
+	interface Radical {
 		character: string;
 		name: string;
 	}
 
 	interface Props {
 		targetKanji: string;
-		meaningEn: string;
-		meaningDe: string;
+		meaning: string;
 		radicals: Radical[];
 		distractorRadicals: Radical[];
 		disabled: boolean;
 		onAnswer: (answer: string) => void;
 	}
 
-	let {
-		targetKanji,
-		meaningEn,
-		meaningDe,
-		radicals,
-		distractorRadicals,
-		disabled,
-		onAnswer
-	}: Props = $props();
-
-	const meaningText = $derived(getLocale() === 'de' ? meaningDe : meaningEn);
+	let { targetKanji, meaning, radicals, distractorRadicals, disabled, onAnswer }: Props = $props();
 
 	// Combine and shuffle radicals
 	const allRadicals = $derived(
@@ -56,16 +44,16 @@ interface Radical {
 
 <div class="card">
 	<h2 class="mb-2 text-lg font-bold text-text-light">
-		{m["lesson.types.kanjiComposition"]() || 'Kanji Composition'}
+		{m['lesson.types.kanjiComposition']() || 'Kanji Composition'}
 	</h2>
 
 	<div class="mb-8 text-center">
 		<p class="mb-2 text-sm tracking-wider text-text-muted uppercase">
-			{m["lesson.meaning"]() || 'Meaning'}
+			{m['lesson.meaning']() || 'Meaning'}
 		</p>
-		<p class="mb-4 text-3xl font-bold text-text-light">{meaningText}</p>
+		<p class="mb-4 text-3xl font-bold text-text-light">{meaning}</p>
 		<p class="text-sm text-text-muted">
-			{m["lesson.selectRadicals"]() || 'Select the parts that make up this Kanji'}
+			{m['lesson.selectRadicals']() || 'Select the parts that make up this Kanji'}
 		</p>
 	</div>
 
@@ -93,7 +81,7 @@ interface Radical {
 			disabled={selectedRadicals.size === 0}
 			class="btn btn-success btn-lg w-full"
 		>
-			{m["lesson.checkAnswer"]()}
+			{m['lesson.checkAnswer']()}
 		</button>
 	{/if}
 </div>

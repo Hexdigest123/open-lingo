@@ -1,7 +1,6 @@
 <script lang="ts">
 	import * as m from '$lib/paraglide/messages.js';
-	import { getLocale } from '$lib/paraglide/runtime.js';
-import MultipleChoiceQuestion from '../lessons/MultipleChoiceQuestion.svelte';
+	import MultipleChoiceQuestion from '../lessons/MultipleChoiceQuestion.svelte';
 	import FillBlankQuestion from '../lessons/FillBlankQuestion.svelte';
 	import TranslationQuestion from '../lessons/TranslationQuestion.svelte';
 	import MatchingQuestion from '../lessons/MatchingQuestion.svelte';
@@ -59,9 +58,9 @@ import MultipleChoiceQuestion from '../lessons/MultipleChoiceQuestion.svelte';
 
 		if (isCorrect) {
 			correctCount++;
-			feedbackMessage = m["lesson.correct"]();
+			feedbackMessage = m['lesson.correct']();
 		} else {
-			feedbackMessage = m["lesson.incorrect"]();
+			feedbackMessage = m['lesson.incorrect']();
 		}
 
 		showFeedback = true;
@@ -78,20 +77,13 @@ import MultipleChoiceQuestion from '../lessons/MultipleChoiceQuestion.svelte';
 			onComplete(correctCount, questions.length);
 		}
 	}
-
-	// Helper to get localized content
-	function getLocalized(content: Record<string, unknown>, keyPrefix: string) {
-		const en = content[`${keyPrefix}En`] as string;
-		const de = content[`${keyPrefix}De`] as string;
-		return getLocale() === 'de' && de ? de : en;
-	}
 </script>
 
 <div class="mx-auto max-w-2xl pb-24">
 	<!-- Progress Bar -->
 	<div class="mb-8">
 		<div class="mb-2 flex justify-between text-sm font-medium text-text-light">
-			<span>{m["lesson.progress"]()}</span>
+			<span>{m['lesson.progress']()}</span>
 			<span>{currentIndex + 1} / {questions.length}</span>
 		</div>
 		<div class="bg-surface-200 h-3 w-full overflow-hidden rounded-full">
@@ -107,22 +99,20 @@ import MultipleChoiceQuestion from '../lessons/MultipleChoiceQuestion.svelte';
 		{#if currentQuestion}
 			{#if currentQuestion.type === 'multiple_choice'}
 				<MultipleChoiceQuestion
-					questionText={getLocalized(currentQuestion.content, 'question')}
+					questionText={currentQuestion.content.question as string}
 					options={currentQuestion.content.options as string[]}
 					disabled={showFeedback || disabled}
 					onAnswer={handleAnswer}
 				/>
 			{:else if currentQuestion.type === 'fill_blank'}
 				<FillBlankQuestion
-					sentence={getLocalized(currentQuestion.content, 'sentence')}
-					hint={getLocalized(currentQuestion.content, 'hint')}
+					sentence={currentQuestion.content.sentence as string}
+					hint={currentQuestion.content.hint as string}
 					disabled={showFeedback || disabled}
 					onAnswer={handleAnswer}
 				/>
 			{:else if currentQuestion.type === 'translation'}
 				<TranslationQuestion
-					textEn={currentQuestion.content.textEn as string}
-					textDe={currentQuestion.content.textDe as string}
 					text={currentQuestion.content.text as string}
 					direction={currentQuestion.content.direction as string}
 					targetLanguageName={currentQuestion.content.targetLanguageName as string}
@@ -139,16 +129,14 @@ import MultipleChoiceQuestion from '../lessons/MultipleChoiceQuestion.svelte';
 			{:else if currentQuestion.type === 'word_order'}
 				<WordOrderQuestion
 					words={currentQuestion.content.words as string[]}
-					instructionEn={currentQuestion.content.instructionEn as string}
-					instructionDe={currentQuestion.content.instructionDe as string}
+					instruction={currentQuestion.content.instruction as string}
 					disabled={showFeedback || disabled}
 					onAnswer={handleAnswer}
 				/>
 			{:else if currentQuestion.type === 'speaking'}
 				<SpeakingQuestion
 					textToSpeak={currentQuestion.content.textToSpeak as string}
-					hintEn={currentQuestion.content.hintEn as string}
-					hintDe={currentQuestion.content.hintDe as string}
+					hint={currentQuestion.content.hint as string}
 					disabled={showFeedback || disabled}
 					{hasApiKey}
 					onAnswer={handleAnswer}
@@ -174,8 +162,7 @@ import MultipleChoiceQuestion from '../lessons/MultipleChoiceQuestion.svelte';
 				<CharacterWritingQuestion
 					reading={currentQuestion.content.reading as string}
 					characterType={currentQuestion.content.characterType as string}
-					hintEn={currentQuestion.content.hintEn as string}
-					hintDe={currentQuestion.content.hintDe as string}
+					hint={currentQuestion.content.hint as string}
 					disabled={showFeedback || disabled}
 					onAnswer={handleAnswer}
 				/>
@@ -190,13 +177,13 @@ import MultipleChoiceQuestion from '../lessons/MultipleChoiceQuestion.svelte';
 			{:else}
 				<div class="rounded-xl border-2 border-dashed border-text-muted/30 p-8 text-center">
 					<p class="text-lg font-medium text-text-light">
-						{m["lesson.unsupportedType"]()}: {currentQuestion.type}
+						{m['lesson.unsupportedType']()}: {currentQuestion.type}
 					</p>
 					<button
 						onclick={() => handleAnswer(currentQuestion.correctAnswer)}
 						class="btn btn-secondary mt-4"
 					>
-						{m["lesson.skip"]()}
+						{m['lesson.skip']()}
 					</button>
 				</div>
 			{/if}
@@ -230,7 +217,7 @@ import MultipleChoiceQuestion from '../lessons/MultipleChoiceQuestion.svelte';
 				{#if !isCorrect}
 					<div class="mb-6">
 						<p class="text-sm font-medium uppercase opacity-70">
-							{m["lesson.correctAnswer"]()}:
+							{m['lesson.correctAnswer']()}:
 						</p>
 						<p class="text-lg font-medium">{currentQuestion.correctAnswer}</p>
 					</div>
@@ -241,7 +228,7 @@ import MultipleChoiceQuestion from '../lessons/MultipleChoiceQuestion.svelte';
 					class="btn btn-lg w-full shadow-md
 					{isCorrect ? 'btn-success' : 'btn-error'}"
 				>
-					{m["lesson.continue"]()}
+					{m['lesson.continue']()}
 				</button>
 			</div>
 		</div>

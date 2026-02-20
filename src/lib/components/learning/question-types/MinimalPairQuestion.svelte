@@ -1,7 +1,6 @@
 <script lang="ts">
 	import * as m from '$lib/paraglide/messages.js';
-	import { getLocale } from '$lib/paraglide/runtime.js';
-import { Headphones, Loader2, Volume2, Play } from 'lucide-svelte';
+	import { Headphones, Loader2, Volume2, Play } from 'lucide-svelte';
 
 	interface Option {
 		text: string;
@@ -9,8 +8,7 @@ import { Headphones, Loader2, Volume2, Play } from 'lucide-svelte';
 	}
 
 	interface Props {
-		questionEn: string;
-		questionDe: string;
+		question: string;
 		audioText: string;
 		options: Option[];
 		disabled: boolean;
@@ -19,10 +17,7 @@ import { Headphones, Loader2, Volume2, Play } from 'lucide-svelte';
 		onSkip?: () => void;
 	}
 
-	let { questionEn, questionDe, audioText, options, disabled, hasApiKey, onAnswer, onSkip }: Props =
-		$props();
-
-	const questionText = $derived(getLocale() === 'de' ? questionDe : questionEn);
+	let { question, audioText, options, disabled, hasApiKey, onAnswer, onSkip }: Props = $props();
 
 	let isPlaying = $state(false);
 	let isLoading = $state(false);
@@ -53,7 +48,7 @@ import { Headphones, Loader2, Volume2, Play } from 'lucide-svelte';
 					await newAudio.play();
 				} catch (e2) {
 					console.error('Audio playback failed:', e2);
-					error = m["common.error"]();
+					error = m['common.error']();
 				}
 			}
 			return;
@@ -75,7 +70,7 @@ import { Headphones, Loader2, Volume2, Play } from 'lucide-svelte';
 			const result = await response.json();
 
 			if (!response.ok) {
-				error = result.error || m["common.error"]();
+				error = result.error || m['common.error']();
 				return;
 			}
 
@@ -98,12 +93,12 @@ import { Headphones, Loader2, Volume2, Play } from 'lucide-svelte';
 					await audio.play();
 				} catch (e2) {
 					console.error('Audio playback failed after retry:', e2);
-					error = m["common.error"]();
+					error = m['common.error']();
 				}
 			}
 		} catch (err) {
 			console.error('Failed to generate audio:', err);
-			error = m["common.error"]();
+			error = m['common.error']();
 		} finally {
 			isLoading = false;
 		}
@@ -118,7 +113,7 @@ import { Headphones, Loader2, Volume2, Play } from 'lucide-svelte';
 		};
 		audio.onerror = () => {
 			isPlaying = false;
-			error = m["common.error"]();
+			error = m['common.error']();
 		};
 	}
 
@@ -131,20 +126,20 @@ import { Headphones, Loader2, Volume2, Play } from 'lucide-svelte';
 
 <div class="card">
 	<h2 class="mb-2 text-lg font-bold text-text-light">
-		{m["lesson.types.minimalPair"]() || 'Minimal Pair'}
+		{m['lesson.types.minimalPair']() || 'Minimal Pair'}
 	</h2>
-	<p class="mb-4 text-text-muted">{questionText}</p>
+	<p class="mb-4 text-text-muted">{question}</p>
 
 	{#if !hasApiKey}
 		<div class="rounded-xl bg-yellow/10 p-6 text-center">
 			<div class="mb-4 flex justify-center">
 				<Headphones size={48} class="text-yellow-dark" />
 			</div>
-			<p class="font-medium text-yellow-dark">{m["lesson.listening.noApiKey"]()}</p>
-			<p class="mt-2 text-sm text-text-muted">{m["lesson.listening.noApiKeyHint"]()}</p>
+			<p class="font-medium text-yellow-dark">{m['lesson.listening.noApiKey']()}</p>
+			<p class="mt-2 text-sm text-text-muted">{m['lesson.listening.noApiKeyHint']()}</p>
 			{#if onSkip}
 				<button onclick={onSkip} class="btn btn-primary mt-4">
-					{m["lesson.listening.skip"]()}
+					{m['lesson.listening.skip']()}
 				</button>
 			{/if}
 		</div>
@@ -166,7 +161,7 @@ import { Headphones, Loader2, Volume2, Play } from 'lucide-svelte';
 			</button>
 
 			<p class="text-sm text-text-muted">
-				{isPlaying ? m["lesson.listening.playing"]() : m["lesson.listening.tapToPlay"]()}
+				{isPlaying ? m['lesson.listening.playing']() : m['lesson.listening.tapToPlay']()}
 			</p>
 		</div>
 

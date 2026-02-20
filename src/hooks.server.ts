@@ -138,6 +138,7 @@ const authHandle: Handle = async ({ event, resolve }) => {
 const i18nHandle: Handle = ({ event, resolve }) =>
 	paraglideMiddleware(event.request, ({ request: localizedRequest, locale }) => {
 		event.request = localizedRequest;
+		event.locals.locale = locale as 'en' | 'de';
 		return resolve(event, {
 			transformPageChunk: ({ html }) => html.replace('%lang%', locale)
 		});

@@ -18,6 +18,7 @@ import { eq, and, sql, desc } from 'drizzle-orm';
 import { isAnswerCorrect } from '$lib/server/validation/answers';
 import { isHeartsEnabledForUser } from '$lib/server/hearts/heartsEnabled';
 import { hasGlobalApiKey } from '$lib/server/openai/getApiKey';
+import { pickFromJson, resolveQuestionContent } from '$lib/server/i18n/resolve';
 
 // Check and unlock achievements based on user stats
 async function checkAndUnlockAchievements(
@@ -246,7 +247,13 @@ export const load: PageServerLoad = async ({ params, locals }) => {
 		.from(questions)
 		.where(eq(questions.lessonId, lessonId))
 		.orderBy(questions.order);
-	const clientQuestions = lessonQuestions.map(({ correctAnswer, ...rest }) => rest);
+	const locale = locals.locale;
+	const clientQuestions = lessonQuestions.map(({ correctAnswer, ...rest }) => ({
+		...rest,
+		content: rest.content
+			? resolveQuestionContent(rest.content as Record<string, unknown>, locale)
+			: rest.content
+	}));
 
 	if (lessonQuestions.length === 0) {
 		error(404, 'This lesson has no questions');
@@ -297,7 +304,7 @@ export const load: PageServerLoad = async ({ params, locals }) => {
 	const hasApiKey = !!user?.openaiApiKeyEncrypted || hasGlobalKey;
 
 	return {
-		lesson,
+		lesson: { ...lesson, title: pickFromJson(lesson.title, locale) },
 		questions: clientQuestions,
 		hearts,
 		heartsEnabled,

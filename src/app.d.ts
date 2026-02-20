@@ -13,6 +13,7 @@ declare global {
 				onboardingCompleted: boolean;
 			} | null;
 			newAccessToken?: string;
+			locale: 'en' | 'de';
 		}
 		interface PageData {
 			user?: App.Locals['user'];

@@ -1,39 +1,25 @@
 <script lang="ts">
 	import * as m from '$lib/paraglide/messages.js';
 	import { getLocale } from '$lib/paraglide/runtime.js';
-interface Props {
-		// For native_to_es direction: both language versions of the source text
-		textEn?: string;
-		textDe?: string;
-		// For es_to_native direction: Spanish text only
-		text?: string;
+	interface Props {
+		text: string;
 		direction: 'native_to_target' | 'target_to_native' | 'native_to_es' | 'es_to_native' | string;
 		targetLanguageName?: string;
 		disabled: boolean;
 		onAnswer: (answer: string) => void;
 	}
 
-	let { textEn, textDe, text, direction, targetLanguageName, disabled, onAnswer }: Props = $props();
+	let { text, direction, targetLanguageName, disabled, onAnswer }: Props = $props();
 
 	const resolvedTargetLanguageName = $derived(
-		targetLanguageName || m["lesson.languages.targetLanguage"]()
+		targetLanguageName || m['lesson.languages.targetLanguage']()
 	);
 
 	let answer = $state('');
 
-	// Get the display text based on direction and user's locale
-	const displayText = $derived(() => {
-		if (direction === 'native_to_target' || direction === 'native_to_es') {
-			// Show the user's native language text
-			return getLocale() === 'de' ? textDe || textEn || '' : textEn || textDe || '';
-		}
-		// target_to_native / es_to_native: show target language text
-		return text || textEn || '';
-	});
-
 	// Get the user's native language name
 	const nativeLang = $derived(() => {
-		return getLocale() === 'de' ? m["lesson.languages.german"]() : m["lesson.languages.english"]();
+		return getLocale() === 'de' ? m['lesson.languages.german']() : m['lesson.languages.english']();
 	});
 
 	// Determine source and target languages based on direction
@@ -65,7 +51,7 @@ interface Props {
 </script>
 
 <div class="card">
-	<h2 class="mb-2 text-lg font-bold text-text-light">{m["lesson.types.translation"]()}</h2>
+	<h2 class="mb-2 text-lg font-bold text-text-light">{m['lesson.types.translation']()}</h2>
 
 	<div class="mb-6">
 		<div class="mb-2 flex items-center gap-2">
@@ -73,7 +59,7 @@ interface Props {
 				{fromLang()}
 			</span>
 		</div>
-		<p class="text-2xl font-medium text-text-light">"{displayText()}"</p>
+		<p class="text-2xl font-medium text-text-light">"{text}"</p>
 	</div>
 
 	<div class="mb-4">
@@ -85,7 +71,7 @@ interface Props {
 		<textarea
 			bind:value={answer}
 			onkeydown={handleKeydown}
-			placeholder={m["lesson.typeTranslation"]()}
+			placeholder={m['lesson.typeTranslation']()}
 			{disabled}
 			rows="2"
 			class="input text-lg"
@@ -94,7 +80,7 @@ interface Props {
 
 	{#if !disabled}
 		<button onclick={submit} disabled={!answer.trim()} class="btn btn-success btn-lg w-full">
-			{m["lesson.checkAnswer"]()}
+			{m['lesson.checkAnswer']()}
 		</button>
 	{/if}
 </div>

@@ -21,7 +21,7 @@ export const load: PageServerLoad = async ({ locals }) => {
 	await checkAndUnlockSkills(userId, languageCode);
 
 	const [skills, dueReviewCount] = await Promise.all([
-		getSkillTree(languageCode, userId),
+		getSkillTree(languageCode, userId, locals.locale),
 		getDueReviewCount(userId, languageCode)
 	]);
 

@@ -1,22 +1,15 @@
 <script lang="ts">
 	import * as m from '$lib/paraglide/messages.js';
-	import { getLocale } from '$lib/paraglide/runtime.js';
-interface Props {
+	interface Props {
 		sentence: string;
-		sentenceEn: string;
-		sentenceDe: string;
+		translation: string;
 		options: string[];
-		hintEn?: string;
-		hintDe?: string;
+		hint?: string;
 		disabled: boolean;
 		onAnswer: (answer: string) => void;
 	}
 
-	let { sentence, sentenceEn, sentenceDe, options, hintEn, hintDe, disabled, onAnswer }: Props =
-		$props();
-
-	const translationText = $derived(getLocale() === 'de' ? sentenceDe : sentenceEn);
-	const hintText = $derived(getLocale() === 'de' ? hintDe : hintEn);
+	let { sentence, translation, options, hint, disabled, onAnswer }: Props = $props();
 
 	let selectedOption = $state<string | null>(null);
 
@@ -29,7 +22,7 @@ interface Props {
 
 <div class="card">
 	<h2 class="mb-2 text-lg font-bold text-text-light">
-		{m["lesson.types.particleSelection"]() || 'Select Particle'}
+		{m['lesson.types.particleSelection']() || 'Select Particle'}
 	</h2>
 
 	<div class="mb-8">
@@ -45,9 +38,9 @@ interface Props {
 				{/if}
 			{/each}
 		</p>
-		<p class="text-text-muted italic">{translationText}</p>
-		{#if hintText}
-			<p class="mt-2 text-sm text-text-muted">{m["lesson.hint"]()}: {hintText}</p>
+		<p class="text-text-muted italic">{translation}</p>
+		{#if hint}
+			<p class="mt-2 text-sm text-text-muted">{m['lesson.hint']()}: {hint}</p>
 		{/if}
 	</div>
 

@@ -1,16 +1,12 @@
 <script lang="ts">
-	import { getLocale } from '$lib/paraglide/runtime.js';
-interface Props {
+	interface Props {
 		pattern: string;
 		exampleTarget: string;
-		exampleEn: string;
-		exampleDe: string;
+		example: string;
 		parts?: Array<{ text: string; role: string; color: string }>;
 	}
 
-	let { pattern, exampleTarget, exampleEn, exampleDe, parts }: Props = $props();
-
-	const translation = $derived(getLocale() === 'de' ? exampleDe : exampleEn);
+	let { pattern, exampleTarget, example, parts }: Props = $props();
 
 	// Default colors if parts not provided
 	const defaultColors = [
@@ -87,6 +83,6 @@ interface Props {
 
 	<div class="border-t border-border-light pt-4 text-center">
 		<p class="mb-2 text-xl font-bold text-text-dark">{exampleTarget}</p>
-		<p class="text-sm text-text-light italic">{translation}</p>
+		<p class="text-sm text-text-light italic">{example}</p>
 	</div>
 </div>

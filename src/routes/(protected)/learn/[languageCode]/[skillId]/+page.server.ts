@@ -21,6 +21,15 @@ import {
 import { isAnswerCorrect } from '$lib/server/validation/answers';
 import { hasGlobalApiKey } from '$lib/server/openai/getApiKey';
 import { and, eq, inArray } from 'drizzle-orm';
+import {
+	pick,
+	resolveQuestionContent,
+	resolveTeachBlockConfig,
+	resolveEntityFields,
+	CONCEPT_FIELDS,
+	SKILL_FIELDS,
+	LESSON_BLOCK_FIELDS
+} from '$lib/server/i18n/resolve';
 
 export const load: PageServerLoad = async ({ params, locals }) => {
 	const skillId = Number.parseInt(params.skillId, 10);
@@ -100,11 +109,31 @@ export const load: PageServerLoad = async ({ params, locals }) => {
 
 	const hasApiKey = !!user?.openaiApiKeyEncrypted || (await hasGlobalApiKey());
 
+	const locale = locals.locale;
+
+	const resolvedSkill = resolveEntityFields(skillWithConcepts.skill, locale, SKILL_FIELDS);
+	const resolvedConcepts = skillWithConcepts.concepts.map((c) =>
+		resolveEntityFields(c, locale, CONCEPT_FIELDS)
+	);
+	const resolvedBlocks = blocks.map((b) => {
+		const resolved = resolveEntityFields(b, locale, LESSON_BLOCK_FIELDS);
+		if (b.blockType === 'teach' && b.config && typeof b.config === 'object') {
+			resolved.config = resolveTeachBlockConfig(b.config as Record<string, unknown>, locale);
+		}
+		return resolved;
+	});
+	const resolvedQuestions = skillQuestions.map((q) => ({
+		...q,
+		content: q.content
+			? resolveQuestionContent(q.content as Record<string, unknown>, locale)
+			: q.content
+	}));
+
 	return {
-		skill: skillWithConcepts.skill,
-		concepts: skillWithConcepts.concepts,
-		blocks,
-		questions: skillQuestions,
+		skill: resolvedSkill,
+		concepts: resolvedConcepts,
+		blocks: resolvedBlocks,
+		questions: resolvedQuestions,
 		questionConceptMap,
 		hasApiKey
 	};

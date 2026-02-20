@@ -2,8 +2,7 @@
 	import * as m from '$lib/paraglide/messages.js';
 	import { getLocale } from '$lib/paraglide/runtime.js';
 	import type { PageData } from './$types';
-import { goto, invalidateAll } from '$app/navigation';
-	import { getBilingualText } from '$lib/utils/bilingual';
+	import { goto, invalidateAll } from '$app/navigation';
 	import { deserialize } from '$app/forms';
 	import MultipleChoiceQuestion from '$lib/components/lessons/MultipleChoiceQuestion.svelte';
 	import FillBlankQuestion from '$lib/components/lessons/FillBlankQuestion.svelte';
@@ -61,61 +60,6 @@ import { goto, invalidateAll } from '$app/navigation';
 	const currentQuestion = $derived(questions[currentIndex]);
 	const questionContent = $derived(currentQuestion?.content as Record<string, unknown>);
 
-	// Helper to get locale-specific content with fallback
-	function getLocalizedText(enKey: string, deKey: string, fallbackKey?: string): string {
-		const content = questionContent;
-		if (!content) return '';
-
-		if (getLocale() === 'de' && content[deKey]) {
-			return content[deKey] as string;
-		}
-		if (content[enKey]) {
-			return content[enKey] as string;
-		}
-		// Fallback for legacy questions that have a single key
-		if (fallbackKey && content[fallbackKey]) {
-			return content[fallbackKey] as string;
-		}
-		return '';
-	}
-
-	// Locale-aware question text for multiple choice
-	const localizedQuestionText = $derived(getLocalizedText('questionEn', 'questionDe', 'question'));
-
-	// Locale-aware sentence and hint for fill blank
-	const localizedSentence = $derived(getLocalizedText('sentenceEn', 'sentenceDe', 'sentence'));
-	const localizedHint = $derived(getLocalizedText('hintEn', 'hintDe', 'hint'));
-
-	// Locale-aware pairs for matching (transform to use correct language)
-	function getLocalizedPairs(): Array<{ target: string; english: string }> {
-		if (!questionContent?.pairs) return [];
-		const pairs = questionContent.pairs as Array<{
-			target?: string;
-			spanish: string;
-			english: string;
-			german?: string;
-		}>;
-		return pairs.map((p) => ({
-			target: p.target || p.spanish,
-			english: getLocale() === 'de' && p.german ? p.german : p.english
-		}));
-	}
-	const localizedPairs = $derived(getLocalizedPairs());
-
-	// Locale-aware options for listening questions (and other multiple choice)
-	function getLocalizedOptions(): string[] | undefined {
-		// Check for locale-specific options first
-		if (getLocale() === 'de' && questionContent?.optionsDe) {
-			return questionContent.optionsDe as string[];
-		}
-		if (questionContent?.optionsEn) {
-			return questionContent.optionsEn as string[];
-		}
-		// Fallback to legacy single 'options' field
-		return questionContent?.options as string[] | undefined;
-	}
-	const localizedOptions = $derived(getLocalizedOptions());
-
 	// Modal is shown directly when hearts hit 0, not via effect (to avoid timing issues)
 
 	async function fetchExplanation() {
@@ -138,13 +82,13 @@ import { goto, invalidateAll } from '$app/navigation';
 			const result = await response.json();
 
 			if (!response.ok) {
-				explanationError = result.error || m["lesson.explanation.error"]();
+				explanationError = result.error || m['lesson.explanation.error']();
 			} else {
 				aiExplanation = result.explanation;
 			}
 		} catch (error) {
 			console.error('Failed to fetch explanation:', error);
-			explanationError = m["lesson.explanation.error"]();
+			explanationError = m['lesson.explanation.error']();
 		} finally {
 			isLoadingExplanation = false;
 		}
@@ -207,8 +151,8 @@ import { goto, invalidateAll } from '$app/navigation';
 
 				if (actionData.firstCorrectToday) {
 					celebrateFirstCorrectToday(
-						m["celebration.firstCorrectToday"](),
-						m["celebration.firstCorrectTodayMessage"]()
+						m['celebration.firstCorrectToday'](),
+						m['celebration.firstCorrectTodayMessage']()
 					);
 				}
 			}
@@ -303,10 +247,10 @@ import { goto, invalidateAll } from '$app/navigation';
 	}
 
 	function getAccuracyMessage(accuracy: number): string {
-		if (accuracy === 100) return m["lesson.complete.perfect"]();
-		if (accuracy >= 80) return m["lesson.complete.great"]();
-		if (accuracy >= 60) return m["lesson.complete.good"]();
-		return m["lesson.complete.keepPracticing"]();
+		if (accuracy === 100) return m['lesson.complete.perfect']();
+		if (accuracy >= 80) return m['lesson.complete.great']();
+		if (accuracy >= 60) return m['lesson.complete.good']();
+		return m['lesson.complete.keepPracticing']();
 	}
 
 	function exitLesson() {
@@ -315,7 +259,7 @@ import { goto, invalidateAll } from '$app/navigation';
 </script>
 
 <svelte:head>
-	<title>{getBilingualText(data.lesson.title)} - OpenLingo</title>
+	<title>{data.lesson.title} - OpenLingo</title>
 </svelte:head>
 
 {#if isComplete}
@@ -325,7 +269,7 @@ import { goto, invalidateAll } from '$app/navigation';
 			<div class="flex justify-center">
 				<PartyPopper size={64} class="text-success" />
 			</div>
-			<h2 class="mt-4 text-2xl font-bold text-text-light">{m["lesson.complete.title"]()}</h2>
+			<h2 class="mt-4 text-2xl font-bold text-text-light">{m['lesson.complete.title']()}</h2>
 			<p class="mt-2 text-lg text-text-muted">
 				{getAccuracyMessage(Math.round((correctCount / totalQuestions) * 100))}
 			</p>
@@ -333,18 +277,18 @@ import { goto, invalidateAll } from '$app/navigation';
 			<div class="mt-6 grid grid-cols-2 gap-4">
 				<div class="rounded-xl bg-yellow/10 p-4">
 					<div class="text-2xl font-bold text-yellow-dark">+{xpEarned}</div>
-					<div class="text-sm text-text-muted">{m["lesson.complete.xpEarned"]()}</div>
+					<div class="text-sm text-text-muted">{m['lesson.complete.xpEarned']()}</div>
 				</div>
 				<div class="rounded-xl bg-success/10 p-4">
 					<div class="text-2xl font-bold text-success">
 						{Math.round((correctCount / totalQuestions) * 100)}%
 					</div>
-					<div class="text-sm text-text-muted">{m["lesson.complete.accuracy"]()}</div>
+					<div class="text-sm text-text-muted">{m['lesson.complete.accuracy']()}</div>
 				</div>
 			</div>
 
 			<button onclick={exitLesson} class="btn btn-success btn-lg mt-6 w-full">
-				{m["lesson.complete.continueButton"]()}
+				{m['lesson.complete.continueButton']()}
 			</button>
 		</div>
 	</div>
@@ -355,14 +299,14 @@ import { goto, invalidateAll } from '$app/navigation';
 			<div class="flex justify-center">
 				<HeartCrack size={64} class="text-error" />
 			</div>
-			<h2 class="mt-4 text-2xl font-bold text-error">{m["lesson.outOfHearts.title"]()}</h2>
-			<p class="mt-2 text-text-muted">{m["lesson.outOfHearts.message"]()}</p>
+			<h2 class="mt-4 text-2xl font-bold text-error">{m['lesson.outOfHearts.title']()}</h2>
+			<p class="mt-2 text-text-muted">{m['lesson.outOfHearts.message']()}</p>
 
 			<button
 				onclick={() => (window.location.href = '/dashboard')}
 				class="btn btn-primary btn-lg mt-6 w-full"
 			>
-				{m["common.back"]()}
+				{m['common.back']()}
 			</button>
 		</div>
 	</div>
@@ -393,9 +337,9 @@ import { goto, invalidateAll } from '$app/navigation';
 
 		<!-- Question Counter -->
 		<div class="mb-4 text-center text-sm text-text-muted">
-			{m["lesson.question"]()}
+			{m['lesson.question']()}
 			{currentIndex + 1}
-			{m["lesson.of"]()}
+			{m['lesson.of']()}
 			{totalQuestions}
 		</div>
 
@@ -403,32 +347,30 @@ import { goto, invalidateAll } from '$app/navigation';
 		{#key currentQuestion.id}
 			{#if currentQuestion.type === 'multiple_choice'}
 				<MultipleChoiceQuestion
-					questionText={localizedQuestionText}
-					options={questionContent.options as string[]}
+					questionText={(questionContent.question as string) ?? ''}
+					options={(questionContent.options as string[]) ?? []}
 					disabled={showFeedback || isSubmitting}
 					onAnswer={handleAnswer}
 				/>
 			{:else if currentQuestion.type === 'fill_blank'}
 				<FillBlankQuestion
-					sentence={localizedSentence}
-					hint={localizedHint}
+					sentence={(questionContent.sentence as string) ?? ''}
+					hint={(questionContent.hint as string) ?? ''}
 					disabled={showFeedback || isSubmitting}
 					onAnswer={handleAnswer}
 				/>
 			{:else if currentQuestion.type === 'translation'}
 				<TranslationQuestion
-					text={questionContent.text as string}
-					textEn={questionContent.textEn as string}
-					textDe={questionContent.textDe as string}
+					text={(questionContent.text as string) ?? ''}
 					direction={questionContent.direction as string}
-					targetLanguageName={data.activeLanguage?.name || m["lesson.languages.targetLanguage"]()}
+					targetLanguageName={data.activeLanguage?.name || m['lesson.languages.targetLanguage']()}
 					disabled={showFeedback || isSubmitting}
 					onAnswer={handleAnswer}
 				/>
 			{:else if currentQuestion.type === 'matching'}
 				<MatchingQuestion
-					pairs={localizedPairs}
-					targetLanguageName={data.activeLanguage?.name || m["lesson.languages.targetLanguage"]()}
+					pairs={Array.isArray(questionContent.pairs) ? (questionContent.pairs as any[]) : []}
+					targetLanguageName={data.activeLanguage?.name || m['lesson.languages.targetLanguage']()}
 					disabled={showFeedback || isSubmitting}
 					onAnswer={handleAnswer}
 					onWrongMatch={handleWrongMatch}
@@ -436,16 +378,14 @@ import { goto, invalidateAll } from '$app/navigation';
 			{:else if currentQuestion.type === 'word_order'}
 				<WordOrderQuestion
 					words={questionContent.words as string[]}
-					instructionEn={questionContent.instructionEn as string | undefined}
-					instructionDe={questionContent.instructionDe as string | undefined}
+					instruction={(questionContent.instruction as string) ?? ''}
 					disabled={showFeedback || isSubmitting}
 					onAnswer={handleAnswer}
 				/>
 			{:else if currentQuestion.type === 'speaking'}
 				<SpeakingQuestion
 					textToSpeak={questionContent.textToSpeak as string}
-					hintEn={questionContent.hintEn as string | undefined}
-					hintDe={questionContent.hintDe as string | undefined}
+					hint={questionContent.hint as string | undefined}
 					disabled={showFeedback || isSubmitting}
 					hasApiKey={data.hasApiKey}
 					onAnswer={handleAnswer}
@@ -455,7 +395,7 @@ import { goto, invalidateAll } from '$app/navigation';
 				<ListeningQuestion
 					textToHear={questionContent.textToHear as string}
 					answerType={(questionContent.answerType as 'type' | 'multiple_choice') || 'type'}
-					options={localizedOptions}
+					options={questionContent.options as string[]}
 					disabled={showFeedback || isSubmitting}
 					hasApiKey={data.hasApiKey}
 					onAnswer={handleAnswer}
@@ -481,11 +421,11 @@ import { goto, invalidateAll } from '$app/navigation';
 					</span>
 					<div class="flex-1">
 						<p class="font-bold {lastAnswer.isCorrect ? 'text-success' : 'text-error'}">
-							{lastAnswer.isCorrect ? m["lesson.correct"]() : m["lesson.incorrect"]()}
+							{lastAnswer.isCorrect ? m['lesson.correct']() : m['lesson.incorrect']()}
 						</p>
 						{#if !lastAnswer.isCorrect}
 							<p class="text-sm text-text-muted">
-								{m["lesson.correctAnswer"]()}:
+								{m['lesson.correctAnswer']()}:
 								<span class="font-medium">{lastAnswer.correctAnswer}</span>
 							</p>
 							{#if data.hasApiKey && !aiExplanation && !isLoadingExplanation}
@@ -494,7 +434,7 @@ import { goto, invalidateAll } from '$app/navigation';
 									class="btn btn-ghost mt-3 -ml-2 flex items-center gap-2 px-2 text-sm text-primary hover:bg-primary/10"
 								>
 									<Bot size={16} />
-									{m["lesson.explain"]()}
+									{m['lesson.explain']()}
 								</button>
 							{/if}
 						{/if}
@@ -511,7 +451,7 @@ import { goto, invalidateAll } from '$app/navigation';
 					onclick={nextQuestion}
 					class="btn {lastAnswer.isCorrect ? 'btn-success' : 'btn-primary'} btn-lg mt-4 w-full"
 				>
-					{m["lesson.continue"]()}
+					{m['lesson.continue']()}
 				</button>
 			</div>
 		{/if}

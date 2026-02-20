@@ -16,6 +16,9 @@ import {
 } from '$lib/server/db/schema';
 import type { SkillNode } from '$lib/learning/types';
 import { and, asc, eq, inArray, sql } from 'drizzle-orm';
+import { pick } from '$lib/server/i18n/resolve';
+
+type Locale = 'en' | 'de';
 
 type SkillWithConceptCount = Skill & { conceptCount: number };
 
@@ -94,7 +97,11 @@ export async function getQuestionsForConcepts(conceptIds: number[]): Promise<Que
 	return [...deduped.values()];
 }
 
-export async function getSkillTree(languageCode: string, userId: number): Promise<SkillNode[]> {
+export async function getSkillTree(
+	languageCode: string,
+	userId: number,
+	locale: Locale
+): Promise<SkillNode[]> {
 	const [skillRows, prerequisiteRows, progressRows] = await Promise.all([
 		db
 			.select({
@@ -153,10 +160,8 @@ export async function getSkillTree(languageCode: string, userId: number): Promis
 			id: skill.id,
 			key: skill.key,
 			type: skill.type,
-			titleEn: skill.titleEn,
-			titleDe: skill.titleDe,
-			descriptionEn: skill.descriptionEn,
-			descriptionDe: skill.descriptionDe,
+			title: pick(skill.titleEn, skill.titleDe, locale),
+			description: pick(skill.descriptionEn, skill.descriptionDe, locale),
 			cefrLevel: skill.cefrLevel,
 			iconName: skill.iconName,
 			order: skill.order,

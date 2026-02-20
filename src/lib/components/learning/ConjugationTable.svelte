@@ -1,18 +1,14 @@
 <script lang="ts">
-	import { getLocale } from '$lib/paraglide/runtime.js';
-interface Props {
+	interface Props {
 		infinitive: string;
-		infinitiveEn: string;
-		infinitiveDe: string;
+		infinitiveTranslation: string;
 		forms: Record<string, Record<string, string>>;
 		highlightTense?: string;
 		highlightPerson?: string;
 	}
 
-	let { infinitive, infinitiveEn, infinitiveDe, forms, highlightTense, highlightPerson }: Props =
+	let { infinitive, infinitiveTranslation, forms, highlightTense, highlightPerson }: Props =
 		$props();
-
-	const translation = $derived(getLocale() === 'de' ? infinitiveDe : infinitiveEn);
 
 	// Extract tenses (keys of forms) and persons (keys of first tense object)
 	const tenses = $derived(Object.keys(forms));
@@ -24,7 +20,7 @@ interface Props {
 >
 	<div class="bg-primary/5 p-4 text-center">
 		<h3 class="text-2xl font-bold text-primary">{infinitive}</h3>
-		<p class="text-sm font-medium text-text-light">{translation}</p>
+		<p class="text-sm font-medium text-text-light">{infinitiveTranslation}</p>
 	</div>
 
 	<div class="overflow-x-auto">

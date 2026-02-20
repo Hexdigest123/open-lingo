@@ -9,6 +9,11 @@ import {
 } from '$lib/server/learning/review-service';
 import { isAnswerCorrect } from '$lib/server/validation/answers';
 import { eq } from 'drizzle-orm';
+import {
+	resolveEntityFields,
+	resolveQuestionContent,
+	CONCEPT_FIELDS
+} from '$lib/server/i18n/resolve';
 
 export const load: PageServerLoad = async ({ locals }) => {
 	const userId = locals.user!.id;
@@ -21,10 +26,23 @@ export const load: PageServerLoad = async ({ locals }) => {
 
 	const languageCode = userLanguage?.activeLanguage ?? 'es';
 
-	const [reviews, totalDue] = await Promise.all([
+	const locale = locals.locale;
+
+	const [rawReviews, totalDue] = await Promise.all([
 		getDueReviews(userId, languageCode, 20),
 		getDueReviewCount(userId, languageCode)
 	]);
+
+	const reviews = rawReviews.map((item) => ({
+		...item,
+		concept: resolveEntityFields(item.concept, locale, CONCEPT_FIELDS),
+		question: {
+			...item.question,
+			content: item.question.content
+				? resolveQuestionContent(item.question.content as Record<string, unknown>, locale)
+				: item.question.content
+		}
+	}));
 
 	return {
 		reviews,

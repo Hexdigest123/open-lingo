@@ -53,20 +53,17 @@ export interface PlacementEstimate {
 
 export interface TeachBlockContent {
 	conceptIds: number[];
-	explanationEn: string;
-	explanationDe: string;
+	explanation: string;
 	examples: Array<{
 		target: string;
-		en: string;
-		de: string;
+		translation: string;
 		audioUrl?: string;
 	}>;
 	visualAid?: {
 		type: 'table' | 'stroke_order' | 'diagram';
 		payload: Record<string, unknown>;
 	};
-	tipsEn?: string[];
-	tipsDe?: string[];
+	tips?: string[];
 }
 
 export interface DrillBlockContent {
@@ -84,10 +81,8 @@ export interface SkillNode {
 	id: number;
 	key: string;
 	type: SkillType;
-	titleEn: string;
-	titleDe: string;
-	descriptionEn: string | null;
-	descriptionDe: string | null;
+	title: string;
+	description: string | null;
 	cefrLevel: string | null;
 	iconName: string | null;
 	order: number;
@@ -99,18 +94,15 @@ export interface SkillNode {
 
 export interface CharacterRecognitionContent {
 	character: string;
-	questionEn: string;
-	questionDe: string;
+	question: string;
 	options: string[];
 	characterType: 'hiragana' | 'katakana' | 'kanji';
 }
 
 export interface CharacterWritingContent {
-	promptEn: string;
-	promptDe: string;
+	prompt: string;
 	reading: string;
-	hintEn?: string;
-	hintDe?: string;
+	hint?: string;
 	characterType: 'hiragana' | 'katakana' | 'kanji';
 }
 
@@ -118,64 +110,53 @@ export interface ScriptTransliterationContent {
 	sourceText: string;
 	sourceScript: 'romaji' | 'hiragana' | 'katakana' | 'kanji';
 	targetScript: 'romaji' | 'hiragana' | 'katakana';
-	hintEn?: string;
-	hintDe?: string;
+	hint?: string;
 }
 
 export interface ConjugationClozeContent {
-	sentenceEn: string;
-	sentenceDe: string;
 	sentence: string;
+	translation: string;
 	infinitive: string;
 	targetTense: string;
 	targetPerson?: string;
-	hintEn?: string;
-	hintDe?: string;
+	hint?: string;
 }
 
 export interface ParticleSelectionContent {
 	sentence: string;
-	sentenceEn: string;
-	sentenceDe: string;
+	translation: string;
 	options: string[];
-	hintEn?: string;
-	hintDe?: string;
+	hint?: string;
 }
 
 export interface GrammarTransformationContent {
 	sourceSentence: string;
-	instructionEn: string;
-	instructionDe: string;
+	instruction: string;
 	transformationType: string;
-	hintEn?: string;
-	hintDe?: string;
+	hint?: string;
 }
 
 export interface KanjiCompositionContent {
 	targetKanji: string;
-	meaningEn: string;
-	meaningDe: string;
+	meaning: string;
 	radicals: Array<{ character: string; name: string }>;
 	distractorRadicals: Array<{ character: string; name: string }>;
 }
 
 export interface MinimalPairContent {
-	questionEn: string;
-	questionDe: string;
+	question: string;
 	audioText: string;
 	options: Array<{ text: string; isCorrect: boolean }>;
 }
 
 export interface DictationContent {
 	textToHear: string;
-	hintEn?: string;
-	hintDe?: string;
+	hint?: string;
 	speed: 'normal' | 'slow';
 }
 
 export interface GuidedCompositionContent {
-	promptEn: string;
-	promptDe: string;
+	prompt: string;
 	vocabularyHints: string[];
 	grammarPattern?: string;
 	exampleAnswer?: string;

@@ -1,45 +1,23 @@
 <script lang="ts">
 	import * as m from '$lib/paraglide/messages.js';
-	import { getLocale } from '$lib/paraglide/runtime.js';
-import StrokeOrderVisualizer from './StrokeOrderVisualizer.svelte';
+	import StrokeOrderVisualizer from './StrokeOrderVisualizer.svelte';
 	import GrammarDiagram from './GrammarDiagram.svelte';
 	import ConjugationTable from './ConjugationTable.svelte';
 	import { Lightbulb } from 'lucide-svelte';
 
 	interface Props {
-		titleEn: string;
-		titleDe: string;
-		explanationEn: string;
-		explanationDe: string;
-		examples: Array<{ target: string; en: string; de: string }>;
+		title: string;
+		explanation: string;
+		examples: Array<{ target: string; translation: string }>;
 		visualAid?: {
 			type: 'table' | 'stroke_order' | 'diagram';
 			payload: Record<string, unknown>;
 		};
-		tipsEn?: string[];
-		tipsDe?: string[];
+		tips?: string[];
 		onContinue: () => void;
 	}
 
-	let {
-		titleEn,
-		titleDe,
-		explanationEn,
-		explanationDe,
-		examples,
-		visualAid,
-		tipsEn,
-		tipsDe,
-		onContinue
-	}: Props = $props();
-
-	const title = $derived(getLocale() === 'de' ? titleDe : titleEn);
-	const explanation = $derived(getLocale() === 'de' ? explanationDe : explanationEn);
-	const tips = $derived(getLocale() === 'de' ? tipsDe : tipsEn);
-
-	function getExampleTranslation(ex: { en: string; de: string }) {
-		return getLocale() === 'de' ? ex.de : ex.en;
-	}
+	let { title, explanation, examples, visualAid, tips, onContinue }: Props = $props();
 </script>
 
 <div class="mx-auto max-w-2xl space-y-8 pb-24">
@@ -64,16 +42,14 @@ import StrokeOrderVisualizer from './StrokeOrderVisualizer.svelte';
 				<GrammarDiagram
 					pattern={visualAid.payload.pattern as string}
 					exampleTarget={visualAid.payload.exampleTarget as string}
-					exampleEn={visualAid.payload.exampleEn as string}
-					exampleDe={visualAid.payload.exampleDe as string}
+					example={visualAid.payload.example as string}
 					parts={visualAid.payload.parts as any}
 				/>
 			{:else if visualAid.type === 'table'}
 				{#if visualAid.payload.forms}
 					<ConjugationTable
 						infinitive={visualAid.payload.infinitive as string}
-						infinitiveEn={visualAid.payload.infinitiveEn as string}
-						infinitiveDe={visualAid.payload.infinitiveDe as string}
+						infinitiveTranslation={visualAid.payload.infinitiveTranslation as string}
 						forms={visualAid.payload.forms as Record<string, Record<string, string>>}
 						highlightTense={visualAid.payload.highlightTense as string}
 						highlightPerson={visualAid.payload.highlightPerson as string}
@@ -109,7 +85,7 @@ import StrokeOrderVisualizer from './StrokeOrderVisualizer.svelte';
 	{#if examples.length > 0}
 		<div class="space-y-4">
 			<h3 class="text-lg font-bold tracking-wider text-text-light uppercase">
-				{m["lesson.examples"]()}
+				{m['lesson.examples']()}
 			</h3>
 			<div class="grid gap-4 sm:grid-cols-2">
 				{#each examples as example}
@@ -117,7 +93,7 @@ import StrokeOrderVisualizer from './StrokeOrderVisualizer.svelte';
 						class="bg-surface-100 flex flex-col justify-between rounded-xl border-2 border-border-light p-4 transition-colors hover:border-primary/30"
 					>
 						<p class="mb-2 text-lg font-bold text-primary">{example.target}</p>
-						<p class="text-sm text-text-light">{getExampleTranslation(example)}</p>
+						<p class="text-sm text-text-light">{example.translation}</p>
 					</div>
 				{/each}
 			</div>
@@ -127,7 +103,7 @@ import StrokeOrderVisualizer from './StrokeOrderVisualizer.svelte';
 	{#if tips && tips.length > 0}
 		<div class="space-y-4">
 			<h3 class="text-lg font-bold tracking-wider text-text-light uppercase">
-				{m["lesson.tips"]()}
+				{m['lesson.tips']()}
 			</h3>
 			{#each tips as tip}
 				<div class="bg-accent/10 flex gap-4 rounded-xl p-4 text-text-dark">
@@ -145,7 +121,7 @@ import StrokeOrderVisualizer from './StrokeOrderVisualizer.svelte';
 	<div class="bg-surface-100 fixed right-0 bottom-0 left-0 border-t border-border-light p-4">
 		<div class="mx-auto max-w-2xl">
 			<button onclick={onContinue} class="btn btn-primary btn-lg w-full shadow-lg">
-				{m["lesson.continue"]()}
+				{m['lesson.continue']()}
 			</button>
 		</div>
 	</div>

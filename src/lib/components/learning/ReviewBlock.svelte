@@ -1,6 +1,5 @@
 <script lang="ts">
 	import * as m from '$lib/paraglide/messages.js';
-	import { getLocale } from '$lib/paraglide/runtime.js';
 	import MultipleChoiceQuestion from '../lessons/MultipleChoiceQuestion.svelte';
 	import FillBlankQuestion from '../lessons/FillBlankQuestion.svelte';
 	import TranslationQuestion from '../lessons/TranslationQuestion.svelte';
@@ -49,12 +48,6 @@
 	const currentReview = $derived(reviews[currentIndex]);
 	const progress = $derived(((currentIndex + (showFeedback ? 1 : 0)) / reviews.length) * 100);
 	const correctCount = $derived(results.filter((r) => r.isCorrect).length);
-
-	function getLocalized(content: Record<string, unknown>, keyPrefix: string) {
-		const en = content[`${keyPrefix}En`] as string;
-		const de = content[`${keyPrefix}De`] as string;
-		return getLocale() === 'de' && de ? de : en;
-	}
 
 	function handleAnswer(answer: string) {
 		if (showFeedback) return;
@@ -122,22 +115,20 @@
 		<div class="mb-8">
 			{#if currentReview.question.type === 'multiple_choice'}
 				<MultipleChoiceQuestion
-					questionText={getLocalized(currentReview.question.content, 'question')}
+					questionText={currentReview.question.content.question as string}
 					options={currentReview.question.content.options as string[]}
 					disabled={showFeedback}
 					onAnswer={handleAnswer}
 				/>
 			{:else if currentReview.question.type === 'fill_blank'}
 				<FillBlankQuestion
-					sentence={getLocalized(currentReview.question.content, 'sentence')}
-					hint={getLocalized(currentReview.question.content, 'hint')}
+					sentence={currentReview.question.content.sentence as string}
+					hint={currentReview.question.content.hint as string}
 					disabled={showFeedback}
 					onAnswer={handleAnswer}
 				/>
 			{:else if currentReview.question.type === 'translation'}
 				<TranslationQuestion
-					textEn={currentReview.question.content.textEn as string}
-					textDe={currentReview.question.content.textDe as string}
 					text={currentReview.question.content.text as string}
 					direction={currentReview.question.content.direction as string}
 					targetLanguageName={currentReview.question.content.targetLanguageName as string}
@@ -154,16 +145,14 @@
 			{:else if currentReview.question.type === 'word_order'}
 				<WordOrderQuestion
 					words={currentReview.question.content.words as string[]}
-					instructionEn={currentReview.question.content.instructionEn as string}
-					instructionDe={currentReview.question.content.instructionDe as string}
+					instruction={currentReview.question.content.instruction as string}
 					disabled={showFeedback}
 					onAnswer={handleAnswer}
 				/>
 			{:else if currentReview.question.type === 'speaking'}
 				<SpeakingQuestion
 					textToSpeak={currentReview.question.content.textToSpeak as string}
-					hintEn={currentReview.question.content.hintEn as string}
-					hintDe={currentReview.question.content.hintDe as string}
+					hint={currentReview.question.content.hint as string}
 					disabled={showFeedback}
 					{hasApiKey}
 					onAnswer={handleAnswer}
@@ -189,8 +178,7 @@
 				<CharacterWritingQuestion
 					reading={currentReview.question.content.reading as string}
 					characterType={currentReview.question.content.characterType as string}
-					hintEn={currentReview.question.content.hintEn as string}
-					hintDe={currentReview.question.content.hintDe as string}
+					hint={currentReview.question.content.hint as string}
 					disabled={showFeedback}
 					onAnswer={handleAnswer}
 				/>

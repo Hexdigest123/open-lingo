@@ -1,20 +1,15 @@
 <script lang="ts">
 	import * as m from '$lib/paraglide/messages.js';
-	import { getLocale } from '$lib/paraglide/runtime.js';
-interface Props {
+	interface Props {
 		character: string;
-		questionEn: string;
-		questionDe: string;
+		question: string;
 		options: string[];
 		characterType: 'hiragana' | 'katakana' | 'kanji';
 		disabled: boolean;
 		onAnswer: (answer: string) => void;
 	}
 
-	let { character, questionEn, questionDe, options, characterType, disabled, onAnswer }: Props =
-		$props();
-
-	const questionText = $derived(getLocale() === 'de' ? questionDe : questionEn);
+	let { character, question, options, characterType, disabled, onAnswer }: Props = $props();
 
 	let selectedOption = $state<string | null>(null);
 
@@ -27,14 +22,14 @@ interface Props {
 
 <div class="card">
 	<h2 class="mb-2 text-lg font-bold text-text-light">
-		{m["lesson.types.characterRecognition"]() || 'Character Recognition'}
+		{m['lesson.types.characterRecognition']() || 'Character Recognition'}
 	</h2>
 
 	<div class="mb-8 flex flex-col items-center justify-center">
 		<div class="mb-4 text-8xl font-bold text-text-light">
 			{character}
 		</div>
-		<p class="text-center text-xl text-text-muted">{questionText}</p>
+		<p class="text-center text-xl text-text-muted">{question}</p>
 	</div>
 
 	<div class="grid grid-cols-2 gap-4">

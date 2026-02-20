@@ -1,9 +1,8 @@
 <script lang="ts">
 	import * as m from '$lib/paraglide/messages.js';
-	import { getLocale } from '$lib/paraglide/runtime.js';
 	import type { PageData } from './$types';
 	import type { SkillNode } from '$lib/learning/types';
-import {
+	import {
 		BookOpen,
 		Ruler,
 		Languages,
@@ -51,12 +50,11 @@ import {
 	});
 
 	function getSkillTitle(skill: SkillNode): string {
-		return getLocale() === 'de' ? skill.titleDe : skill.titleEn;
+		return skill.title;
 	}
 
 	function getSkillDescription(skill: SkillNode): string {
-		const description = getLocale() === 'de' ? skill.descriptionDe : skill.descriptionEn;
-		return description ?? '';
+		return skill.description ?? '';
 	}
 
 	function getSkillIcon(skill: SkillNode): ComponentType {
@@ -85,12 +83,12 @@ import {
 	}
 
 	function getStatusLabel(status: SkillNode['status']): string {
-		if (status === 'locked') return m["skills.locked"]();
-		if (status === 'unlocked') return m["skills.unlocked"]();
+		if (status === 'locked') return m['skills.locked']();
+		if (status === 'unlocked') return m['skills.unlocked']();
 		if (status === 'in_progress') {
-			return m["skills.inProgress"]();
+			return m['skills.inProgress']();
 		}
-		return m["skills.mastered"]();
+		return m['skills.mastered']();
 	}
 
 	function getPrerequisiteNames(skill: SkillNode): string[] {
@@ -102,21 +100,21 @@ import {
 </script>
 
 <svelte:head>
-	<title>{m["skills.title"]()} - OpenLingo</title>
+	<title>{m['skills.title']()} - OpenLingo</title>
 </svelte:head>
 
 <div class="space-y-8">
 	<div class="flex flex-col gap-4 card sm:flex-row sm:items-center sm:justify-between">
 		<div>
 			<h1 class="text-2xl font-bold text-text-light">
-				{m["skills.title"]()}
+				{m['skills.title']()}
 			</h1>
 			<p class="text-text-muted">
-				{m["skills.subtitle"]({ language: data.languageCode.toUpperCase() })}
+				{m['skills.subtitle']({ language: data.languageCode.toUpperCase() })}
 			</p>
 		</div>
 		<a href="/review" class="btn btn-primary">
-			{m["review.title"]()}
+			{m['review.title']()}
 			<span class="ml-2 rounded-full bg-white/20 px-2 py-0.5 text-xs font-bold"
 				>{data.dueReviewCount}</span
 			>
@@ -126,7 +124,7 @@ import {
 	{#if groupedSkills.length === 0}
 		<div class="card py-12 text-center">
 			<p class="text-text-muted">
-				{m["skills.noSkills"]()}
+				{m['skills.noSkills']()}
 			</p>
 		</div>
 	{:else}
@@ -176,7 +174,7 @@ import {
 
 								<div class="space-y-1">
 									<div class="flex items-center justify-between text-xs text-text-muted">
-										<span>{m["skills.mastery"]({ percent: Math.round(skill.mastery * 100) })}</span>
+										<span>{m['skills.mastery']({ percent: Math.round(skill.mastery * 100) })}</span>
 										<span>{Math.round(skill.mastery * 100)}%</span>
 									</div>
 									<div class="bg-surface-100 h-2 overflow-hidden rounded-full">
@@ -189,7 +187,7 @@ import {
 
 								{#if prereqs.length > 0}
 									<p class="mt-3 text-xs text-text-muted">
-										{m["skills.prerequisites"]()}: {prereqs.join(', ')}
+										{m['skills.prerequisites']()}: {prereqs.join(', ')}
 									</p>
 								{/if}
 							</a>
