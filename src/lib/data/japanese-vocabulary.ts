@@ -17,9 +17,9 @@ export interface UnitVocab {
 export const A1_UNITS: UnitVocab[] = [
 	{
 		titleEn: 'Greetings & Introductions',
-		titleDe: 'Begruessungen & Vorstellungen',
+		titleDe: 'Begrüssungen & Vorstellungen',
 		descriptionEn: 'Learn basic greetings and how to introduce yourself',
-		descriptionDe: 'Lerne grundlegende Begruessungen und stelle dich vor',
+		descriptionDe: 'Lerne grundlegende Begrüssungen und stelle dich vor',
 		themeColor: '#E60026',
 		vocab: [
 			{ target: 'こんにちは (konnichiwa)', en: 'hello', de: 'hallo' },
@@ -56,7 +56,7 @@ export const A1_UNITS: UnitVocab[] = [
 			{
 				target: 'わたしはユキです。はじめまして。',
 				en: 'My name is Yuki. Nice to meet you.',
-				de: 'Ich heisse Yuki. Freut mich.'
+				de: 'Ich heiße Yuki. Freut mich.'
 			},
 			{
 				target: 'すみません、これは何ですか。',
@@ -75,25 +75,25 @@ export const A1_UNITS: UnitVocab[] = [
 		titleEn: 'Numbers 1-100',
 		titleDe: 'Zahlen 1-100',
 		descriptionEn: 'Learn to count and use numbers in Japanese',
-		descriptionDe: 'Lerne auf Japanisch zu zaehlen und Zahlen zu benutzen',
+		descriptionDe: 'Lerne auf Japanisch zu zählen und Zahlen zu benutzen',
 		themeColor: '#2E4A7D',
 		vocab: [
 			{ target: '一 (ichi)', en: 'one', de: 'eins' },
 			{ target: '二 (ni)', en: 'two', de: 'zwei' },
 			{ target: '三 (san)', en: 'three', de: 'drei' },
 			{ target: '四 (yon)', en: 'four', de: 'vier' },
-			{ target: '五 (go)', en: 'five', de: 'fuenf' },
+			{ target: '五 (go)', en: 'five', de: 'fünf' },
 			{ target: '六 (roku)', en: 'six', de: 'sechs' },
 			{ target: '七 (nana)', en: 'seven', de: 'sieben' },
 			{ target: '八 (hachi)', en: 'eight', de: 'acht' },
 			{ target: '九 (kyuu)', en: 'nine', de: 'neun' },
 			{ target: '十 (juu)', en: 'ten', de: 'zehn' },
 			{ target: '十一 (juuichi)', en: 'eleven', de: 'elf' },
-			{ target: '十二 (juuni)', en: 'twelve', de: 'zwoelf' },
+			{ target: '十二 (juuni)', en: 'twelve', de: 'zwölf' },
 			{ target: '二十 (nijuu)', en: 'twenty', de: 'zwanzig' },
-			{ target: '三十 (sanjuu)', en: 'thirty', de: 'dreissig' },
+			{ target: '三十 (sanjuu)', en: 'thirty', de: 'dreißig' },
 			{ target: '四十 (yonjuu)', en: 'forty', de: 'vierzig' },
-			{ target: '五十 (gojuu)', en: 'fifty', de: 'fuenfzig' },
+			{ target: '五十 (gojuu)', en: 'fifty', de: 'fünfzig' },
 			{ target: '百 (hyaku)', en: 'one hundred', de: 'hundert' },
 			{ target: '一番 (ichiban)', en: 'first', de: 'erste' },
 			{ target: '二番 (niban)', en: 'second', de: 'zweite' },
@@ -108,9 +108,9 @@ export const A1_UNITS: UnitVocab[] = [
 			{
 				target: 'りんごが三つあります。',
 				en: 'There are three apples.',
-				de: 'Es gibt drei Aepfel.'
+				de: 'Es gibt drei Äpfel.'
 			},
-			{ target: '今は五時です。', en: 'It is five o clock now.', de: 'Es ist jetzt fuenf Uhr.' },
+			{ target: '今は五時です。', en: 'It is five o clock now.', de: 'Es ist jetzt fünf Uhr.' },
 			{
 				target: '教室に十人います。',
 				en: 'There are ten people in the classroom.',
@@ -127,22 +127,22 @@ export const A1_UNITS: UnitVocab[] = [
 		titleEn: 'Family',
 		titleDe: 'Familie',
 		descriptionEn: 'Talk about your family members',
-		descriptionDe: 'Sprich ueber deine Familienmitglieder',
+		descriptionDe: 'Sprich über deine Familienmitglieder',
 		themeColor: '#F4A7B9',
 		vocab: [
 			{ target: '家族 (kazoku)', en: 'family', de: 'Familie' },
 			{ target: '母 (haha)', en: 'mother', de: 'Mutter' },
 			{ target: '父 (chichi)', en: 'father', de: 'Vater' },
-			{ target: 'お母さん (okaasan)', en: 'mother (polite)', de: 'Mutter (hoeflich)' },
-			{ target: 'お父さん (otousan)', en: 'father (polite)', de: 'Vater (hoeflich)' },
-			{ target: '兄 (ani)', en: 'older brother', de: 'aelterer Bruder' },
-			{ target: '姉 (ane)', en: 'older sister', de: 'aeltere Schwester' },
-			{ target: '弟 (otouto)', en: 'younger brother', de: 'juengerer Bruder' },
-			{ target: '妹 (imouto)', en: 'younger sister', de: 'juengere Schwester' },
+			{ target: 'お母さん (okaasan)', en: 'mother (polite)', de: 'Mutter (höflich)' },
+			{ target: 'お父さん (otousan)', en: 'father (polite)', de: 'Vater (höflich)' },
+			{ target: '兄 (ani)', en: 'older brother', de: 'älterer Bruder' },
+			{ target: '姉 (ane)', en: 'older sister', de: 'ältere Schwester' },
+			{ target: '弟 (otouto)', en: 'younger brother', de: 'jüngerer Bruder' },
+			{ target: '妹 (imouto)', en: 'younger sister', de: 'jüngere Schwester' },
 			{ target: '息子 (musuko)', en: 'son', de: 'Sohn' },
 			{ target: '娘 (musume)', en: 'daughter', de: 'Tochter' },
-			{ target: 'おじいさん (ojiisan)', en: 'grandfather', de: 'Grossvater' },
-			{ target: 'おばあさん (obaasan)', en: 'grandmother', de: 'Grossmutter' },
+			{ target: 'おじいさん (ojiisan)', en: 'grandfather', de: 'Großvater' },
+			{ target: 'おばあさん (obaasan)', en: 'grandmother', de: 'Großmutter' },
 			{ target: 'おじさん (ojisan)', en: 'uncle', de: 'Onkel' },
 			{ target: 'おばさん (obasan)', en: 'aunt', de: 'Tante' },
 			{ target: 'いとこ (itoko)', en: 'cousin', de: 'Cousin/Cousine' },
@@ -157,16 +157,16 @@ export const A1_UNITS: UnitVocab[] = [
 				en: 'My family has four people.',
 				de: 'Meine Familie besteht aus vier Personen.'
 			},
-			{ target: '母は医者です。', en: 'My mother is a doctor.', de: 'Meine Mutter ist Aerztin.' },
+			{ target: '母は医者です。', en: 'My mother is a doctor.', de: 'Meine Mutter ist Ärztin.' },
 			{
 				target: '弟は高校生です。',
 				en: 'My younger brother is a high school student.',
-				de: 'Mein juengerer Bruder ist Schueler.'
+				de: 'Mein jüngerer Bruder ist Schüler.'
 			},
 			{
 				target: '祖母は大阪に住んでいます。',
 				en: 'My grandmother lives in Osaka.',
-				de: 'Meine Grossmutter wohnt in Osaka.'
+				de: 'Meine Großmutter wohnt in Osaka.'
 			},
 			{
 				target: 'きょうは家族で夕食を食べます。',
@@ -184,21 +184,21 @@ export const A1_UNITS: UnitVocab[] = [
 		vocab: [
 			{ target: '赤 (aka)', en: 'red', de: 'rot' },
 			{ target: '青 (ao)', en: 'blue', de: 'blau' },
-			{ target: '緑 (midori)', en: 'green', de: 'gruen' },
+			{ target: '緑 (midori)', en: 'green', de: 'grün' },
 			{ target: '黄色 (kiiro)', en: 'yellow', de: 'gelb' },
 			{ target: 'オレンジ (orenji)', en: 'orange', de: 'orange' },
 			{ target: '紫 (murasaki)', en: 'purple', de: 'lila' },
 			{ target: 'ピンク (pinku)', en: 'pink', de: 'rosa' },
 			{ target: '黒 (kuro)', en: 'black', de: 'schwarz' },
-			{ target: '白 (shiro)', en: 'white', de: 'weiss' },
+			{ target: '白 (shiro)', en: 'white', de: 'weiß' },
 			{ target: '灰色 (haiiro)', en: 'gray', de: 'grau' },
 			{ target: '茶色 (chairo)', en: 'brown', de: 'braun' },
 			{ target: '金色 (kiniro)', en: 'gold', de: 'gold' },
 			{ target: '銀色 (giniro)', en: 'silver', de: 'silber' },
 			{ target: '薄い (usui)', en: 'light/pale', de: 'hell/blass' },
-			{ target: '濃い (koi)', en: 'dark/deep', de: 'dunkel/kraeftig' },
+			{ target: '濃い (koi)', en: 'dark/deep', de: 'dunkel/kräftig' },
 			{ target: '色 (iro)', en: 'color', de: 'Farbe' },
-			{ target: '鮮やか (azayaka)', en: 'vivid', de: 'kraeftig' },
+			{ target: '鮮やか (azayaka)', en: 'vivid', de: 'kräftig' },
 			{ target: '暗い (kurai)', en: 'dark', de: 'dunkel' },
 			{ target: '明るい (akarui)', en: 'bright', de: 'hell' },
 			{ target: '虹色 (nijiiro)', en: 'rainbow-colored', de: 'regenbogenfarben' }
@@ -209,7 +209,7 @@ export const A1_UNITS: UnitVocab[] = [
 			{
 				target: 'そのシャツは白と黒です。',
 				en: 'That shirt is white and black.',
-				de: 'Dieses Hemd ist weiss und schwarz.'
+				de: 'Dieses Hemd ist weiß und schwarz.'
 			},
 			{
 				target: '明るい黄色が好きです。',
@@ -219,7 +219,7 @@ export const A1_UNITS: UnitVocab[] = [
 			{
 				target: 'この花はとても鮮やかです。',
 				en: 'This flower is very vivid.',
-				de: 'Diese Blume ist sehr farbkraeftig.'
+				de: 'Diese Blume ist sehr farbkräftig.'
 			}
 		]
 	},
@@ -237,16 +237,16 @@ export const A1_UNITS: UnitVocab[] = [
 			{ target: 'お茶 (ocha)', en: 'tea', de: 'Tee' },
 			{ target: 'ジュース (juusu)', en: 'juice', de: 'Saft' },
 			{ target: '肉 (niku)', en: 'meat', de: 'Fleisch' },
-			{ target: '鶏肉 (toriniku)', en: 'chicken', de: 'Haehnchenfleisch' },
+			{ target: '鶏肉 (toriniku)', en: 'chicken', de: 'Hähnchenfleisch' },
 			{ target: '魚 (sakana)', en: 'fish', de: 'Fisch' },
 			{ target: 'ご飯 (gohan)', en: 'rice', de: 'Reis' },
 			{ target: '卵 (tamago)', en: 'egg', de: 'Ei' },
-			{ target: 'チーズ (chiizu)', en: 'cheese', de: 'Kaese' },
+			{ target: 'チーズ (chiizu)', en: 'cheese', de: 'Käse' },
 			{ target: '果物 (kudamono)', en: 'fruit', de: 'Obst' },
 			{ target: 'りんご (ringo)', en: 'apple', de: 'Apfel' },
 			{ target: 'みかん (mikan)', en: 'mandarin orange', de: 'Mandarine' },
 			{ target: 'バナナ (banana)', en: 'banana', de: 'Banane' },
-			{ target: '野菜 (yasai)', en: 'vegetable', de: 'Gemuese' },
+			{ target: '野菜 (yasai)', en: 'vegetable', de: 'Gemüse' },
 			{ target: 'サラダ (sarada)', en: 'salad', de: 'Salat' },
 			{ target: 'スープ (suupu)', en: 'soup', de: 'Suppe' },
 			{ target: 'デザート (dezaato)', en: 'dessert', de: 'Nachtisch' }
@@ -256,15 +256,15 @@ export const A1_UNITS: UnitVocab[] = [
 			{
 				target: '朝ご飯の準備ができました。',
 				en: 'Breakfast is ready.',
-				de: 'Das Fruehstueck ist fertig.'
+				de: 'Das Frühstück ist fertig.'
 			},
-			{ target: '鶏肉が好きです。', en: 'I like chicken.', de: 'Ich mag Haehnchenfleisch.' },
+			{ target: '鶏肉が好きです。', en: 'I like chicken.', de: 'Ich mag Hähnchenfleisch.' },
 			{
 				target: '何を食べたいですか。',
 				en: 'What do you want to eat?',
-				de: 'Was moechtest du essen?'
+				de: 'Was möchtest du essen?'
 			},
-			{ target: 'スープは熱いです。', en: 'The soup is hot.', de: 'Die Suppe ist heiss.' }
+			{ target: 'スープは熱いです。', en: 'The soup is hot.', de: 'Die Suppe ist heiß.' }
 		]
 	},
 	{
@@ -292,12 +292,12 @@ export const A1_UNITS: UnitVocab[] = [
 			{ target: '秒 (byou)', en: 'second', de: 'Sekunde' },
 			{ target: '正午 (shougo)', en: 'noon', de: 'Mittag' },
 			{ target: '真夜中 (mayonaka)', en: 'midnight', de: 'Mitternacht' },
-			{ target: '早い (hayai)', en: 'early', de: 'frueh' },
-			{ target: '遅い (osoi)', en: 'late', de: 'spaet' }
+			{ target: '早い (hayai)', en: 'early', de: 'früh' },
+			{ target: '遅い (osoi)', en: 'late', de: 'spät' }
 		],
 		sentences: [
 			{ target: '今日は月曜日です。', en: 'Today is Monday.', de: 'Heute ist Montag.' },
-			{ target: '今、何時ですか。', en: 'What time is it now?', de: 'Wie spaet ist es jetzt?' },
+			{ target: '今、何時ですか。', en: 'What time is it now?', de: 'Wie spät ist es jetzt?' },
 			{ target: '三時です。', en: 'It is three o clock.', de: 'Es ist drei Uhr.' },
 			{ target: '明日は金曜日です。', en: 'Tomorrow is Friday.', de: 'Morgen ist Freitag.' },
 			{
@@ -309,9 +309,9 @@ export const A1_UNITS: UnitVocab[] = [
 	},
 	{
 		titleEn: 'Body Parts',
-		titleDe: 'Koerperteile',
+		titleDe: 'Körperteile',
 		descriptionEn: 'Learn the parts of the body',
-		descriptionDe: 'Lerne die Koerperteile',
+		descriptionDe: 'Lerne die Körperteile',
 		themeColor: '#7A3E65',
 		vocab: [
 			{ target: '頭 (atama)', en: 'head', de: 'Kopf' },
@@ -326,14 +326,14 @@ export const A1_UNITS: UnitVocab[] = [
 			{ target: '手 (te)', en: 'hand', de: 'Hand' },
 			{ target: '指 (yubi)', en: 'finger', de: 'Finger' },
 			{ target: '脚 (ashi)', en: 'leg', de: 'Bein' },
-			{ target: '足 (ashi)', en: 'foot', de: 'Fuss' },
-			{ target: '背中 (senaka)', en: 'back', de: 'Ruecken' },
+			{ target: '足 (ashi)', en: 'foot', de: 'Fuß' },
+			{ target: '背中 (senaka)', en: 'back', de: 'Rücken' },
 			{ target: '胸 (mune)', en: 'chest', de: 'Brust' },
 			{ target: 'お腹 (onaka)', en: 'stomach', de: 'Bauch' },
 			{ target: '心臓 (shinzou)', en: 'heart', de: 'Herz' },
 			{ target: '髪 (kami)', en: 'hair', de: 'Haar' },
 			{ target: '顔 (kao)', en: 'face', de: 'Gesicht' },
-			{ target: '体 (karada)', en: 'body', de: 'Koerper' }
+			{ target: '体 (karada)', en: 'body', de: 'Körper' }
 		],
 		sentences: [
 			{ target: '頭が痛いです。', en: 'My head hurts.', de: 'Mein Kopf tut weh.' },
@@ -342,12 +342,12 @@ export const A1_UNITS: UnitVocab[] = [
 			{
 				target: '手を洗ってください。',
 				en: 'Please wash your hands.',
-				de: 'Bitte wasch dir die Haende.'
+				de: 'Bitte wasch dir die Hände.'
 			},
 			{
 				target: '体を大切にしてください。',
 				en: 'Please take care of your body.',
-				de: 'Bitte achte auf deinen Koerper.'
+				de: 'Bitte achte auf deinen Körper.'
 			}
 		]
 	},
@@ -355,7 +355,7 @@ export const A1_UNITS: UnitVocab[] = [
 		titleEn: 'Clothing',
 		titleDe: 'Kleidung',
 		descriptionEn: 'Learn about clothes and what to wear',
-		descriptionDe: 'Lerne ueber Kleidung und was man traegt',
+		descriptionDe: 'Lerne über Kleidung und was man trägt',
 		themeColor: '#5B6C3D',
 		vocab: [
 			{ target: 'シャツ (shatsu)', en: 'shirt', de: 'Hemd' },
@@ -370,7 +370,7 @@ export const A1_UNITS: UnitVocab[] = [
 			{ target: 'キャップ (kyappu)', en: 'cap', de: 'Kappe' },
 			{ target: 'マフラー (mafuraa)', en: 'scarf', de: 'Schal' },
 			{ target: '手袋 (tebukuro)', en: 'gloves', de: 'Handschuhe' },
-			{ target: 'ベルト (beruto)', en: 'belt', de: 'Guertel' },
+			{ target: 'ベルト (beruto)', en: 'belt', de: 'Gürtel' },
 			{ target: 'ネクタイ (nekutai)', en: 'tie', de: 'Krawatte' },
 			{ target: 'かばん (kaban)', en: 'bag', de: 'Tasche' },
 			{ target: '服 (fuku)', en: 'clothes', de: 'Kleidung' },
@@ -383,12 +383,12 @@ export const A1_UNITS: UnitVocab[] = [
 			{
 				target: '彼女は赤いワンピースを着ています。',
 				en: 'She is wearing a red dress.',
-				de: 'Sie traegt ein rotes Kleid.'
+				de: 'Sie trägt ein rotes Kleid.'
 			},
 			{
 				target: '新しい靴を買いたいです。',
 				en: 'I want to buy new shoes.',
-				de: 'Ich moechte neue Schuhe kaufen.'
+				de: 'Ich möchte neue Schuhe kaufen.'
 			},
 			{
 				target: '寒いのでジャケットを着てください。',
@@ -399,7 +399,7 @@ export const A1_UNITS: UnitVocab[] = [
 			{
 				target: '白い靴下をはいています。',
 				en: 'I am wearing white socks.',
-				de: 'Ich trage weisse Socken.'
+				de: 'Ich trage weiße Socken.'
 			}
 		]
 	},
@@ -407,18 +407,18 @@ export const A1_UNITS: UnitVocab[] = [
 		titleEn: 'House & Home',
 		titleDe: 'Haus & Zuhause',
 		descriptionEn: 'Learn about rooms and furniture',
-		descriptionDe: 'Lerne ueber Raeume und Moebel',
+		descriptionDe: 'Lerne über Räume und Möbel',
 		themeColor: '#8A5A44',
 		vocab: [
 			{ target: '家 (ie)', en: 'house', de: 'Haus' },
 			{ target: 'アパート (apaato)', en: 'apartment', de: 'Wohnung' },
 			{ target: '部屋 (heya)', en: 'room', de: 'Zimmer' },
-			{ target: 'キッチン (kicchin)', en: 'kitchen', de: 'Kueche' },
+			{ target: 'キッチン (kicchin)', en: 'kitchen', de: 'Küche' },
 			{ target: 'お風呂 (ofuro)', en: 'bathroom/bath', de: 'Bad' },
 			{ target: '寝室 (shinshitsu)', en: 'bedroom', de: 'Schlafzimmer' },
 			{ target: 'リビング (ribingu)', en: 'living room', de: 'Wohnzimmer' },
 			{ target: 'ダイニング (dainingu)', en: 'dining room', de: 'Esszimmer' },
-			{ target: 'ドア (doa)', en: 'door', de: 'Tuer' },
+			{ target: 'ドア (doa)', en: 'door', de: 'Tür' },
 			{ target: '窓 (mado)', en: 'window', de: 'Fenster' },
 			{ target: 'テーブル (teeburu)', en: 'table', de: 'Tisch' },
 			{ target: '椅子 (isu)', en: 'chair', de: 'Stuhl' },
@@ -432,11 +432,11 @@ export const A1_UNITS: UnitVocab[] = [
 			{ target: '屋根 (yane)', en: 'roof', de: 'Dach' }
 		],
 		sentences: [
-			{ target: 'わたしの家は大きいです。', en: 'My house is big.', de: 'Mein Haus ist gross.' },
+			{ target: 'わたしの家は大きいです。', en: 'My house is big.', de: 'Mein Haus ist groß.' },
 			{
 				target: 'キッチンはきれいです。',
 				en: 'The kitchen is clean.',
-				de: 'Die Kueche ist sauber.'
+				de: 'Die Küche ist sauber.'
 			},
 			{
 				target: 'ダイニングにテーブルがあります。',
@@ -453,9 +453,9 @@ export const A1_UNITS: UnitVocab[] = [
 	},
 	{
 		titleEn: 'Common Verbs',
-		titleDe: 'Haeufige Verben',
+		titleDe: 'Häufige Verben',
 		descriptionEn: 'Learn essential action words',
-		descriptionDe: 'Lerne wichtige Taetigkeitswoerter',
+		descriptionDe: 'Lerne wichtige Tätigkeitswörter',
 		themeColor: '#B33A3A',
 		vocab: [
 			{ target: 'いる (iru)', en: 'to be (animate)', de: 'sein (lebendig)' },
@@ -467,7 +467,7 @@ export const A1_UNITS: UnitVocab[] = [
 			{ target: 'みる (miru)', en: 'to see/watch', de: 'sehen' },
 			{ target: 'あげる (ageru)', en: 'to give', de: 'geben' },
 			{ target: 'しる (shiru)', en: 'to know', de: 'wissen' },
-			{ target: 'できる (dekiru)', en: 'can/to be able', de: 'koennen' },
+			{ target: 'できる (dekiru)', en: 'can/to be able', de: 'können' },
 			{ target: 'ほしい (hoshii)', en: 'to want', de: 'wollen' },
 			{ target: 'いう (iu)', en: 'to say', de: 'sagen' },
 			{ target: 'はなす (hanasu)', en: 'to speak', de: 'sprechen' },
@@ -498,7 +498,7 @@ export const A2_UNITS: UnitVocab[] = [
 		titleEn: 'Weather & Seasons',
 		titleDe: 'Wetter & Jahreszeiten',
 		descriptionEn: 'Talk about the weather and seasons',
-		descriptionDe: 'Sprich ueber das Wetter und die Jahreszeiten',
+		descriptionDe: 'Sprich über das Wetter und die Jahreszeiten',
 		themeColor: '#4C7FA8',
 		vocab: [
 			{ target: '天気 (tenki)', en: 'weather', de: 'Wetter' },
@@ -509,8 +509,8 @@ export const A2_UNITS: UnitVocab[] = [
 			{ target: '雲 (kumo)', en: 'cloud', de: 'Wolke' },
 			{ target: '嵐 (arashi)', en: 'storm', de: 'Sturm' },
 			{ target: '暑さ (atsusa)', en: 'heat', de: 'Hitze' },
-			{ target: '寒さ (samusa)', en: 'cold', de: 'Kaelte' },
-			{ target: '春 (haru)', en: 'spring', de: 'Fruehling' },
+			{ target: '寒さ (samusa)', en: 'cold', de: 'Kälte' },
+			{ target: '春 (haru)', en: 'spring', de: 'Frühling' },
 			{ target: '夏 (natsu)', en: 'summer', de: 'Sommer' },
 			{ target: '秋 (aki)', en: 'autumn', de: 'Herbst' },
 			{ target: '冬 (fuyu)', en: 'winter', de: 'Winter' },
@@ -518,7 +518,7 @@ export const A2_UNITS: UnitVocab[] = [
 			{ target: '度 (do)', en: 'degree', de: 'Grad' },
 			{ target: '湿度 (shitsudo)', en: 'humidity', de: 'Luftfeuchtigkeit' },
 			{ target: '乾燥 (kansou)', en: 'dryness', de: 'Trockenheit' },
-			{ target: '曇り (kumori)', en: 'cloudy', de: 'bewoelkt' },
+			{ target: '曇り (kumori)', en: 'cloudy', de: 'bewölkt' },
 			{ target: '晴れ (hare)', en: 'sunny', de: 'sonnig' },
 			{ target: '雨天 (uten)', en: 'rainy weather', de: 'Regenwetter' }
 		],
@@ -526,7 +526,7 @@ export const A2_UNITS: UnitVocab[] = [
 			{
 				target: '今日はとても暑いです。',
 				en: 'It is very hot today.',
-				de: 'Heute ist es sehr heiss.'
+				de: 'Heute ist es sehr heiß.'
 			},
 			{ target: '雨が降っています。', en: 'It is raining.', de: 'Es regnet.' },
 			{ target: '冬は寒いです。', en: 'Winter is cold.', de: 'Der Winter ist kalt.' },
@@ -538,7 +538,7 @@ export const A2_UNITS: UnitVocab[] = [
 			{
 				target: '春がいちばん好きです。',
 				en: 'I like spring the most.',
-				de: 'Ich mag den Fruehling am meisten.'
+				de: 'Ich mag den Frühling am meisten.'
 			}
 		]
 	},
@@ -566,7 +566,7 @@ export const A2_UNITS: UnitVocab[] = [
 			{ target: '目的地 (mokutekichi)', en: 'destination', de: 'Ziel' },
 			{ target: '到着 (touchaku)', en: 'arrival', de: 'Ankunft' },
 			{ target: '出発 (shuppatsu)', en: 'departure', de: 'Abfahrt' },
-			{ target: '荷物 (nimotsu)', en: 'luggage', de: 'Gepaeck' },
+			{ target: '荷物 (nimotsu)', en: 'luggage', de: 'Gepäck' },
 			{ target: '予約 (yoyaku)', en: 'reservation', de: 'Reservierung' },
 			{ target: '観光客 (kankoukyaku)', en: 'tourist', de: 'Tourist' }
 		],
@@ -574,7 +574,7 @@ export const A2_UNITS: UnitVocab[] = [
 			{
 				target: '電車は八時に出ます。',
 				en: 'The train leaves at eight.',
-				de: 'Der Zug faehrt um acht ab.'
+				de: 'Der Zug fährt um acht ab.'
 			},
 			{
 				target: '切符が一枚ほしいです。',
@@ -598,10 +598,10 @@ export const A2_UNITS: UnitVocab[] = [
 		titleEn: 'Shopping',
 		titleDe: 'Einkaufen',
 		descriptionEn: 'Learn to shop and talk about prices',
-		descriptionDe: 'Lerne einzukaufen und ueber Preise zu sprechen',
+		descriptionDe: 'Lerne einzukaufen und über Preise zu sprechen',
 		themeColor: '#C24C7A',
 		vocab: [
-			{ target: '店 (mise)', en: 'store', de: 'Geschaeft' },
+			{ target: '店 (mise)', en: 'store', de: 'Geschäft' },
 			{ target: '市場 (ichiba)', en: 'market', de: 'Markt' },
 			{ target: '値段 (nedan)', en: 'price', de: 'Preis' },
 			{ target: 'お金 (okane)', en: 'money', de: 'Geld' },
@@ -617,10 +617,10 @@ export const A2_UNITS: UnitVocab[] = [
 			{ target: '売る (uru)', en: 'to sell', de: 'verkaufen' },
 			{ target: '払う (harau)', en: 'to pay', de: 'bezahlen' },
 			{ target: '客 (kyaku)', en: 'customer', de: 'Kunde' },
-			{ target: '店員 (tenin)', en: 'shop assistant', de: 'Verkaeufer' },
+			{ target: '店員 (tenin)', en: 'shop assistant', de: 'Verkäufer' },
 			{ target: 'レシート (reshiito)', en: 'receipt', de: 'Quittung' },
 			{ target: 'レジ (reji)', en: 'cash register', de: 'Kasse' },
-			{ target: '袋 (fukuro)', en: 'bag', de: 'Tuete' }
+			{ target: '袋 (fukuro)', en: 'bag', de: 'Tüte' }
 		],
 		sentences: [
 			{ target: 'これはいくらですか。', en: 'How much is this?', de: 'Wie viel kostet das?' },
@@ -630,7 +630,7 @@ export const A2_UNITS: UnitVocab[] = [
 				en: 'Can I pay by card?',
 				de: 'Kann ich mit Karte bezahlen?'
 			},
-			{ target: 'これを買いたいです。', en: 'I want to buy this.', de: 'Ich moechte das kaufen.' },
+			{ target: 'これを買いたいです。', en: 'I want to buy this.', de: 'Ich möchte das kaufen.' },
 			{
 				target: '二十パーセントの割引があります。',
 				en: 'There is a twenty percent discount.',
@@ -640,9 +640,9 @@ export const A2_UNITS: UnitVocab[] = [
 	},
 	{
 		titleEn: 'Health & Body',
-		titleDe: 'Gesundheit & Koerper',
+		titleDe: 'Gesundheit & Körper',
 		descriptionEn: 'Talk about health and medical needs',
-		descriptionDe: 'Sprich ueber Gesundheit und medizinische Beduerfnisse',
+		descriptionDe: 'Sprich über Gesundheit und medizinische Bedürfnisse',
 		themeColor: '#5E8F61',
 		vocab: [
 			{ target: '医者 (isha)', en: 'doctor', de: 'Arzt' },
@@ -655,7 +655,7 @@ export const A2_UNITS: UnitVocab[] = [
 			{ target: '熱 (netsu)', en: 'fever', de: 'Fieber' },
 			{ target: 'インフルエンザ (infuruenza)', en: 'flu', de: 'Grippe' },
 			{ target: '咳 (seki)', en: 'cough', de: 'Husten' },
-			{ target: '風邪 (kaze)', en: 'cold', de: 'Erkaeltung' },
+			{ target: '風邪 (kaze)', en: 'cold', de: 'Erkältung' },
 			{ target: 'アレルギー (arerugii)', en: 'allergy', de: 'Allergie' },
 			{ target: '予約 (yoyaku)', en: 'appointment', de: 'Termin' },
 			{ target: '処方箋 (shohousen)', en: 'prescription', de: 'Rezept' },
@@ -667,7 +667,7 @@ export const A2_UNITS: UnitVocab[] = [
 			{ target: 'けが (kega)', en: 'injury', de: 'Verletzung' }
 		],
 		sentences: [
-			{ target: '気分が悪いです。', en: 'I feel sick.', de: 'Ich fuehle mich krank.' },
+			{ target: '気分が悪いです。', en: 'I feel sick.', de: 'Ich fühle mich krank.' },
 			{
 				target: '医者に診てもらう必要があります。',
 				en: 'I need to see a doctor.',
@@ -686,11 +686,11 @@ export const A2_UNITS: UnitVocab[] = [
 		titleEn: 'Work & Professions',
 		titleDe: 'Arbeit & Berufe',
 		descriptionEn: 'Learn about jobs and the workplace',
-		descriptionDe: 'Lerne ueber Berufe und den Arbeitsplatz',
+		descriptionDe: 'Lerne über Berufe und den Arbeitsplatz',
 		themeColor: '#6C4B8D',
 		vocab: [
 			{ target: '仕事 (shigoto)', en: 'work/job', de: 'Arbeit' },
-			{ target: '事務所 (jimusho)', en: 'office', de: 'Buero' },
+			{ target: '事務所 (jimusho)', en: 'office', de: 'Büro' },
 			{ target: '上司 (joushi)', en: 'boss', de: 'Vorgesetzter' },
 			{ target: '社員 (shain)', en: 'employee', de: 'Angestellter' },
 			{ target: '先生 (sensei)', en: 'teacher', de: 'Lehrer' },
@@ -700,7 +700,7 @@ export const A2_UNITS: UnitVocab[] = [
 			{ target: '警察官 (keisatsukan)', en: 'police officer', de: 'Polizist' },
 			{ target: '消防士 (shouboushi)', en: 'firefighter', de: 'Feuerwehrmann' },
 			{ target: '作家 (sakka)', en: 'writer', de: 'Schriftsteller' },
-			{ target: '芸術家 (geijutsuka)', en: 'artist', de: 'Kuenstler' },
+			{ target: '芸術家 (geijutsuka)', en: 'artist', de: 'Künstler' },
 			{ target: '音楽家 (ongakuka)', en: 'musician', de: 'Musiker' },
 			{ target: '給料 (kyuuryou)', en: 'salary', de: 'Gehalt' },
 			{ target: '会議 (kaigi)', en: 'meeting', de: 'Besprechung' },
@@ -719,7 +719,7 @@ export const A2_UNITS: UnitVocab[] = [
 			{
 				target: '兄はエンジニアです。',
 				en: 'My older brother is an engineer.',
-				de: 'Mein aelterer Bruder ist Ingenieur.'
+				de: 'Mein älterer Bruder ist Ingenieur.'
 			},
 			{
 				target: '明日会議があります。',
@@ -734,7 +734,7 @@ export const A2_UNITS: UnitVocab[] = [
 			{
 				target: '上司は今忙しいです。',
 				en: 'The boss is busy now.',
-				de: 'Der Vorgesetzte ist gerade beschaeftigt.'
+				de: 'Der Vorgesetzte ist gerade beschäftigt.'
 			}
 		]
 	},
@@ -746,7 +746,7 @@ export const A2_UNITS: UnitVocab[] = [
 		themeColor: '#3F6BAA',
 		vocab: [
 			{ target: '学校 (gakkou)', en: 'school', de: 'Schule' },
-			{ target: '大学 (daigaku)', en: 'university', de: 'Universitaet' },
+			{ target: '大学 (daigaku)', en: 'university', de: 'Universität' },
 			{ target: '授業 (jugyou)', en: 'class', de: 'Unterricht' },
 			{ target: '学生 (gakusei)', en: 'student', de: 'Student' },
 			{ target: '教師 (kyoushi)', en: 'teacher', de: 'Lehrer' },
@@ -754,7 +754,7 @@ export const A2_UNITS: UnitVocab[] = [
 			{ target: 'ノート (nooto)', en: 'notebook', de: 'Heft' },
 			{ target: '鉛筆 (enpitsu)', en: 'pencil', de: 'Bleistift' },
 			{ target: 'ペン (pen)', en: 'pen', de: 'Kugelschreiber' },
-			{ target: '試験 (shiken)', en: 'exam', de: 'Pruefung' },
+			{ target: '試験 (shiken)', en: 'exam', de: 'Prüfung' },
 			{ target: '宿題 (shukudai)', en: 'homework', de: 'Hausaufgaben' },
 			{ target: '成績 (seiseki)', en: 'grade', de: 'Note' },
 			{ target: '黒板 (kokuban)', en: 'blackboard', de: 'Tafel' },
@@ -786,7 +786,7 @@ export const A2_UNITS: UnitVocab[] = [
 			{
 				target: '試験は難しかったです。',
 				en: 'The exam was difficult.',
-				de: 'Die Pruefung war schwierig.'
+				de: 'Die Prüfung war schwierig.'
 			}
 		]
 	},
@@ -794,11 +794,11 @@ export const A2_UNITS: UnitVocab[] = [
 		titleEn: 'Sports & Hobbies',
 		titleDe: 'Sport & Hobbys',
 		descriptionEn: 'Learn about sports and free time activities',
-		descriptionDe: 'Lerne ueber Sport und Freizeitaktivitaeten',
+		descriptionDe: 'Lerne über Sport und Freizeitaktivitäten',
 		themeColor: '#2F8C84',
 		vocab: [
 			{ target: 'スポーツ (supootsu)', en: 'sport', de: 'Sport' },
-			{ target: 'サッカー (sakkaa)', en: 'soccer', de: 'Fussball' },
+			{ target: 'サッカー (sakkaa)', en: 'soccer', de: 'Fußball' },
 			{ target: 'バスケットボール (basukettobooru)', en: 'basketball', de: 'Basketball' },
 			{ target: 'テニス (tenisu)', en: 'tennis', de: 'Tennis' },
 			{ target: '水泳 (suiei)', en: 'swimming', de: 'Schwimmen' },
@@ -822,7 +822,7 @@ export const A2_UNITS: UnitVocab[] = [
 			{
 				target: 'サッカーをするのが好きです。',
 				en: 'I like playing soccer.',
-				de: 'Ich spiele gern Fussball.'
+				de: 'Ich spiele gern Fußball.'
 			},
 			{
 				target: '彼女は泳ぐのが上手です。',
@@ -838,7 +838,7 @@ export const A2_UNITS: UnitVocab[] = [
 			{
 				target: '毎日本を読みます。',
 				en: 'I read books every day.',
-				de: 'Ich lese jeden Tag Buecher.'
+				de: 'Ich lese jeden Tag Bücher.'
 			}
 		]
 	},
@@ -851,7 +851,7 @@ export const A2_UNITS: UnitVocab[] = [
 		vocab: [
 			{ target: '町 (machi)', en: 'city/town', de: 'Stadt' },
 			{ target: '村 (mura)', en: 'village', de: 'Dorf' },
-			{ target: '通り (toori)', en: 'street', de: 'Strasse' },
+			{ target: '通り (toori)', en: 'street', de: 'Straße' },
 			{ target: '広場 (hiroba)', en: 'square', de: 'Platz' },
 			{ target: '公園 (kouen)', en: 'park', de: 'Park' },
 			{ target: '銀行 (ginkou)', en: 'bank', de: 'Bank' },
@@ -884,7 +884,7 @@ export const A2_UNITS: UnitVocab[] = [
 			{
 				target: '博物館は近いです。',
 				en: 'The museum is nearby.',
-				de: 'Das Museum ist in der Naehe.'
+				de: 'Das Museum ist in der Nähe.'
 			},
 			{
 				target: '公園へはどう行きますか。',
@@ -902,7 +902,7 @@ export const A2_UNITS: UnitVocab[] = [
 		titleEn: 'Nature & Animals',
 		titleDe: 'Natur & Tiere',
 		descriptionEn: 'Learn about nature and animals',
-		descriptionDe: 'Lerne ueber Natur und Tiere',
+		descriptionDe: 'Lerne über Natur und Tiere',
 		themeColor: '#6C9A3A',
 		vocab: [
 			{ target: '犬 (inu)', en: 'dog', de: 'Hund' },
@@ -935,7 +935,7 @@ export const A2_UNITS: UnitVocab[] = [
 			{
 				target: '花がとてもきれいです。',
 				en: 'The flowers are very beautiful.',
-				de: 'Die Blumen sind sehr schoen.'
+				de: 'Die Blumen sind sehr schön.'
 			},
 			{
 				target: '川の水は冷たいです。',
@@ -945,7 +945,7 @@ export const A2_UNITS: UnitVocab[] = [
 			{
 				target: '森には木がたくさんあります。',
 				en: 'There are many trees in the forest.',
-				de: 'Im Wald gibt es viele Baeume.'
+				de: 'Im Wald gibt es viele Bäume.'
 			},
 			{
 				target: '夜空に星が光っています。',
@@ -956,21 +956,21 @@ export const A2_UNITS: UnitVocab[] = [
 	},
 	{
 		titleEn: 'Emotions & Feelings',
-		titleDe: 'Emotionen & Gefuehle',
+		titleDe: 'Emotionen & Gefühle',
 		descriptionEn: 'Express how you feel',
-		descriptionDe: 'Druecke aus, wie du dich fuehlst',
+		descriptionDe: 'Drücke aus, wie du dich fühlst',
 		themeColor: '#B65C5C',
 		vocab: [
-			{ target: '嬉しい (ureshii)', en: 'happy', de: 'gluecklich' },
+			{ target: '嬉しい (ureshii)', en: 'happy', de: 'glücklich' },
 			{ target: '悲しい (kanashii)', en: 'sad', de: 'traurig' },
-			{ target: '怒っている (okotte iru)', en: 'angry', de: 'wuetend' },
-			{ target: '疲れた (tsukareta)', en: 'tired', de: 'muede' },
-			{ target: '緊張している (kinchou shite iru)', en: 'nervous', de: 'nervoes' },
+			{ target: '怒っている (okotte iru)', en: 'angry', de: 'wütend' },
+			{ target: '疲れた (tsukareta)', en: 'tired', de: 'müde' },
+			{ target: '緊張している (kinchou shite iru)', en: 'nervous', de: 'nervös' },
 			{ target: '心配している (shinpai shite iru)', en: 'worried', de: 'besorgt' },
-			{ target: '驚いた (odoroita)', en: 'surprised', de: 'ueberrascht' },
+			{ target: '驚いた (odoroita)', en: 'surprised', de: 'überrascht' },
 			{ target: 'わくわくしている (wakuwaku shite iru)', en: 'excited', de: 'aufgeregt' },
 			{ target: '退屈 (taikutsu)', en: 'bored', de: 'gelangweilt' },
-			{ target: '怖い (kowai)', en: 'scared', de: 'aengstlich' },
+			{ target: '怖い (kowai)', en: 'scared', de: 'ängstlich' },
 			{ target: '落ち着いた (ochitsuita)', en: 'calm', de: 'ruhig' },
 			{ target: '満足した (manzoku shita)', en: 'content', de: 'zufrieden' },
 			{ target: '愛 (ai)', en: 'love', de: 'Liebe' },
@@ -986,18 +986,18 @@ export const A2_UNITS: UnitVocab[] = [
 			{
 				target: '今日はとてもうれしいです。',
 				en: 'I am very happy today.',
-				de: 'Ich bin heute sehr gluecklich.'
+				de: 'Ich bin heute sehr glücklich.'
 			},
 			{
 				target: '彼女は少し悲しそうです。',
 				en: 'She looks a little sad.',
 				de: 'Sie sieht ein bisschen traurig aus.'
 			},
-			{ target: 'とても疲れています。', en: 'I am very tired.', de: 'Ich bin sehr muede.' },
+			{ target: 'とても疲れています。', en: 'I am very tired.', de: 'Ich bin sehr müde.' },
 			{
 				target: '緊張しなくても大丈夫です。',
 				en: 'You do not need to be nervous.',
-				de: 'Du musst nicht nervoes sein.'
+				de: 'Du musst nicht nervös sein.'
 			},
 			{
 				target: '暗い場所が怖いです。',
@@ -1013,11 +1013,11 @@ export const B1_UNITS: UnitVocab[] = [
 		titleEn: 'Past Tense Verbs',
 		titleDe: 'Vergangenheitsformen',
 		descriptionEn: 'Learn to talk about past events',
-		descriptionDe: 'Lerne ueber vergangene Ereignisse zu sprechen',
+		descriptionDe: 'Lerne über vergangene Ereignisse zu sprechen',
 		themeColor: '#5F4EA3',
 		vocab: [
 			{ target: 'だった', en: 'was (plain)', de: 'war (umgangssprachlich)' },
-			{ target: 'でした', en: 'was (polite)', de: 'war (hoeflich)' },
+			{ target: 'でした', en: 'was (polite)', de: 'war (höflich)' },
 			{ target: 'あった', en: 'was/existed', de: 'war/gab es' },
 			{ target: 'いた', en: 'was/existed (animate)', de: 'war (bei Lebewesen)' },
 			{ target: 'した', en: 'did', de: 'machte' },
@@ -1030,8 +1030,8 @@ export const B1_UNITS: UnitVocab[] = [
 			{ target: '寝た', en: 'slept', de: 'schlief' },
 			{ target: '書いた', en: 'wrote', de: 'schrieb' },
 			{ target: '読んだ', en: 'read', de: 'las' },
-			{ target: '聞いた', en: 'heard/listened', de: 'hoerte' },
-			{ target: '感じた', en: 'felt', de: 'fuehlte' },
+			{ target: '聞いた', en: 'heard/listened', de: 'hörte' },
+			{ target: '感じた', en: 'felt', de: 'fühlte' },
 			{ target: 'もらった', en: 'received', de: 'bekam' },
 			{ target: '作った', en: 'made', de: 'stellte her' },
 			{ target: '学んだ', en: 'learned', de: 'lernte' },
@@ -1067,17 +1067,17 @@ export const B1_UNITS: UnitVocab[] = [
 	},
 	{
 		titleEn: 'Future Plans',
-		titleDe: 'Zukunftsplaene',
+		titleDe: 'Zukunftspläne',
 		descriptionEn: 'Talk about what will happen',
-		descriptionDe: 'Sprich ueber das, was passieren wird',
+		descriptionDe: 'Sprich über das, was passieren wird',
 		themeColor: '#2F7CC2',
 		vocab: [
 			{ target: '予定', en: 'schedule/plan', de: 'Plan' },
 			{ target: 'つもり', en: 'intention', de: 'Absicht' },
 			{ target: '計画', en: 'plan', de: 'Planung' },
-			{ target: '来週', en: 'next week', de: 'naechste Woche' },
-			{ target: '来月', en: 'next month', de: 'naechster Monat' },
-			{ target: '来年', en: 'next year', de: 'naechstes Jahr' },
+			{ target: '来週', en: 'next week', de: 'nächste Woche' },
+			{ target: '来月', en: 'next month', de: 'nächster Monat' },
+			{ target: '来年', en: 'next year', de: 'nächstes Jahr' },
 			{ target: '将来', en: 'future', de: 'Zukunft' },
 			{ target: '目標', en: 'goal', de: 'Ziel' },
 			{ target: '予約する', en: 'to book', de: 'reservieren' },
@@ -1097,7 +1097,7 @@ export const B1_UNITS: UnitVocab[] = [
 			{
 				target: '来年、日本へ留学するつもりです。',
 				en: 'I plan to study in Japan next year.',
-				de: 'Ich habe vor, naechstes Jahr in Japan zu studieren.'
+				de: 'Ich habe vor, nächstes Jahr in Japan zu studieren.'
 			},
 			{
 				target: '週末に新しいプロジェクトを始めます。',
@@ -1107,12 +1107,12 @@ export const B1_UNITS: UnitVocab[] = [
 			{
 				target: '将来は医者になりたいです。',
 				en: 'I want to become a doctor in the future.',
-				de: 'Ich moechte in Zukunft Arzt werden.'
+				de: 'Ich möchte in Zukunft Arzt werden.'
 			},
 			{
 				target: '来月、引っ越す予定です。',
 				en: 'I am planning to move next month.',
-				de: 'Ich habe vor, naechsten Monat umzuziehen.'
+				de: 'Ich habe vor, nächsten Monat umzuziehen.'
 			},
 			{
 				target: '目標を実現するために毎日勉強しています。',
@@ -1135,7 +1135,7 @@ export const B1_UNITS: UnitVocab[] = [
 			{ target: '通話', en: 'call', de: 'Anruf' },
 			{ target: '画面', en: 'screen', de: 'Bildschirm' },
 			{ target: 'バッテリー', en: 'battery', de: 'Batterie' },
-			{ target: '充電器', en: 'charger', de: 'Ladegeraet' },
+			{ target: '充電器', en: 'charger', de: 'Ladegerät' },
 			{ target: 'パスワード', en: 'password', de: 'Passwort' },
 			{ target: 'アカウント', en: 'account', de: 'Konto' },
 			{ target: 'ダウンロード', en: 'download', de: 'Download' },
@@ -1168,7 +1168,7 @@ export const B1_UNITS: UnitVocab[] = [
 			{
 				target: 'パスワードは定期的に変更したほうがいい。',
 				en: 'You should change passwords regularly.',
-				de: 'Passwoerter sollte man regelmaessig aendern.'
+				de: 'Passwörter sollte man regelmäßig ändern.'
 			},
 			{
 				target: '会議の資料をクラウドにアップロードした。',
@@ -1181,23 +1181,23 @@ export const B1_UNITS: UnitVocab[] = [
 		titleEn: 'Environment',
 		titleDe: 'Umwelt',
 		descriptionEn: 'Talk about environmental topics',
-		descriptionDe: 'Sprich ueber Umweltthemen',
+		descriptionDe: 'Sprich über Umweltthemen',
 		themeColor: '#4E8C4A',
 		vocab: [
 			{ target: '環境', en: 'environment', de: 'Umwelt' },
 			{ target: '汚染', en: 'pollution', de: 'Verschmutzung' },
 			{ target: 'リサイクル', en: 'recycling', de: 'Recycling' },
-			{ target: 'ごみ', en: 'trash', de: 'Muell' },
+			{ target: 'ごみ', en: 'trash', de: 'Müll' },
 			{ target: 'エネルギー', en: 'energy', de: 'Energie' },
 			{ target: '太陽光', en: 'solar power', de: 'Solarenergie' },
 			{ target: '気候', en: 'climate', de: 'Klima' },
-			{ target: '温暖化', en: 'global warming', de: 'Erderwaermung' },
-			{ target: '保護する', en: 'to protect', de: 'schuetzen' },
+			{ target: '温暖化', en: 'global warming', de: 'Erderwärmung' },
+			{ target: '保護する', en: 'to protect', de: 'schützen' },
 			{ target: '節約する', en: 'to save/conserve', de: 'sparen' },
 			{ target: '自然', en: 'nature', de: 'Natur' },
 			{ target: '資源', en: 'resources', de: 'Ressourcen' },
 			{ target: '再生可能', en: 'renewable', de: 'erneuerbar' },
-			{ target: '生態系', en: 'ecosystem', de: 'Oekosystem' },
+			{ target: '生態系', en: 'ecosystem', de: 'Ökosystem' },
 			{ target: '持続可能', en: 'sustainable', de: 'nachhaltig' },
 			{ target: '森林破壊', en: 'deforestation', de: 'Abholzung' },
 			{ target: '絶滅', en: 'extinction', de: 'Aussterben' },
@@ -1214,7 +1214,7 @@ export const B1_UNITS: UnitVocab[] = [
 			{
 				target: 'プラスチックごみを減らす必要がある。',
 				en: 'We need to reduce plastic waste.',
-				de: 'Wir muessen Plastikmuell reduzieren.'
+				de: 'Wir müssen Plastikmüll reduzieren.'
 			},
 			{
 				target: '再生可能エネルギーへの投資が増えている。',
@@ -1229,7 +1229,7 @@ export const B1_UNITS: UnitVocab[] = [
 			{
 				target: '地球を守るために行動しなければならない。',
 				en: 'We must act to protect the planet.',
-				de: 'Wir muessen handeln, um den Planeten zu schuetzen.'
+				de: 'Wir müssen handeln, um den Planeten zu schützen.'
 			}
 		]
 	}
@@ -1246,15 +1246,15 @@ export const B2_UNITS: UnitVocab[] = [
 			{ target: '政府', en: 'government', de: 'Regierung' },
 			{ target: '政治', en: 'politics', de: 'Politik' },
 			{ target: '選挙', en: 'election', de: 'Wahl' },
-			{ target: '投票する', en: 'to vote', de: 'waehlen' },
+			{ target: '投票する', en: 'to vote', de: 'wählen' },
 			{ target: '民主主義', en: 'democracy', de: 'Demokratie' },
 			{ target: '法律', en: 'law', de: 'Gesetz' },
 			{ target: '権利', en: 'right', de: 'Recht' },
 			{ target: '自由', en: 'freedom', de: 'Freiheit' },
 			{ target: '平等', en: 'equality', de: 'Gleichheit' },
 			{ target: '正義', en: 'justice', de: 'Gerechtigkeit' },
-			{ target: '市民', en: 'citizen', de: 'Buerger' },
-			{ target: '大統領', en: 'president', de: 'Praesident' },
+			{ target: '市民', en: 'citizen', de: 'Bürger' },
+			{ target: '大統領', en: 'president', de: 'Präsident' },
 			{ target: '政党', en: 'political party', de: 'Partei' },
 			{ target: '国会', en: 'parliament', de: 'Parlament' },
 			{ target: '憲法', en: 'constitution', de: 'Verfassung' },
@@ -1262,23 +1262,23 @@ export const B2_UNITS: UnitVocab[] = [
 			{ target: 'デモ', en: 'demonstration', de: 'Demonstration' },
 			{ target: '改革', en: 'reform', de: 'Reform' },
 			{ target: '汚職', en: 'corruption', de: 'Korruption' },
-			{ target: '世論', en: 'public opinion', de: 'oeffentliche Meinung' }
+			{ target: '世論', en: 'public opinion', de: 'öffentliche Meinung' }
 		],
 		sentences: [
 			{
 				target: '来月の選挙は社会に大きな影響を与える。',
 				en: 'Next month elections will strongly impact society.',
-				de: 'Die Wahlen naechsten Monat werden die Gesellschaft stark beeinflussen.'
+				de: 'Die Wahlen nächsten Monat werden die Gesellschaft stark beeinflussen.'
 			},
 			{
 				target: '市民には政治に参加する権利がある。',
 				en: 'Citizens have the right to participate in politics.',
-				de: 'Buerger haben das Recht, an der Politik teilzunehmen.'
+				de: 'Bürger haben das Recht, an der Politik teilzunehmen.'
 			},
 			{
 				target: '政府は新しい改革案を発表した。',
 				en: 'The government announced a new reform proposal.',
-				de: 'Die Regierung hat einen neuen Reformvorschlag angekuendigt.'
+				de: 'Die Regierung hat einen neuen Reformvorschlag angekündigt.'
 			},
 			{
 				target: '汚職を防ぐための透明性が求められている。',
@@ -1296,10 +1296,10 @@ export const B2_UNITS: UnitVocab[] = [
 		titleEn: 'Business & Finance',
 		titleDe: 'Wirtschaft & Finanzen',
 		descriptionEn: 'Professional business vocabulary',
-		descriptionDe: 'Professionelles Geschaeftsvokabular',
+		descriptionDe: 'Professionelles Geschäftsvokabular',
 		themeColor: '#C97A24',
 		vocab: [
-			{ target: 'ビジネス', en: 'business', de: 'Geschaeft' },
+			{ target: 'ビジネス', en: 'business', de: 'Geschäft' },
 			{ target: '投資', en: 'investment', de: 'Investition' },
 			{ target: '市場', en: 'market', de: 'Markt' },
 			{ target: '株式', en: 'stock', de: 'Aktie' },
@@ -1310,7 +1310,7 @@ export const B2_UNITS: UnitVocab[] = [
 			{ target: '融資', en: 'loan/financing', de: 'Kredit' },
 			{ target: '負債', en: 'debt', de: 'Schulden' },
 			{ target: '契約', en: 'contract', de: 'Vertrag' },
-			{ target: '取引先', en: 'business partner/client', de: 'Geschaeftspartner' },
+			{ target: '取引先', en: 'business partner/client', de: 'Geschäftspartner' },
 			{ target: '競争', en: 'competition', de: 'Wettbewerb' },
 			{ target: '戦略', en: 'strategy', de: 'Strategie' },
 			{ target: 'マーケティング', en: 'marketing', de: 'Marketing' },
@@ -1329,7 +1329,7 @@ export const B2_UNITS: UnitVocab[] = [
 			{
 				target: '予算を見直して無駄な支出を減らすべきだ。',
 				en: 'We should review the budget and reduce unnecessary spending.',
-				de: 'Wir sollten das Budget ueberpruefen und unnoetige Ausgaben senken.'
+				de: 'Wir sollten das Budget überprüfen und unnötige Ausgaben senken.'
 			},
 			{
 				target: '新しい戦略によって利益が改善した。',
@@ -1339,7 +1339,7 @@ export const B2_UNITS: UnitVocab[] = [
 			{
 				target: '取引先と長期契約を結んだ。',
 				en: 'We signed a long-term contract with a business partner.',
-				de: 'Wir haben mit einem Geschaeftspartner einen langfristigen Vertrag geschlossen.'
+				de: 'Wir haben mit einem Geschäftspartner einen langfristigen Vertrag geschlossen.'
 			},
 			{
 				target: '顧客満足度は企業の成長に直結する。',
@@ -1355,7 +1355,7 @@ export const C1_UNITS: UnitVocab[] = [
 		titleEn: 'Academic Writing',
 		titleDe: 'Akademisches Schreiben',
 		descriptionEn: 'Formal and academic expressions',
-		descriptionDe: 'Formelle und akademische Ausdruecke',
+		descriptionDe: 'Formelle und akademische Ausdrücke',
 		themeColor: '#355C9A',
 		vocab: [
 			{ target: '仮説', en: 'hypothesis', de: 'Hypothese' },
@@ -1383,17 +1383,17 @@ export const C1_UNITS: UnitVocab[] = [
 			{
 				target: '本研究の仮説は実験結果によって支持された。',
 				en: 'The hypothesis of this study was supported by the experimental results.',
-				de: 'Die Hypothese dieser Studie wurde durch die Versuchsergebnisse gestuetzt.'
+				de: 'Die Hypothese dieser Studie wurde durch die Versuchsergebnisse gestützt.'
 			},
 			{
 				target: '先行研究を踏まえると、この理論には再検討の余地がある。',
 				en: 'Considering prior studies, this theory leaves room for reconsideration.',
-				de: 'Unter Beruecksichtigung frueherer Studien bietet diese Theorie Raum fuer eine erneute Pruefung.'
+				de: 'Unter Berücksichtigung früherer Studien bietet diese Theorie Raum für eine erneute Prüfung.'
 			},
 			{
 				target: '提示された証拠は結論を十分に裏づけている。',
 				en: 'The presented evidence sufficiently supports the conclusion.',
-				de: 'Die vorgelegten Belege stuetzen die Schlussfolgerung ausreichend.'
+				de: 'Die vorgelegten Belege stützen die Schlussfolgerung ausreichend.'
 			},
 			{
 				target: '論文では複数の視点から問題を分析する必要がある。',
@@ -1403,7 +1403,7 @@ export const C1_UNITS: UnitVocab[] = [
 			{
 				target: '最後に、研究の限界と今後の課題を示す。',
 				en: 'Finally, the limitations of the study and future tasks are presented.',
-				de: 'Abschliessend werden die Grenzen der Studie und kuenftige Aufgaben aufgezeigt.'
+				de: 'Abschließend werden die Grenzen der Studie und künftige Aufgaben aufgezeigt.'
 			}
 		]
 	}
@@ -1412,15 +1412,15 @@ export const C1_UNITS: UnitVocab[] = [
 export const C2_UNITS: UnitVocab[] = [
 	{
 		titleEn: 'Idiomatic Expressions',
-		titleDe: 'Idiomatische Ausdruecke',
+		titleDe: 'Idiomatische Ausdrücke',
 		descriptionEn: 'Advanced idioms and expressions',
-		descriptionDe: 'Fortgeschrittene Redewendungen und Ausdruecke',
+		descriptionDe: 'Fortgeschrittene Redewendungen und Ausdrücke',
 		themeColor: '#A23C6F',
 		vocab: [
 			{
 				target: '猫の手も借りたい',
 				en: 'to be extremely busy',
-				de: 'alle Haende voll zu tun haben'
+				de: 'alle Hände voll zu tun haben'
 			},
 			{ target: '口が堅い', en: 'to be discreet', de: 'verschwiegen sein' },
 			{ target: '顔が広い', en: 'to be well connected', de: 'gut vernetzt sein' },
@@ -1428,21 +1428,21 @@ export const C2_UNITS: UnitVocab[] = [
 			{ target: '腹が立つ', en: 'to get angry', de: 'wutentbrannt sein' },
 			{ target: '腰が重い', en: 'to be slow to act', de: 'schwerfällig sein' },
 			{ target: '気が利く', en: 'to be considerate', de: 'aufmerksam sein' },
-			{ target: '手を焼く', en: 'to have trouble handling', de: 'grosse Mühe mit etwas haben' },
+			{ target: '手を焼く', en: 'to have trouble handling', de: 'große Mühe mit etwas haben' },
 			{ target: '骨が折れる', en: 'to require great effort', de: 'sehr anstrengend sein' },
-			{ target: '目がない', en: 'to have a weakness for', de: 'schwach fuer etwas sein' },
+			{ target: '目がない', en: 'to have a weakness for', de: 'schwach für etwas sein' },
 			{
 				target: '耳が痛い',
 				en: 'to hear an uncomfortable truth',
-				de: 'eine unangenehme Wahrheit hoeren'
+				de: 'eine unangenehme Wahrheit hören'
 			},
 			{ target: '油を売る', en: 'to loaf around', de: 'trödeln' },
 			{ target: '口を滑らせる', en: 'to let something slip', de: 'sich verplappern' },
-			{ target: '水に流す', en: 'to forgive and forget', de: 'Gras ueber etwas wachsen lassen' },
+			{ target: '水に流す', en: 'to forgive and forget', de: 'Gras über etwas wachsen lassen' },
 			{ target: '足を引っ張る', en: 'to hold someone back', de: 'jemanden behindern' },
 			{ target: '話がうまい', en: 'to be a smooth talker', de: 'wortgewandt sein' },
 			{ target: '先手を打つ', en: 'to act preemptively', de: 'vorausschauend handeln' },
-			{ target: '念には念を入れる', en: 'to be extra careful', de: 'aeusserst sorgfaeltig sein' },
+			{ target: '念には念を入れる', en: 'to be extra careful', de: 'äusserst sorgfältig sein' },
 			{
 				target: '石の上にも三年',
 				en: 'perseverance wins in the end',
@@ -1454,7 +1454,7 @@ export const C2_UNITS: UnitVocab[] = [
 			{
 				target: '年末は忙しくて、猫の手も借りたい。',
 				en: 'At year end we are so busy that we need every possible help.',
-				de: 'Zum Jahresende sind wir so beschaeftigt, dass wir jede Hilfe brauchen.'
+				de: 'Zum Jahresende sind wir so beschäftigt, dass wir jede Hilfe brauchen.'
 			},
 			{
 				target: '彼は口が堅いので、安心して相談できる。',
@@ -1469,7 +1469,7 @@ export const C2_UNITS: UnitVocab[] = [
 			{
 				target: 'この交渉は骨が折れるが、やる価値がある。',
 				en: 'This negotiation is hard work but worth doing.',
-				de: 'Diese Verhandlung ist muehsam, aber sie lohnt sich.'
+				de: 'Diese Verhandlung ist mühsam, aber sie lohnt sich.'
 			},
 			{
 				target: '七転び八起きの精神で挑戦し続けている。',

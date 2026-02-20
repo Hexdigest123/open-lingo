@@ -45,7 +45,7 @@ const SPANISH_VOCAB_CONCEPTS: SeedConcept[] = [
 		titleEn: 'hola',
 		titleDe: 'hallo',
 		descriptionEn: 'Common informal greeting.',
-		descriptionDe: 'Haufige informelle Begrussung.',
+		descriptionDe: 'Häufige informelle Begrüßung.',
 		cefrLevel: 'A1',
 		order: 1001
 	},
@@ -55,7 +55,7 @@ const SPANISH_VOCAB_CONCEPTS: SeedConcept[] = [
 		titleEn: 'buenos dias',
 		titleDe: 'guten Morgen',
 		descriptionEn: 'Polite morning greeting.',
-		descriptionDe: 'Hofliche Begrussung am Morgen.',
+		descriptionDe: 'Höfliche Begrüßung am Morgen.',
 		cefrLevel: 'A1',
 		order: 1002
 	},
@@ -65,7 +65,7 @@ const SPANISH_VOCAB_CONCEPTS: SeedConcept[] = [
 		titleEn: 'adios',
 		titleDe: 'auf Wiedersehen',
 		descriptionEn: 'Standard farewell.',
-		descriptionDe: 'Ubliche Verabschiedung.',
+		descriptionDe: 'Übliche Verabschiedung.',
 		cefrLevel: 'A1',
 		order: 1003
 	},
@@ -166,9 +166,9 @@ const ITALIAN_VOCAB_CONCEPTS: SeedConcept[] = [
 		key: 'it.vocab.ciao',
 		type: 'vocab',
 		titleEn: 'ciao',
-		titleDe: 'hallo/tschuss',
+		titleDe: 'hallo/tschüss',
 		descriptionEn: 'Informal hello or bye.',
-		descriptionDe: 'Informelles Hallo oder Tschuss.',
+		descriptionDe: 'Informelles Hallo oder Tschüss.',
 		cefrLevel: 'A1',
 		order: 1001
 	},
@@ -178,7 +178,7 @@ const ITALIAN_VOCAB_CONCEPTS: SeedConcept[] = [
 		titleEn: 'buongiorno',
 		titleDe: 'guten Tag',
 		descriptionEn: 'Polite daytime greeting.',
-		descriptionDe: 'Hofliche Begrussung tagsuber.',
+		descriptionDe: 'Höfliche Begrüßung tagsüber.',
 		cefrLevel: 'A1',
 		order: 1002
 	},
@@ -188,7 +188,7 @@ const ITALIAN_VOCAB_CONCEPTS: SeedConcept[] = [
 		titleEn: 'arrivederci',
 		titleDe: 'auf Wiedersehen',
 		descriptionEn: 'Polite farewell.',
-		descriptionDe: 'Hofliche Verabschiedung.',
+		descriptionDe: 'Höfliche Verabschiedung.',
 		cefrLevel: 'A1',
 		order: 1003
 	},
@@ -291,7 +291,7 @@ const SPANISH_EXTRA_CONCEPTS: SeedConcept[] = [
 		titleEn: 'Spanish vowels',
 		titleDe: 'Spanische Vokale',
 		descriptionEn: 'Five pure vowels: a, e, i, o, u with stable pronunciation.',
-		descriptionDe: 'Funf reine Vokale: a, e, i, o, u mit stabiler Aussprache.',
+		descriptionDe: 'Fünf reine Vokale: a, e, i, o, u mit stabiler Aussprache.',
 		cefrLevel: 'A1',
 		order: 1200
 	},
@@ -311,7 +311,7 @@ const SPANISH_EXTRA_CONCEPTS: SeedConcept[] = [
 		titleEn: 'Imperfect basics',
 		titleDe: 'Grundlagen Imperfekt',
 		descriptionEn: 'Background situations, habitual actions, and descriptions in the past.',
-		descriptionDe: 'Hintergrunde, Gewohnheiten und Beschreibungen in der Vergangenheit.',
+		descriptionDe: 'Hintergründe, Gewohnheiten und Beschreibungen in der Vergangenheit.',
 		cefrLevel: 'A2',
 		order: 1202
 	}
@@ -344,7 +344,7 @@ const ITALIAN_EXTRA_CONCEPTS: SeedConcept[] = [
 		titleEn: 'Imperfetto basics',
 		titleDe: 'Grundlagen Imperfetto',
 		descriptionEn: 'Past background, repeated actions, and ongoing situations.',
-		descriptionDe: 'Vergangenes Hintergrundgeschehen, Wiederholungen und andauernde Zustande.',
+		descriptionDe: 'Vergangenes Hintergrundgeschehen, Wiederholungen und andauernde Zustände.',
 		cefrLevel: 'A2',
 		order: 1202
 	}
@@ -412,7 +412,7 @@ function buildKanjiConcepts(): SeedConcept[] {
 			titleEn: `${k.char} (${k.meanings.join(', ')})`,
 			titleDe: `${k.char} (${k.meanings.join(', ')})`,
 			descriptionEn: `Kanji for ${k.meanings.join('/')} with ${k.strokeCount} strokes.`,
-			descriptionDe: `Kanji fuer ${k.meanings.join('/')} mit ${k.strokeCount} Strichen.`,
+			descriptionDe: `Kanji für ${k.meanings.join('/')} mit ${k.strokeCount} Strichen.`,
 			cefrLevel: 'A2' as const,
 			order: 200 + k.order,
 			data: {
@@ -434,7 +434,7 @@ const JAPANESE_VOCAB_CONCEPTS: SeedConcept[] = [
 		titleEn: 'ohayou gozaimasu',
 		titleDe: 'guten Morgen',
 		descriptionEn: 'Polite morning greeting.',
-		descriptionDe: 'Hoefliche Morgenbegrussung.',
+		descriptionDe: 'Höfliche Morgenbegrüßung.',
 		cefrLevel: 'A1',
 		order: 1001
 	},
@@ -444,7 +444,7 @@ const JAPANESE_VOCAB_CONCEPTS: SeedConcept[] = [
 		titleEn: 'konnichiwa',
 		titleDe: 'guten Tag',
 		descriptionEn: 'Standard daytime greeting.',
-		descriptionDe: 'Standardbegrussung tagsueber.',
+		descriptionDe: 'Standardbegrüßung tagsüber.',
 		cefrLevel: 'A1',
 		order: 1002
 	},
@@ -454,7 +454,7 @@ const JAPANESE_VOCAB_CONCEPTS: SeedConcept[] = [
 		titleEn: 'konbanwa',
 		titleDe: 'guten Abend',
 		descriptionEn: 'Evening greeting.',
-		descriptionDe: 'Abendbegrussung.',
+		descriptionDe: 'Abendbegrüßung.',
 		cefrLevel: 'A1',
 		order: 1003
 	},
@@ -464,7 +464,7 @@ const JAPANESE_VOCAB_CONCEPTS: SeedConcept[] = [
 		titleEn: 'arigatou gozaimasu',
 		titleDe: 'vielen Dank',
 		descriptionEn: 'Polite thank you.',
-		descriptionDe: 'Hoefliches Dankeschoen.',
+		descriptionDe: 'Höfliches Dankeschön.',
 		cefrLevel: 'A1',
 		order: 1004
 	}
@@ -517,7 +517,7 @@ const JAPANESE_NUMBER_CONCEPTS: SeedConcept[] = [
 		titleEn: 'go (5)',
 		titleDe: 'go (5)',
 		descriptionEn: 'Number five.',
-		descriptionDe: 'Die Zahl fuenf.',
+		descriptionDe: 'Die Zahl fünf.',
 		cefrLevel: 'A1',
 		order: 1014
 	},

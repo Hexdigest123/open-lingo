@@ -8,7 +8,7 @@ export const GRAMMAR_N5: GrammarPointData[] = [
 		explanationEn:
 			"です is the polite copula in Japanese. It links a noun or na-adjective to the speaker's statement. Use it often in beginner conversations to sound polite.",
 		explanationDe:
-			'です ist die hoefliche Kopula im Japanischen. Sie verbindet ein Nomen oder ein Na-Adjektiv mit der Aussage des Sprechers. In Anfaengerdialogen nutzt man sie sehr haeufig, um hoeflich zu klingen.',
+			'です ist die höfliche Kopula im Japanischen. Sie verbindet ein Nomen oder ein Na-Adjektiv mit der Aussage des Sprechers. In Anfängerdialogen nutzt man sie sehr häufig, um höflich zu klingen.',
 		pattern: '[noun] です',
 		examples: [
 			{ target: 'わたしは学生です。', en: 'I am a student.', de: 'Ich bin Student.' },
@@ -29,7 +29,7 @@ export const GRAMMAR_N5: GrammarPointData[] = [
 		explanationEn:
 			'は marks the topic of the sentence and is pronounced wa. It tells the listener what the sentence is about. It often contrasts one topic with another.',
 		explanationDe:
-			'は markiert das Thema des Satzes und wird wa ausgesprochen. Es zeigt, worueber der Satz spricht. Oft setzt es auch einen Kontrast zu einem anderen Thema.',
+			'は markiert das Thema des Satzes und wird wa ausgesprochen. Es zeigt, worüber der Satz spricht. Oft setzt es auch einen Kontrast zu einem anderen Thema.',
 		pattern: '[topic] は [comment]',
 		examples: [
 			{
@@ -37,7 +37,7 @@ export const GRAMMAR_N5: GrammarPointData[] = [
 				en: 'As for me, I am Japanese.',
 				de: 'Was mich betrifft: Ich bin Japaner.'
 			},
-			{ target: 'この店は安いです。', en: 'This shop is cheap.', de: 'Dieser Laden ist guenstig.' },
+			{ target: 'この店は安いです。', en: 'This shop is cheap.', de: 'Dieser Laden ist günstig.' },
 			{ target: '今日は寒いです。', en: 'Today is cold.', de: 'Heute ist es kalt.' }
 		],
 		cefrLevel: 'A1',
@@ -50,7 +50,7 @@ export const GRAMMAR_N5: GrammarPointData[] = [
 		explanationEn:
 			'が marks the grammatical subject, especially when introducing new information. It highlights who or what performs or has something. It is common with existence and ability expressions.',
 		explanationDe:
-			'が markiert das grammatische Subjekt, besonders bei neuer Information. Es hebt hervor, wer oder was etwas tut oder hat. Bei Existenz- und Faehigkeitsausdruecken kommt es sehr haeufig vor.',
+			'が markiert das grammatische Subjekt, besonders bei neuer Information. Es hebt hervor, wer oder was etwas tut oder hat. Bei Existenz- und Fähigkeitsausdrücken kommt es sehr häufig vor.',
 		pattern: '[subject] が [predicate]',
 		examples: [
 			{ target: '猫がいます。', en: 'There is a cat.', de: 'Es gibt eine Katze.' },
@@ -84,7 +84,7 @@ export const GRAMMAR_N5: GrammarPointData[] = [
 		explanationEn:
 			'に can mark time, destination, or a target location. It often answers when or where to. It also marks recipients in giving verbs.',
 		explanationDe:
-			'に kann Zeit, Ziel oder Zielort markieren. Es beantwortet oft wann oder wohin. Ausserdem markiert es den Empfaenger bei Verben des Gebens.',
+			'に kann Zeit, Ziel oder Zielort markieren. Es beantwortet oft wann oder wohin. Außerdem markiert es den Empfänger bei Verben des Gebens.',
 		pattern: '[time/place/person] に [verb]',
 		examples: [
 			{ target: '七時に起きます。', en: 'I wake up at seven.', de: 'Ich stehe um sieben Uhr auf.' },
@@ -105,7 +105,7 @@ export const GRAMMAR_N5: GrammarPointData[] = [
 		explanationEn:
 			'で marks the place where an action happens. It also marks means or tools, like by bus or with chopsticks. It does not mark destination; use に for that.',
 		explanationDe:
-			'で markiert den Ort, an dem eine Handlung stattfindet. Es markiert auch Mittel oder Werkzeuge, zum Beispiel mit dem Bus oder mit Staebchen. Ein Ziel markiert es nicht; dafuer nutzt man に.',
+			'で markiert den Ort, an dem eine Handlung stattfindet. Es markiert auch Mittel oder Werkzeuge, zum Beispiel mit dem Bus oder mit Stäbchen. Ein Ziel markiert es nicht; dafür nutzt man に.',
 		pattern: '[place/tool] で [verb]',
 		examples: [
 			{
@@ -118,7 +118,7 @@ export const GRAMMAR_N5: GrammarPointData[] = [
 				en: 'I go to the office by bus.',
 				de: 'Ich fahre mit dem Bus zur Firma.'
 			},
-			{ target: 'はしで食べます。', en: 'I eat with chopsticks.', de: 'Ich esse mit Staebchen.' }
+			{ target: 'はしで食べます。', en: 'I eat with chopsticks.', de: 'Ich esse mit Stäbchen.' }
 		],
 		cefrLevel: 'A1',
 		order: 6
@@ -155,7 +155,7 @@ export const GRAMMAR_N5: GrammarPointData[] = [
 		explanationEn:
 			'も means also or too and replaces particles like は or が in many cases. It adds a similar item to what was said before. It is very common in simple conversation.',
 		explanationDe:
-			'も bedeutet auch und ersetzt oft Partikeln wie は oder が. Es fuegt etwas Aehnliches zu einer vorherigen Aussage hinzu. In einfachen Gespraechen kommt es sehr haeufig vor.',
+			'も bedeutet auch und ersetzt oft Partikeln wie は oder が. Es fügt etwas Ähnliches zu einer vorherigen Aussage hinzu. In einfachen Gesprächen kommt es sehr häufig vor.',
 		pattern: '[noun] も [predicate]',
 		examples: [
 			{ target: 'わたしも学生です。', en: 'I am also a student.', de: 'Ich bin auch Student.' },
@@ -176,7 +176,7 @@ export const GRAMMAR_N5: GrammarPointData[] = [
 		explanationEn:
 			'の links two nouns, often showing possession or belonging. It can also turn one noun into a modifier for another noun. Think of it like of or apostrophe s.',
 		explanationDe:
-			'の verbindet zwei Nomen und zeigt oft Besitz oder Zugehoerigkeit. Es kann auch ein Nomen als Modifikator fuer ein anderes Nomen verwenden. Man kann es haeufig wie von oder Apostroph-s verstehen.',
+			'の verbindet zwei Nomen und zeigt oft Besitz oder Zugehörigkeit. Es kann auch ein Nomen als Modifikator für ein anderes Nomen verwenden. Man kann es häufig wie von oder Apostroph-s verstehen.',
 		pattern: '[noun 1] の [noun 2]',
 		examples: [
 			{ target: 'わたしの本です。', en: 'It is my book.', de: 'Es ist mein Buch.' },
@@ -197,7 +197,7 @@ export const GRAMMAR_N5: GrammarPointData[] = [
 		explanationEn:
 			'か turns a polite statement into a question. It is placed at the end of the sentence. In casual speech, rising intonation can replace it, but beginners should use か.',
 		explanationDe:
-			'か macht aus einer hoeflichen Aussage eine Frage. Es steht am Satzende. In lockerer Sprache kann steigende Intonation es ersetzen, aber fuer Anfaenger ist か der sichere Standard.',
+			'か macht aus einer höflichen Aussage eine Frage. Es steht am Satzende. In lockerer Sprache kann steigende Intonation es ersetzen, aber für Anfänger ist か der sichere Standard.',
 		pattern: '[sentence] か',
 		examples: [
 			{ target: '元気ですか。', en: 'Are you well?', de: 'Geht es dir gut?' },
@@ -225,7 +225,7 @@ export const GRAMMAR_N5: GrammarPointData[] = [
 			{
 				target: '駅から歩きます。',
 				en: 'I walk from the station.',
-				de: 'Ich gehe vom Bahnhof zu Fuss.'
+				de: 'Ich gehe vom Bahnhof zu Fuß.'
 			},
 			{
 				target: '雨ですから、家にいます。',
@@ -246,7 +246,7 @@ export const GRAMMAR_N5: GrammarPointData[] = [
 			'まで markiert einen Endpunkt in Zeit oder Raum. Es steht oft zusammen mit から, um einen Bereich von bis zu zeigen. Man benutzt es nach Zeiten und Zielorten.',
 		pattern: '[time/place] まで',
 		examples: [
-			{ target: '五時まで働きます。', en: 'I work until five.', de: 'Ich arbeite bis fuenf Uhr.' },
+			{ target: '五時まで働きます。', en: 'I work until five.', de: 'Ich arbeite bis fünf Uhr.' },
 			{ target: '東京まで行きます。', en: 'I go as far as Tokyo.', de: 'Ich fahre bis Tokio.' },
 			{
 				target: '月曜日から金曜日まで学校です。',
@@ -260,11 +260,11 @@ export const GRAMMAR_N5: GrammarPointData[] = [
 	{
 		key: 'ja.grammar.masu-polite',
 		titleEn: 'ます (masu) polite verb ending',
-		titleDe: 'ます (masu) hoefliche Verbendung',
+		titleDe: 'ます (masu) höfliche Verbendung',
 		explanationEn:
 			'ます is the polite present-future ending for verbs. It is used in neutral polite speech at school, work, and with strangers. Dictionary-form verbs are converted to their ます stem before adding ます.',
 		explanationDe:
-			'ます ist die hoefliche Verbgendung fuer Gegenwart und Zukunft. Man nutzt sie in neutral-hoeflicher Sprache in Schule, Arbeit und mit Unbekannten. Woerterbuchformen werden zuerst zum ます-Stamm umgeformt.',
+			'ます ist die höfliche Verbgendung für Gegenwart und Zukunft. Man nutzt sie in neutral-höflicher Sprache in Schule, Arbeit und mit Unbekannten. Wörterbuchformen werden zuerst zum ます-Stamm umgeformt.',
 		pattern: '[verb stem] ます',
 		examples: [
 			{
@@ -285,11 +285,11 @@ export const GRAMMAR_N5: GrammarPointData[] = [
 	{
 		key: 'ja.grammar.masen-negative',
 		titleEn: 'ません (masen) polite negative',
-		titleDe: 'ません (masen) hoefliche Verneinung',
+		titleDe: 'ません (masen) höfliche Verneinung',
 		explanationEn:
 			'ません is the polite negative form of ます verbs. It means do not or does not in present-future contexts. Use the same verb stem as ます and replace the ending.',
 		explanationDe:
-			'ません ist die hoefliche Verneinung von ます-Formen. Es bedeutet in Gegenwart und Zukunft nicht tun. Man benutzt denselben Stamm wie bei ます und ersetzt nur die Endung.',
+			'ません ist die höfliche Verneinung von ます-Formen. Es bedeutet in Gegenwart und Zukunft nicht tun. Man benutzt denselben Stamm wie bei ます und ersetzt nur die Endung.',
 		pattern: '[verb stem] ません',
 		examples: [
 			{ target: '肉を食べません。', en: 'I do not eat meat.', de: 'Ich esse kein Fleisch.' },
@@ -310,11 +310,11 @@ export const GRAMMAR_N5: GrammarPointData[] = [
 	{
 		key: 'ja.grammar.mashita-past',
 		titleEn: 'ました (mashita) polite past',
-		titleDe: 'ました (mashita) hoefliche Vergangenheit',
+		titleDe: 'ました (mashita) höfliche Vergangenheit',
 		explanationEn:
 			'ました is the polite past form of verbs. It expresses completed actions in the past. Build it from the same stem as ます and attach ました.',
 		explanationDe:
-			'ました ist die hoefliche Vergangenheitsform von Verben. Sie drueckt abgeschlossene Handlungen in der Vergangenheit aus. Man bildet sie mit demselben Stamm wie bei ます und haengt ました an.',
+			'ました ist die höfliche Vergangenheitsform von Verben. Sie drückt abgeschlossene Handlungen in der Vergangenheit aus. Man bildet sie mit demselben Stamm wie bei ます und hängt ました an.',
 		pattern: '[verb stem] ました',
 		examples: [
 			{
@@ -322,7 +322,7 @@ export const GRAMMAR_N5: GrammarPointData[] = [
 				en: 'I watched a movie yesterday.',
 				de: 'Ich habe gestern einen Film gesehen.'
 			},
-			{ target: '朝ご飯を食べました。', en: 'I ate breakfast.', de: 'Ich habe gefruehstueckt.' },
+			{ target: '朝ご飯を食べました。', en: 'I ate breakfast.', de: 'Ich habe gefrühstückt.' },
 			{
 				target: '日曜日に京都へ行きました。',
 				en: 'I went to Kyoto on Sunday.',

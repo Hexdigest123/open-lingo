@@ -8,7 +8,7 @@ export const KATAKANA_BASE: KatakanaCharData[] = [
 		column: 'a',
 		strokeCount: 2,
 		mnemonicEn: 'ア looks like an angled anchor.',
-		mnemonicDe: 'ア sieht aus wie ein schraeger Anker.',
+		mnemonicDe: 'ア sieht aus wie ein schräger Anker.',
 		order: 1
 	},
 	{
@@ -68,7 +68,7 @@ export const KATAKANA_BASE: KatakanaCharData[] = [
 		column: 'i',
 		strokeCount: 3,
 		mnemonicEn: 'キ looks like a key made of three bars.',
-		mnemonicDe: 'キ sieht aus wie ein Schluessel aus drei Balken.',
+		mnemonicDe: 'キ sieht aus wie ein Schlüssel aus drei Balken.',
 		order: 7
 	},
 	{
@@ -108,7 +108,7 @@ export const KATAKANA_BASE: KatakanaCharData[] = [
 		column: 'a',
 		strokeCount: 3,
 		mnemonicEn: 'サ looks like scissors opening.',
-		mnemonicDe: 'サ sieht aus wie eine sich oeffnende Schere.',
+		mnemonicDe: 'サ sieht aus wie eine sich öffnende Schere.',
 		order: 11
 	},
 	{
@@ -188,7 +188,7 @@ export const KATAKANA_BASE: KatakanaCharData[] = [
 		column: 'e',
 		strokeCount: 1,
 		mnemonicEn: 'テ is a tidy T-like sweep.',
-		mnemonicDe: 'テ ist ein sauberer T-aehnlicher Schwung.',
+		mnemonicDe: 'テ ist ein sauberer T-ähnlicher Schwung.',
 		order: 19
 	},
 	{
@@ -238,7 +238,7 @@ export const KATAKANA_BASE: KatakanaCharData[] = [
 		column: 'e',
 		strokeCount: 4,
 		mnemonicEn: 'ネ looks like a net with extra ties.',
-		mnemonicDe: 'ネ sieht aus wie ein Netz mit zusaetzlichen Knoten.',
+		mnemonicDe: 'ネ sieht aus wie ein Netz mit zusätzlichen Knoten.',
 		order: 24
 	},
 	{
@@ -258,7 +258,7 @@ export const KATAKANA_BASE: KatakanaCharData[] = [
 		column: 'a',
 		strokeCount: 2,
 		mnemonicEn: 'ハ looks like two open wings.',
-		mnemonicDe: 'ハ sieht aus wie zwei offene Fluegel.',
+		mnemonicDe: 'ハ sieht aus wie zwei offene Flügel.',
 		order: 26
 	},
 	{
@@ -318,7 +318,7 @@ export const KATAKANA_BASE: KatakanaCharData[] = [
 		column: 'i',
 		strokeCount: 3,
 		mnemonicEn: 'ミ is three waves stacked.',
-		mnemonicDe: 'ミ sind drei uebereinanderliegende Wellen.',
+		mnemonicDe: 'ミ sind drei übereinanderliegende Wellen.',
 		order: 32
 	},
 	{
@@ -368,7 +368,7 @@ export const KATAKANA_BASE: KatakanaCharData[] = [
 		column: 'u',
 		strokeCount: 2,
 		mnemonicEn: 'ユ looks like a U-shaped shelf.',
-		mnemonicDe: 'ユ sieht aus wie ein U-foermiges Regal.',
+		mnemonicDe: 'ユ sieht aus wie ein U-förmiges Regal.',
 		order: 37
 	},
 	{
@@ -438,7 +438,7 @@ export const KATAKANA_BASE: KatakanaCharData[] = [
 		column: 'a',
 		strokeCount: 2,
 		mnemonicEn: 'ワ looks like a wide wing shape.',
-		mnemonicDe: 'ワ sieht aus wie eine breite Fluegelform.',
+		mnemonicDe: 'ワ sieht aus wie eine breite Flügelform.',
 		order: 44
 	},
 	{
@@ -448,7 +448,7 @@ export const KATAKANA_BASE: KatakanaCharData[] = [
 		column: 'o',
 		strokeCount: 3,
 		mnemonicEn: 'ヲ looks like ワ with an added line.',
-		mnemonicDe: 'ヲ sieht aus wie ワ mit zusaetzlicher Linie.',
+		mnemonicDe: 'ヲ sieht aus wie ワ mit zusätzlicher Linie.',
 		order: 45
 	},
 	{
@@ -471,7 +471,7 @@ export const KATAKANA_DAKUTEN: KatakanaCharData[] = [
 		column: 'a',
 		strokeCount: 4,
 		mnemonicEn: 'ガ is カ with dakuten for ga.',
-		mnemonicDe: 'ガ ist カ mit Dakuten fuer ga.',
+		mnemonicDe: 'ガ ist カ mit Dakuten für ga.',
 		order: 1
 	},
 	{
@@ -481,7 +481,7 @@ export const KATAKANA_DAKUTEN: KatakanaCharData[] = [
 		column: 'i',
 		strokeCount: 5,
 		mnemonicEn: 'ギ is キ with dakuten for gi.',
-		mnemonicDe: 'ギ ist キ mit Dakuten fuer gi.',
+		mnemonicDe: 'ギ ist キ mit Dakuten für gi.',
 		order: 2
 	},
 	{
@@ -491,7 +491,7 @@ export const KATAKANA_DAKUTEN: KatakanaCharData[] = [
 		column: 'u',
 		strokeCount: 4,
 		mnemonicEn: 'グ is ク with dakuten for gu.',
-		mnemonicDe: 'グ ist ク mit Dakuten fuer gu.',
+		mnemonicDe: 'グ ist ク mit Dakuten für gu.',
 		order: 3
 	},
 	{
@@ -521,7 +521,7 @@ export const KATAKANA_DAKUTEN: KatakanaCharData[] = [
 		column: 'a',
 		strokeCount: 5,
 		mnemonicEn: 'ザ is サ with dakuten for za.',
-		mnemonicDe: 'ザ ist サ mit Dakuten fuer za.',
+		mnemonicDe: 'ザ ist サ mit Dakuten für za.',
 		order: 6
 	},
 	{
@@ -531,7 +531,7 @@ export const KATAKANA_DAKUTEN: KatakanaCharData[] = [
 		column: 'i',
 		strokeCount: 5,
 		mnemonicEn: 'ジ is シ with dakuten for ji.',
-		mnemonicDe: 'ジ ist シ mit Dakuten fuer ji.',
+		mnemonicDe: 'ジ ist シ mit Dakuten für ji.',
 		order: 7
 	},
 	{
@@ -541,7 +541,7 @@ export const KATAKANA_DAKUTEN: KatakanaCharData[] = [
 		column: 'u',
 		strokeCount: 4,
 		mnemonicEn: 'ズ is ス with dakuten for zu.',
-		mnemonicDe: 'ズ ist ス mit Dakuten fuer zu.',
+		mnemonicDe: 'ズ ist ス mit Dakuten für zu.',
 		order: 8
 	},
 	{
@@ -551,7 +551,7 @@ export const KATAKANA_DAKUTEN: KatakanaCharData[] = [
 		column: 'e',
 		strokeCount: 4,
 		mnemonicEn: 'ゼ is セ with dakuten for ze.',
-		mnemonicDe: 'ゼ ist セ mit Dakuten fuer ze.',
+		mnemonicDe: 'ゼ ist セ mit Dakuten für ze.',
 		order: 9
 	},
 	{
@@ -561,7 +561,7 @@ export const KATAKANA_DAKUTEN: KatakanaCharData[] = [
 		column: 'o',
 		strokeCount: 4,
 		mnemonicEn: 'ゾ is ソ with dakuten for zo.',
-		mnemonicDe: 'ゾ ist ソ mit Dakuten fuer zo.',
+		mnemonicDe: 'ゾ ist ソ mit Dakuten für zo.',
 		order: 10
 	},
 	{
@@ -571,7 +571,7 @@ export const KATAKANA_DAKUTEN: KatakanaCharData[] = [
 		column: 'a',
 		strokeCount: 5,
 		mnemonicEn: 'ダ is タ with dakuten for da.',
-		mnemonicDe: 'ダ ist タ mit Dakuten fuer da.',
+		mnemonicDe: 'ダ ist タ mit Dakuten für da.',
 		order: 11
 	},
 	{
@@ -581,7 +581,7 @@ export const KATAKANA_DAKUTEN: KatakanaCharData[] = [
 		column: 'i',
 		strokeCount: 5,
 		mnemonicEn: 'ヂ is チ with dakuten in limited words.',
-		mnemonicDe: 'ヂ ist チ mit Dakuten in wenigen Woertern.',
+		mnemonicDe: 'ヂ ist チ mit Dakuten in wenigen Wörtern.',
 		order: 12
 	},
 	{
@@ -591,7 +591,7 @@ export const KATAKANA_DAKUTEN: KatakanaCharData[] = [
 		column: 'u',
 		strokeCount: 5,
 		mnemonicEn: 'ヅ is ツ with dakuten in limited words.',
-		mnemonicDe: 'ヅ ist ツ mit Dakuten in wenigen Woertern.',
+		mnemonicDe: 'ヅ ist ツ mit Dakuten in wenigen Wörtern.',
 		order: 13
 	},
 	{
@@ -621,7 +621,7 @@ export const KATAKANA_DAKUTEN: KatakanaCharData[] = [
 		column: 'a',
 		strokeCount: 4,
 		mnemonicEn: 'バ is ハ with dakuten for ba.',
-		mnemonicDe: 'バ ist ハ mit Dakuten fuer ba.',
+		mnemonicDe: 'バ ist ハ mit Dakuten für ba.',
 		order: 16
 	},
 	{
@@ -641,7 +641,7 @@ export const KATAKANA_DAKUTEN: KatakanaCharData[] = [
 		column: 'u',
 		strokeCount: 3,
 		mnemonicEn: 'ブ is フ with dakuten for bu.',
-		mnemonicDe: 'ブ ist フ mit Dakuten fuer bu.',
+		mnemonicDe: 'ブ ist フ mit Dakuten für bu.',
 		order: 18
 	},
 	{
@@ -661,7 +661,7 @@ export const KATAKANA_DAKUTEN: KatakanaCharData[] = [
 		column: 'o',
 		strokeCount: 6,
 		mnemonicEn: 'ボ is ホ with dakuten for bo.',
-		mnemonicDe: 'ボ ist ホ mit Dakuten fuer bo.',
+		mnemonicDe: 'ボ ist ホ mit Dakuten für bo.',
 		order: 20
 	},
 	{
@@ -671,7 +671,7 @@ export const KATAKANA_DAKUTEN: KatakanaCharData[] = [
 		column: 'a',
 		strokeCount: 3,
 		mnemonicEn: 'パ is ハ with handakuten for pa.',
-		mnemonicDe: 'パ ist ハ mit Handakuten fuer pa.',
+		mnemonicDe: 'パ ist ハ mit Handakuten für pa.',
 		order: 21
 	},
 	{
@@ -681,7 +681,7 @@ export const KATAKANA_DAKUTEN: KatakanaCharData[] = [
 		column: 'i',
 		strokeCount: 3,
 		mnemonicEn: 'ピ is ヒ with handakuten for pi.',
-		mnemonicDe: 'ピ ist ヒ mit Handakuten fuer pi.',
+		mnemonicDe: 'ピ ist ヒ mit Handakuten für pi.',
 		order: 22
 	},
 	{
@@ -691,7 +691,7 @@ export const KATAKANA_DAKUTEN: KatakanaCharData[] = [
 		column: 'u',
 		strokeCount: 2,
 		mnemonicEn: 'プ is フ with handakuten for pu.',
-		mnemonicDe: 'プ ist フ mit Handakuten fuer pu.',
+		mnemonicDe: 'プ ist フ mit Handakuten für pu.',
 		order: 23
 	},
 	{
@@ -701,7 +701,7 @@ export const KATAKANA_DAKUTEN: KatakanaCharData[] = [
 		column: 'e',
 		strokeCount: 2,
 		mnemonicEn: 'ペ is ヘ with handakuten for pe.',
-		mnemonicDe: 'ペ ist ヘ mit Handakuten fuer pe.',
+		mnemonicDe: 'ペ ist ヘ mit Handakuten für pe.',
 		order: 24
 	},
 	{
@@ -711,7 +711,7 @@ export const KATAKANA_DAKUTEN: KatakanaCharData[] = [
 		column: 'o',
 		strokeCount: 5,
 		mnemonicEn: 'ポ is ホ with handakuten for po.',
-		mnemonicDe: 'ポ ist ホ mit Handakuten fuer po.',
+		mnemonicDe: 'ポ ist ホ mit Handakuten für po.',
 		order: 25
 	}
 ];

@@ -58,7 +58,7 @@ export const HIRAGANA_BASE: HiraganaCharData[] = [
 		column: 'a',
 		strokeCount: 3,
 		mnemonicEn: 'か looks like a key with a little hook.',
-		mnemonicDe: 'か sieht aus wie ein Schluessel mit kleinem Haken.',
+		mnemonicDe: 'か sieht aus wie ein Schlüssel mit kleinem Haken.',
 		order: 6
 	},
 	{
@@ -68,7 +68,7 @@ export const HIRAGANA_BASE: HiraganaCharData[] = [
 		column: 'i',
 		strokeCount: 4,
 		mnemonicEn: 'き looks like a kite with extra cross lines.',
-		mnemonicDe: 'き sieht aus wie ein Drachen mit zusaetzlichen Querlinien.',
+		mnemonicDe: 'き sieht aus wie ein Drachen mit zusätzlichen Querlinien.',
 		order: 7
 	},
 	{
@@ -78,7 +78,7 @@ export const HIRAGANA_BASE: HiraganaCharData[] = [
 		column: 'u',
 		strokeCount: 1,
 		mnemonicEn: 'く is a quick beak shape saying ku.',
-		mnemonicDe: 'く ist eine schnelle Schnabelform fuer ku.',
+		mnemonicDe: 'く ist eine schnelle Schnabelform für ku.',
 		order: 8
 	},
 	{
@@ -88,7 +88,7 @@ export const HIRAGANA_BASE: HiraganaCharData[] = [
 		column: 'e',
 		strokeCount: 3,
 		mnemonicEn: 'け looks like a key and a cane together.',
-		mnemonicDe: 'け sieht aus wie ein Schluessel und ein Stock zusammen.',
+		mnemonicDe: 'け sieht aus wie ein Schlüssel und ein Stock zusammen.',
 		order: 9
 	},
 	{
@@ -98,7 +98,7 @@ export const HIRAGANA_BASE: HiraganaCharData[] = [
 		column: 'o',
 		strokeCount: 2,
 		mnemonicEn: 'こ looks like two calm horizontal lines for ko.',
-		mnemonicDe: 'こ sieht aus wie zwei ruhige horizontale Linien fuer ko.',
+		mnemonicDe: 'こ sieht aus wie zwei ruhige horizontale Linien für ko.',
 		order: 10
 	},
 	{
@@ -138,7 +138,7 @@ export const HIRAGANA_BASE: HiraganaCharData[] = [
 		column: 'e',
 		strokeCount: 3,
 		mnemonicEn: 'せ looks like stacked shelves for se.',
-		mnemonicDe: 'せ sieht aus wie gestapelte Regale fuer se.',
+		mnemonicDe: 'せ sieht aus wie gestapelte Regale für se.',
 		order: 14
 	},
 	{
@@ -178,7 +178,7 @@ export const HIRAGANA_BASE: HiraganaCharData[] = [
 		column: 'u',
 		strokeCount: 1,
 		mnemonicEn: 'つ is a curved wave that says tsu.',
-		mnemonicDe: 'つ ist eine gebogene Welle fuer tsu.',
+		mnemonicDe: 'つ ist eine gebogene Welle für tsu.',
 		order: 18
 	},
 	{
@@ -268,7 +268,7 @@ export const HIRAGANA_BASE: HiraganaCharData[] = [
 		column: 'i',
 		strokeCount: 1,
 		mnemonicEn: 'ひ is a smile-like curve for hi.',
-		mnemonicDe: 'ひ ist eine laechelnde Kurve fuer hi.',
+		mnemonicDe: 'ひ ist eine lächelnde Kurve für hi.',
 		order: 27
 	},
 	{
@@ -278,7 +278,7 @@ export const HIRAGANA_BASE: HiraganaCharData[] = [
 		column: 'u',
 		strokeCount: 4,
 		mnemonicEn: 'ふ looks like wind blowing over grass.',
-		mnemonicDe: 'ふ sieht aus wie Wind ueber Gras.',
+		mnemonicDe: 'ふ sieht aus wie Wind über Gras.',
 		order: 28
 	},
 	{
@@ -348,7 +348,7 @@ export const HIRAGANA_BASE: HiraganaCharData[] = [
 		column: 'o',
 		strokeCount: 3,
 		mnemonicEn: 'も looks like more lines stacked together.',
-		mnemonicDe: 'も sieht aus wie mehr uebereinanderliegende Linien.',
+		mnemonicDe: 'も sieht aus wie mehr übereinanderliegende Linien.',
 		order: 35
 	},
 	{
@@ -408,7 +408,7 @@ export const HIRAGANA_BASE: HiraganaCharData[] = [
 		column: 'u',
 		strokeCount: 1,
 		mnemonicEn: 'る is a rolling loop for ru.',
-		mnemonicDe: 'る ist eine rollende Schleife fuer ru.',
+		mnemonicDe: 'る ist eine rollende Schleife für ru.',
 		order: 41
 	},
 	{
@@ -471,7 +471,7 @@ export const HIRAGANA_DAKUTEN: HiraganaCharData[] = [
 		column: 'a',
 		strokeCount: 5,
 		mnemonicEn: 'が is か with voice marks to make ga.',
-		mnemonicDe: 'が ist か mit Stimmzeichen fuer ga.',
+		mnemonicDe: 'が ist か mit Stimmzeichen für ga.',
 		order: 1
 	},
 	{
@@ -481,7 +481,7 @@ export const HIRAGANA_DAKUTEN: HiraganaCharData[] = [
 		column: 'i',
 		strokeCount: 6,
 		mnemonicEn: 'ぎ is き with dakuten for gi.',
-		mnemonicDe: 'ぎ ist き mit Dakuten fuer gi.',
+		mnemonicDe: 'ぎ ist き mit Dakuten für gi.',
 		order: 2
 	},
 	{
@@ -491,7 +491,7 @@ export const HIRAGANA_DAKUTEN: HiraganaCharData[] = [
 		column: 'u',
 		strokeCount: 3,
 		mnemonicEn: 'ぐ is く with dakuten to sound voiced.',
-		mnemonicDe: 'ぐ ist く mit Dakuten fuer den stimmhaften Klang.',
+		mnemonicDe: 'ぐ ist く mit Dakuten für den stimmhaften Klang.',
 		order: 3
 	},
 	{
@@ -501,7 +501,7 @@ export const HIRAGANA_DAKUTEN: HiraganaCharData[] = [
 		column: 'e',
 		strokeCount: 5,
 		mnemonicEn: 'げ is け plus dakuten for ge.',
-		mnemonicDe: 'げ ist け plus Dakuten fuer ge.',
+		mnemonicDe: 'げ ist け plus Dakuten für ge.',
 		order: 4
 	},
 	{
@@ -511,7 +511,7 @@ export const HIRAGANA_DAKUTEN: HiraganaCharData[] = [
 		column: 'o',
 		strokeCount: 4,
 		mnemonicEn: 'ご is こ plus dakuten for go.',
-		mnemonicDe: 'ご ist こ plus Dakuten fuer go.',
+		mnemonicDe: 'ご ist こ plus Dakuten für go.',
 		order: 5
 	},
 	{
@@ -541,7 +541,7 @@ export const HIRAGANA_DAKUTEN: HiraganaCharData[] = [
 		column: 'u',
 		strokeCount: 4,
 		mnemonicEn: 'ず is す with dakuten for zu.',
-		mnemonicDe: 'ず ist す mit Dakuten fuer zu.',
+		mnemonicDe: 'ず ist す mit Dakuten für zu.',
 		order: 8
 	},
 	{
@@ -581,7 +581,7 @@ export const HIRAGANA_DAKUTEN: HiraganaCharData[] = [
 		column: 'i',
 		strokeCount: 4,
 		mnemonicEn: 'ぢ is the voiced ち used in specific words.',
-		mnemonicDe: 'ぢ ist das stimmhafte ち und kommt in bestimmten Woertern vor.',
+		mnemonicDe: 'ぢ ist das stimmhafte ち und kommt in bestimmten Wörtern vor.',
 		order: 12
 	},
 	{
@@ -591,7 +591,7 @@ export const HIRAGANA_DAKUTEN: HiraganaCharData[] = [
 		column: 'u',
 		strokeCount: 3,
 		mnemonicEn: 'づ is the voiced つ in limited spelling cases.',
-		mnemonicDe: 'づ ist das stimmhafte つ in wenigen Schreibfaellen.',
+		mnemonicDe: 'づ ist das stimmhafte つ in wenigen Schreibfällen.',
 		order: 13
 	},
 	{
@@ -601,7 +601,7 @@ export const HIRAGANA_DAKUTEN: HiraganaCharData[] = [
 		column: 'e',
 		strokeCount: 3,
 		mnemonicEn: 'で is て with dakuten for de.',
-		mnemonicDe: 'で ist て mit Dakuten fuer de.',
+		mnemonicDe: 'で ist て mit Dakuten für de.',
 		order: 14
 	},
 	{
@@ -621,7 +621,7 @@ export const HIRAGANA_DAKUTEN: HiraganaCharData[] = [
 		column: 'a',
 		strokeCount: 5,
 		mnemonicEn: 'ば is は with dakuten for ba.',
-		mnemonicDe: 'ば ist は mit Dakuten fuer ba.',
+		mnemonicDe: 'ば ist は mit Dakuten für ba.',
 		order: 16
 	},
 	{
@@ -661,7 +661,7 @@ export const HIRAGANA_DAKUTEN: HiraganaCharData[] = [
 		column: 'o',
 		strokeCount: 6,
 		mnemonicEn: 'ぼ is ほ plus dakuten for bo.',
-		mnemonicDe: 'ぼ ist ほ plus Dakuten fuer bo.',
+		mnemonicDe: 'ぼ ist ほ plus Dakuten für bo.',
 		order: 20
 	},
 	{
@@ -671,7 +671,7 @@ export const HIRAGANA_DAKUTEN: HiraganaCharData[] = [
 		column: 'a',
 		strokeCount: 4,
 		mnemonicEn: 'ぱ is は with handakuten for pa.',
-		mnemonicDe: 'ぱ ist は mit Handakuten fuer pa.',
+		mnemonicDe: 'ぱ ist は mit Handakuten für pa.',
 		order: 21
 	},
 	{
@@ -681,7 +681,7 @@ export const HIRAGANA_DAKUTEN: HiraganaCharData[] = [
 		column: 'i',
 		strokeCount: 2,
 		mnemonicEn: 'ぴ is ひ with handakuten for pi.',
-		mnemonicDe: 'ぴ ist ひ mit Handakuten fuer pi.',
+		mnemonicDe: 'ぴ ist ひ mit Handakuten für pi.',
 		order: 22
 	},
 	{
@@ -701,7 +701,7 @@ export const HIRAGANA_DAKUTEN: HiraganaCharData[] = [
 		column: 'e',
 		strokeCount: 2,
 		mnemonicEn: 'ぺ is へ with handakuten for pe.',
-		mnemonicDe: 'ぺ ist へ mit Handakuten fuer pe.',
+		mnemonicDe: 'ぺ ist へ mit Handakuten für pe.',
 		order: 24
 	},
 	{
@@ -711,7 +711,7 @@ export const HIRAGANA_DAKUTEN: HiraganaCharData[] = [
 		column: 'o',
 		strokeCount: 5,
 		mnemonicEn: 'ぽ is ほ with handakuten for po.',
-		mnemonicDe: 'ぽ ist ほ mit Handakuten fuer po.',
+		mnemonicDe: 'ぽ ist ほ mit Handakuten für po.',
 		order: 25
 	}
 ];
