@@ -5,6 +5,7 @@
 	import { goto } from '$app/navigation';
 	import { i18n, t, type Locale } from '$lib/i18n/index.svelte';
 	import Toast from '$lib/components/ui/Toast.svelte';
+	import CelebrationOverlay from '$lib/components/ui/CelebrationOverlay.svelte';
 	import { onMount } from 'svelte';
 
 	let { children, data }: { children: Snippet; data: LayoutData } = $props();
@@ -153,7 +154,7 @@
 					<div class="relative" use:clickOutside={() => (showLangMenu = false)}>
 						<button
 							onclick={toggleLangMenu}
-							class="flex items-center gap-1 rounded-xl bg-primary/10 px-2 py-1 text-sm font-medium text-primary hover:bg-primary/20 cursor-pointer"
+							class="flex cursor-pointer items-center gap-1 rounded-xl bg-primary/10 px-2 py-1 text-sm font-medium text-primary hover:bg-primary/20"
 						>
 							<span>🌐</span>
 							<span class="hidden sm:inline">{i18n.locale === 'de' ? 'DE' : 'EN'}</span>
@@ -164,7 +165,7 @@
 							{#each i18n.availableLocales as locale}
 								<button
 									onclick={() => selectLocale(locale.code)}
-									class="w-full px-4 py-2 text-left hover:bg-bg-light-secondary first:rounded-t-lg last:rounded-b-lg {i18n.locale ===
+									class="w-full px-4 py-2 text-left first:rounded-t-lg last:rounded-b-lg hover:bg-bg-light-secondary {i18n.locale ===
 									locale.code
 										? 'font-bold text-primary'
 										: 'text-text-light'}"
@@ -178,7 +179,7 @@
 					<div class="relative">
 						<button
 							onclick={toggleLangMenu}
-							class="flex items-center gap-1 rounded-xl bg-primary/10 px-2 py-1 text-sm font-medium text-primary hover:bg-primary/20 cursor-pointer"
+							class="flex cursor-pointer items-center gap-1 rounded-xl bg-primary/10 px-2 py-1 text-sm font-medium text-primary hover:bg-primary/20"
 						>
 							<span>🌐</span>
 							<span class="hidden sm:inline">{i18n.locale === 'de' ? 'DE' : 'EN'}</span>
@@ -191,7 +192,7 @@
 					<div class="relative" use:clickOutside={() => (showUserMenu = false)}>
 						<button
 							onclick={() => (showUserMenu = !showUserMenu)}
-							class="flex h-8 w-8 items-center justify-center rounded-full bg-gradient-to-br from-success to-primary text-xs font-bold text-white hover:opacity-90 cursor-pointer"
+							class="flex h-8 w-8 cursor-pointer items-center justify-center rounded-full bg-gradient-to-br from-success to-primary text-xs font-bold text-white hover:opacity-90"
 							title={data.user.displayName}
 						>
 							{data.user.displayName.charAt(0).toUpperCase()}
@@ -223,7 +224,7 @@
 							{/if}
 							<button
 								onclick={handleLogout}
-								class="flex w-full items-center gap-2 px-4 py-2 text-left text-error hover:bg-error/10 rounded-b-xl"
+								class="flex w-full items-center gap-2 rounded-b-xl px-4 py-2 text-left text-error hover:bg-error/10"
 							>
 								<span>🚪</span>
 								<span>{t('nav.logout')}</span>
@@ -234,7 +235,7 @@
 					<div class="relative">
 						<button
 							onclick={() => (showUserMenu = !showUserMenu)}
-							class="flex h-8 w-8 items-center justify-center rounded-full bg-gradient-to-br from-success to-primary text-xs font-bold text-white hover:opacity-90 cursor-pointer"
+							class="flex h-8 w-8 cursor-pointer items-center justify-center rounded-full bg-gradient-to-br from-success to-primary text-xs font-bold text-white hover:opacity-90"
 							title={data.user.displayName}
 						>
 							{data.user.displayName.charAt(0).toUpperCase()}
@@ -256,28 +257,30 @@
 			<!-- Backdrop -->
 			<button
 				class="absolute inset-0 bg-black/50"
-				onclick={() => showMobileMenu = false}
+				onclick={() => (showMobileMenu = false)}
 				aria-label="Close menu"
 			></button>
 			<!-- Menu Panel -->
-			<div class="absolute left-0 top-0 bottom-0 w-64 bg-white shadow-xl">
+			<div class="absolute top-0 bottom-0 left-0 w-64 bg-white shadow-xl">
 				<div class="flex items-center justify-between border-b border-border-light p-4">
 					<span class="text-lg font-bold text-success">OpenLingo</span>
 					<button
 						class="p-2 text-text-muted hover:text-text-light"
-						onclick={() => showMobileMenu = false}
+						onclick={() => (showMobileMenu = false)}
 						aria-label="Close menu"
 					>
 						<span class="text-xl">✕</span>
 					</button>
 				</div>
-				<nav class="p-4 space-y-2">
+				<nav class="space-y-2 p-4">
 					{#each navItems as item}
 						<a
 							href={item.href}
-							onclick={() => showMobileMenu = false}
+							onclick={() => (showMobileMenu = false)}
 							class="flex items-center gap-3 rounded-xl px-4 py-3 transition-colors
-								{isActive(item.href) ? 'bg-success/10 text-success' : 'text-text-muted hover:bg-bg-light-secondary hover:text-text-light'}"
+								{isActive(item.href)
+								? 'bg-success/10 text-success'
+								: 'text-text-muted hover:bg-bg-light-secondary hover:text-text-light'}"
 						>
 							<span class="text-xl">{item.icon}</span>
 							<span class="font-medium">{t(item.labelKey)}</span>
@@ -286,9 +289,11 @@
 					{#if isAdmin}
 						<a
 							href="/admin"
-							onclick={() => showMobileMenu = false}
+							onclick={() => (showMobileMenu = false)}
 							class="flex items-center gap-3 rounded-xl px-4 py-3 transition-colors
-								{isActive('/admin') ? 'bg-purple/10 text-purple' : 'text-text-muted hover:bg-purple/10 hover:text-purple'}"
+								{isActive('/admin')
+								? 'bg-purple/10 text-purple'
+								: 'text-text-muted hover:bg-purple/10 hover:text-purple'}"
 						>
 							<span class="text-xl">⚙️</span>
 							<span class="font-medium">{t('nav.admin')}</span>
@@ -301,12 +306,14 @@
 
 	{#if !isInLesson}
 		<!-- Mobile Bottom Navigation with Burger (< 400px) -->
-		<nav class="fixed right-0 bottom-0 left-0 z-50 h-16 border-t border-border-light bg-white min-[400px]:hidden lg:hidden">
+		<nav
+			class="fixed right-0 bottom-0 left-0 z-50 h-16 border-t border-border-light bg-white min-[400px]:hidden lg:hidden"
+		>
 			<div class="flex h-full items-center justify-center">
 				<!-- Burger Menu Button (centered) -->
 				<button
-					onclick={() => showMobileMenu = !showMobileMenu}
-					class="flex items-center justify-center rounded-xl p-3 transition-colors text-text-muted hover:text-text-light"
+					onclick={() => (showMobileMenu = !showMobileMenu)}
+					class="flex items-center justify-center rounded-xl p-3 text-text-muted transition-colors hover:text-text-light"
 					aria-label="Toggle menu"
 				>
 					<span class="text-4xl">{showMobileMenu ? '✕' : '☰'}</span>
@@ -315,7 +322,9 @@
 		</nav>
 
 		<!-- Mobile Bottom Navigation (400px - lg) -->
-		<nav class="fixed right-0 bottom-0 left-0 z-50 border-t border-border-light bg-white hidden min-[400px]:block lg:hidden">
+		<nav
+			class="fixed right-0 bottom-0 left-0 z-50 hidden border-t border-border-light bg-white min-[400px]:block lg:hidden"
+		>
 			<div class="flex items-center justify-around py-2">
 				{#each navItems as item}
 					<a
@@ -335,5 +344,5 @@
 	{/if}
 </div>
 
-<!-- Toast Notifications -->
 <Toast />
+<CelebrationOverlay />

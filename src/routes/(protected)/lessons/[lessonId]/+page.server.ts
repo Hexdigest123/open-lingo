@@ -490,6 +490,17 @@ export const actions: Actions = {
 				})
 				.where(eq(userStats.userId, userId));
 
+			// Check if this is the first correct answer of the day (before upsert)
+			let firstCorrectToday = false;
+			if (shouldAwardXp) {
+				const [todayStreak] = await db
+					.select({ xpEarned: dailyStreaks.xpEarned })
+					.from(dailyStreaks)
+					.where(and(eq(dailyStreaks.userId, userId), eq(dailyStreaks.activityDate, today)))
+					.limit(1);
+				firstCorrectToday = !todayStreak || todayStreak.xpEarned === 0;
+			}
+
 			// Update daily streak record
 			await db
 				.insert(dailyStreaks)
@@ -515,7 +526,8 @@ export const actions: Actions = {
 				heartsEnabled,
 				streakFreezeUsed,
 				currentStreak: newStreak,
-				xpAwarded: xpGain
+				xpAwarded: xpGain,
+				firstCorrectToday
 			};
 		} else {
 			// Only deduct hearts if not in revision mode AND hearts are enabled

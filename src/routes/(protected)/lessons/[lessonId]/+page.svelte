@@ -12,6 +12,11 @@
 	import SpeakingQuestion from '$lib/components/lessons/SpeakingQuestion.svelte';
 	import ListeningQuestion from '$lib/components/lessons/ListeningQuestion.svelte';
 	import AiExplanation from '$lib/components/lessons/AiExplanation.svelte';
+	import { PartyPopper, HeartCrack, Heart, CircleCheck, CircleX, Bot, X } from 'lucide-svelte';
+	import {
+		celebrateFirstCorrectToday,
+		celebrateAchievement
+	} from '$lib/stores/celebrations.svelte';
 
 	type SubmitActionData = {
 		success: boolean;
@@ -20,6 +25,7 @@
 		freezeEarned?: boolean;
 		hearts?: number;
 		xpAwarded?: number;
+		firstCorrectToday?: boolean;
 	};
 
 	type ActiveLanguage = {
@@ -195,9 +201,15 @@
 			}
 
 			if (lastAnswer.isCorrect) {
-				// Use server-provided XP value (0 if already answered or in revision mode)
 				xpEarned += actionData.xpAwarded ?? 0;
 				correctCount++;
+
+				if (actionData.firstCorrectToday) {
+					celebrateFirstCorrectToday(
+						t('celebration.firstCorrectToday'),
+						t('celebration.firstCorrectTodayMessage')
+					);
+				}
 			}
 
 			showFeedback = true;
@@ -274,6 +286,15 @@
 			const result = deserialize(await response.text());
 			if (result.type !== 'success') {
 				console.error('Failed to complete lesson:', result);
+			} else {
+				const completeData = result.data as {
+					newAchievements?: string[];
+				};
+				if (completeData?.newAchievements?.length) {
+					for (const name of completeData.newAchievements) {
+						celebrateAchievement(name);
+					}
+				}
 			}
 		} catch (error) {
 			console.error('Failed to complete lesson:', error);
