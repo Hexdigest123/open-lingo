@@ -4,6 +4,7 @@
 	import { enhance } from '$app/forms';
 	import { goto, invalidateAll } from '$app/navigation';
 	import { getBilingualText } from '$lib/utils/bilingual';
+	import { HeartCrack, Construction, BookOpen, Check, Star, Pencil, Circle } from 'lucide-svelte';
 
 	type LevelWithCount = {
 		id: number;
@@ -60,13 +61,13 @@
 	function getStatusIcon(status: string | undefined) {
 		switch (status) {
 			case 'completed':
-				return '✅';
+				return Check;
 			case 'mastered':
-				return '⭐';
+				return Star;
 			case 'in_progress':
-				return '📝';
+				return Pencil;
 			default:
-				return '○';
+				return Circle;
 		}
 	}
 
@@ -94,7 +95,9 @@
 	<!-- Out of Hearts Modal -->
 	<div class="fixed inset-0 z-50 flex items-center justify-center bg-black/50 p-4">
 		<div class="w-full max-w-md card text-center">
-			<div class="text-6xl">💔</div>
+			<div class="flex justify-center">
+				<HeartCrack size={64} class="text-error" />
+			</div>
 			<h2 class="mt-4 text-2xl font-bold text-error">{t('lesson.outOfHearts.title')}</h2>
 			<p class="mt-2 text-text-muted">{t('lesson.outOfHearts.message')}</p>
 
@@ -190,7 +193,7 @@
 									>
 										<div class="flex items-center gap-3">
 											<span class="text-lg {getStatusColor(status)}">
-												{getStatusIcon(status)}
+												<svelte:component this={getStatusIcon(status)} size={20} />
 											</span>
 											<div>
 												<p class="font-medium text-text-light">{getBilingualText(lesson.title)}</p>
@@ -253,7 +256,9 @@
 		{:else}
 			<!-- No Units Yet -->
 			<div class="card py-12 text-center">
-				<span class="text-6xl">🚧</span>
+				<div class="flex justify-center">
+					<Construction size={64} class="text-warning" />
+				</div>
 				<h3 class="mt-4 text-xl font-bold text-text-light">{t('lesson.comingSoon')}</h3>
 				<p class="mt-2 text-text-muted">
 					{t('lesson.unitsBeingPrepared')}
@@ -308,7 +313,9 @@
 		<!-- Empty State -->
 		{#if levelsWithCount.length === 0}
 			<div class="card py-12 text-center">
-				<span class="text-6xl">📚</span>
+				<div class="flex justify-center">
+					<BookOpen size={64} class="text-text-muted" />
+				</div>
 				<h3 class="mt-4 text-xl font-bold text-text-light">{t('lesson.noLessons')}</h3>
 				<p class="mt-2 text-text-muted">
 					{t('lesson.lessonsBeingPrepared')}

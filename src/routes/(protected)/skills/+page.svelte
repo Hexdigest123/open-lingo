@@ -2,12 +2,25 @@
 	import type { PageData } from './$types';
 	import type { SkillNode } from '$lib/learning/types';
 	import { i18n, t } from '$lib/i18n/index.svelte';
+	import {
+		BookOpen,
+		Ruler,
+		Languages,
+		PenTool,
+		Puzzle,
+		Headphones,
+		Mic,
+		Pencil,
+		RefreshCw,
+		BookMarked
+	} from 'lucide-svelte';
+	import type { ComponentType } from 'svelte';
 
-	let { data }: { data: PageData } = $props();
+	let { data }: { data: PageData & { skills: SkillNode[] } } = $props();
 
 	const levelOrder = ['A1', 'A2', 'B1', 'B2', 'C1', 'C2'];
 
-	const skillsById = $derived(new Map(data.skills.map((skill) => [skill.id, skill])));
+	const skillsById = $derived(new Map(data.skills.map((skill: SkillNode) => [skill.id, skill])));
 
 	const groupedSkills = $derived.by(() => {
 		const groups = new Map<string, SkillNode[]>();
@@ -45,28 +58,28 @@
 		return description ?? '';
 	}
 
-	function getSkillIcon(skill: SkillNode): string {
+	function getSkillIcon(skill: SkillNode): ComponentType {
 		switch (String(skill.type)) {
 			case 'vocabulary':
-				return 'Aa';
+				return BookOpen;
 			case 'grammar':
-				return 'Gr';
+				return Ruler;
 			case 'kana':
-				return 'あ';
+				return Languages;
 			case 'kanji':
-				return '漢';
+				return PenTool;
 			case 'radical':
-				return '部';
+				return Puzzle;
 			case 'listening':
-				return 'Li';
+				return Headphones;
 			case 'speaking':
-				return 'Sp';
+				return Mic;
 			case 'writing':
-				return 'Wr';
+				return Pencil;
 			case 'conjugation':
-				return 'Cj';
+				return RefreshCw;
 			default:
-				return 'Sk';
+				return BookMarked;
 		}
 	}
 
@@ -138,7 +151,7 @@
 										<div
 											class="flex h-10 w-10 items-center justify-center rounded-lg bg-primary/10 text-sm font-bold text-primary"
 										>
-											{getSkillIcon(skill)}
+											<svelte:component this={getSkillIcon(skill)} size={20} />
 										</div>
 										<div>
 											<p class="font-semibold text-text-light">{getSkillTitle(skill)}</p>

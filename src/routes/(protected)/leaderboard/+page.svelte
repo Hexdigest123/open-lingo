@@ -3,7 +3,7 @@
 	import { t } from '$lib/i18n/index.svelte';
 	import { goto } from '$app/navigation';
 	import { page } from '$app/stores';
-	import { Flame } from 'lucide-svelte';
+	import { Flame, Medal } from 'lucide-svelte';
 
 	let { data }: { data: PageData } = $props();
 
@@ -13,13 +13,6 @@
 		const url = new URL($page.url);
 		url.searchParams.set('timeframe', tf);
 		goto(url.toString(), { replaceState: true });
-	}
-
-	function getRankEmoji(rank: number): string {
-		if (rank === 1) return '🥇';
-		if (rank === 2) return '🥈';
-		if (rank === 3) return '🥉';
-		return '';
 	}
 
 	function getRankClass(rank: number): string {
@@ -70,9 +63,17 @@
 						? 'border-2 border-primary'
 						: ''} {getRankClass(entry.rank)}"
 				>
-					<span class="w-8 text-center text-lg font-bold"
-						>{getRankEmoji(entry.rank) || entry.rank}</span
-					>
+					<span class="flex w-8 justify-center text-center text-lg font-bold">
+						{#if entry.rank === 1}
+							<Medal size={24} class="fill-yellow-400 text-yellow-400" />
+						{:else if entry.rank === 2}
+							<Medal size={24} class="fill-gray-400 text-gray-400" />
+						{:else if entry.rank === 3}
+							<Medal size={24} class="fill-orange-400 text-orange-400" />
+						{:else}
+							{entry.rank}
+						{/if}
+					</span>
 					<div
 						class="flex h-10 w-10 flex-shrink-0 items-center justify-center rounded-full bg-gradient-to-br from-success to-primary text-sm font-bold text-white"
 					>
@@ -126,8 +127,15 @@
 										? 'text-lg'
 										: ''}"
 								>
-									{getRankEmoji(entry.rank)}
-									{entry.rank}
+									{#if entry.rank === 1}
+										<Medal size={24} class="fill-yellow-400 text-yellow-400" />
+									{:else if entry.rank === 2}
+										<Medal size={24} class="fill-gray-400 text-gray-400" />
+									{:else if entry.rank === 3}
+										<Medal size={24} class="fill-orange-400 text-orange-400" />
+									{:else}
+										{entry.rank}
+									{/if}
 								</span>
 							</td>
 							<td class="px-4 py-3">

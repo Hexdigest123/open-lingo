@@ -3,6 +3,19 @@
 	import { t } from '$lib/i18n/index.svelte';
 	import { enhance } from '$app/forms';
 	import { invalidateAll } from '$app/navigation';
+	import {
+		Flame,
+		Trophy,
+		TreePine,
+		RefreshCw,
+		BookOpen,
+		Bot,
+		Globe,
+		Star,
+		Heart,
+		Snowflake,
+		Check
+	} from 'lucide-svelte';
 
 	type ActiveLanguage = {
 		code: string;
@@ -76,7 +89,11 @@
 		<div class="card">
 			<div class="flex items-center justify-between">
 				<div class="flex items-center gap-3">
-					<span class="text-2xl">{data.activeLanguage?.flagEmoji ?? '🌍'}</span>
+					{#if data.activeLanguage?.flagEmoji}
+						<span class="text-2xl">{data.activeLanguage.flagEmoji}</span>
+					{:else}
+						<Globe size={24} />
+					{/if}
 					<div>
 						<h2 class="font-bold text-text-light">{t('dashboard.learningPath')}</h2>
 						<p class="text-sm text-text-muted">{activeLanguageName}</p>
@@ -105,7 +122,11 @@
 									? 'border-success bg-success/10 text-success'
 									: 'border-border-light hover:border-primary/50 hover:bg-bg-light-secondary'}"
 							>
-								<span class="text-2xl">{language.flagEmoji}</span>
+								{#if language.flagEmoji}
+									<span class="text-2xl">{language.flagEmoji}</span>
+								{:else}
+									<Globe size={24} />
+								{/if}
 								<div class="flex-1">
 									<div class="font-bold {isActive ? 'text-success' : 'text-text-light'}">
 										{language.name}
@@ -115,18 +136,7 @@
 									{/if}
 								</div>
 								{#if isActive}
-									<svg
-										xmlns="http://www.w3.org/2000/svg"
-										class="h-5 w-5 text-success"
-										viewBox="0 0 20 20"
-										fill="currentColor"
-									>
-										<path
-											fill-rule="evenodd"
-											d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z"
-											clip-rule="evenodd"
-										/>
-									</svg>
+									<Check size={20} class="text-success" />
 								{/if}
 							</button>
 						</form>
@@ -141,7 +151,7 @@
 		<div class="card">
 			<div class="flex items-center gap-4">
 				<div class="flex h-12 w-12 items-center justify-center rounded-xl bg-yellow/10">
-					<span class="text-2xl">⭐</span>
+					<Star size={24} />
 				</div>
 				<div>
 					<p class="text-sm text-text-muted">{t('dashboard.stats.xp')}</p>
@@ -153,7 +163,7 @@
 		<div class="card">
 			<div class="flex items-center gap-4">
 				<div class="flex h-12 w-12 items-center justify-center rounded-xl bg-orange/10">
-					<span class="text-2xl">🔥</span>
+					<Flame size={24} />
 				</div>
 				<div>
 					<p class="text-sm text-text-muted">{t('dashboard.stats.streak')}</p>
@@ -165,7 +175,7 @@
 		<div class="card">
 			<div class="flex items-center gap-4">
 				<div class="flex h-12 w-12 items-center justify-center rounded-xl bg-error/10">
-					<span class="text-2xl">❤️</span>
+					<Heart size={24} />
 				</div>
 				<div>
 					<p class="text-sm text-text-muted">{t('dashboard.stats.hearts')}</p>
@@ -183,7 +193,7 @@
 						? 'animate-freeze-earned'
 						: ''}"
 				>
-					<span class="text-2xl">❄️</span>
+					<Snowflake size={24} />
 				</div>
 				<div class="flex-1">
 					<p class="text-sm text-text-muted">{t('gamification.streakFreezes')}</p>
@@ -208,7 +218,7 @@
 		<div class="card">
 			<div class="flex items-center gap-4">
 				<div class="flex h-12 w-12 items-center justify-center rounded-xl bg-purple/10">
-					<span class="text-2xl">🏆</span>
+					<Trophy size={24} />
 				</div>
 				<div>
 					<p class="text-sm text-text-muted">{t('dashboard.stats.bestStreak')}</p>
@@ -227,7 +237,7 @@
 					<div
 						class="flex h-16 w-16 items-center justify-center rounded-2xl bg-gradient-to-br from-success to-success-dark text-2xl font-bold text-white"
 					>
-						🌳
+						<TreePine size={32} />
 					</div>
 					<div>
 						<div class="flex flex-wrap items-center gap-2">
@@ -261,7 +271,7 @@
 		<div class="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
 			<a href="/skills" class="card transition-shadow hover:shadow-lg">
 				<div class="flex items-center gap-4">
-					<span class="text-3xl">🌳</span>
+					<TreePine size={32} />
 					<div>
 						<h3 class="font-bold text-text-light">{t('skills.title')}</h3>
 						<p class="text-sm text-text-muted">{t('dashboard.skillProgress')}</p>
@@ -271,7 +281,7 @@
 
 			<a href="/review" class="card transition-shadow hover:shadow-lg">
 				<div class="flex items-center gap-4">
-					<span class="text-3xl">🔄</span>
+					<RefreshCw size={32} />
 					<div>
 						<div class="flex items-center gap-2">
 							<h3 class="font-bold text-text-light">{t('review.title')}</h3>
@@ -294,7 +304,7 @@
 
 			<a href="/lessons" class="card transition-shadow hover:shadow-lg">
 				<div class="flex items-center gap-4">
-					<span class="text-3xl">📚</span>
+					<BookOpen size={32} />
 					<div>
 						<h3 class="font-bold text-text-light">Browse Lessons</h3>
 						<p class="text-sm text-text-muted">Explore all available lessons</p>
@@ -304,7 +314,7 @@
 
 			<a href="/leaderboard" class="card transition-shadow hover:shadow-lg">
 				<div class="flex items-center gap-4">
-					<span class="text-3xl">🏆</span>
+					<Trophy size={32} />
 					<div>
 						<h3 class="font-bold text-text-light">Leaderboard</h3>
 						<p class="text-sm text-text-muted">See how you rank</p>
@@ -314,7 +324,7 @@
 
 			<a href="/settings/api-key" class="card transition-shadow hover:shadow-lg">
 				<div class="flex items-center gap-4">
-					<span class="text-3xl">🤖</span>
+					<Bot size={32} />
 					<div>
 						<h3 class="font-bold text-text-light">AI Settings</h3>
 						<p class="text-sm text-text-muted">Configure your OpenAI key</p>

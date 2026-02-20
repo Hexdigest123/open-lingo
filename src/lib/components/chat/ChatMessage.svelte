@@ -1,4 +1,6 @@
 <script lang="ts">
+	import { User, Bot } from 'lucide-svelte';
+
 	interface Props {
 		role: 'user' | 'assistant' | 'system';
 		content: string;
@@ -15,7 +17,11 @@
 			? 'bg-success text-white'
 			: 'bg-primary text-white'}"
 	>
-		{isUser ? '👤' : '🤖'}
+		{#if isUser}
+			<User size={16} />
+		{:else}
+			<Bot size={16} />
+		{/if}
 	</div>
 	<div
 		class="max-w-[80%] rounded-2xl px-4 py-3 {isUser

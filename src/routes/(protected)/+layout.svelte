@@ -7,6 +7,23 @@
 	import Toast from '$lib/components/ui/Toast.svelte';
 	import CelebrationOverlay from '$lib/components/ui/CelebrationOverlay.svelte';
 	import { onMount } from 'svelte';
+	import {
+		Home,
+		BookOpen,
+		MessageCircle,
+		Trophy,
+		User,
+		Flame,
+		Snowflake,
+		Globe,
+		Wrench,
+		LogOut,
+		Star,
+		Heart,
+		Menu,
+		X,
+		Settings
+	} from 'lucide-svelte';
 
 	let { children, data }: { children: Snippet; data: LayoutData } = $props();
 
@@ -50,11 +67,11 @@
 	}
 
 	const navItems = [
-		{ href: '/dashboard', labelKey: 'nav.dashboard', icon: '🏠' },
-		{ href: '/lessons', labelKey: 'nav.learn', icon: '📚' },
-		{ href: '/chat', labelKey: 'nav.chat', icon: '💬' },
-		{ href: '/leaderboard', labelKey: 'nav.leaderboard', icon: '🏆' },
-		{ href: '/profile', labelKey: 'nav.profile', icon: '👤' }
+		{ href: '/dashboard', labelKey: 'nav.dashboard', icon: Home },
+		{ href: '/lessons', labelKey: 'nav.learn', icon: BookOpen },
+		{ href: '/chat', labelKey: 'nav.chat', icon: MessageCircle },
+		{ href: '/leaderboard', labelKey: 'nav.leaderboard', icon: Trophy },
+		{ href: '/profile', labelKey: 'nav.profile', icon: User }
 	];
 
 	const isAdmin = $derived(data.user.role === 'admin');
@@ -93,7 +110,7 @@
 						class="flex items-center gap-1.5 rounded-xl px-3 py-1.5 text-sm font-medium transition-colors
 							{isActive(item.href) ? 'bg-success/10 text-success' : 'text-text-muted hover:text-text-light'}"
 					>
-						<span>{item.icon}</span>
+						<item.icon size={20} />
 						<span>{t(item.labelKey)}</span>
 					</a>
 				{/each}
@@ -103,7 +120,7 @@
 						class="flex items-center gap-1.5 rounded-xl px-3 py-1.5 text-sm font-medium transition-colors
 							{isActive('/admin') ? 'bg-purple/10 text-purple' : 'text-text-muted hover:text-purple'}"
 					>
-						<span>⚙️</span>
+						<Wrench size={20} />
 						<span>{t('nav.admin')}</span>
 					</a>
 				{/if}
@@ -116,7 +133,7 @@
 					class="flex items-center gap-1 rounded-xl bg-error/10 px-2 py-1"
 					title={t('gamification.hearts')}
 				>
-					<span class="text-sm text-error">❤️</span>
+					<Heart size={16} class="text-error" />
 					<span class="text-sm font-bold text-error">{data.stats.hearts}</span>
 				</div>
 
@@ -125,7 +142,7 @@
 					class="hidden items-center gap-1 rounded-xl bg-orange/10 px-2 py-1 sm:flex"
 					title={t('gamification.streak')}
 				>
-					<span class="text-sm">🔥</span>
+					<Flame size={16} class="text-orange" />
 					<span class="text-sm font-bold text-orange">{data.stats.currentStreak}</span>
 				</div>
 
@@ -135,7 +152,7 @@
 						class="hidden items-center gap-1 rounded-xl bg-primary/10 px-2 py-1 md:flex"
 						title={t('gamification.streakFreezes')}
 					>
-						<span class="text-sm">🧊</span>
+						<Snowflake size={16} class="text-primary" />
 						<span class="text-sm font-bold text-primary">{data.stats.streakFreezes}</span>
 					</div>
 				{/if}
@@ -145,7 +162,7 @@
 					class="flex items-center gap-1 rounded-xl bg-yellow/10 px-2 py-1"
 					title={t('gamification.xp')}
 				>
-					<span class="text-sm">⭐</span>
+					<Star size={16} class="text-yellow-dark" />
 					<span class="text-sm font-bold text-yellow-dark">{data.stats.xpTotal}</span>
 				</div>
 
@@ -156,7 +173,7 @@
 							onclick={toggleLangMenu}
 							class="flex cursor-pointer items-center gap-1 rounded-xl bg-primary/10 px-2 py-1 text-sm font-medium text-primary hover:bg-primary/20"
 						>
-							<span>🌐</span>
+							<Globe size={16} />
 							<span class="hidden sm:inline">{i18n.locale === 'de' ? 'DE' : 'EN'}</span>
 						</button>
 						<div
@@ -181,7 +198,7 @@
 							onclick={toggleLangMenu}
 							class="flex cursor-pointer items-center gap-1 rounded-xl bg-primary/10 px-2 py-1 text-sm font-medium text-primary hover:bg-primary/20"
 						>
-							<span>🌐</span>
+							<Globe size={16} />
 							<span class="hidden sm:inline">{i18n.locale === 'de' ? 'DE' : 'EN'}</span>
 						</button>
 					</div>
@@ -209,7 +226,7 @@
 								onclick={() => (showUserMenu = false)}
 								class="flex w-full items-center gap-2 px-4 py-2 text-left text-text-light hover:bg-bg-light-secondary"
 							>
-								<span>⚙️</span>
+								<Settings size={16} />
 								<span>{t('nav.settings')}</span>
 							</a>
 							{#if isAdmin}
@@ -218,7 +235,7 @@
 									onclick={() => (showUserMenu = false)}
 									class="flex w-full items-center gap-2 px-4 py-2 text-left text-purple hover:bg-purple/10 lg:hidden"
 								>
-									<span>🛠️</span>
+									<Wrench size={16} />
 									<span>{t('nav.admin')}</span>
 								</a>
 							{/if}
@@ -226,7 +243,7 @@
 								onclick={handleLogout}
 								class="flex w-full items-center gap-2 rounded-b-xl px-4 py-2 text-left text-error hover:bg-error/10"
 							>
-								<span>🚪</span>
+								<LogOut size={16} />
 								<span>{t('nav.logout')}</span>
 							</button>
 						</div>
@@ -269,7 +286,7 @@
 						onclick={() => (showMobileMenu = false)}
 						aria-label="Close menu"
 					>
-						<span class="text-xl">✕</span>
+						<X size={24} />
 					</button>
 				</div>
 				<nav class="space-y-2 p-4">
@@ -282,7 +299,7 @@
 								? 'bg-success/10 text-success'
 								: 'text-text-muted hover:bg-bg-light-secondary hover:text-text-light'}"
 						>
-							<span class="text-xl">{item.icon}</span>
+							<item.icon size={24} />
 							<span class="font-medium">{t(item.labelKey)}</span>
 						</a>
 					{/each}
@@ -295,7 +312,7 @@
 								? 'bg-purple/10 text-purple'
 								: 'text-text-muted hover:bg-purple/10 hover:text-purple'}"
 						>
-							<span class="text-xl">⚙️</span>
+							<Wrench size={24} />
 							<span class="font-medium">{t('nav.admin')}</span>
 						</a>
 					{/if}
@@ -316,7 +333,11 @@
 					class="flex items-center justify-center rounded-xl p-3 text-text-muted transition-colors hover:text-text-light"
 					aria-label="Toggle menu"
 				>
-					<span class="text-4xl">{showMobileMenu ? '✕' : '☰'}</span>
+					{#if showMobileMenu}
+						<X size={32} />
+					{:else}
+						<Menu size={32} />
+					{/if}
 				</button>
 			</div>
 		</nav>
@@ -332,7 +353,7 @@
 						class="flex flex-col items-center gap-1 rounded-xl px-4 py-2 transition-colors
 							{isActive(item.href) ? 'text-success' : 'text-text-muted'}"
 					>
-						<span class="text-xl">{item.icon}</span>
+						<item.icon size={24} />
 						<span class="text-xs font-medium">{t(item.labelKey)}</span>
 					</a>
 				{/each}

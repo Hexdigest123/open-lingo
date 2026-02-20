@@ -1,6 +1,7 @@
 <script lang="ts">
 	import type { PageData } from './$types';
 	import { t } from '$lib/i18n/index.svelte';
+	import { Monitor } from 'lucide-svelte';
 
 	let { data }: { data: PageData } = $props();
 
@@ -19,7 +20,7 @@
 
 <!-- Mobile: Show only desktop recommendation -->
 <div class="flex min-h-[60vh] flex-col items-center justify-center gap-4 text-center md:hidden">
-	<span class="text-6xl">💻</span>
+	<Monitor size={64} class="text-text-muted" />
 	<div>
 		<h1 class="text-xl font-bold text-text-light">{t('admin.desktopRecommended')}</h1>
 		<p class="mt-2 text-text-muted">{t('admin.desktopRecommendedDesc')}</p>

@@ -3,6 +3,7 @@
 	import { t } from '$lib/i18n/index.svelte';
 	import { enhance } from '$app/forms';
 	import { goto } from '$app/navigation';
+	import { Monitor, Zap, AlertTriangle, Loader2, Lightbulb } from 'lucide-svelte';
 
 	let { data, form }: { data: PageData; form: ActionData } = $props();
 
@@ -42,7 +43,7 @@
 
 <!-- Mobile: Show only desktop recommendation -->
 <div class="flex min-h-[60vh] flex-col items-center justify-center gap-4 text-center md:hidden">
-	<span class="text-6xl">💻</span>
+	<Monitor size={64} class="text-text-muted" />
 	<div>
 		<h1 class="text-xl font-bold text-text-light">{t('admin.desktopRecommended')}</h1>
 		<p class="mt-2 text-text-muted">{t('admin.desktopRecommendedDesc')}</p>
@@ -64,7 +65,7 @@
 	{#if !data.hasApiKey}
 		<div class="card border-2 border-yellow/50 bg-yellow/5">
 			<div class="flex items-start gap-4">
-				<span class="text-3xl">&#9888;&#65039;</span>
+				<AlertTriangle size={32} class="text-yellow-dark" />
 				<div>
 					<h3 class="font-bold text-text-light">{t('admin.lessons.apiKeyRequired')}</h3>
 					<p class="mt-1 text-text-muted">{t('admin.lessons.apiKeyRequiredDesc')}</p>
@@ -201,13 +202,14 @@
 				<button
 					type="submit"
 					disabled={isGenerating || !selectedUnit || !topic}
-					class="btn btn-success btn-lg w-full"
+					class="btn btn-success btn-lg flex w-full items-center justify-center gap-2"
 				>
 					{#if isGenerating}
-						<span class="mr-2 inline-block animate-spin">&#9881;</span>
+						<Loader2 size={20} class="animate-spin" />
 						{t('admin.lessons.generating')}
 					{:else}
-						&#9889; {t('admin.lessons.generateLesson')}
+						<Zap size={20} />
+						{t('admin.lessons.generateLesson')}
 					{/if}
 				</button>
 
@@ -219,7 +221,10 @@
 
 		<!-- Tips -->
 		<div class="card bg-primary/5">
-			<h3 class="font-bold text-text-light">&#128161; {t('admin.lessons.tips')}</h3>
+			<h3 class="flex items-center gap-2 font-bold text-text-light">
+				<Lightbulb size={20} class="text-yellow-dark" />
+				{t('admin.lessons.tips')}
+			</h3>
 			<ul class="mt-2 space-y-2 text-sm text-text-muted">
 				<li>&#x2022; {t('admin.lessons.tip1')}</li>
 				<li>&#x2022; {t('admin.lessons.tip2')}</li>

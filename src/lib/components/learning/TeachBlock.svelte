@@ -3,6 +3,7 @@
 	import StrokeOrderVisualizer from './StrokeOrderVisualizer.svelte';
 	import GrammarDiagram from './GrammarDiagram.svelte';
 	import ConjugationTable from './ConjugationTable.svelte';
+	import { Lightbulb } from 'lucide-svelte';
 
 	interface Props {
 		titleEn: string;
@@ -131,8 +132,9 @@
 				<div class="bg-accent/10 flex gap-4 rounded-xl p-4 text-text-dark">
 					<span
 						class="bg-accent/20 text-accent flex h-8 w-8 shrink-0 items-center justify-center rounded-full text-sm font-bold"
-						>i</span
 					>
+						<Lightbulb size={16} />
+					</span>
 					<p class="text-sm leading-relaxed">{tip}</p>
 				</div>
 			{/each}

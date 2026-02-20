@@ -10,6 +10,7 @@
 	import WordOrderQuestion from '$lib/components/lessons/WordOrderQuestion.svelte';
 	import SpeakingQuestion from '$lib/components/lessons/SpeakingQuestion.svelte';
 	import ListeningQuestion from '$lib/components/lessons/ListeningQuestion.svelte';
+	import { Flag, Compass } from 'lucide-svelte';
 
 	type PlacementQuestion = {
 		id: number;
@@ -200,7 +201,9 @@
 
 {#if isComplete}
 	<div class="mx-auto max-w-2xl space-y-4 card text-center">
-		<div class="text-6xl">🏁</div>
+		<div class="flex justify-center">
+			<Flag size={64} class="text-success" />
+		</div>
 		<h1 class="text-2xl font-bold text-text-light">
 			{t('placement.complete')}
 		</h1>
@@ -216,7 +219,9 @@
 	</div>
 {:else if !activeSession}
 	<div class="mx-auto max-w-2xl space-y-6 card text-center">
-		<div class="text-6xl">🧭</div>
+		<div class="flex justify-center">
+			<Compass size={64} class="text-primary" />
+		</div>
 		<h1 class="text-2xl font-bold text-text-light">
 			{t('placement.title')}
 		</h1>

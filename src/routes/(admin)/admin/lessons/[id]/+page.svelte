@@ -4,6 +4,7 @@
 	import { enhance } from '$app/forms';
 	import QuestionModal from '$lib/components/admin/questions/QuestionModal.svelte';
 	import type { QuestionType } from '$lib/server/db/schema';
+	import { Monitor } from 'lucide-svelte';
 
 	type Question = {
 		id: number;
@@ -58,7 +59,7 @@
 
 <!-- Mobile: Show only desktop recommendation -->
 <div class="flex min-h-[60vh] flex-col items-center justify-center gap-4 text-center md:hidden">
-	<span class="text-6xl">💻</span>
+	<Monitor size={64} class="text-text-muted" />
 	<div>
 		<h1 class="text-xl font-bold text-text-light">{t('admin.desktopRecommended')}</h1>
 		<p class="mt-2 text-text-muted">{t('admin.desktopRecommendedDesc')}</p>

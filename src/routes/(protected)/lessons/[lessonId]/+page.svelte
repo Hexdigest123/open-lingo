@@ -321,7 +321,9 @@
 	<!-- Lesson Complete Screen -->
 	<div class="fixed inset-0 z-50 flex items-center justify-center bg-black/50 p-4">
 		<div class="w-full max-w-md card text-center">
-			<div class="text-6xl">🎉</div>
+			<div class="flex justify-center">
+				<PartyPopper size={64} class="text-success" />
+			</div>
 			<h2 class="mt-4 text-2xl font-bold text-text-light">{t('lesson.complete.title')}</h2>
 			<p class="mt-2 text-lg text-text-muted">
 				{getAccuracyMessage(Math.round((correctCount / totalQuestions) * 100))}
@@ -349,7 +351,9 @@
 	<!-- Out of Hearts Screen -->
 	<div class="fixed inset-0 z-50 flex items-center justify-center bg-black/50 p-4">
 		<div class="w-full max-w-md card text-center">
-			<div class="text-6xl">💔</div>
+			<div class="flex justify-center">
+				<HeartCrack size={64} class="text-error" />
+			</div>
 			<h2 class="mt-4 text-2xl font-bold text-error">{t('lesson.outOfHearts.title')}</h2>
 			<p class="mt-2 text-text-muted">{t('lesson.outOfHearts.message')}</p>
 
@@ -365,7 +369,9 @@
 	<div class="mx-auto max-w-2xl">
 		<!-- Header -->
 		<div class="mb-6 flex items-center justify-between">
-			<button onclick={exitLesson} class="text-text-muted hover:text-text-light"> ✕ </button>
+			<button onclick={exitLesson} class="text-text-muted hover:text-text-light">
+				<X size={24} />
+			</button>
 
 			<!-- Progress Bar -->
 			<div class="mx-4 flex-1">
@@ -379,7 +385,7 @@
 
 			<!-- Hearts -->
 			<div class="flex items-center gap-1">
-				<span class="text-error">❤️</span>
+				<Heart size={20} class="text-error" />
 				<span class="font-bold text-error">{hearts}</span>
 			</div>
 		</div>
@@ -465,7 +471,13 @@
 		{#if showFeedback && lastAnswer}
 			<div class="mt-6 rounded-xl p-4 {lastAnswer.isCorrect ? 'bg-success/10' : 'bg-error/10'}">
 				<div class="flex items-start gap-3">
-					<span class="text-2xl">{lastAnswer.isCorrect ? '✅' : '❌'}</span>
+					<span class="text-2xl">
+						{#if lastAnswer.isCorrect}
+							<CircleCheck size={24} class="text-success" />
+						{:else}
+							<CircleX size={24} class="text-error" />
+						{/if}
+					</span>
 					<div class="flex-1">
 						<p class="font-bold {lastAnswer.isCorrect ? 'text-success' : 'text-error'}">
 							{lastAnswer.isCorrect ? t('lesson.correct') : t('lesson.incorrect')}
@@ -478,9 +490,10 @@
 							{#if data.hasApiKey && !aiExplanation && !isLoadingExplanation}
 								<button
 									onclick={fetchExplanation}
-									class="btn btn-ghost mt-3 -ml-2 px-2 text-sm text-primary hover:bg-primary/10"
+									class="btn btn-ghost mt-3 -ml-2 flex items-center gap-2 px-2 text-sm text-primary hover:bg-primary/10"
 								>
-									🤖 {t('lesson.explain')}
+									<Bot size={16} />
+									{t('lesson.explain')}
 								</button>
 							{/if}
 						{/if}

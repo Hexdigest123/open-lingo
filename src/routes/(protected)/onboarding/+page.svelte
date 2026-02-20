@@ -3,8 +3,9 @@
 	import { invalidateAll } from '$app/navigation';
 	import { t } from '$lib/i18n/index.svelte';
 	import type { ActionData, PageData } from './$types';
+	import { PartyPopper, Check } from 'lucide-svelte';
 
-	let { data, form }: { data: PageData; form: ActionData } = $props();
+	let { data, form }: { data: PageData & { hasGlobalKey: boolean }; form: ActionData } = $props();
 
 	let step = $state(1);
 	let selectedLanguage = $state(data.activeLanguage ?? '');
@@ -96,18 +97,7 @@
 								<div
 									class="absolute top-2 right-2 flex h-6 w-6 items-center justify-center rounded-full bg-success text-white"
 								>
-									<svg
-										xmlns="http://www.w3.org/2000/svg"
-										class="h-4 w-4"
-										viewBox="0 0 20 20"
-										fill="currentColor"
-									>
-										<path
-											fill-rule="evenodd"
-											d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z"
-											clip-rule="evenodd"
-										/>
-									</svg>
+									<Check size={16} />
 								</div>
 							{/if}
 							<span class="text-4xl">{lang.flagEmoji}</span>
@@ -210,7 +200,7 @@
 		<div class="animate-bounce-in text-center">
 			<div class="mb-8 flex justify-center">
 				<div class="flex h-32 w-32 items-center justify-center rounded-full bg-success/10">
-					<span class="text-6xl">&#x1F389;</span>
+					<PartyPopper size={64} class="text-success" />
 				</div>
 			</div>
 
