@@ -17,6 +17,19 @@ import { relations } from 'drizzle-orm';
 // Enums
 export const levelCodeEnum = pgEnum('level_code', ['A1', 'A2', 'B1', 'B2', 'C1', 'C2']);
 
+// Supported target languages table
+export const languages = pgTable('languages', {
+	code: varchar('code', { length: 10 }).primaryKey(),
+	name: varchar('name', { length: 100 }).notNull(),
+	nativeName: varchar('native_name', { length: 100 }).notNull(),
+	flagEmoji: varchar('flag_emoji', { length: 10 }).notNull(),
+	whisperCode: varchar('whisper_code', { length: 10 }).notNull(),
+	tutorName: varchar('tutor_name', { length: 100 }).notNull(),
+	tutorGreeting: text('tutor_greeting'),
+	isActive: boolean('is_active').default(true).notNull(),
+	order: integer('order').notNull()
+});
+
 export const questionTypeEnum = pgEnum('question_type', [
 	'fill_blank',
 	'multiple_choice',
@@ -63,6 +76,9 @@ export const users = pgTable(
 		openaiApiKeyEncrypted: text('openai_api_key_encrypted'),
 		heartsDisabled: boolean('hearts_disabled').default(false).notNull(),
 		approvalStatus: approvalStatusEnum('approval_status').default('approved').notNull(),
+		activeLanguage: varchar('active_language', { length: 10 })
+			.references(() => languages.code)
+			.default('es'),
 		locale: varchar('locale', { length: 10 }),
 		createdAt: timestamp('created_at').defaultNow().notNull(),
 		updatedAt: timestamp('updated_at').defaultNow().notNull()
@@ -89,13 +105,21 @@ export const refreshTokens = pgTable(
 );
 
 // Levels table (A1-C2)
-export const levels = pgTable('levels', {
-	id: serial('id').primaryKey(),
-	code: levelCodeEnum('code').notNull().unique(),
-	name: varchar('name', { length: 100 }).notNull(),
-	description: text('description'),
-	order: integer('order').notNull()
-});
+export const levels = pgTable(
+	'levels',
+	{
+		id: serial('id').primaryKey(),
+		code: levelCodeEnum('code').notNull(),
+		languageCode: varchar('language_code', { length: 10 })
+			.references(() => languages.code, { onDelete: 'cascade' })
+			.notNull()
+			.default('es'),
+		name: varchar('name', { length: 100 }).notNull(),
+		description: text('description'),
+		order: integer('order').notNull()
+	},
+	(table) => [unique('levels_code_language_unique').on(table.code, table.languageCode)]
+);
 
 // Units table
 export const units = pgTable(
@@ -373,7 +397,15 @@ export const refreshTokensRelations = relations(refreshTokens, ({ one }) => ({
 	})
 }));
 
-export const levelsRelations = relations(levels, ({ many }) => ({
+export const languagesRelations = relations(languages, ({ many }) => ({
+	levels: many(levels)
+}));
+
+export const levelsRelations = relations(levels, ({ one, many }) => ({
+	language: one(languages, {
+		fields: [levels.languageCode],
+		references: [languages.code]
+	}),
 	units: many(units)
 }));
 
@@ -546,3 +578,5 @@ export type ChatMessage = typeof chatMessages.$inferSelect;
 export type NewChatMessage = typeof chatMessages.$inferInsert;
 export type Invitation = typeof invitations.$inferSelect;
 export type NewInvitation = typeof invitations.$inferInsert;
+export type Language = typeof languages.$inferSelect;
+export type NewLanguage = typeof languages.$inferInsert;

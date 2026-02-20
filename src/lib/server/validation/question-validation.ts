@@ -18,11 +18,11 @@ interface TranslationContent {
 	text?: string;
 	textEn?: string;
 	textDe?: string;
-	direction: 'native_to_es' | 'es_to_native';
+	direction: 'native_to_target' | 'target_to_native' | 'native_to_es' | 'es_to_native';
 }
 
 interface MatchingContent {
-	pairs: Array<{ spanish: string; english: string; german?: string }>;
+	pairs: Array<{ target: string; english: string; german?: string; spanish?: string }>;
 }
 
 interface WordOrderContent {
@@ -52,10 +52,7 @@ export type QuestionContent =
 	| SpeakingContent
 	| ListeningContent;
 
-export function validateQuestionContent(
-	type: QuestionType,
-	content: unknown
-): string | null {
+export function validateQuestionContent(type: QuestionType, content: unknown): string | null {
 	if (!content || typeof content !== 'object') {
 		return 'Question content is required';
 	}
@@ -92,16 +89,23 @@ export function validateQuestionContent(
 		}
 
 		case 'translation': {
-			if (!c.direction || !['native_to_es', 'es_to_native'].includes(c.direction as string)) {
-				return 'Translation direction must be native_to_es or es_to_native';
+			const validDirections = [
+				'native_to_target',
+				'target_to_native',
+				'native_to_es',
+				'es_to_native'
+			];
+			if (!c.direction || !validDirections.includes(c.direction as string)) {
+				return 'Translation direction must be native_to_target or target_to_native';
 			}
-			if (c.direction === 'native_to_es') {
+			const isNativeToTarget = c.direction === 'native_to_target' || c.direction === 'native_to_es';
+			if (isNativeToTarget) {
 				if (!c.textEn && !c.textDe) {
-					return 'Source text (English or German) is required for native_to_es';
+					return 'Source text (English or German) is required for native_to_target';
 				}
 			} else {
 				if (!c.text) {
-					return 'Spanish text is required for es_to_native';
+					return 'Target language text is required for target_to_native';
 				}
 			}
 			break;
@@ -115,8 +119,12 @@ export function validateQuestionContent(
 				return 'Maximum 6 pairs allowed';
 			}
 			for (const pair of c.pairs as Array<Record<string, unknown>>) {
-				if (!pair.spanish || typeof pair.spanish !== 'string') {
-					return 'Each pair must have a Spanish word';
+				if (
+					!(pair.target || pair.spanish) ||
+					(pair.target && typeof pair.target !== 'string') ||
+					(pair.spanish && typeof pair.spanish !== 'string')
+				) {
+					return 'Each pair must have a target language word';
 				}
 				if (!pair.english || typeof pair.english !== 'string') {
 					return 'Each pair must have an English word';
