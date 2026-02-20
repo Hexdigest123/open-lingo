@@ -38,7 +38,8 @@
 				headers: { 'Content-Type': 'application/json' },
 				body: JSON.stringify({
 					sessionId: data.session.id,
-					message: content
+					message: content,
+					locale: i18n.locale
 				})
 			});
 

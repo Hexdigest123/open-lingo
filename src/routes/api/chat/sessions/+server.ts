@@ -4,54 +4,12 @@ import { db } from '$lib/server/db';
 import { chatSessions, chatMessages, languages, users } from '$lib/server/db/schema';
 import { eq, desc } from 'drizzle-orm';
 import { z } from 'zod';
+import { getMotherLanguage, getChatSystemPrompt } from '$lib/server/openai/prompts';
 
-// Input validation schema for session creation
 const createSessionSchema = z.object({
 	mode: z.enum(['text', 'voice']).default('text'),
 	locale: z.enum(['en', 'de']).default('en')
 });
-
-// Map locale code to full language name
-function getMotherLanguage(locale: string): string {
-	const languages: Record<string, string> = {
-		en: 'English',
-		de: 'German (Deutsch)'
-	};
-	return languages[locale] || 'English';
-}
-
-// Generate teacher system prompt based on user's mother language
-function getSystemPrompt(
-	motherLanguage: string,
-	targetLanguage: string,
-	tutorName: string
-): string {
-	return `You are "${tutorName}", a friendly and helpful ${targetLanguage} language tutor. Your student's native language is ${motherLanguage}.
-
-Primary Language Rules:
-- ALWAYS respond primarily in ${motherLanguage} (the student's native language)
-- Only use ${targetLanguage} when providing examples, translations, or when the student explicitly asks
-- EXCEPTION: If the student writes their message in ${targetLanguage}, respond primarily in ${targetLanguage} to match their preference
-
-Response Style:
-- Be helpful and directly answer what the student asks
-- If they ask "How do I say X in ${targetLanguage}?" - give them the ${targetLanguage} translation with pronunciation tips
-- If they ask about grammar - explain it clearly in ${motherLanguage} with ${targetLanguage} examples
-- If they want to practice conversation - engage in the topic they choose
-- Use encouraging phrases in ${targetLanguage} when appropriate
-
-Examples of good responses:
-- User: "How do I greet my mother in ${targetLanguage}?"
-  → Respond in ${motherLanguage} explaining the greeting, then provide a ${targetLanguage} example
-- User writes in ${targetLanguage}
-  → Since user wrote in ${targetLanguage}, respond in ${targetLanguage}
-
-Teaching approach:
-- Be patient and supportive
-- Correct mistakes gently by showing the correct form
-- Adapt to the student's level based on their messages
-- Keep ${targetLanguage} examples simple and practical`;
-}
 
 // GET: List all chat sessions for the current user
 export const GET: RequestHandler = async ({ locals }) => {
@@ -134,7 +92,7 @@ export const POST: RequestHandler = async ({ request, locals }) => {
 	await db.insert(chatMessages).values({
 		sessionId: session.id,
 		role: 'system',
-		content: getSystemPrompt(motherLanguage, targetLanguageName, tutorName)
+		content: getChatSystemPrompt(motherLanguage, targetLanguageName, tutorName)
 	});
 
 	// Add assistant intro message to kick off the conversation (in user's native language)
