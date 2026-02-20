@@ -81,7 +81,7 @@
 			<form method="POST" action="?/setLanguage" use:enhance={handleEnhance} class="space-y-8">
 				<input type="hidden" name="languageCode" value={selectedLanguage} />
 
-				<div class="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-3">
+				<div class="grid grid-cols-1 gap-4 sm:grid-cols-2">
 					{#each data.availableLanguages as lang}
 						{@const isSelected = selectedLanguage === lang.code}
 						<button
@@ -156,6 +156,12 @@
 			</div>
 
 			<form method="POST" action="?/setApiKey" use:enhance={handleEnhance} class="space-y-6 card">
+				{#if data.hasGlobalKey}
+					<div class="rounded-xl border border-success/30 bg-success/5 p-4 text-sm text-text-light">
+						<p>{t('onboarding.apiKey.globalKeySet')}</p>
+					</div>
+				{/if}
+
 				<div>
 					<label for="apiKey" class="mb-1 block text-sm font-medium text-text-light">
 						{t('onboarding.steps.apiKey')}
@@ -214,18 +220,16 @@
 			</p>
 
 			<p class="mx-auto mb-6 max-w-md text-sm text-text-muted">
-				{t('onboarding.done.choosePath', {
-					defaultValue: 'Choose your starting point to personalize your learning journey.'
-				})}
+				{t('onboarding.done.choosePath')}
 			</p>
 
 			<div class="mx-auto flex w-full max-w-sm flex-col gap-3">
 				<a href="/placement" class="btn btn-primary btn-lg w-full">
-					{t('placement.start', { defaultValue: 'Take Placement Test' })}
+					{t('placement.start')}
 				</a>
 				<form method="POST" action="?/complete" use:enhance={handleEnhance}>
 					<button type="submit" class="btn btn-success btn-lg w-full">
-						{t('placement.skip', { defaultValue: 'Start from Scratch' })}
+						{t('placement.skip')}
 					</button>
 				</form>
 			</div>

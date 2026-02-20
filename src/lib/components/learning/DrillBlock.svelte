@@ -55,9 +55,9 @@
 
 		if (isCorrect) {
 			correctCount++;
-			feedbackMessage = t('lesson.correct', { defaultValue: 'Correct!' });
+			feedbackMessage = t('lesson.correct');
 		} else {
-			feedbackMessage = t('lesson.incorrect', { defaultValue: 'Incorrect' });
+			feedbackMessage = t('lesson.incorrect');
 		}
 
 		showFeedback = true;
@@ -87,7 +87,7 @@
 	<!-- Progress Bar -->
 	<div class="mb-8">
 		<div class="mb-2 flex justify-between text-sm font-medium text-text-light">
-			<span>{t('lesson.progress', { defaultValue: 'Progress' })}</span>
+			<span>{t('lesson.progress')}</span>
 			<span>{currentIndex + 1} / {questions.length}</span>
 		</div>
 		<div class="bg-surface-200 h-3 w-full overflow-hidden rounded-full">
@@ -162,13 +162,13 @@
 				<!-- Fallback for new/unsupported types -->
 				<div class="rounded-xl border-2 border-dashed border-text-muted/30 p-8 text-center">
 					<p class="text-lg font-medium text-text-light">
-						{t('lesson.unsupportedType', { defaultValue: 'Unsupported question type' })}: {currentQuestion.type}
+						{t('lesson.unsupportedType')}: {currentQuestion.type}
 					</p>
 					<button
 						onclick={() => handleAnswer(currentQuestion.correctAnswer)}
 						class="btn btn-secondary mt-4"
 					>
-						{t('lesson.skip', { defaultValue: 'Skip' })}
+						{t('lesson.skip')}
 					</button>
 				</div>
 			{/if}
@@ -202,7 +202,7 @@
 				{#if !isCorrect}
 					<div class="mb-6">
 						<p class="text-sm font-medium uppercase opacity-70">
-							{t('lesson.correctAnswer', { defaultValue: 'Correct Answer' })}:
+							{t('lesson.correctAnswer')}:
 						</p>
 						<p class="text-lg font-medium">{currentQuestion.correctAnswer}</p>
 					</div>
@@ -213,7 +213,7 @@
 					class="btn btn-lg w-full shadow-md
 					{isCorrect ? 'btn-success' : 'btn-error'}"
 				>
-					{t('lesson.continue', { defaultValue: 'Continue' })}
+					{t('lesson.continue')}
 				</button>
 			</div>
 		</div>

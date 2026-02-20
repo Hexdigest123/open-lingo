@@ -107,7 +107,7 @@
 	{#if examples.length > 0}
 		<div class="space-y-4">
 			<h3 class="text-lg font-bold tracking-wider text-text-light uppercase">
-				{t('lesson.examples', { defaultValue: 'Examples' })}
+				{t('lesson.examples')}
 			</h3>
 			<div class="grid gap-4 sm:grid-cols-2">
 				{#each examples as example}
@@ -125,11 +125,14 @@
 	{#if tips && tips.length > 0}
 		<div class="space-y-4">
 			<h3 class="text-lg font-bold tracking-wider text-text-light uppercase">
-				{t('lesson.tips', { defaultValue: 'Pro Tips' })}
+				{t('lesson.tips')}
 			</h3>
 			{#each tips as tip}
 				<div class="bg-accent/10 flex gap-4 rounded-xl p-4 text-text-dark">
-					<span class="text-2xl">💡</span>
+					<span
+						class="bg-accent/20 text-accent flex h-8 w-8 shrink-0 items-center justify-center rounded-full text-sm font-bold"
+						>i</span
+					>
 					<p class="text-sm leading-relaxed">{tip}</p>
 				</div>
 			{/each}
@@ -139,7 +142,7 @@
 	<div class="bg-surface-100 fixed right-0 bottom-0 left-0 border-t border-border-light p-4">
 		<div class="mx-auto max-w-2xl">
 			<button onclick={onContinue} class="btn btn-primary btn-lg w-full shadow-lg">
-				{t('lesson.continue', { defaultValue: 'Got it!' })}
+				{t('lesson.continue')}
 			</button>
 		</div>
 	</div>

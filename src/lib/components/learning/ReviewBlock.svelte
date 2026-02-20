@@ -66,9 +66,7 @@
 			isCorrect = true;
 		}
 
-		feedbackMessage = isCorrect
-			? t('lesson.correct', { defaultValue: 'Correct!' })
-			: t('lesson.incorrect', { defaultValue: 'Incorrect' });
+		feedbackMessage = isCorrect ? t('lesson.correct') : t('lesson.incorrect');
 
 		showFeedback = true;
 
@@ -93,12 +91,12 @@
 	<div class="mb-6">
 		<div class="mb-2 flex items-center justify-between">
 			<h2 class="text-lg font-bold text-text-light">
-				{t('review.reviewOf', { defaultValue: 'Review' })}
+				{t('review.reviewOf')}
 				{currentIndex + 1} / {reviews.length}
 			</h2>
 			<span class="text-sm font-medium text-success">
 				{correctCount}
-				{t('review.correct', { defaultValue: 'correct' })}
+				{t('review.correct')}
 			</span>
 		</div>
 		<div class="bg-surface-200 h-3 w-full overflow-hidden rounded-full">
@@ -179,14 +177,13 @@
 			{:else}
 				<div class="rounded-xl border-2 border-dashed border-text-muted/30 p-8 text-center">
 					<p class="text-lg font-medium text-text-light">
-						{t('lesson.unsupportedType', { defaultValue: 'Unsupported question type' })}: {currentReview
-							.question.type}
+						{t('lesson.unsupportedType')}: {currentReview.question.type}
 					</p>
 					<button
 						onclick={() => handleAnswer(currentReview.question.correctAnswer)}
 						class="btn btn-secondary mt-4"
 					>
-						{t('lesson.skip', { defaultValue: 'Skip' })}
+						{t('lesson.skip')}
 					</button>
 				</div>
 			{/if}
@@ -219,7 +216,7 @@
 				{#if !isCorrect && currentReview}
 					<div class="mb-6">
 						<p class="text-sm font-medium uppercase opacity-70">
-							{t('lesson.correctAnswer', { defaultValue: 'Correct Answer' })}:
+							{t('lesson.correctAnswer')}:
 						</p>
 						<p class="text-lg font-medium">{currentReview.question.correctAnswer}</p>
 					</div>
@@ -230,7 +227,7 @@
 					class="btn btn-lg w-full shadow-md
 					{isCorrect ? 'btn-success' : 'btn-error'}"
 				>
-					{t('lesson.continue', { defaultValue: 'Continue' })}
+					{t('lesson.continue')}
 				</button>
 			</div>
 		</div>

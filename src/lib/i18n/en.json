@@ -37,7 +37,11 @@
 		"note": "Note:",
 		"changeSettings": "Change settings",
 		"saving": "Saving...",
-		"page": "Page {page} of {total}"
+		"page": "Page {page} of {total}",
+		"active": "Active",
+		"inactive": "Inactive",
+		"dismiss": "Dismiss",
+		"tomorrow": "tomorrow"
 	},
 	"auth": {
 		"email": "Email",
@@ -173,12 +177,14 @@
 			"hint": "Your key is encrypted and stored securely",
 			"getKey": "Get an API key from OpenAI",
 			"skip": "Skip for now",
-			"save": "Save Key"
+			"save": "Save Key",
+			"globalKeySet": "A global API key is already configured by the admin. AI features will work automatically — you can skip this step or add your own key to use instead."
 		},
 		"done": {
 			"title": "You're all set!",
 			"subtitle": "Your learning journey starts now. Let's begin!",
-			"start": "Start Learning"
+			"start": "Start Learning",
+			"choosePath": "Choose your starting point to personalize your learning journey."
 		}
 	},
 	"dashboard": {
@@ -340,7 +346,11 @@
 			"message": "You've run out of hearts. Wait for them to regenerate or practice to earn more.",
 			"waitTime": "Next heart in",
 			"practiceButton": "Practice Instead"
-		}
+		},
+		"trySkillTreeBanner": "Try the new Skill Tree for guided learning!",
+		"examples": "Examples",
+		"tips": "Pro Tips",
+		"unsupportedType": "Unsupported question type"
 	},
 	"gamification": {
 		"hearts": "Hearts",
@@ -442,6 +452,21 @@
 		"title": "Admin Dashboard",
 		"desktopRecommended": "Desktop Recommended",
 		"desktopRecommendedDesc": "This section works best on a larger screen for managing tables and data.",
+		"learning": {
+			"title": "Learning Overview",
+			"subtitle": "Read-only learning content health and coverage.",
+			"totalConcepts": "Total Concepts",
+			"totalSkills": "Total Skills",
+			"linkedQuestions": "Questions Linked to Concepts",
+			"conceptsByLanguage": "Concepts by Language and Type",
+			"skillsByLanguage": "Skills by Language",
+			"skillsTable": "Skills Overview",
+			"key": "Key",
+			"type": "Type",
+			"level": "CEFR",
+			"conceptCount": "Concepts",
+			"status": "Status"
+		},
 		"nav": {
 			"dashboard": "Dashboard",
 			"lessons": "Lessons",
@@ -878,6 +903,9 @@
 		"continue": "Continue",
 		"correct": "Correct!",
 		"incorrect": "Not quite",
+		"checkpointFailed": "Score below passing threshold. Try again.",
+		"score": "Score",
+		"correctAnswer": "Correct answer",
 		"correctAnswerWas": "The correct answer was: {answer}",
 		"progress": "Question {current} of {total}",
 		"drillComplete": "Practice Complete",
@@ -917,6 +945,7 @@
 		"complete": "Review Complete!",
 		"accuracy": "Accuracy: {percent}%",
 		"reviewed": "Reviewed: {count} concepts",
+		"correct": "correct",
 		"nextReview": "Next review due: {time}",
 		"backToDashboard": "Back to Dashboard"
 	},

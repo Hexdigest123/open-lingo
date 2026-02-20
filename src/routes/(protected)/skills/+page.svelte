@@ -46,37 +46,37 @@
 	}
 
 	function getSkillIcon(skill: SkillNode): string {
-		switch (skill.type) {
+		switch (String(skill.type)) {
 			case 'vocabulary':
-				return '🧠';
+				return 'Aa';
 			case 'grammar':
-				return '📐';
+				return 'Gr';
 			case 'kana':
-				return '🔤';
+				return 'あ';
 			case 'kanji':
-				return '🈶';
+				return '漢';
 			case 'radical':
-				return '🧩';
+				return '部';
 			case 'listening':
-				return '🎧';
+				return 'Li';
 			case 'speaking':
-				return '🗣️';
+				return 'Sp';
 			case 'writing':
-				return '✍️';
+				return 'Wr';
 			case 'conjugation':
-				return '🔁';
+				return 'Cj';
 			default:
-				return '📚';
+				return 'Sk';
 		}
 	}
 
 	function getStatusLabel(status: SkillNode['status']): string {
-		if (status === 'locked') return t('skills.locked', { defaultValue: 'Locked' });
-		if (status === 'unlocked') return t('skills.unlocked', { defaultValue: 'Ready to learn' });
+		if (status === 'locked') return t('skills.locked');
+		if (status === 'unlocked') return t('skills.unlocked');
 		if (status === 'in_progress') {
-			return t('skills.inProgress', { defaultValue: 'In progress' });
+			return t('skills.inProgress');
 		}
-		return t('skills.mastered', { defaultValue: 'Mastered' });
+		return t('skills.mastered');
 	}
 
 	function getPrerequisiteNames(skill: SkillNode): string[] {
@@ -88,24 +88,21 @@
 </script>
 
 <svelte:head>
-	<title>{t('skills.title', { defaultValue: 'Skill Tree' })} - OpenLingo</title>
+	<title>{t('skills.title')} - OpenLingo</title>
 </svelte:head>
 
 <div class="space-y-8">
 	<div class="flex flex-col gap-4 card sm:flex-row sm:items-center sm:justify-between">
 		<div>
 			<h1 class="text-2xl font-bold text-text-light">
-				{t('skills.title', { defaultValue: 'Skill Tree' })}
+				{t('skills.title')}
 			</h1>
 			<p class="text-text-muted">
-				{t('skills.subtitle', {
-					language: data.languageCode.toUpperCase(),
-					defaultValue: 'Your learning path'
-				})}
+				{t('skills.subtitle', { language: data.languageCode.toUpperCase() })}
 			</p>
 		</div>
 		<a href="/review" class="btn btn-primary">
-			🔁 {t('review.title', { defaultValue: 'Review Session' })}
+			{t('review.title')}
 			<span class="ml-2 rounded-full bg-white/20 px-2 py-0.5 text-xs font-bold"
 				>{data.dueReviewCount}</span
 			>
@@ -115,7 +112,7 @@
 	{#if groupedSkills.length === 0}
 		<div class="card py-12 text-center">
 			<p class="text-text-muted">
-				{t('skills.noSkills', { defaultValue: 'No skills available yet.' })}
+				{t('skills.noSkills')}
 			</p>
 		</div>
 	{:else}
@@ -138,7 +135,11 @@
 							>
 								<div class="mb-3 flex items-start justify-between gap-3">
 									<div class="flex items-center gap-3">
-										<span class="text-2xl">{getSkillIcon(skill)}</span>
+										<div
+											class="flex h-10 w-10 items-center justify-center rounded-lg bg-primary/10 text-sm font-bold text-primary"
+										>
+											{getSkillIcon(skill)}
+										</div>
 										<div>
 											<p class="font-semibold text-text-light">{getSkillTitle(skill)}</p>
 											<p class="text-xs text-text-muted">{skill.cefrLevel ?? '—'} · {skill.type}</p>
@@ -151,7 +152,7 @@
 												? 'bg-surface-100 text-text-muted'
 												: 'bg-primary/15 text-primary'}"
 									>
-										{mastered ? '✅ ' : locked ? '🔒 ' : ''}{getStatusLabel(skill.status)}
+										{getStatusLabel(skill.status)}
 									</span>
 								</div>
 
@@ -161,12 +162,7 @@
 
 								<div class="space-y-1">
 									<div class="flex items-center justify-between text-xs text-text-muted">
-										<span
-											>{t('skills.mastery', {
-												percent: Math.round(skill.mastery * 100),
-												defaultValue: 'Mastery'
-											})}</span
-										>
+										<span>{t('skills.mastery', { percent: Math.round(skill.mastery * 100) })}</span>
 										<span>{Math.round(skill.mastery * 100)}%</span>
 									</div>
 									<div class="bg-surface-100 h-2 overflow-hidden rounded-full">
@@ -179,9 +175,7 @@
 
 								{#if prereqs.length > 0}
 									<p class="mt-3 text-xs text-text-muted">
-										{t('skills.prerequisites', { defaultValue: 'Prerequisites' })}: {prereqs.join(
-											', '
-										)}
+										{t('skills.prerequisites')}: {prereqs.join(', ')}
 									</p>
 								{/if}
 							</a>

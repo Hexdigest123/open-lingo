@@ -37,7 +37,11 @@
 		"note": "Hinweis:",
 		"changeSettings": "Einstellungen ändern",
 		"saving": "Speichert...",
-		"page": "Seite {page} von {total}"
+		"page": "Seite {page} von {total}",
+		"active": "Aktiv",
+		"inactive": "Inaktiv",
+		"dismiss": "Schließen",
+		"tomorrow": "morgen"
 	},
 	"auth": {
 		"email": "E-Mail",
@@ -173,12 +177,14 @@
 			"hint": "Dein Schlüssel wird verschlüsselt und sicher gespeichert",
 			"getKey": "Hole dir einen API-Schlüssel von OpenAI",
 			"skip": "Vorerst überspringen",
-			"save": "Schlüssel speichern"
+			"save": "Schlüssel speichern",
+			"globalKeySet": "Ein globaler API-Schlüssel wurde vom Admin konfiguriert. KI-Funktionen funktionieren automatisch — du kannst diesen Schritt überspringen oder einen eigenen Schlüssel hinzufügen."
 		},
 		"done": {
 			"title": "Alles bereit!",
 			"subtitle": "Deine Lernreise beginnt jetzt. Los geht's!",
-			"start": "Lernen starten"
+			"start": "Lernen starten",
+			"choosePath": "Wähle deinen Startpunkt, um deine Lernreise zu personalisieren."
 		}
 	},
 	"dashboard": {
@@ -343,7 +349,11 @@
 			"message": "Du hast keine Herzen mehr. Warte, bis sie sich regenerieren, oder übe, um mehr zu verdienen.",
 			"waitTime": "Nächstes Herz in",
 			"practiceButton": "Stattdessen üben"
-		}
+		},
+		"trySkillTreeBanner": "Probiere den neuen Fähigkeitenbaum für angeleitetes Lernen!",
+		"examples": "Beispiele",
+		"tips": "Tipps",
+		"unsupportedType": "Nicht unterstützter Fragetyp"
 	},
 	"gamification": {
 		"hearts": "Herzen",
@@ -445,6 +455,21 @@
 		"title": "Admin-Übersicht",
 		"desktopRecommended": "Desktop empfohlen",
 		"desktopRecommendedDesc": "Dieser Bereich funktioniert am besten auf einem größeren Bildschirm für die Verwaltung von Tabellen und Daten.",
+		"learning": {
+			"title": "Lernübersicht",
+			"subtitle": "Nur-Lese-Übersicht über Lerninhalte und Abdeckung.",
+			"totalConcepts": "Konzepte gesamt",
+			"totalSkills": "Fähigkeiten gesamt",
+			"linkedQuestions": "Mit Konzepten verknüpfte Fragen",
+			"conceptsByLanguage": "Konzepte nach Sprache und Typ",
+			"skillsByLanguage": "Fähigkeiten nach Sprache",
+			"skillsTable": "Fähigkeiten-Übersicht",
+			"key": "Schlüssel",
+			"type": "Typ",
+			"level": "GER",
+			"conceptCount": "Konzepte",
+			"status": "Status"
+		},
 		"nav": {
 			"dashboard": "Übersicht",
 			"lessons": "Lektionen",
@@ -881,6 +906,9 @@
 		"continue": "Weiter",
 		"correct": "Richtig!",
 		"incorrect": "Nicht ganz",
+		"checkpointFailed": "Punktzahl unter der Bestehensgrenze. Versuche es erneut.",
+		"score": "Punktzahl",
+		"correctAnswer": "Richtige Antwort",
 		"correctAnswerWas": "Die richtige Antwort war: {answer}",
 		"progress": "Frage {current} von {total}",
 		"drillComplete": "Übung abgeschlossen",
@@ -920,6 +948,7 @@
 		"complete": "Wiederholung abgeschlossen!",
 		"accuracy": "Genauigkeit: {percent}%",
 		"reviewed": "Wiederholt: {count} Konzepte",
+		"correct": "richtig",
 		"nextReview": "Nächste Wiederholung fällig: {time}",
 		"backToDashboard": "Zurück zum Dashboard"
 	},

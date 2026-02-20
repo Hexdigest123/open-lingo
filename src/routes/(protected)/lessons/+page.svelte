@@ -111,9 +111,7 @@
 			<div class="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
 				<div>
 					<p class="font-semibold text-text-light">
-						{t('lesson.trySkillTreeBanner', {
-							defaultValue: 'Try the new Skill Tree for guided learning!'
-						})}
+						{t('lesson.trySkillTreeBanner')}
 					</p>
 				</div>
 				<div class="flex items-center gap-2">
@@ -122,7 +120,7 @@
 						type="button"
 						class="btn btn-sm btn-ghost"
 						onclick={() => (showSkillTreeBanner = false)}
-						aria-label={t('common.dismiss', { defaultValue: 'Dismiss' })}
+						aria-label={t('common.dismiss')}
 					>
 						×
 					</button>

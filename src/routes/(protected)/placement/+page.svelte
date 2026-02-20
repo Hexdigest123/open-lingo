@@ -195,39 +195,36 @@
 </script>
 
 <svelte:head>
-	<title>{t('placement.title', { defaultValue: 'Placement Test' })} - OpenLingo</title>
+	<title>{t('placement.title')} - OpenLingo</title>
 </svelte:head>
 
 {#if isComplete}
 	<div class="mx-auto max-w-2xl space-y-4 card text-center">
 		<div class="text-6xl">🏁</div>
 		<h1 class="text-2xl font-bold text-text-light">
-			{t('placement.complete', { defaultValue: 'Placement Complete!' })}
+			{t('placement.complete')}
 		</h1>
 		<p class="text-lg text-text-light">
-			{t('placement.yourLevel', {
-				level: completedLevel || estimatedLevel,
-				defaultValue: 'Your level'
-			})}
+			{t('placement.yourLevel', { level: completedLevel || estimatedLevel })}
 		</p>
 		<p class="text-sm text-text-muted">
-			{t('placement.explanation', { defaultValue: 'We unlocked matching skills for you.' })}
+			{t('placement.explanation')}
 		</p>
 		<button class="btn btn-primary" onclick={() => goto('/skills')}
-			>{t('placement.goToSkills', { defaultValue: 'Continue to Skills' })}</button
+			>{t('placement.goToSkills')}</button
 		>
 	</div>
 {:else if !activeSession}
 	<div class="mx-auto max-w-2xl space-y-6 card text-center">
 		<div class="text-6xl">🧭</div>
 		<h1 class="text-2xl font-bold text-text-light">
-			{t('placement.title', { defaultValue: 'Placement Test' })}
+			{t('placement.title')}
 		</h1>
 		<p class="text-text-muted">
-			{t('placement.description', { defaultValue: 'Take a placement test to find your level.' })}
+			{t('placement.description')}
 		</p>
 		<button class="btn btn-primary" onclick={beginPlacement} disabled={isSubmitting}
-			>{t('placement.start', { defaultValue: 'Begin' })}</button
+			>{t('placement.start')}</button
 		>
 	</div>
 {:else if currentQuestion}
@@ -237,15 +234,11 @@
 				<p class="text-sm text-text-muted">
 					{t('placement.questionOf', {
 						current: Math.min(questionsAnswered + 1, maxQuestions),
-						total: maxQuestions,
-						defaultValue: 'Question progress'
+						total: maxQuestions
 					})}
 				</p>
 				<p class="rounded-full bg-primary/15 px-3 py-1 text-sm font-semibold text-primary">
-					{t('placement.estimatedLevel', {
-						level: estimatedLevel,
-						defaultValue: 'Estimated level'
-					})}
+					{t('placement.estimatedLevel', { level: estimatedLevel })}
 				</p>
 			</div>
 		</div>
@@ -336,12 +329,11 @@
 		{:else}
 			<div class="card text-center">
 				<p class="text-text-muted">
-					{t('learn.unsupportedType', { defaultValue: 'Unsupported question type' })}
+					{t('learn.unsupportedType')}
 				</p>
 				<button
 					class="btn btn-primary mt-4"
-					onclick={() => submitAnswer(currentQuestion.correctAnswer)}
-					>{t('learn.continue', { defaultValue: 'Continue' })}</button
+					onclick={() => submitAnswer(currentQuestion.correctAnswer)}>{t('learn.continue')}</button
 				>
 			</div>
 		{/if}
@@ -353,21 +345,16 @@
 					: 'border-error bg-error/10'}"
 			>
 				<p class="font-semibold {feedback.isCorrect ? 'text-success' : 'text-error'}">
-					{feedback.isCorrect
-						? t('learn.correct', { defaultValue: 'Correct!' })
-						: t('learn.incorrect', { defaultValue: 'Not quite' })}
+					{feedback.isCorrect ? t('learn.correct') : t('learn.incorrect')}
 				</p>
 				{#if !feedback.isCorrect}
 					<p class="mt-1 text-sm text-text-muted">
-						{t('learn.correctAnswerWas', {
-							answer: feedback.correctAnswer,
-							defaultValue: 'Correct answer'
-						})}
+						{t('learn.correctAnswerWas', { answer: feedback.correctAnswer })}
 					</p>
 				{/if}
 				{#if !isComplete}
 					<button class="btn btn-primary mt-4 w-full" onclick={nextStep}
-						>{t('learn.continue', { defaultValue: 'Continue' })}</button
+						>{t('learn.continue')}</button
 					>
 				{/if}
 			</div>

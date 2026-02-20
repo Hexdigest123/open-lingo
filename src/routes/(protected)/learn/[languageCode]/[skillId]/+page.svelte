@@ -199,13 +199,9 @@
 			titleEn: block.titleEn ?? data.skill.titleEn,
 			titleDe: block.titleDe ?? data.skill.titleDe,
 			explanationEn:
-				typeof config.explanationEn === 'string'
-					? config.explanationEn
-					: t('learn.teachTitle', { defaultValue: 'Learn' }),
+				typeof config.explanationEn === 'string' ? config.explanationEn : t('learn.teachTitle'),
 			explanationDe:
-				typeof config.explanationDe === 'string'
-					? config.explanationDe
-					: t('learn.teachTitle', { defaultValue: 'Lernen' }),
+				typeof config.explanationDe === 'string' ? config.explanationDe : t('learn.teachTitle'),
 			examples,
 			visualAid:
 				typeof config.visualAid === 'object' && config.visualAid !== null
@@ -226,9 +222,24 @@
 
 {#if isComplete}
 	<div class="mx-auto max-w-2xl space-y-4 card text-center">
-		<div class="text-6xl">🎉</div>
+		<div
+			class="mx-auto flex h-20 w-20 items-center justify-center rounded-full bg-success/10 text-success"
+		>
+			<svg
+				xmlns="http://www.w3.org/2000/svg"
+				class="h-10 w-10"
+				viewBox="0 0 20 20"
+				fill="currentColor"
+			>
+				<path
+					fill-rule="evenodd"
+					d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z"
+					clip-rule="evenodd"
+				/>
+			</svg>
+		</div>
 		<h1 class="text-2xl font-bold text-text-light">
-			{t('learn.lessonComplete', { defaultValue: 'Lesson Complete!' })}
+			{t('learn.lessonComplete')}
 		</h1>
 		<p class="text-text-muted">{getLocalizedSkillTitle()}</p>
 
@@ -236,46 +247,33 @@
 			<div class="bg-surface-100 rounded-xl p-4">
 				<p class="text-2xl font-bold text-success">{totalCorrect}/{totalAnswered}</p>
 				<p class="text-xs text-text-muted">
-					{t('learn.drillScore', {
-						correct: totalCorrect,
-						total: totalAnswered,
-						defaultValue: 'Score'
-					})}
+					{t('learn.drillScore', { correct: totalCorrect, total: totalAnswered })}
 				</p>
 			</div>
 			<div class="bg-surface-100 rounded-xl p-4">
 				<p class="text-2xl font-bold text-primary">{data.concepts.length}</p>
 				<p class="text-xs text-text-muted">
-					{t('learn.conceptsLearned', {
-						count: data.concepts.length,
-						defaultValue: 'Concepts learned'
-					})}
+					{t('learn.conceptsLearned', { count: data.concepts.length })}
 				</p>
 			</div>
 			<div class="bg-surface-100 rounded-xl p-4">
 				<p class="text-2xl font-bold text-yellow-dark">{averageMasteryGain}%</p>
 				<p class="text-xs text-text-muted">
-					{t('skills.mastery', { percent: averageMasteryGain, defaultValue: 'Mastery' })}
+					{t('skills.mastery', { percent: averageMasteryGain })}
 				</p>
 			</div>
 		</div>
 
-		<a href="/skills" class="btn btn-primary"
-			>← {t('learn.backToSkills', { defaultValue: 'Back to Skill Tree' })}</a
-		>
+		<a href="/skills" class="btn btn-primary">← {t('learn.backToSkills')}</a>
 	</div>
 {:else}
 	<div class="mx-auto max-w-3xl space-y-6">
 		<div class="flex items-center justify-between gap-4">
 			<a href="/skills" class="text-sm text-text-muted hover:text-text-light"
-				>← {t('learn.backToSkills', { defaultValue: 'Back to Skill Tree' })}</a
+				>← {t('learn.backToSkills')}</a
 			>
 			<p class="text-sm text-text-muted">
-				{t('learn.progress', {
-					current: blockIndex + 1,
-					total: blockSequence.length,
-					defaultValue: 'Progress'
-				})}
+				{t('learn.progress', { current: blockIndex + 1, total: blockSequence.length })}
 			</p>
 		</div>
 
@@ -302,11 +300,9 @@
 				{#if blockQuestions.length === 0}
 					<div class="card text-center">
 						<p class="text-text-muted">
-							{t('learn.unsupportedType', { defaultValue: 'No questions available yet.' })}
+							{t('learn.unsupportedType')}
 						</p>
-						<button class="btn btn-primary mt-4" onclick={nextBlock}
-							>{t('learn.continue', { defaultValue: 'Continue' })}</button
-						>
+						<button class="btn btn-primary mt-4" onclick={nextBlock}>{t('learn.continue')}</button>
 					</div>
 				{:else}
 					{#key `${currentBlock.id}-${checkpointAttempt}`}
@@ -323,13 +319,11 @@
 				<div class="space-y-4">
 					<div class="card bg-yellow/10">
 						<p class="font-semibold text-yellow-dark">
-							{t('learn.checkpointTitle', { defaultValue: 'Checkpoint' })}
+							{t('learn.checkpointTitle')}
 						</p>
 						{#if checkpointFailed}
 							<p class="mt-2 text-sm text-error">
-								{t('learn.incorrect', {
-									defaultValue: 'Score below passing threshold. Try again.'
-								})}
+								{t('learn.checkpointFailed')}
 							</p>
 						{/if}
 						{#if currentBlock.config.conceptIds}
@@ -344,10 +338,9 @@
 					{#if checkpointQuestions.length === 0}
 						<div class="card text-center">
 							<p class="text-text-muted">
-								{t('learn.unsupportedType', { defaultValue: 'No checkpoint questions yet.' })}
+								{t('learn.unsupportedType')}
 							</p>
-							<button class="btn btn-primary mt-4" onclick={nextBlock}
-								>{t('learn.continue', { defaultValue: 'Continue' })}</button
+							<button class="btn btn-primary mt-4" onclick={nextBlock}>{t('learn.continue')}</button
 							>
 						</div>
 					{:else}

@@ -4,6 +4,7 @@ import { db } from '$lib/server/db';
 import { languages, users } from '$lib/server/db/schema';
 import { eq, asc } from 'drizzle-orm';
 import { encryptApiKey } from '$lib/server/auth/encryption';
+import { hasGlobalApiKey } from '$lib/server/openai/getApiKey';
 
 export const load: PageServerLoad = async ({ locals }) => {
 	const userId = locals.user!.id;
@@ -23,15 +24,19 @@ export const load: PageServerLoad = async ({ locals }) => {
 		.where(eq(languages.isActive, true))
 		.orderBy(asc(languages.order));
 
-	const [user] = await db
-		.select({ activeLanguage: users.activeLanguage })
-		.from(users)
-		.where(eq(users.id, userId))
-		.limit(1);
+	const [[user], globalKeyAvailable] = await Promise.all([
+		db
+			.select({ activeLanguage: users.activeLanguage })
+			.from(users)
+			.where(eq(users.id, userId))
+			.limit(1),
+		hasGlobalApiKey()
+	]);
 
 	return {
 		availableLanguages,
-		activeLanguage: user?.activeLanguage ?? null
+		activeLanguage: user?.activeLanguage ?? null,
+		hasGlobalKey: globalKeyAvailable
 	};
 };
 
