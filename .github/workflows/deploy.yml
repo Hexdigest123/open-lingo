@@ -60,13 +60,37 @@ jobs:
       - name: Install dependencies
         run: docker compose -f compose.yaml run --rm migrate npm ci
 
-      - name: Sync missing constraints
+      - name: Initialize migration tracking
         run: |
-          docker compose -f compose.yaml exec -T db psql -U "$POSTGRES_USER" -d "$POSTGRES_DB" -c \
-            "ALTER TABLE levels ADD CONSTRAINT levels_code_language_unique UNIQUE (code, language_code);" 2>/dev/null || true
+          # Create drizzle schema and migrations table if they don't exist
+          docker compose -f compose.yaml exec -T db psql -U "$POSTGRES_USER" -d "$POSTGRES_DB" -c "
+            CREATE SCHEMA IF NOT EXISTS \"drizzle\";
+            CREATE TABLE IF NOT EXISTS \"drizzle\".\"__drizzle_migrations\" (
+              id SERIAL PRIMARY KEY,
+              hash text NOT NULL,
+              created_at bigint
+            );
+          "
+
+          # If no migrations recorded yet (first switch from push to migrate),
+          # mark 0000-0006 as applied so only new migrations run
+          MIGRATION_COUNT=$(docker compose -f compose.yaml exec -T db psql -U "$POSTGRES_USER" -d "$POSTGRES_DB" -t -c \
+            "SELECT COUNT(*) FROM \"drizzle\".\"__drizzle_migrations\";" | tr -d ' \r\n')
+
+          if [ "$MIGRATION_COUNT" = "0" ]; then
+            echo "First migrate run — marking existing migrations (0000-0006) as applied..."
+            HASH_0006=$(docker compose -f compose.yaml run -T --rm migrate sh -c \
+              "sha256sum drizzle/0006_panoramic_piledriver.sql | cut -d' ' -f1")
+            HASH_0006=$(echo "$HASH_0006" | tr -d ' \r\n')
+            docker compose -f compose.yaml exec -T db psql -U "$POSTGRES_USER" -d "$POSTGRES_DB" -c \
+              "INSERT INTO \"drizzle\".\"__drizzle_migrations\" (hash, created_at) VALUES ('$HASH_0006', 1771623572546);"
+            echo "Done — migrations 0000-0006 marked as applied"
+          else
+            echo "Migration tracking already initialized ($MIGRATION_COUNT entries)"
+          fi
 
       - name: Run database migrations
-        run: docker compose -f compose.yaml run -T --rm -e CI=true migrate npx drizzle-kit push --force
+        run: docker compose -f compose.yaml run -T --rm migrate npx drizzle-kit migrate
 
       - name: Check if seeding is needed
         id: check-seed
