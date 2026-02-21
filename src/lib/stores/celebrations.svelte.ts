@@ -1,10 +1,16 @@
-export type CelebrationType = 'first_correct_today' | 'achievement';
+export type CelebrationType =
+	| 'first_correct_today'
+	| 'achievement'
+	| 'streak_milestone'
+	| 'level_up'
+	| 'combo';
 
 export interface Celebration {
 	id: string;
 	type: CelebrationType;
 	title: string;
 	message?: string;
+	value?: number;
 }
 
 let celebrations = $state<Celebration[]>([]);
@@ -49,4 +55,27 @@ export function celebrateFirstCorrectToday(title: string, message?: string): voi
 
 export function celebrateAchievement(achievementName: string, message?: string): void {
 	queueCelebration({ type: 'achievement', title: achievementName, message });
+}
+
+export function celebrateStreakMilestone(days: number, message?: string): void {
+	queueCelebration({
+		type: 'streak_milestone',
+		title: `${days} Day Streak!`,
+		message,
+		value: days
+	});
+}
+
+export function celebrateLevelUp(level: number, rankName?: string): void {
+	const message = rankName ? `You reached ${rankName} rank!` : undefined;
+	queueCelebration({ type: 'level_up', title: `Level ${level}!`, message, value: level });
+}
+
+export function celebrateCombo(multiplier: number): void {
+	queueCelebration({
+		type: 'combo',
+		title: `${multiplier}x Combo!`,
+		message: `${multiplier}x XP multiplier active!`,
+		value: multiplier
+	});
 }
