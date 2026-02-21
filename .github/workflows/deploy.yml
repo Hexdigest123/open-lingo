@@ -61,7 +61,7 @@ jobs:
         run: docker compose -f compose.yaml run --rm migrate npm ci
 
       - name: Run database migrations
-        run: docker compose -f compose.yaml run -T --rm migrate npx drizzle-kit push --force
+        run: docker compose -f compose.yaml run -T --rm -e CI=true migrate npx drizzle-kit push --force
 
       - name: Check if seeding is needed
         id: check-seed
