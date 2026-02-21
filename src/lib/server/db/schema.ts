@@ -74,6 +74,20 @@ export const leaderboardTimeframeEnum = pgEnum('leaderboard_timeframe', [
 	'all_time'
 ]);
 
+export const friendshipStatusEnum = pgEnum('friendship_status', [
+	'pending',
+	'accepted',
+	'rejected'
+]);
+
+export const challengeTypeEnum = pgEnum('challenge_type', [
+	'xp_goal',
+	'correct_answers',
+	'lessons_completed',
+	'perfect_lessons',
+	'review_sessions'
+]);
+
 // Learning system enums
 export const conceptTypeEnum = pgEnum('concept_type', [
 	'vocab',
@@ -264,7 +278,12 @@ export const userStats = pgTable(
 		streakFreezes: integer('streak_freezes').default(0).notNull(),
 		freezesEarnedTotal: integer('freezes_earned_total').default(0).notNull(),
 		totalCorrectAnswers: integer('total_correct_answers').default(0).notNull(),
-		lessonsCompleted: integer('lessons_completed').default(0).notNull()
+		lessonsCompleted: integer('lessons_completed').default(0).notNull(),
+		dailyXpGoal: integer('daily_xp_goal').default(20).notNull(),
+		soundEnabled: boolean('sound_enabled').default(true).notNull(),
+		gems: integer('gems').default(0).notNull(),
+		level: integer('level').default(1).notNull(),
+		perfectLessons: integer('perfect_lessons').default(0).notNull()
 	},
 	(table) => [index('user_stats_user_id_idx').on(table.userId)]
 );
@@ -381,6 +400,102 @@ export const leaderboardCache = pgTable(
 	]
 );
 
+// ─── Gamification Tables ────────────────────────────────────────────────────
+
+export const weeklyChallenges = pgTable(
+	'weekly_challenges',
+	{
+		id: serial('id').primaryKey(),
+		type: challengeTypeEnum('type').notNull(),
+		targetValue: integer('target_value').notNull(),
+		xpReward: integer('xp_reward').notNull(),
+		titleEn: varchar('title_en', { length: 200 }).notNull(),
+		titleDe: varchar('title_de', { length: 200 }).notNull(),
+		descriptionEn: text('description_en'),
+		descriptionDe: text('description_de'),
+		weekStart: timestamp('week_start').notNull(),
+		weekEnd: timestamp('week_end').notNull(),
+		createdAt: timestamp('created_at').defaultNow().notNull()
+	},
+	(table) => [index('weekly_challenges_week_idx').on(table.weekStart, table.weekEnd)]
+);
+
+export const userChallenges = pgTable(
+	'user_challenges',
+	{
+		id: serial('id').primaryKey(),
+		userId: integer('user_id')
+			.references(() => users.id, { onDelete: 'cascade' })
+			.notNull(),
+		challengeId: integer('challenge_id')
+			.references(() => weeklyChallenges.id, { onDelete: 'cascade' })
+			.notNull(),
+		progress: integer('progress').default(0).notNull(),
+		completedAt: timestamp('completed_at'),
+		xpAwarded: boolean('xp_awarded').default(false).notNull(),
+		createdAt: timestamp('created_at').defaultNow().notNull()
+	},
+	(table) => [
+		unique('user_challenges_unique').on(table.userId, table.challengeId),
+		index('user_challenges_user_id_idx').on(table.userId),
+		index('user_challenges_challenge_id_idx').on(table.challengeId)
+	]
+);
+
+export const friendships = pgTable(
+	'friendships',
+	{
+		id: serial('id').primaryKey(),
+		requesterId: integer('requester_id')
+			.references(() => users.id, { onDelete: 'cascade' })
+			.notNull(),
+		addresseeId: integer('addressee_id')
+			.references(() => users.id, { onDelete: 'cascade' })
+			.notNull(),
+		status: friendshipStatusEnum('status').default('pending').notNull(),
+		createdAt: timestamp('created_at').defaultNow().notNull(),
+		updatedAt: timestamp('updated_at').defaultNow().notNull()
+	},
+	(table) => [
+		unique('friendships_pair_unique').on(table.requesterId, table.addresseeId),
+		index('friendships_requester_id_idx').on(table.requesterId),
+		index('friendships_addressee_id_idx').on(table.addresseeId)
+	]
+);
+
+export const shopItems = pgTable('shop_items', {
+	id: serial('id').primaryKey(),
+	key: varchar('key', { length: 50 }).notNull().unique(),
+	titleEn: varchar('title_en', { length: 200 }).notNull(),
+	titleDe: varchar('title_de', { length: 200 }).notNull(),
+	descriptionEn: text('description_en'),
+	descriptionDe: text('description_de'),
+	costGems: integer('cost_gems').notNull(),
+	effectType: varchar('effect_type', { length: 50 }).notNull(),
+	effectValue: integer('effect_value').default(1).notNull(),
+	iconUrl: varchar('icon_url', { length: 500 }),
+	isActive: boolean('is_active').default(true).notNull(),
+	createdAt: timestamp('created_at').defaultNow().notNull()
+});
+
+export const userPurchases = pgTable(
+	'user_purchases',
+	{
+		id: serial('id').primaryKey(),
+		userId: integer('user_id')
+			.references(() => users.id, { onDelete: 'cascade' })
+			.notNull(),
+		itemId: integer('item_id')
+			.references(() => shopItems.id, { onDelete: 'cascade' })
+			.notNull(),
+		purchasedAt: timestamp('purchased_at').defaultNow().notNull()
+	},
+	(table) => [
+		index('user_purchases_user_id_idx').on(table.userId),
+		index('user_purchases_item_id_idx').on(table.itemId)
+	]
+);
+
 // Chat enums
 export const chatModeEnum = pgEnum('chat_mode', ['voice', 'text']);
 export const chatRoleEnum = pgEnum('chat_role', ['user', 'assistant', 'system']);
@@ -457,7 +572,11 @@ export const usersRelations = relations(users, ({ one, many }) => ({
 	chatSessions: many(chatSessions),
 	conceptProgress: many(userConceptProgress),
 	skillProgress: many(userSkillProgress),
-	placementSessions: many(placementSessions)
+	placementSessions: many(placementSessions),
+	challenges: many(userChallenges),
+	purchases: many(userPurchases),
+	sentFriendRequests: many(friendships, { relationName: 'requester' }),
+	receivedFriendRequests: many(friendships, { relationName: 'addressee' })
 }));
 
 export const refreshTokensRelations = relations(refreshTokens, ({ one }) => ({
@@ -590,6 +709,49 @@ export const apiUsageLogsRelations = relations(apiUsageLogs, ({ one }) => ({
 	session: one(chatSessions, {
 		fields: [apiUsageLogs.sessionId],
 		references: [chatSessions.id]
+	})
+}));
+
+export const weeklyChallengesRelations = relations(weeklyChallenges, ({ many }) => ({
+	userChallenges: many(userChallenges)
+}));
+
+export const userChallengesRelations = relations(userChallenges, ({ one }) => ({
+	user: one(users, {
+		fields: [userChallenges.userId],
+		references: [users.id]
+	}),
+	challenge: one(weeklyChallenges, {
+		fields: [userChallenges.challengeId],
+		references: [weeklyChallenges.id]
+	})
+}));
+
+export const friendshipsRelations = relations(friendships, ({ one }) => ({
+	requester: one(users, {
+		fields: [friendships.requesterId],
+		references: [users.id],
+		relationName: 'requester'
+	}),
+	addressee: one(users, {
+		fields: [friendships.addresseeId],
+		references: [users.id],
+		relationName: 'addressee'
+	})
+}));
+
+export const shopItemsRelations = relations(shopItems, ({ many }) => ({
+	purchases: many(userPurchases)
+}));
+
+export const userPurchasesRelations = relations(userPurchases, ({ one }) => ({
+	user: one(users, {
+		fields: [userPurchases.userId],
+		references: [users.id]
+	}),
+	item: one(shopItems, {
+		fields: [userPurchases.itemId],
+		references: [shopItems.id]
 	})
 }));
 
@@ -1009,3 +1171,14 @@ export type SkillStatus = (typeof skillStatusEnum.enumValues)[number];
 export type LessonMode = (typeof lessonModeEnum.enumValues)[number];
 export type LessonBlockType = (typeof lessonBlockTypeEnum.enumValues)[number];
 export type ConceptProgressStatus = (typeof conceptProgressStatusEnum.enumValues)[number];
+
+// ─── Gamification Type Exports ──────────────────────────────────────────────
+
+export type WeeklyChallenge = typeof weeklyChallenges.$inferSelect;
+export type NewWeeklyChallenge = typeof weeklyChallenges.$inferInsert;
+export type UserChallenge = typeof userChallenges.$inferSelect;
+export type Friendship = typeof friendships.$inferSelect;
+export type ShopItem = typeof shopItems.$inferSelect;
+export type UserPurchase = typeof userPurchases.$inferSelect;
+export type FriendshipStatus = (typeof friendshipStatusEnum.enumValues)[number];
+export type ChallengeType = (typeof challengeTypeEnum.enumValues)[number];
