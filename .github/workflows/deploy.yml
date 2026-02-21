@@ -111,7 +111,7 @@ jobs:
 
       - name: Push schema to fresh database
         if: steps.db-state.outputs.fresh_db == 'true'
-        run: docker compose -f compose.yaml run -T --rm migrate npx drizzle-kit push
+        run: docker compose -f compose.yaml run -T --rm migrate npx drizzle-kit push --force
 
       - name: Check if seeding is needed
         id: check-seed
