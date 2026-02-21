@@ -44,6 +44,10 @@ CREATE TABLE "languages" (
 	"order" integer NOT NULL
 );
 --> statement-breakpoint
+INSERT INTO "languages" ("code", "name", "native_name", "flag_emoji", "whisper_code", "tutor_name", "tutor_greeting", "is_active", "order")
+VALUES ('es', 'Spanish', 'Español', '🇪🇸', 'es', 'Profesora Ana', '¡Hola! Soy tu profesora.', true, 1)
+ON CONFLICT ("code") DO NOTHING;
+--> statement-breakpoint
 CREATE TABLE "lesson_blocks" (
 	"id" serial PRIMARY KEY NOT NULL,
 	"lesson_id" integer NOT NULL,
