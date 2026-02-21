@@ -60,25 +60,8 @@ jobs:
       - name: Install dependencies
         run: docker compose -f compose.yaml run --rm migrate npm ci
 
-      - name: Detect database state
-        id: db-state
-        run: |
-          # Check if the database has an existing schema (core enum as sentinel)
-          SCHEMA_EXISTS=$(docker compose -f compose.yaml exec -T db psql -U "$POSTGRES_USER" -d "$POSTGRES_DB" -t -c \
-            "SELECT EXISTS(SELECT 1 FROM pg_type WHERE typname = 'question_type');" | tr -d ' \r\n')
-
-          if [ "$SCHEMA_EXISTS" = "t" ]; then
-            echo "Existing database with schema detected"
-            echo "fresh_db=false" >> $GITHUB_OUTPUT
-          else
-            echo "Fresh/empty database detected — will use db:push"
-            echo "fresh_db=true" >> $GITHUB_OUTPUT
-          fi
-
       - name: Initialize migration tracking
-        if: steps.db-state.outputs.fresh_db == 'false'
         run: |
-          # Create drizzle schema and migrations table if they don't exist
           docker compose -f compose.yaml exec -T db psql -U "$POSTGRES_USER" -d "$POSTGRES_DB" -c "
             CREATE SCHEMA IF NOT EXISTS \"drizzle\";
             CREATE TABLE IF NOT EXISTS \"drizzle\".\"__drizzle_migrations\" (
@@ -88,12 +71,20 @@ jobs:
             );
           "
 
-          # If no migrations recorded yet (first switch from push to migrate),
-          # mark 0000-0005 as applied so only migration 0006+ runs.
+          SCHEMA_EXISTS=$(docker compose -f compose.yaml exec -T db psql -U "$POSTGRES_USER" -d "$POSTGRES_DB" -t -c \
+            "SELECT EXISTS(SELECT 1 FROM pg_type WHERE typname = 'question_type');" | tr -d ' \r\n')
+
           MIGRATION_COUNT=$(docker compose -f compose.yaml exec -T db psql -U "$POSTGRES_USER" -d "$POSTGRES_DB" -t -c \
             "SELECT COUNT(*) FROM \"drizzle\".\"__drizzle_migrations\";" | tr -d ' \r\n')
 
-          if [ "$MIGRATION_COUNT" = "0" ]; then
+          if [ "$SCHEMA_EXISTS" = "f" ] && [ "$MIGRATION_COUNT" != "0" ]; then
+            echo "Database is empty but has stale migration tracking — clearing..."
+            docker compose -f compose.yaml exec -T db psql -U "$POSTGRES_USER" -d "$POSTGRES_DB" -c \
+              "DELETE FROM \"drizzle\".\"__drizzle_migrations\";"
+            MIGRATION_COUNT="0"
+          fi
+
+          if [ "$MIGRATION_COUNT" = "0" ] && [ "$SCHEMA_EXISTS" = "t" ]; then
             echo "First migrate run — marking existing migrations (0000-0005) as applied..."
             HASH_0005=$(docker compose -f compose.yaml run -T --rm migrate sh -c \
               "sha256sum drizzle/0005_melted_proemial_gods.sql | cut -d' ' -f1")
@@ -101,17 +92,14 @@ jobs:
             docker compose -f compose.yaml exec -T db psql -U "$POSTGRES_USER" -d "$POSTGRES_DB" -c \
               "INSERT INTO \"drizzle\".\"__drizzle_migrations\" (hash, created_at) VALUES ('$HASH_0005', 1766791441364);"
             echo "Done — migrations 0000-0005 marked as applied"
+          elif [ "$MIGRATION_COUNT" = "0" ] && [ "$SCHEMA_EXISTS" = "f" ]; then
+            echo "Fresh database — all migrations will run from scratch"
           else
-            echo "Migration tracking already initialized ($MIGRATION_COUNT entries)"
+            echo "Migration tracking initialized ($MIGRATION_COUNT entries)"
           fi
 
       - name: Run database migrations
-        if: steps.db-state.outputs.fresh_db == 'false'
         run: docker compose -f compose.yaml run -T --rm migrate npx drizzle-kit migrate
-
-      - name: Push schema to fresh database
-        if: steps.db-state.outputs.fresh_db == 'true'
-        run: docker compose -f compose.yaml run -T --rm migrate npx drizzle-kit push --force
 
       - name: Check if seeding is needed
         id: check-seed
