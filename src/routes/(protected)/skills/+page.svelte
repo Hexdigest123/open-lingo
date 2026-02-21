@@ -2,6 +2,7 @@
 	import * as m from '$lib/paraglide/messages.js';
 	import type { PageData } from './$types';
 	import type { SkillNode } from '$lib/learning/types';
+	import { onMount, tick } from 'svelte';
 	import {
 		BookOpen,
 		Ruler,
@@ -48,6 +49,131 @@
 			level,
 			skills: groups.get(level) ?? []
 		}));
+	});
+
+	type PrerequisiteLine = {
+		key: string;
+		x1: number;
+		y1: number;
+		x2: number;
+		y2: number;
+		endX: number;
+		endY: number;
+		length: number;
+		color: string;
+	};
+
+	let groupContainerRefs = $state<Record<string, HTMLDivElement | undefined>>({});
+	let skillCardRefs = $state<Record<number, HTMLAnchorElement | undefined>>({});
+	let prerequisiteLinesByGroup = $state<Record<string, PrerequisiteLine[]>>({});
+	let mounted = false;
+
+	function getLineColor(prerequisite: SkillNode): string {
+		if (prerequisite.status === 'mastered') return '#22c55e';
+		if (prerequisite.status === 'locked') return '#94a3b8';
+		return '#3b82f6';
+	}
+
+	async function calculatePrerequisiteLines(): Promise<void> {
+		if (!mounted) return;
+
+		await tick();
+
+		const nextLines: Record<string, PrerequisiteLine[]> = {};
+
+		for (const group of groupedSkills) {
+			const container = groupContainerRefs[group.level];
+			if (!container) {
+				nextLines[group.level] = [];
+				continue;
+			}
+
+			const containerRect = container.getBoundingClientRect();
+			const lines: PrerequisiteLine[] = [];
+
+			for (const skill of group.skills) {
+				const skillEl = skillCardRefs[skill.id];
+				if (!skillEl || skill.prerequisiteIds.length === 0) continue;
+
+				for (const prerequisiteId of skill.prerequisiteIds) {
+					const prerequisiteSkill = skillsById.get(prerequisiteId);
+					if (!prerequisiteSkill || (prerequisiteSkill.cefrLevel ?? 'other') !== group.level)
+						continue;
+
+					const prerequisiteEl = skillCardRefs[prerequisiteId];
+					if (!prerequisiteEl) continue;
+
+					const prerequisiteRect = prerequisiteEl.getBoundingClientRect();
+					const skillRect = skillEl.getBoundingClientRect();
+
+					const prerequisiteCenterX = prerequisiteRect.left + prerequisiteRect.width / 2;
+					const skillCenterX = skillRect.left + skillRect.width / 2;
+					const sourceOnLeft = prerequisiteCenterX <= skillCenterX;
+
+					const startX = sourceOnLeft
+						? prerequisiteRect.right - containerRect.left
+						: prerequisiteRect.left - containerRect.left;
+					const startY = prerequisiteRect.top + prerequisiteRect.height / 2 - containerRect.top;
+					const targetX = sourceOnLeft
+						? skillRect.left - containerRect.left
+						: skillRect.right - containerRect.left;
+					const targetY = skillRect.top + skillRect.height / 2 - containerRect.top;
+
+					const dx = targetX - startX;
+					const dy = targetY - startY;
+					const totalLength = Math.hypot(dx, dy);
+					if (totalLength === 0) continue;
+
+					const arrowOffset = 7;
+					const endX = targetX - (dx / totalLength) * arrowOffset;
+					const endY = targetY - (dy / totalLength) * arrowOffset;
+					const length = Math.hypot(endX - startX, endY - startY);
+
+					lines.push({
+						key: `${group.level}-${prerequisiteId}-${skill.id}`,
+						x1: startX,
+						y1: startY,
+						x2: endX,
+						y2: endY,
+						endX: targetX,
+						endY: targetY,
+						length,
+						color: getLineColor(prerequisiteSkill)
+					});
+				}
+			}
+
+			nextLines[group.level] = lines;
+		}
+
+		prerequisiteLinesByGroup = nextLines;
+	}
+
+	onMount(() => {
+		mounted = true;
+
+		const handleResize = () => {
+			void calculatePrerequisiteLines();
+		};
+
+		void calculatePrerequisiteLines();
+		window.addEventListener('resize', handleResize);
+
+		return () => {
+			mounted = false;
+			window.removeEventListener('resize', handleResize);
+		};
+	});
+
+	$effect(() => {
+		for (const group of groupedSkills) {
+			groupContainerRefs[group.level];
+			for (const skill of group.skills) {
+				skillCardRefs[skill.id];
+			}
+		}
+
+		void calculatePrerequisiteLines();
 	});
 
 	function getSkillTitle(skill: SkillNode): string {
@@ -139,69 +265,101 @@
 					>
 						{group.level === 'other' ? '—' : group.level}
 					</h2>
-					<div class="grid gap-4 md:grid-cols-2 xl:grid-cols-3">
-						{#each group.skills as skill}
-							{@const locked = skill.status === 'locked'}
-							{@const mastered = skill.status === 'mastered'}
-							{@const prereqs = getPrerequisiteNames(skill)}
-							<a
-								href={locked ? undefined : `/learn/${data.languageCode}/${skill.id}`}
-								aria-disabled={locked ? 'true' : undefined}
-								tabindex={locked ? -1 : undefined}
-								class="block card border border-border-light transition-all {locked
-									? 'pointer-events-none opacity-60'
-									: 'hover:border-primary/40 hover:shadow-lg'}"
-							>
-								<div class="mb-3 flex items-start justify-between gap-3">
-									<div class="flex items-center gap-3">
-										<div
-											class="flex h-10 w-10 items-center justify-center rounded-lg bg-primary/10 text-sm font-bold text-primary"
+					<div class="relative" bind:this={groupContainerRefs[group.level]}>
+						<svg class="pointer-events-none absolute inset-0 z-[1] h-full w-full overflow-visible">
+							{#each prerequisiteLinesByGroup[group.level] ?? [] as line (line.key)}
+								<line
+									x1={line.x1}
+									y1={line.y1}
+									x2={line.x2}
+									y2={line.y2}
+									stroke={line.color}
+									stroke-width="2"
+									stroke-dasharray={line.length}
+									style={`--line-length: ${line.length}`}
+									class="animate-draw-line"
+								/>
+								<circle cx={line.endX} cy={line.endY} r="3" fill={line.color} />
+							{/each}
+						</svg>
+						<div class="relative z-10 grid gap-4 md:grid-cols-2 xl:grid-cols-3">
+							{#each group.skills as skill}
+								{@const locked = skill.status === 'locked'}
+								{@const mastered = skill.status === 'mastered'}
+								{@const unlocked = skill.status === 'unlocked'}
+								{@const prereqs = getPrerequisiteNames(skill)}
+								<a
+									href={locked ? undefined : `/learn/${data.languageCode}/${skill.id}`}
+									aria-disabled={locked ? 'true' : undefined}
+									tabindex={locked ? -1 : undefined}
+									data-skill-id={skill.id}
+									bind:this={skillCardRefs[skill.id]}
+									class="block card border border-border-light transition-all {locked
+										? 'pointer-events-none opacity-60'
+										: 'hover:border-primary/40 hover:shadow-lg'} {unlocked
+										? 'animate-node-unlock'
+										: ''} {mastered
+										? 'border-success/50 shadow-[0_0_0_1px_rgba(34,197,94,0.38),0_0_20px_rgba(34,197,94,0.16)]'
+										: ''}"
+								>
+									<div class="mb-3 flex items-start justify-between gap-3">
+										<div class="flex items-center gap-3">
+											<div
+												class="flex h-10 w-10 items-center justify-center rounded-lg bg-primary/10 text-sm font-bold text-primary"
+											>
+												<svelte:component this={getSkillIcon(skill)} size={20} />
+											</div>
+											<div>
+												<p class="font-semibold text-text-light">{getSkillTitle(skill)}</p>
+												<p class="text-xs text-text-light/60">
+													{skill.cefrLevel ?? '—'} · {skill.type}
+												</p>
+											</div>
+										</div>
+										<span
+											class="rounded-full px-2 py-1 text-xs font-semibold {mastered
+												? 'bg-success/15 text-success'
+												: locked
+													? 'bg-surface-200 text-text-light/70'
+													: 'bg-primary/15 text-primary'}"
 										>
-											<svelte:component this={getSkillIcon(skill)} size={20} />
+											{getStatusLabel(skill.status)}
+										</span>
+									</div>
+
+									{#if getSkillDescription(skill)}
+										<p class="mb-3 text-sm text-text-light/70">{getSkillDescription(skill)}</p>
+									{/if}
+
+									<div class="space-y-1">
+										<div class="flex items-center text-xs text-text-light/60">
+											<span
+												>{m['skills.mastery']({ percent: Math.round(skill.mastery * 100) })}</span
+											>
 										</div>
-										<div>
-											<p class="font-semibold text-text-light">{getSkillTitle(skill)}</p>
-											<p class="text-xs text-text-light/60">
-												{skill.cefrLevel ?? '—'} · {skill.type}
-											</p>
+										<div class="bg-surface-100 h-2 overflow-hidden rounded-full">
+											<div
+												class="h-full rounded-full {mastered
+													? 'bg-success'
+													: 'bg-primary'} animate-mastery-fill {skill.mastery === 0
+													? 'opacity-30'
+													: ''}"
+												style="--mastery-from: 0%; --mastery-to: {Math.max(
+													Math.round(skill.mastery * 100),
+													2
+												)}%; width: var(--mastery-to);"
+											></div>
 										</div>
 									</div>
-									<span
-										class="rounded-full px-2 py-1 text-xs font-semibold {mastered
-											? 'bg-success/15 text-success'
-											: locked
-												? 'bg-surface-200 text-text-light/70'
-												: 'bg-primary/15 text-primary'}"
-									>
-										{getStatusLabel(skill.status)}
-									</span>
-								</div>
 
-								{#if getSkillDescription(skill)}
-									<p class="mb-3 text-sm text-text-light/70">{getSkillDescription(skill)}</p>
-								{/if}
-
-								<div class="space-y-1">
-									<div class="flex items-center text-xs text-text-light/60">
-										<span>{m['skills.mastery']({ percent: Math.round(skill.mastery * 100) })}</span>
-									</div>
-									<div class="bg-surface-100 h-2 overflow-hidden rounded-full">
-										<div
-											class="h-full rounded-full {mastered
-												? 'bg-success'
-												: 'bg-primary'} {skill.mastery === 0 ? 'opacity-30' : ''}"
-											style="width: {Math.max(Math.round(skill.mastery * 100), 2)}%"
-										></div>
-									</div>
-								</div>
-
-								{#if prereqs.length > 0}
-									<p class="mt-3 text-xs text-text-light/60">
-										{m['skills.prerequisites']()}: {prereqs.join(', ')}
-									</p>
-								{/if}
-							</a>
-						{/each}
+									{#if prereqs.length > 0}
+										<p class="mt-3 text-xs text-text-light/60">
+											{m['skills.prerequisites']()}: {prereqs.join(', ')}
+										</p>
+									{/if}
+								</a>
+							{/each}
+						</div>
 					</div>
 				</section>
 			{/each}

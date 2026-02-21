@@ -9,6 +9,18 @@
 	import WordOrderQuestion from '$lib/components/lessons/WordOrderQuestion.svelte';
 	import SpeakingQuestion from '$lib/components/lessons/SpeakingQuestion.svelte';
 	import ListeningQuestion from '$lib/components/lessons/ListeningQuestion.svelte';
+	import {
+		celebrateFirstCorrectToday,
+		celebrateLevelUp,
+		celebrateStreakMilestone
+	} from '$lib/stores/celebrations.svelte';
+	import {
+		playCombo,
+		playCorrect,
+		playIncorrect,
+		playLevelUp,
+		playStreakMilestone
+	} from '$lib/stores/sounds.svelte';
 
 	type ReviewQuestion = {
 		id: number;
@@ -31,10 +43,16 @@
 
 	let currentIndex = $state(0);
 	let correctCount = $state(0);
+	let reviewStreak = $state(0);
+	let xpEarned = $state(0);
+	let streakAnimationTick = $state(0);
 	let showFeedback = $state(false);
-	let feedback = $state<{ isCorrect: boolean; correctAnswer: string; mastery: number } | null>(
-		null
-	);
+	let feedback = $state<{
+		isCorrect: boolean;
+		correctAnswer: string;
+		mastery: number;
+		xpGain: number;
+	} | null>(null);
 	let isSubmitting = $state(false);
 	let reviewDone = $state(reviews.length === 0);
 
@@ -45,42 +63,88 @@
 		return item.concept.title;
 	}
 
+	function getComboMultiplierForNextCorrect(): number {
+		return Math.max(1, Math.min(5, Math.floor((reviewStreak + 1) / 3) + 1));
+	}
+
 	async function submitAnswer(answer: string) {
 		if (!currentItem || isSubmitting || showFeedback) return;
 
 		isSubmitting = true;
+		const comboMultiplier = getComboMultiplierForNextCorrect();
 		const formData = new FormData();
 		formData.append('conceptId', String(currentItem.concept.id));
 		formData.append('questionId', String(currentItem.question.id));
 		formData.append('answer', answer);
+		formData.append('comboMultiplier', String(comboMultiplier));
+		formData.append('isSessionComplete', currentIndex === reviews.length - 1 ? 'true' : 'false');
 
-		const response = await fetch('?/answer', {
-			method: 'POST',
-			body: formData
-		});
+		try {
+			const response = await fetch('?/answer', {
+				method: 'POST',
+				body: formData
+			});
 
-		const result = deserialize(await response.text());
-		if (result.type === 'success') {
-			const payload = result.data as {
-				isCorrect: boolean;
-				correctAnswer: string;
-				mastery: number;
-			};
+			const result = deserialize(await response.text());
+			if (result.type === 'success') {
+				const payload = result.data as {
+					isCorrect: boolean;
+					correctAnswer: string;
+					mastery: number;
+					firstCorrectToday: boolean;
+					xpGain: number;
+					streakMilestone: number | null;
+					previousLevel: number;
+					newLevel: number;
+				};
 
-			feedback = {
-				isCorrect: payload.isCorrect,
-				correctAnswer: payload.correctAnswer,
-				mastery: payload.mastery
-			};
+				feedback = {
+					isCorrect: payload.isCorrect,
+					correctAnswer: payload.correctAnswer,
+					mastery: payload.mastery,
+					xpGain: payload.xpGain
+				};
 
-			if (payload.isCorrect) {
-				correctCount += 1;
+				if (payload.isCorrect) {
+					correctCount += 1;
+					reviewStreak += 1;
+					xpEarned += payload.xpGain;
+					playCorrect();
+
+					if (comboMultiplier > 1) {
+						playCombo(comboMultiplier);
+					}
+
+					if (payload.firstCorrectToday) {
+						celebrateFirstCorrectToday(
+							m['celebration.firstCorrectToday'](),
+							m['celebration.firstCorrectTodayMessage']()
+						);
+					}
+
+					if (payload.streakMilestone) {
+						celebrateStreakMilestone(payload.streakMilestone);
+						playStreakMilestone();
+					}
+
+					if (payload.newLevel > payload.previousLevel) {
+						celebrateLevelUp(payload.newLevel);
+						playLevelUp();
+					}
+
+					if (reviewStreak >= 2) {
+						streakAnimationTick += 1;
+					}
+				} else {
+					reviewStreak = 0;
+					playIncorrect();
+				}
+
+				showFeedback = true;
 			}
-
-			showFeedback = true;
+		} finally {
+			isSubmitting = false;
 		}
-
-		isSubmitting = false;
 	}
 
 	function nextReview() {
@@ -98,6 +162,7 @@
 	const accuracy = $derived(
 		reviews.length > 0 ? Math.round((correctCount / reviews.length) * 100) : 100
 	);
+	const comboMultiplier = $derived(Math.max(1, Math.min(5, Math.floor(reviewStreak / 3) + 1)));
 </script>
 
 <svelte:head>
@@ -148,8 +213,12 @@
 		<h1 class="text-2xl font-bold text-text-light">
 			{m['review.complete']()}
 		</h1>
+		<p class="animate-pulse text-lg font-semibold text-success">{m['review.allCleared']()}</p>
 		<p class="text-text-muted">
 			{m['review.reviewed']({ count: reviews.length })}
+		</p>
+		<p class="text-lg font-semibold text-yellow-dark">
+			{m['review.xpEarned']({ amount: xpEarned })}
 		</p>
 		<p class="text-lg font-semibold text-success">
 			{m['review.accuracy']({ percent: accuracy })}
@@ -169,6 +238,19 @@
 				{m['review.reviewOf']({ current: currentIndex + 1, total: reviews.length })}
 			</p>
 		</div>
+
+		{#if reviewStreak >= 2}
+			{#key streakAnimationTick}
+				<div
+					class="animate-bounce rounded-xl border border-success/30 bg-success/10 px-4 py-3 text-center"
+				>
+					<p class="font-semibold text-success">{m['review.streak']({ count: reviewStreak })}</p>
+					{#if comboMultiplier > 1}
+						<p class="mt-1 text-xs font-medium text-text-muted">{comboMultiplier}x combo</p>
+					{/if}
+				</div>
+			{/key}
+		{/if}
 
 		<div class="card">
 			<p class="text-xs tracking-wide text-text-muted uppercase">
@@ -278,6 +360,11 @@
 				<p class="mt-1 text-sm text-text-muted">
 					{m['skills.mastery']({ percent: Math.round(feedback.mastery * 100) })}
 				</p>
+				{#if feedback.isCorrect && feedback.xpGain > 0}
+					<p class="mt-1 text-sm font-semibold text-yellow-dark">
+						{m['review.xpEarned']({ amount: feedback.xpGain })}
+					</p>
+				{/if}
 				<button class="btn btn-primary mt-4 w-full" onclick={nextReview}
 					>{m['learn.continue']()}</button
 				>

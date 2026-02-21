@@ -12,11 +12,21 @@
 	import SpeakingQuestion from '$lib/components/lessons/SpeakingQuestion.svelte';
 	import ListeningQuestion from '$lib/components/lessons/ListeningQuestion.svelte';
 	import AiExplanation from '$lib/components/lessons/AiExplanation.svelte';
+	import AnimatedCounter from '$lib/components/ui/AnimatedCounter.svelte';
 	import { PartyPopper, HeartCrack, Heart, CircleCheck, CircleX, Bot, X } from 'lucide-svelte';
 	import {
 		celebrateFirstCorrectToday,
 		celebrateAchievement
 	} from '$lib/stores/celebrations.svelte';
+	import {
+		playCorrect,
+		playIncorrect,
+		playCombo,
+		playAchievement,
+		playStreak,
+		playLevelUp,
+		playStreakMilestone
+	} from '$lib/stores/sounds.svelte';
 
 	type SubmitActionData = {
 		success: boolean;
@@ -26,6 +36,20 @@
 		hearts?: number;
 		xpAwarded?: number;
 		firstCorrectToday?: boolean;
+		streakMilestone?: number | null;
+		previousLevel?: number;
+		newLevel?: number;
+	};
+
+	type CompleteActionData = {
+		completed: boolean;
+		xpEarned: number;
+		score: number;
+		accuracy: number;
+		timeTakenSeconds: number | null;
+		previousScore: number | null;
+		gemsEarned: number;
+		newAchievements?: string[];
 	};
 
 	type ActiveLanguage = {
@@ -53,12 +77,28 @@
 	let isLoadingExplanation = $state(false);
 	let explanationError = $state<string | null>(null);
 	let showOutOfHeartsModal = $state(data.hearts <= 0 && !data.isRevision && data.heartsEnabled);
+	let startTime = $state(Date.now());
+	let consecutiveCorrect = $state(0);
+	let comboMultiplier = $state(1);
+	let comboPulse = $state(false);
+	let baseXpEarned = $state(0);
+	let comboBonusXpEarned = $state(0);
+	let completionData = $state<CompleteActionData | null>(null);
 
 	const questions = data.questions;
 	const totalQuestions = questions.length;
 
 	const currentQuestion = $derived(questions[currentIndex]);
 	const questionContent = $derived(currentQuestion?.content as Record<string, unknown>);
+	const accuracyPercent = $derived(Math.round((correctCount / totalQuestions) * 100));
+	const improvementAmount = $derived(
+		completionData?.previousScore !== null && completionData?.previousScore !== undefined
+			? accuracyPercent - completionData.previousScore
+			: 0
+	);
+	const improvementBonusXp = $derived(improvementAmount > 0 ? 5 : 0);
+	const totalCompletionXp = $derived(xpEarned + improvementBonusXp);
+	const completionTimeLabel = $derived(formatTimeTaken(completionData?.timeTakenSeconds));
 
 	// Modal is shown directly when hearts hit 0, not via effect (to avoid timing issues)
 
@@ -102,10 +142,12 @@
 		const question = questions[currentIndex];
 
 		const formData = new FormData();
+		const multiplierForSubmission = comboMultiplier;
 		formData.append('questionId', question.id.toString());
 		formData.append('answer', answer);
 		formData.append('isRevision', data.isRevision ? 'true' : 'false');
 		formData.append('locale', getLocale());
+		formData.append('comboMultiplier', multiplierForSubmission.toString());
 
 		try {
 			const response = await fetch(`?/submit`, {
@@ -146,8 +188,24 @@
 			}
 
 			if (lastAnswer.isCorrect) {
+				playCorrect();
 				xpEarned += actionData.xpAwarded ?? 0;
+				if ((actionData.xpAwarded ?? 0) > 0) {
+					const baseIncrement = Math.round((actionData.xpAwarded ?? 0) / multiplierForSubmission);
+					baseXpEarned += baseIncrement;
+					comboBonusXpEarned += (actionData.xpAwarded ?? 0) - baseIncrement;
+				}
 				correctCount++;
+				consecutiveCorrect += 1;
+				const nextMultiplier = getComboMultiplier(consecutiveCorrect);
+				if (nextMultiplier > comboMultiplier) {
+					comboMultiplier = nextMultiplier;
+					comboPulse = true;
+					setTimeout(() => {
+						comboPulse = false;
+					}, 420);
+					playCombo(nextMultiplier);
+				}
 
 				if (actionData.firstCorrectToday) {
 					celebrateFirstCorrectToday(
@@ -155,6 +213,20 @@
 						m['celebration.firstCorrectTodayMessage']()
 					);
 				}
+
+				if ((actionData.newLevel ?? 1) > (actionData.previousLevel ?? 1)) {
+					playLevelUp();
+				}
+
+				if (actionData.streakMilestone) {
+					playStreak();
+					playStreakMilestone();
+				}
+			} else {
+				playIncorrect();
+				consecutiveCorrect = 0;
+				comboMultiplier = 1;
+				comboPulse = false;
 			}
 
 			showFeedback = true;
@@ -222,6 +294,7 @@
 		const formData = new FormData();
 		formData.append('score', Math.round((correctCount / totalQuestions) * 100).toString());
 		formData.append('xpEarned', xpEarned.toString());
+		formData.append('startTime', startTime.toString());
 
 		try {
 			const response = await fetch(`?/complete`, {
@@ -232,12 +305,12 @@
 			if (result.type !== 'success') {
 				console.error('Failed to complete lesson:', result);
 			} else {
-				const completeData = result.data as {
-					newAchievements?: string[];
-				};
+				const completeData = result.data as CompleteActionData;
+				completionData = completeData;
 				if (completeData?.newAchievements?.length) {
 					for (const name of completeData.newAchievements) {
 						celebrateAchievement(name);
+						playAchievement();
 					}
 				}
 			}
@@ -251,6 +324,28 @@
 		if (accuracy >= 80) return m['lesson.complete.great']();
 		if (accuracy >= 60) return m['lesson.complete.good']();
 		return m['lesson.complete.keepPracticing']();
+	}
+
+	function getComboMultiplier(streakCount: number): number {
+		if (streakCount >= 8) return 4;
+		if (streakCount >= 5) return 3;
+		if (streakCount >= 3) return 2;
+		return 1;
+	}
+
+	function formatTimeTaken(totalSeconds: number | null | undefined): string {
+		if (!totalSeconds || totalSeconds <= 0) return '00:00';
+		const minutes = Math.floor(totalSeconds / 60)
+			.toString()
+			.padStart(2, '0');
+		const seconds = Math.floor(totalSeconds % 60)
+			.toString()
+			.padStart(2, '0');
+		return `${minutes}:${seconds}`;
+	}
+
+	function retryLesson() {
+		window.location.reload();
 	}
 
 	function exitLesson() {
@@ -271,21 +366,58 @@
 			</div>
 			<h2 class="mt-4 text-2xl font-bold text-text-light">{m['lesson.complete.title']()}</h2>
 			<p class="mt-2 text-lg text-text-muted">
-				{getAccuracyMessage(Math.round((correctCount / totalQuestions) * 100))}
+				{getAccuracyMessage(accuracyPercent)}
 			</p>
 
 			<div class="mt-6 grid grid-cols-2 gap-4">
 				<div class="rounded-xl bg-yellow/10 p-4">
-					<div class="text-2xl font-bold text-yellow-dark">+{xpEarned}</div>
+					<div class="text-2xl font-bold text-yellow-dark">
+						+<AnimatedCounter value={totalCompletionXp} duration={900} />
+					</div>
 					<div class="text-sm text-text-muted">{m['lesson.complete.xpEarned']()}</div>
 				</div>
 				<div class="rounded-xl bg-success/10 p-4">
 					<div class="text-2xl font-bold text-success">
-						{Math.round((correctCount / totalQuestions) * 100)}%
+						{accuracyPercent}%
 					</div>
 					<div class="text-sm text-text-muted">{m['lesson.complete.accuracy']()}</div>
 				</div>
 			</div>
+
+			<div class="bg-bg-secondary mt-4 space-y-2 rounded-xl p-4 text-left text-sm text-text-muted">
+				<p>{m['lesson.complete.timeTaken']({ time: completionTimeLabel })}</p>
+				<p>
+					{m['lesson.complete.xpBreakdown']({
+						base: baseXpEarned,
+						bonus: comboBonusXpEarned + improvementBonusXp
+					})}
+				</p>
+				{#if completionData?.gemsEarned}
+					<p class="font-semibold text-primary">
+						{m['lesson.complete.gemsEarned']({ count: completionData.gemsEarned })}
+					</p>
+				{/if}
+				{#if completionData?.previousScore !== null && completionData?.previousScore !== undefined}
+					<p>{m['lesson.complete.previousScore']({ score: completionData.previousScore })}</p>
+					<p class="font-medium text-text-light">
+						Previous: {completionData.previousScore}% -> Now: {accuracyPercent}%
+					</p>
+					{#if improvementAmount > 0}
+						<p class="font-semibold text-success">
+							{m['lesson.complete.improved']({ amount: improvementAmount })}
+						</p>
+					{/if}
+				{/if}
+			</div>
+
+			{#if completionData?.previousScore !== null && completionData?.previousScore !== undefined && accuracyPercent <= completionData.previousScore}
+				<button onclick={retryLesson} class="btn btn-primary btn-lg mt-4 w-full">
+					{m['lesson.complete.beatYourScore']()}
+				</button>
+				<button onclick={retryLesson} class="btn btn-ghost mt-2 w-full">
+					{m['lesson.complete.tryAgain']()}
+				</button>
+			{/if}
 
 			<button onclick={exitLesson} class="btn btn-success btn-lg mt-6 w-full">
 				{m['lesson.complete.continueButton']()}
@@ -342,6 +474,27 @@
 			{m['lesson.of']()}
 			{totalQuestions}
 		</div>
+
+		{#if data.isRevision}
+			<div class="mb-4 rounded-xl bg-primary/10 p-3 text-center text-sm font-medium text-primary">
+				{m['lesson.complete.beatYourScore']()}
+			</div>
+		{/if}
+
+		{#if comboMultiplier > 1}
+			<div class="mb-4 flex justify-center">
+				<div
+					class="rounded-full bg-yellow-dark/15 px-4 py-2 text-sm font-bold text-yellow-dark {comboPulse
+						? 'animate-combo-pulse'
+						: ''}"
+				>
+					{m['lesson.combo.active']({ multiplier: comboMultiplier })}
+					<span class="ml-2 text-text-muted"
+						>{m['lesson.combo.streak']({ count: consecutiveCorrect })}</span
+					>
+				</div>
+			</div>
+		{/if}
 
 		<!-- Question Content -->
 		{#key currentQuestion.id}

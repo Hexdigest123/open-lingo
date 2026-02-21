@@ -4,6 +4,18 @@
 	import { deserialize } from '$app/forms';
 	import TeachBlock from '$lib/components/learning/TeachBlock.svelte';
 	import DrillBlock from '$lib/components/learning/DrillBlock.svelte';
+	import {
+		celebrateFirstCorrectToday,
+		celebrateLevelUp,
+		celebrateStreakMilestone
+	} from '$lib/stores/celebrations.svelte';
+	import {
+		playCombo,
+		playCorrect,
+		playIncorrect,
+		playLevelUp,
+		playStreakMilestone
+	} from '$lib/stores/sounds.svelte';
 
 	type BlockType = 'teach' | 'drill' | 'checkpoint' | 'review' | 'exam';
 
@@ -29,6 +41,18 @@
 	let checkpointAttempt = $state(0);
 	let drillSummaries = $state<Array<{ correct: number; total: number }>>([]);
 	let masterySnapshots = $state<number[]>([]);
+	let comboStreak = $state(0);
+	let comboMultiplier = $state(1);
+	let comboBadgePulse = $state(0);
+
+	type LearnAnswerPayload = {
+		isCorrect?: boolean;
+		mastery?: number;
+		firstCorrectToday?: boolean;
+		streakMilestone?: number | null;
+		previousLevel?: number | null;
+		newLevel?: number | null;
+	};
 
 	const allConceptIds = $derived(data.concepts.map((concept) => concept.id));
 
@@ -66,6 +90,19 @@
 		return map;
 	});
 
+	const conceptProgressMap = $derived.by(() => {
+		const map = new Map<number, { mastery: number; status: string }>();
+		const raw = (data as Record<string, unknown>).conceptProgress as
+			| Record<number, { mastery: number; status: string }>
+			| undefined;
+		if (raw) {
+			for (const [id, val] of Object.entries(raw)) {
+				map.set(Number(id), val);
+			}
+		}
+		return map;
+	});
+
 	function getLocalizedSkillTitle() {
 		return (data.skill as Record<string, unknown>).title as string;
 	}
@@ -74,6 +111,44 @@
 		const concept = conceptById.get(conceptId);
 		if (!concept) return '';
 		return ((concept as Record<string, unknown>).title as string) ?? '';
+	}
+
+	function interleaveByConceptRoundRobin(pool: LearnQuestion[]): LearnQuestion[] {
+		const buckets = new Map<number, LearnQuestion[]>();
+		const noConcept: LearnQuestion[] = [];
+
+		for (const q of pool) {
+			const cid = questionConceptMap.get(q.id);
+			if (cid != null) {
+				const bucket = buckets.get(cid);
+				if (bucket) {
+					bucket.push(q);
+				} else {
+					buckets.set(cid, [q]);
+				}
+			} else {
+				noConcept.push(q);
+			}
+		}
+
+		const groups = [...buckets.values(), ...(noConcept.length > 0 ? [noConcept] : [])];
+		if (groups.length <= 1) return pool;
+
+		const result: LearnQuestion[] = [];
+		const indices = new Array(groups.length).fill(0);
+		let remaining = pool.length;
+
+		while (remaining > 0) {
+			for (let g = 0; g < groups.length && remaining > 0; g++) {
+				if (indices[g] < groups[g].length) {
+					result.push(groups[g][indices[g]]);
+					indices[g]++;
+					remaining--;
+				}
+			}
+		}
+
+		return result;
 	}
 
 	function getBlockQuestions(block: LearnBlock): LearnQuestion[] {
@@ -89,13 +164,22 @@
 			);
 		}
 
+		const unmastered = pool.filter((q) => {
+			const cid = questionConceptMap.get(q.id);
+			if (cid == null) return true;
+			const cp = conceptProgressMap.get(cid);
+			return !cp || cp.status !== 'mastered';
+		});
+
+		const effectivePool = unmastered.length > 0 ? unmastered : pool;
+
 		const questionCountRaw = block.config.questionCount;
 		const questionCount =
 			typeof questionCountRaw === 'number' && questionCountRaw > 0
-				? Math.min(questionCountRaw, pool.length)
-				: pool.length;
+				? Math.min(questionCountRaw, effectivePool.length)
+				: effectivePool.length;
 
-		return pool.slice(0, questionCount);
+		return interleaveByConceptRoundRobin(effectivePool).slice(0, questionCount);
 	}
 
 	function nextBlock() {
@@ -107,16 +191,30 @@
 		isComplete = true;
 	}
 
+	function getComboMultiplierFromStreak(streak: number): number {
+		if (streak >= 8) return 4;
+		if (streak >= 5) return 3;
+		if (streak >= 3) return 2;
+		return 1;
+	}
+
+	function isComboThreshold(streak: number): boolean {
+		return streak === 3 || streak === 5 || streak === 8;
+	}
+
 	async function handleBlockAnswer(questionId: number, answer: string) {
 		const conceptId = questionConceptMap.get(questionId) ?? data.concepts[0]?.id;
 		if (!conceptId) {
 			return;
 		}
 
+		const pendingComboMultiplier = getComboMultiplierFromStreak(comboStreak + 1);
+
 		const formData = new FormData();
 		formData.append('conceptId', String(conceptId));
 		formData.append('questionId', String(questionId));
 		formData.append('answer', answer);
+		formData.append('comboMultiplier', String(pendingComboMultiplier));
 
 		const response = await fetch('?/answer', {
 			method: 'POST',
@@ -125,7 +223,47 @@
 
 		const result = deserialize(await response.text());
 		if (result.type === 'success') {
-			const payload = result.data as { mastery?: number };
+			const payload = result.data as LearnAnswerPayload;
+
+			if (payload.isCorrect) {
+				playCorrect();
+				const nextStreak = comboStreak + 1;
+				comboStreak = nextStreak;
+				comboMultiplier = getComboMultiplierFromStreak(nextStreak);
+
+				if (comboMultiplier > 1) {
+					comboBadgePulse += 1;
+					if (isComboThreshold(nextStreak)) {
+						playCombo(comboMultiplier);
+					}
+				}
+
+				if (payload.firstCorrectToday) {
+					celebrateFirstCorrectToday(
+						m['celebration.firstCorrectToday'](),
+						m['celebration.firstCorrectTodayMessage']()
+					);
+				}
+
+				if (
+					typeof payload.newLevel === 'number' &&
+					typeof payload.previousLevel === 'number' &&
+					payload.newLevel > payload.previousLevel
+				) {
+					celebrateLevelUp(payload.newLevel);
+					playLevelUp();
+				}
+
+				if (typeof payload.streakMilestone === 'number') {
+					celebrateStreakMilestone(payload.streakMilestone);
+					playStreakMilestone();
+				}
+			} else if (payload.isCorrect === false) {
+				playIncorrect();
+				comboStreak = 0;
+				comboMultiplier = 1;
+			}
+
 			if (typeof payload.mastery === 'number') {
 				masterySnapshots = [...masterySnapshots, payload.mastery];
 			}
@@ -310,12 +448,23 @@
 					</div>
 				{:else}
 					{#key `${currentBlock.id}-${checkpointAttempt}`}
-						<DrillBlock
-							questions={blockQuestions}
-							hasApiKey={data.hasApiKey}
-							onAnswer={handleBlockAnswer}
-							onComplete={onDrillComplete}
-						/>
+						<div class="relative">
+							{#if comboMultiplier > 1}
+								{#key `combo-${comboBadgePulse}`}
+									<div
+										class="pointer-events-none absolute top-4 right-4 z-20 animate-bounce rounded-full bg-yellow-dark px-3 py-1 text-xs font-bold text-white shadow-lg"
+									>
+										{m['learn.combo.active']({ multiplier: comboMultiplier })}
+									</div>
+								{/key}
+							{/if}
+							<DrillBlock
+								questions={blockQuestions}
+								hasApiKey={data.hasApiKey}
+								onAnswer={handleBlockAnswer}
+								onComplete={onDrillComplete}
+							/>
+						</div>
 					{/key}
 				{/if}
 			{:else if currentBlock.blockType === 'checkpoint' || currentBlock.blockType === 'exam'}
@@ -364,12 +513,23 @@
 						</div>
 					{:else}
 						{#key `checkpoint-${currentBlock.id}-${checkpointAttempt}`}
-							<DrillBlock
-								questions={checkpointQuestions}
-								hasApiKey={data.hasApiKey}
-								onAnswer={handleBlockAnswer}
-								onComplete={onCheckpointComplete}
-							/>
+							<div class="relative">
+								{#if comboMultiplier > 1}
+									{#key `combo-checkpoint-${comboBadgePulse}`}
+										<div
+											class="pointer-events-none absolute top-4 right-4 z-20 animate-bounce rounded-full bg-yellow-dark px-3 py-1 text-xs font-bold text-white shadow-lg"
+										>
+											{m['learn.combo.active']({ multiplier: comboMultiplier })}
+										</div>
+									{/key}
+								{/if}
+								<DrillBlock
+									questions={checkpointQuestions}
+									hasApiKey={data.hasApiKey}
+									onAnswer={handleBlockAnswer}
+									onComplete={onCheckpointComplete}
+								/>
+							</div>
 						{/key}
 					{/if}
 				</div>

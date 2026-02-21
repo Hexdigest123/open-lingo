@@ -10,26 +10,27 @@ import {
 } from '$lib/server/learning/placement-service';
 import { isAnswerCorrect } from '$lib/server/validation/answers';
 import { and, desc, eq, isNull } from 'drizzle-orm';
-import { resolveQuestionContent } from '$lib/server/i18n/resolve';
+import { resolveQuestionContent, sanitizeHint } from '$lib/server/i18n/resolve';
 
 type Locale = 'en' | 'de';
 
 function resolveNextQuestion(
 	result: {
-		question: { id: number; content: unknown; [key: string]: unknown };
+		question: { id: number; content: unknown; correctAnswer?: string; [key: string]: unknown };
 		estimatedLevel: string;
 	} | null,
 	locale: Locale
 ) {
 	if (!result) return null;
+	let content = result.question.content
+		? resolveQuestionContent(result.question.content as Record<string, unknown>, locale)
+		: (result.question.content as Record<string, unknown>);
+	if (content && result.question.correctAnswer) {
+		content = sanitizeHint(content, result.question.correctAnswer);
+	}
 	return {
 		...result,
-		question: {
-			...result.question,
-			content: result.question.content
-				? resolveQuestionContent(result.question.content as Record<string, unknown>, locale)
-				: result.question.content
-		}
+		question: { ...result.question, content }
 	};
 }
 

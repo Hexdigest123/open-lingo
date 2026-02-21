@@ -18,7 +18,10 @@ import { eq, and, sql, desc } from 'drizzle-orm';
 import { isAnswerCorrect } from '$lib/server/validation/answers';
 import { isHeartsEnabledForUser } from '$lib/server/hearts/heartsEnabled';
 import { hasGlobalApiKey } from '$lib/server/openai/getApiKey';
-import { pickFromJson, resolveQuestionContent } from '$lib/server/i18n/resolve';
+import { pickFromJson, resolveQuestionContent, sanitizeHint } from '$lib/server/i18n/resolve';
+import { recordCorrectAnswer } from '$lib/server/learning/streak-service';
+import { awardGems } from '$lib/server/learning/gems-service';
+import { updateChallengeProgress } from '$lib/server/learning/challenge-service';
 
 // Check and unlock achievements based on user stats
 async function checkAndUnlockAchievements(
@@ -248,12 +251,15 @@ export const load: PageServerLoad = async ({ params, locals }) => {
 		.where(eq(questions.lessonId, lessonId))
 		.orderBy(questions.order);
 	const locale = locals.locale;
-	const clientQuestions = lessonQuestions.map(({ correctAnswer, ...rest }) => ({
-		...rest,
-		content: rest.content
+	const clientQuestions = lessonQuestions.map(({ correctAnswer, ...rest }) => {
+		let content = rest.content
 			? resolveQuestionContent(rest.content as Record<string, unknown>, locale)
-			: rest.content
-	}));
+			: (rest.content as Record<string, unknown>);
+		if (content) {
+			content = sanitizeHint(content, correctAnswer);
+		}
+		return { ...rest, content };
+	});
 
 	if (lessonQuestions.length === 0) {
 		error(404, 'This lesson has no questions');
@@ -324,6 +330,10 @@ export const actions: Actions = {
 		const questionId = parseInt(data.get('questionId')?.toString() || '0');
 		const answer = data.get('answer')?.toString().trim() || '';
 		const locale = data.get('locale')?.toString() || 'en';
+		const comboMultiplierRaw = Number.parseInt(data.get('comboMultiplier')?.toString() || '1', 10);
+		const comboMultiplier = Number.isFinite(comboMultiplierRaw)
+			? Math.min(4, Math.max(1, comboMultiplierRaw))
+			: 1;
 
 		if (!questionId || !answer) {
 			return fail(400, { error: 'Question ID and answer are required' });
@@ -422,106 +432,15 @@ export const actions: Actions = {
 		const shouldAwardXp = isCorrect && !isRevision && !previousCorrect;
 
 		if (isCorrect) {
-			// Award XP only if eligible (not revision and not previously correct)
-			const xpGain = shouldAwardXp ? 10 : 0;
-			// Only count toward freeze progress if XP was awarded (prevents exploit)
-			const newCorrectTotal = shouldAwardXp
-				? (stats?.totalCorrectAnswers || 0) + 1
-				: stats?.totalCorrectAnswers || 0;
-			const freezesFromAnswers = Math.floor(newCorrectTotal / 50);
-			const currentFreezes = stats?.freezesEarnedTotal || 0;
+			const streakResult = await recordCorrectAnswer(
+				userId,
+				stats ?? null,
+				shouldAwardXp,
+				comboMultiplier
+			);
+			freezeEarned = streakResult.freezeEarned;
 
-			// Calculate streak update on correct answer
-			const today = new Date();
-			today.setHours(0, 0, 0, 0);
-
-			let newStreak = stats?.currentStreak || 0;
-			let newFreezes = stats?.streakFreezes || 0;
-			let streakFreezeUsed = false;
-
-			const lastActivity = stats?.lastActivity ? new Date(stats.lastActivity) : null;
-
-			if (lastActivity) {
-				const lastActivityDate = new Date(lastActivity);
-				lastActivityDate.setHours(0, 0, 0, 0);
-
-				const daysDiff = Math.floor(
-					(today.getTime() - lastActivityDate.getTime()) / (1000 * 60 * 60 * 24)
-				);
-
-				if (daysDiff === 0) {
-					// Same day - ensure streak is at least 1 (first activity of the day)
-					if (newStreak === 0) {
-						newStreak = 1;
-					}
-				} else if (daysDiff === 1) {
-					// Next day, increment streak
-					newStreak = (stats?.currentStreak || 0) + 1;
-				} else if (daysDiff === 2) {
-					if ((stats?.streakFreezes || 0) > 0) {
-						newFreezes = (stats?.streakFreezes || 0) - 1;
-						streakFreezeUsed = true;
-						newStreak = (stats?.currentStreak || 0) + 1;
-					} else {
-						newStreak = 1;
-					}
-				} else if (daysDiff > 2) {
-					newStreak = 1;
-				}
-			} else {
-				// First activity ever
-				newStreak = 1;
-			}
-
-			// Check if user earned a new freeze from correct answers
-			if (freezesFromAnswers > currentFreezes) {
-				freezeEarned = true;
-				newFreezes = newFreezes + 1;
-			}
-
-			// Update user stats with XP, correct answers, streak, and freezes
-			await db
-				.update(userStats)
-				.set({
-					xpTotal: (stats?.xpTotal || 0) + xpGain,
-					totalCorrectAnswers: newCorrectTotal,
-					currentStreak: newStreak,
-					longestStreak: Math.max(stats?.longestStreak || 0, newStreak),
-					streakFreezes: freezeEarned
-						? newFreezes
-						: streakFreezeUsed
-							? newFreezes
-							: stats?.streakFreezes || 0,
-					freezesEarnedTotal: freezeEarned ? freezesFromAnswers : stats?.freezesEarnedTotal || 0,
-					lastActivity: new Date()
-				})
-				.where(eq(userStats.userId, userId));
-
-			// Check if this is the first correct answer of the day (before upsert)
-			let firstCorrectToday = false;
-			if (shouldAwardXp) {
-				const [todayStreak] = await db
-					.select({ xpEarned: dailyStreaks.xpEarned })
-					.from(dailyStreaks)
-					.where(and(eq(dailyStreaks.userId, userId), eq(dailyStreaks.activityDate, today)))
-					.limit(1);
-				firstCorrectToday = !todayStreak || todayStreak.xpEarned === 0;
-			}
-
-			// Update daily streak record
-			await db
-				.insert(dailyStreaks)
-				.values({
-					userId,
-					activityDate: today,
-					xpEarned: xpGain
-				})
-				.onConflictDoUpdate({
-					target: [dailyStreaks.userId, dailyStreaks.activityDate],
-					set: {
-						xpEarned: sql`${dailyStreaks.xpEarned} + ${xpGain}`
-					}
-				});
+			await updateChallengeProgress(userId, 'correct_answers', 1);
 
 			// Return current hearts for correct answers
 			return {
@@ -531,10 +450,13 @@ export const actions: Actions = {
 				freezeEarned,
 				hearts: availableHearts,
 				heartsEnabled,
-				streakFreezeUsed,
-				currentStreak: newStreak,
-				xpAwarded: xpGain,
-				firstCorrectToday
+				streakFreezeUsed: streakResult.streakFreezeUsed,
+				currentStreak: streakResult.newStreak,
+				xpAwarded: streakResult.xpGain,
+				firstCorrectToday: streakResult.firstCorrectToday,
+				streakMilestone: streakResult.streakMilestone,
+				previousLevel: streakResult.previousLevel,
+				newLevel: streakResult.newLevel
 			};
 		} else {
 			// Only deduct hearts if not in revision mode AND hearts are enabled
@@ -570,9 +492,12 @@ export const actions: Actions = {
 		}
 	},
 
-	complete: async ({ locals, params }) => {
+	complete: async ({ request, locals, params }) => {
 		const lessonId = parseInt(params.lessonId);
 		const userId = locals.user!.id;
+		const data = await request.formData();
+		const startTimeRaw = Number.parseInt(data.get('startTime')?.toString() || '0', 10);
+		const startTime = Number.isFinite(startTimeRaw) ? startTimeRaw : 0;
 
 		// Get the lesson to check if it's an exam
 		const [lesson] = await db.select().from(lessons).where(eq(lessons.id, lessonId)).limit(1);
@@ -618,16 +543,21 @@ export const actions: Actions = {
 		const xpEarned = todayStreak?.xpEarned ?? 0;
 
 		const [priorProgress] = await db
-			.select({ status: userLessonProgress.status })
+			.select({ status: userLessonProgress.status, score: userLessonProgress.score })
 			.from(userLessonProgress)
 			.where(and(eq(userLessonProgress.userId, userId), eq(userLessonProgress.lessonId, lessonId)))
 			.limit(1);
+		const previousScore = priorProgress?.score ?? null;
 		const wasAlreadyCompleted =
 			priorProgress?.status === 'completed' || priorProgress?.status === 'mastered';
 
 		const isExam = lesson?.isExam || false;
 		const examPassThreshold = lesson?.examPassThreshold || 80;
 		const passed = !isExam || score >= examPassThreshold;
+		const accuracy = score;
+		const timeTakenSeconds =
+			startTime > 0 ? Math.max(0, Math.round((Date.now() - startTime) / 1000)) : null;
+		const gemsEarned = passed ? (score === 100 ? 3 : 1) : 0;
 
 		// Update or create lesson progress
 		await db
@@ -657,11 +587,13 @@ export const actions: Actions = {
 		if (stats && passed && !wasAlreadyCompleted) {
 			const heartsEnabled = await isHeartsEnabledForUser(userId);
 			const newHearts = heartsEnabled ? Math.min(10, stats.hearts + 5) : stats.hearts;
+			const perfectLessonsIncrement = score === 100 ? 1 : 0;
 
 			await db
 				.update(userStats)
 				.set({
 					lessonsCompleted: sql`${userStats.lessonsCompleted} + 1`,
+					perfectLessons: sql`${userStats.perfectLessons} + ${perfectLessonsIncrement}`,
 					hearts: newHearts,
 					heartsLastRefilled: new Date()
 				})
@@ -682,10 +614,12 @@ export const actions: Actions = {
 		} else if (stats && passed && wasAlreadyCompleted) {
 			const heartsEnabled = await isHeartsEnabledForUser(userId);
 			const newHearts = heartsEnabled ? Math.min(10, stats.hearts + 5) : stats.hearts;
+			const perfectLessonsIncrement = score === 100 ? 1 : 0;
 
 			await db
 				.update(userStats)
 				.set({
+					perfectLessons: sql`${userStats.perfectLessons} + ${perfectLessonsIncrement}`,
 					hearts: newHearts,
 					heartsLastRefilled: new Date()
 				})
@@ -705,6 +639,14 @@ export const actions: Actions = {
 			);
 		}
 
+		if (passed) {
+			await awardGems(userId, gemsEarned);
+			await updateChallengeProgress(userId, 'lessons_completed', 1);
+			if (score === 100) {
+				await updateChallengeProgress(userId, 'perfect_lessons', 1);
+			}
+		}
+
 		return {
 			completed: true,
 			xpEarned,
@@ -712,6 +654,10 @@ export const actions: Actions = {
 			isExam,
 			examPassThreshold,
 			score,
+			accuracy,
+			timeTakenSeconds,
+			previousScore,
+			gemsEarned,
 			newAchievements
 		};
 	}

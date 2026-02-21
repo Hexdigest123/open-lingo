@@ -5,7 +5,10 @@ import {
 	lessonSkills,
 	questionConcepts,
 	questions,
+	userConceptProgress,
+	userQuestionAttempts,
 	userSkillProgress,
+	userStats,
 	users
 } from '$lib/server/db/schema';
 import {
@@ -20,12 +23,16 @@ import {
 } from '$lib/server/learning/progression-service';
 import { isAnswerCorrect } from '$lib/server/validation/answers';
 import { hasGlobalApiKey } from '$lib/server/openai/getApiKey';
+import { recordCorrectAnswer } from '$lib/server/learning/streak-service';
+import { updateChallengeProgress } from '$lib/server/learning/challenge-service';
+import { awardGems } from '$lib/server/learning/gems-service';
 import { and, eq, inArray } from 'drizzle-orm';
 import {
 	pick,
 	resolveQuestionContent,
 	resolveTeachBlockConfig,
 	resolveEntityFields,
+	sanitizeHint,
 	CONCEPT_FIELDS,
 	SKILL_FIELDS,
 	LESSON_BLOCK_FIELDS
@@ -101,6 +108,28 @@ export const load: PageServerLoad = async ({ params, locals }) => {
 		}
 	}
 
+	const conceptProgressRows =
+		conceptIds.length > 0
+			? await db
+					.select({
+						conceptId: userConceptProgress.conceptId,
+						mastery: userConceptProgress.mastery,
+						status: userConceptProgress.status
+					})
+					.from(userConceptProgress)
+					.where(
+						and(
+							eq(userConceptProgress.userId, userId),
+							inArray(userConceptProgress.conceptId, conceptIds)
+						)
+					)
+			: [];
+
+	const conceptProgress: Record<number, { mastery: number; status: string }> = {};
+	for (const row of conceptProgressRows) {
+		conceptProgress[row.conceptId] = { mastery: row.mastery, status: row.status };
+	}
+
 	const [user] = await db
 		.select({ openaiApiKeyEncrypted: users.openaiApiKeyEncrypted })
 		.from(users)
@@ -122,12 +151,17 @@ export const load: PageServerLoad = async ({ params, locals }) => {
 		}
 		return resolved;
 	});
-	const resolvedQuestions = skillQuestions.map((q) => ({
-		...q,
-		content: q.content
+	const resolvedQuestions = skillQuestions.map((q) => {
+		let content = q.content
 			? resolveQuestionContent(q.content as Record<string, unknown>, locale)
-			: q.content
-	}));
+			: (q.content as Record<string, unknown>);
+
+		if (content) {
+			content = sanitizeHint(content, q.correctAnswer);
+		}
+
+		return { ...q, content };
+	});
 
 	return {
 		skill: resolvedSkill,
@@ -135,6 +169,7 @@ export const load: PageServerLoad = async ({ params, locals }) => {
 		blocks: resolvedBlocks,
 		questions: resolvedQuestions,
 		questionConceptMap,
+		conceptProgress,
 		hasApiKey
 	};
 };
@@ -149,6 +184,11 @@ export const actions: Actions = {
 		const conceptId = Number.parseInt(data.get('conceptId')?.toString() ?? '', 10);
 		const questionId = Number.parseInt(data.get('questionId')?.toString() ?? '', 10);
 		const answer = data.get('answer')?.toString().trim() ?? '';
+		const rawComboMultiplier = Number.parseInt(data.get('comboMultiplier')?.toString() ?? '1', 10);
+		const comboMultiplier =
+			Number.isFinite(rawComboMultiplier) && rawComboMultiplier > 0
+				? Math.min(rawComboMultiplier, 10)
+				: 1;
 
 		if (!Number.isFinite(skillId) || !languageCode) {
 			return fail(400, { error: 'Invalid route params' });
@@ -172,15 +212,59 @@ export const actions: Actions = {
 		}
 
 		const isCorrect = isAnswerCorrect(answer, question.correctAnswer);
-		const conceptProgress = await updateConceptProgress(userId, conceptId, isCorrect);
+
+		await db.insert(userQuestionAttempts).values({
+			userId,
+			questionId,
+			answer,
+			isCorrect
+		});
+
+		const conceptProgressResult = await updateConceptProgress(userId, conceptId, isCorrect);
+
+		const [previousSkillProgress] = await db
+			.select({ mastery: userSkillProgress.mastery })
+			.from(userSkillProgress)
+			.where(and(eq(userSkillProgress.userId, userId), eq(userSkillProgress.skillId, skillId)))
+			.limit(1);
+
 		const skillProgress = await updateSkillProgress(userId, skillId);
 		await checkAndUnlockSkills(userId, languageCode);
+
+		let firstCorrectToday = false;
+		let streakMilestone: number | null = null;
+		let previousLevel: number | null = null;
+		let newLevel: number | null = null;
+
+		if (isCorrect) {
+			const [stats] = await db
+				.select()
+				.from(userStats)
+				.where(eq(userStats.userId, userId))
+				.limit(1);
+
+			const activityResult = await recordCorrectAnswer(userId, stats, true, comboMultiplier);
+			firstCorrectToday = activityResult.firstCorrectToday;
+			streakMilestone = activityResult.streakMilestone;
+			previousLevel = activityResult.previousLevel;
+			newLevel = activityResult.newLevel;
+
+			await updateChallengeProgress(userId, 'correct_answers', 1);
+
+			if ((previousSkillProgress?.mastery ?? 0) < 1 && skillProgress.mastery >= 1) {
+				await awardGems(userId, 1);
+			}
+		}
 
 		return {
 			isCorrect,
 			correctAnswer: question.correctAnswer,
-			mastery: conceptProgress.mastery,
-			skillMastery: skillProgress.mastery
+			mastery: conceptProgressResult.mastery,
+			skillMastery: skillProgress.mastery,
+			firstCorrectToday,
+			streakMilestone,
+			previousLevel,
+			newLevel
 		};
 	}
 };
