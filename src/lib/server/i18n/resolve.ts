@@ -112,6 +112,23 @@ export function resolveQuestionContent(
 }
 
 /**
+ * Strip the correct answer from hint text so hints don't leak the solution
+ * (e.g. character_writing hints like "い looks like two needles" where い is the answer).
+ */
+export function sanitizeHint(
+	content: Record<string, unknown>,
+	correctAnswer: string
+): Record<string, unknown> {
+	if (typeof content.hint === 'string' && correctAnswer) {
+		const answer = correctAnswer.trim();
+		if (answer && content.hint.includes(answer)) {
+			return { ...content, hint: content.hint.replaceAll(answer, '…') };
+		}
+	}
+	return content;
+}
+
+/**
  * Resolve column-per-language fields on a DB row to single fields.
  *
  * Transforms: { titleEn: "Hello", titleDe: "Hallo", descriptionEn: "...", descriptionDe: "..." }

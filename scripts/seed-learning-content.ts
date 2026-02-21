@@ -868,7 +868,7 @@ function buildVocabQuestionDrafts(
 			type: 'multiple_choice',
 			content: {
 				questionEn: `Choose the ${languageName} word for "${nativeWord}".`,
-				questionDe: `Wahle das ${languageName}-Wort fur „${nativeWord}".`,
+				questionDe: `Wähle das ${languageName}-Wort für „${nativeWord}".`,
 				options
 			},
 			correctAnswer: targetWord
@@ -896,9 +896,9 @@ function buildVocabQuestionDrafts(
 			type: 'fill_blank',
 			content: {
 				sentenceEn: `Complete the ${languageName} word: _____ = "${nativeWord}".`,
-				sentenceDe: `Erganze das ${languageName}-Wort: _____ = „${nativeWord}".`,
+				sentenceDe: `Ergänze das ${languageName}-Wort: _____ = „${nativeWord}".`,
 				hintEn: `Use the ${languageName} translation for "${nativeWord}".`,
-				hintDe: `Nutze die ${languageName}-Ubersetzung fur „${nativeWord}".`
+				hintDe: `Nutze die ${languageName}-Übersetzung für „${nativeWord}".`
 			},
 			correctAnswer: targetWord
 		}
@@ -994,7 +994,7 @@ function buildPhoneticQuestionDrafts(
 			type: 'multiple_choice',
 			content: {
 				questionEn: `Which group matches the basic vowels for ${concept.titleEn}?`,
-				questionDe: `Welche Gruppe passt zu den Grundvokalen fur ${concept.titleDe}?`,
+				questionDe: `Welche Gruppe passt zu den Grundvokalen für ${concept.titleDe}?`,
 				options: ['a, e, i, o, u', 'a, e, i, o, y', 'a, e, o, b, u', 'a, i, o, u, n']
 			},
 			correctAnswer: 'a, e, i, o, u'

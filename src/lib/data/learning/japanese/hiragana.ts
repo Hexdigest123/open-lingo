@@ -318,7 +318,7 @@ export const HIRAGANA_BASE: HiraganaCharData[] = [
 		column: 'i',
 		strokeCount: 2,
 		mnemonicEn: 'み looks like a musical note flowing down.',
-		mnemonicDe: 'み sieht aus wie eine nach unten fliessende Musiknote.',
+		mnemonicDe: 'み sieht aus wie eine nach unten fließende Musiknote.',
 		order: 32
 	},
 	{
@@ -428,7 +428,7 @@ export const HIRAGANA_BASE: HiraganaCharData[] = [
 		column: 'o',
 		strokeCount: 1,
 		mnemonicEn: 'ろ is a rounded road turn.',
-		mnemonicDe: 'ろ ist eine runde Strassenkurve.',
+		mnemonicDe: 'ろ ist eine runde Straßenkurve.',
 		order: 43
 	},
 	{

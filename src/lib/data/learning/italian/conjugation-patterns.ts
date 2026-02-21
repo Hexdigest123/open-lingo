@@ -123,7 +123,7 @@ export const CONJUGATION_PRESENT: ConjugationPatternData[] = [
 	{
 		infinitive: 'potere',
 		infinitiveEn: 'to be able to',
-		infinitiveDe: 'konnen',
+		infinitiveDe: 'können',
 		group: 'irregular',
 		isIrregular: true,
 		forms: {
@@ -157,7 +157,7 @@ export const CONJUGATION_PRESENT: ConjugationPatternData[] = [
 	{
 		infinitive: 'dovere',
 		infinitiveEn: 'to have to / must',
-		infinitiveDe: 'mussen / sollen',
+		infinitiveDe: 'müssen / sollen',
 		group: 'irregular',
 		isIrregular: true,
 		forms: {

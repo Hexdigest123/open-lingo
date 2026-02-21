@@ -140,7 +140,7 @@ export const CONJUGATION_PRESENT: ConjugationPatternData[] = [
 	{
 		infinitive: 'poder',
 		infinitiveEn: 'to be able to',
-		infinitiveDe: 'konnen',
+		infinitiveDe: 'können',
 		group: 'irregular',
 		isIrregular: true,
 		forms: {

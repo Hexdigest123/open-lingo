@@ -118,7 +118,7 @@ export const KATAKANA_BASE: KatakanaCharData[] = [
 		column: 'i',
 		strokeCount: 3,
 		mnemonicEn: 'シ has three drops flowing to one line.',
-		mnemonicDe: 'シ hat drei Tropfen, die zu einer Linie fliessen.',
+		mnemonicDe: 'シ hat drei Tropfen, die zu einer Linie fließen.',
 		order: 12
 	},
 	{
@@ -408,7 +408,7 @@ export const KATAKANA_BASE: KatakanaCharData[] = [
 		column: 'u',
 		strokeCount: 2,
 		mnemonicEn: 'ル looks like a road curve and a post.',
-		mnemonicDe: 'ル sieht aus wie eine Strassenkurve mit Pfosten.',
+		mnemonicDe: 'ル sieht aus wie eine Straßenkurve mit Pfosten.',
 		order: 41
 	},
 	{

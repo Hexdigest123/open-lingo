@@ -17,9 +17,9 @@ export interface UnitVocab {
 export const A1_UNITS: UnitVocab[] = [
 	{
 		titleEn: 'Greetings & Introductions',
-		titleDe: 'Begrüssungen & Vorstellungen',
+		titleDe: 'Begrüßungen & Vorstellungen',
 		descriptionEn: 'Learn basic greetings and how to introduce yourself',
-		descriptionDe: 'Lerne grundlegende Begrüssungen und stelle dich vor',
+		descriptionDe: 'Lerne grundlegende Begrüßungen und stelle dich vor',
 		themeColor: '#E60026',
 		vocab: [
 			{ target: 'こんにちは (konnichiwa)', en: 'hello', de: 'hallo' },
@@ -1025,7 +1025,7 @@ export const B1_UNITS: UnitVocab[] = [
 			{ target: '来た', en: 'came', de: 'kam' },
 			{ target: '見た', en: 'saw', de: 'sah' },
 			{ target: '言った', en: 'said', de: 'sagte' },
-			{ target: '食べた', en: 'ate', de: 'ass' },
+			{ target: '食べた', en: 'ate', de: 'aß' },
 			{ target: '飲んだ', en: 'drank', de: 'trank' },
 			{ target: '寝た', en: 'slept', de: 'schlief' },
 			{ target: '書いた', en: 'wrote', de: 'schrieb' },
@@ -1046,7 +1046,7 @@ export const B1_UNITS: UnitVocab[] = [
 			{
 				target: '彼女は昼ごはんに寿司を食べた。',
 				en: 'She ate sushi for lunch.',
-				de: 'Sie ass Sushi zum Mittagessen.'
+				de: 'Sie aß Sushi zum Mittagessen.'
 			},
 			{
 				target: '先生は大切なことを言った。',
