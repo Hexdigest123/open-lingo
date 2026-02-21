@@ -4,6 +4,7 @@ ALTER TABLE "chat_messages" DROP CONSTRAINT IF EXISTS "chat_messages_session_id_
 -- Change column types (USING gen_random_uuid() allows integer->uuid cast on empty tables)
 ALTER TABLE "api_usage_logs" ALTER COLUMN "session_id" SET DATA TYPE uuid USING gen_random_uuid();--> statement-breakpoint
 ALTER TABLE "chat_messages" ALTER COLUMN "session_id" SET DATA TYPE uuid USING gen_random_uuid();--> statement-breakpoint
+ALTER TABLE "chat_sessions" ALTER COLUMN "id" DROP DEFAULT;--> statement-breakpoint
 ALTER TABLE "chat_sessions" ALTER COLUMN "id" SET DATA TYPE uuid USING gen_random_uuid();--> statement-breakpoint
 ALTER TABLE "chat_sessions" ALTER COLUMN "id" SET DEFAULT gen_random_uuid();--> statement-breakpoint
 -- Re-add FK constraints with uuid types
