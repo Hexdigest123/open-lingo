@@ -517,6 +517,7 @@
 	"learn.title": "Guided Lesson",
 	"learn.transformSentence": "Transform the sentence",
 	"learn.typeCharacter": "Type the character",
+	"learn.noQuestions": "No questions available for this skill yet. Check back soon!",
 	"learn.unsupportedType": "Unsupported question type",
 	"learn.writeWhat": "Write: {text}",
 	"legal.footer.imprint": "Imprint",

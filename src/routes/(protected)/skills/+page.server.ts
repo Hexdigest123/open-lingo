@@ -1,6 +1,6 @@
 import type { PageServerLoad, Actions } from './$types';
 import { db } from '$lib/server/db';
-import { users } from '$lib/server/db/schema';
+import { languages, users } from '$lib/server/db/schema';
 import { getSkillTree } from '$lib/server/learning/content-service';
 import { getDueReviewCount } from '$lib/server/learning/review-service';
 import { checkAndUnlockSkills } from '$lib/server/learning/progression-service';
@@ -20,7 +20,12 @@ export const load: PageServerLoad = async ({ locals }) => {
 	// Unlock any skills whose prerequisites are met (including root skills with none)
 	await checkAndUnlockSkills(userId, languageCode);
 
-	const [skills, dueReviewCount] = await Promise.all([
+	const [[languageRow], skills, dueReviewCount] = await Promise.all([
+		db
+			.select({ name: languages.name })
+			.from(languages)
+			.where(eq(languages.code, languageCode))
+			.limit(1),
 		getSkillTree(languageCode, userId, locals.locale),
 		getDueReviewCount(userId, languageCode)
 	]);
@@ -28,7 +33,8 @@ export const load: PageServerLoad = async ({ locals }) => {
 	return {
 		skills,
 		dueReviewCount,
-		languageCode
+		languageCode,
+		languageName: languageRow?.name ?? languageCode.toUpperCase()
 	};
 };
 

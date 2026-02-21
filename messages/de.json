@@ -517,6 +517,7 @@
 	"learn.title": "Geführte Lektion",
 	"learn.transformSentence": "Wandle den Satz um",
 	"learn.typeCharacter": "Gib das Zeichen ein",
+	"learn.noQuestions": "Noch keine Fragen für diese Fähigkeit verfügbar. Schau bald wieder vorbei!",
 	"learn.unsupportedType": "Nicht unterstützter Fragetyp",
 	"learn.writeWhat": "Schreibe: {text}",
 	"legal.footer.imprint": "Impressum",

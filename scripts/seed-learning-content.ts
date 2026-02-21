@@ -14,7 +14,7 @@ import { KANJI_N5 } from '../src/lib/data/learning/japanese/kanji-n5';
 import 'dotenv/config';
 
 import type { SkillGraphDefinition, GrammarPointData } from '../src/lib/learning/types';
-import type { ConceptType, SkillType } from '../src/lib/server/db/schema';
+import type { ConceptType, SkillType, QuestionType } from '../src/lib/server/db/schema';
 
 const {
 	concepts,
@@ -769,6 +769,469 @@ async function seedLanguageContent(db: ReturnType<typeof drizzle>, language: See
 	console.log(`   ✓ Skill prerequisite links upserted: ${prerequisiteRows.length}`);
 }
 
+type SupportedDrillQuestionType = Extract<
+	QuestionType,
+	'multiple_choice' | 'fill_blank' | 'translation' | 'matching' | 'word_order'
+>;
+
+type QuestionDraft = {
+	type: SupportedDrillQuestionType;
+	content: Record<string, unknown>;
+	correctAnswer: string;
+};
+
+type SeedableConceptRow = {
+	id: number;
+	key: string;
+	titleEn: string;
+	titleDe: string;
+	data: Record<string, unknown>;
+};
+
+const LANGUAGE_NAMES: Record<'es' | 'it', string> = {
+	es: 'Spanish',
+	it: 'Italian'
+};
+
+const LANGUAGE_UNIT_COPY: Record<'es' | 'it', { title: string; description: string }> = {
+	es: {
+		title: 'Spanish Skill Tree A1',
+		description: 'Guided skill drills for Spanish A1 concepts'
+	},
+	it: {
+		title: 'Italian Skill Tree A1',
+		description: 'Guided skill drills for Italian A1 concepts'
+	}
+};
+
+function selectDistractors(correct: string, pool: string[], count: number): string[] {
+	const unique: string[] = [];
+	for (const candidate of pool) {
+		if (candidate === correct || unique.includes(candidate)) {
+			continue;
+		}
+		unique.push(candidate);
+		if (unique.length >= count) {
+			break;
+		}
+	}
+	return unique;
+}
+
+function parseGrammarData(concept: SeedableConceptRow): {
+	pattern: string;
+	examples: GrammarPointData['examples'];
+} {
+	const rawPattern = concept.data.pattern;
+	const pattern = typeof rawPattern === 'string' ? rawPattern : concept.titleEn;
+
+	const rawExamples = concept.data.examples;
+	if (!Array.isArray(rawExamples)) {
+		return { pattern, examples: [] };
+	}
+
+	const examples: GrammarPointData['examples'] = rawExamples
+		.filter(
+			(example): example is { target: string; en: string; de: string } =>
+				typeof example === 'object' &&
+				example !== null &&
+				typeof (example as { target?: unknown }).target === 'string' &&
+				typeof (example as { en?: unknown }).en === 'string' &&
+				typeof (example as { de?: unknown }).de === 'string'
+		)
+		.map((example) => ({
+			target: example.target,
+			en: example.en,
+			de: example.de
+		}));
+
+	return { pattern, examples };
+}
+
+function buildVocabQuestionDrafts(
+	concept: SeedableConceptRow,
+	languageCode: 'es' | 'it',
+	vocabPool: SeedableConceptRow[]
+): QuestionDraft[] {
+	const languageName = LANGUAGE_NAMES[languageCode];
+	const targetWord = concept.titleEn;
+	const nativeWord = concept.titleDe;
+	const distractorWords = selectDistractors(
+		targetWord,
+		vocabPool.map((c) => c.titleEn),
+		3
+	);
+	const options = [targetWord, ...distractorWords];
+
+	return [
+		{
+			type: 'multiple_choice',
+			content: {
+				questionEn: `Choose the ${languageName} word for "${nativeWord}".`,
+				questionDe: `Wahle das ${languageName}-Wort fur „${nativeWord}".`,
+				options
+			},
+			correctAnswer: targetWord
+		},
+		{
+			type: 'translation',
+			content: {
+				text: targetWord,
+				direction: 'target_to_native',
+				targetLanguageName: languageName
+			},
+			correctAnswer: `${nativeWord}|${targetWord}`
+		},
+		{
+			type: 'translation',
+			content: {
+				textEn: nativeWord,
+				textDe: nativeWord,
+				direction: 'native_to_target',
+				targetLanguageName: languageName
+			},
+			correctAnswer: targetWord
+		},
+		{
+			type: 'fill_blank',
+			content: {
+				sentenceEn: `Complete the ${languageName} word: _____ = "${nativeWord}".`,
+				sentenceDe: `Erganze das ${languageName}-Wort: _____ = „${nativeWord}".`,
+				hintEn: `Use the ${languageName} translation for "${nativeWord}".`,
+				hintDe: `Nutze die ${languageName}-Ubersetzung fur „${nativeWord}".`
+			},
+			correctAnswer: targetWord
+		}
+	];
+}
+
+function buildGrammarQuestionDrafts(
+	concept: SeedableConceptRow,
+	languageCode: 'es' | 'it',
+	grammarPool: SeedableConceptRow[]
+): QuestionDraft[] {
+	const languageName = LANGUAGE_NAMES[languageCode];
+	const { pattern, examples } = parseGrammarData(concept);
+	const primaryExample =
+		examples[0] ??
+		({
+			target: concept.titleEn,
+			en: concept.titleEn,
+			de: concept.titleDe
+		} as const);
+
+	const exampleDistractors = selectDistractors(
+		primaryExample.target,
+		grammarPool.flatMap((g) => parseGrammarData(g).examples.map((ex) => ex.target)),
+		3
+	);
+	const grammarTitleDistractors = selectDistractors(
+		concept.titleEn,
+		grammarPool.map((g) => g.titleEn),
+		3
+	);
+
+	const blankAnswer = primaryExample.target.split(/\s+/)[0] ?? concept.titleEn;
+	const blankSentence = primaryExample.target.replace(blankAnswer, '_____');
+
+	return [
+		{
+			type: 'multiple_choice',
+			content: {
+				questionEn: `Which ${languageName} sentence means "${primaryExample.en}"?`,
+				questionDe: `Welcher ${languageName}-Satz bedeutet „${primaryExample.de}"?`,
+				options:
+					exampleDistractors.length >= 2
+						? [primaryExample.target, ...exampleDistractors]
+						: [concept.titleEn, ...grammarTitleDistractors]
+			},
+			correctAnswer: exampleDistractors.length >= 2 ? primaryExample.target : concept.titleEn
+		},
+		{
+			type: 'fill_blank',
+			content: {
+				sentenceEn: blankSentence.includes('_____')
+					? blankSentence
+					: '_____ ' + primaryExample.target,
+				sentenceDe: blankSentence.includes('_____')
+					? blankSentence
+					: '_____ ' + primaryExample.target,
+				hintEn: `Pattern: ${pattern}`,
+				hintDe: `Muster: ${pattern}`
+			},
+			correctAnswer: blankAnswer
+		},
+		{
+			type: 'translation',
+			content: {
+				textEn: primaryExample.en,
+				textDe: primaryExample.de,
+				direction: 'native_to_target',
+				targetLanguageName: languageName
+			},
+			correctAnswer: primaryExample.target
+		}
+	];
+}
+
+function buildPhoneticQuestionDrafts(
+	concept: SeedableConceptRow,
+	languageCode: 'es' | 'it'
+): QuestionDraft[] {
+	const languageName = LANGUAGE_NAMES[languageCode];
+
+	return [
+		{
+			type: 'multiple_choice',
+			content: {
+				questionEn: `Which option is a core ${languageName} vowel sound?`,
+				questionDe: `Welche Option ist ein zentraler ${languageName}-Vokal?`,
+				options: ['a', 'b', 'd', 'g']
+			},
+			correctAnswer: 'a'
+		},
+		{
+			type: 'multiple_choice',
+			content: {
+				questionEn: `Which group matches the basic vowels for ${concept.titleEn}?`,
+				questionDe: `Welche Gruppe passt zu den Grundvokalen fur ${concept.titleDe}?`,
+				options: ['a, e, i, o, u', 'a, e, i, o, y', 'a, e, o, b, u', 'a, i, o, u, n']
+			},
+			correctAnswer: 'a, e, i, o, u'
+		},
+		{
+			type: 'multiple_choice',
+			content: {
+				questionEn: `Which letter gives the close back vowel in beginner ${languageName}?`,
+				questionDe: `Welcher Buchstabe gibt den hinteren geschlossenen Vokal im ${languageName}-Einstieg?`,
+				options: ['u', 'j', 'c', 'r']
+			},
+			correctAnswer: 'u'
+		}
+	];
+}
+
+async function ensureLanguageQuestionUnit(
+	db: ReturnType<typeof drizzle>,
+	languageCode: 'es' | 'it'
+) {
+	const [existingLevel] = await db
+		.select({ id: levels.id })
+		.from(levels)
+		.where(and(eq(levels.languageCode, languageCode), eq(levels.code, 'A1')))
+		.limit(1);
+
+	let levelId: number;
+	if (existingLevel) {
+		levelId = existingLevel.id;
+	} else {
+		const [inserted] = await db
+			.insert(levels)
+			.values({ code: 'A1', languageCode, name: 'Beginner', order: 1 })
+			.onConflictDoNothing()
+			.returning();
+
+		if (inserted) {
+			levelId = inserted.id;
+		} else {
+			const [fallback] = await db
+				.select({ id: levels.id })
+				.from(levels)
+				.where(and(eq(levels.languageCode, languageCode), eq(levels.code, 'A1')))
+				.limit(1);
+			levelId = fallback.id;
+		}
+	}
+
+	const [existingUnit] = await db
+		.select({ id: units.id })
+		.from(units)
+		.where(and(eq(units.levelId, levelId), eq(units.order, 1)))
+		.limit(1);
+
+	if (existingUnit) {
+		return existingUnit.id;
+	}
+
+	const unitCopy = LANGUAGE_UNIT_COPY[languageCode];
+	const [insertedUnit] = await db
+		.insert(units)
+		.values({
+			levelId,
+			title: unitCopy.title,
+			description: unitCopy.description,
+			order: 1
+		})
+		.returning();
+
+	return insertedUnit.id;
+}
+
+async function seedLanguageQuestions(
+	db: ReturnType<typeof drizzle>,
+	languageCode: 'es' | 'it',
+	skillGraph: SkillGraphDefinition
+) {
+	console.log(`\n🌱 Seeding ${languageCode.toUpperCase()} guided-skill questions...`);
+
+	const unitId = await ensureLanguageQuestionUnit(db, languageCode);
+
+	const [dbSkills, dbConcepts] = await Promise.all([
+		db
+			.select({ id: skills.id, key: skills.key })
+			.from(skills)
+			.where(eq(skills.languageCode, languageCode)),
+		db
+			.select({
+				id: concepts.id,
+				key: concepts.key,
+				titleEn: concepts.titleEn,
+				titleDe: concepts.titleDe,
+				data: concepts.data
+			})
+			.from(concepts)
+			.where(eq(concepts.languageCode, languageCode))
+	]);
+
+	const conceptRows: SeedableConceptRow[] = dbConcepts.map((concept) => ({
+		id: concept.id,
+		key: concept.key,
+		titleEn: concept.titleEn,
+		titleDe: concept.titleDe,
+		data:
+			typeof concept.data === 'object' && concept.data !== null
+				? (concept.data as Record<string, unknown>)
+				: {}
+	}));
+
+	const skillIdByKey = new Map(dbSkills.map((skill) => [skill.key, skill.id]));
+	const conceptByKey = new Map(conceptRows.map((concept) => [concept.key, concept]));
+	const allVocabConcepts = conceptRows.filter((concept) =>
+		concept.key.startsWith(`${languageCode}.vocab.`)
+	);
+	const allGrammarConcepts = conceptRows.filter((concept) =>
+		concept.key.startsWith(`${languageCode}.grammar.`)
+	);
+
+	let totalQuestions = 0;
+	let totalLinks = 0;
+
+	for (const skill of skillGraph.skills) {
+		const skillId = skillIdByKey.get(skill.key);
+		if (!skillId) {
+			console.warn(`   ⚠ Skill not found in DB: ${skill.key}`);
+			continue;
+		}
+
+		const [existingLesson] = await db
+			.select({ id: lessons.id })
+			.from(lessons)
+			.innerJoin(lessonSkills, eq(lessonSkills.lessonId, lessons.id))
+			.where(eq(lessonSkills.skillId, skillId))
+			.limit(1);
+
+		let lessonId: number;
+		if (existingLesson) {
+			lessonId = existingLesson.id;
+		} else {
+			const [insertedLesson] = await db
+				.insert(lessons)
+				.values({
+					unitId,
+					title: JSON.stringify({ en: skill.titleEn, de: skill.titleDe }),
+					description: JSON.stringify({ en: skill.descriptionEn, de: skill.descriptionDe }),
+					xpReward: 15,
+					order: skill.order,
+					isPublished: true,
+					mode: 'guided_skill'
+				})
+				.returning();
+			lessonId = insertedLesson.id;
+
+			await db
+				.insert(lessonSkills)
+				.values({ lessonId, skillId, role: 'primary' })
+				.onConflictDoNothing();
+		}
+
+		const existingLessonQuestions = await db
+			.select({ order: questions.order })
+			.from(questions)
+			.where(eq(questions.lessonId, lessonId));
+
+		let nextQuestionOrder =
+			existingLessonQuestions.length > 0
+				? Math.max(...existingLessonQuestions.map((question) => question.order)) + 1
+				: 1;
+
+		const skillConcepts = skill.conceptKeys
+			.map((conceptKey) => conceptByKey.get(conceptKey))
+			.filter((concept): concept is SeedableConceptRow => !!concept);
+		const skillVocabPool = skillConcepts.filter((concept) =>
+			concept.key.startsWith(`${languageCode}.vocab.`)
+		);
+
+		for (const concept of skillConcepts) {
+			const [existingForConcept] = await db
+				.select({ id: questions.id })
+				.from(questions)
+				.innerJoin(questionConcepts, eq(questionConcepts.questionId, questions.id))
+				.where(eq(questionConcepts.conceptId, concept.id))
+				.limit(1);
+
+			if (existingForConcept) {
+				continue;
+			}
+
+			const questionDrafts = concept.key.startsWith(`${languageCode}.vocab.`)
+				? buildVocabQuestionDrafts(
+						concept,
+						languageCode,
+						skillVocabPool.length >= 2 ? skillVocabPool : allVocabConcepts
+					)
+				: concept.key.startsWith(`${languageCode}.grammar.`)
+					? buildGrammarQuestionDrafts(concept, languageCode, allGrammarConcepts)
+					: concept.key.startsWith(`${languageCode}.phonetics.`)
+						? buildPhoneticQuestionDrafts(concept, languageCode)
+						: [];
+
+			for (const draft of questionDrafts) {
+				const [insertedQuestion] = await db
+					.insert(questions)
+					.values({
+						lessonId,
+						type: draft.type,
+						content: draft.content,
+						correctAnswer: draft.correctAnswer,
+						order: nextQuestionOrder
+					})
+					.returning();
+
+				nextQuestionOrder += 1;
+
+				await db
+					.insert(questionConcepts)
+					.values({ questionId: insertedQuestion.id, conceptId: concept.id })
+					.onConflictDoNothing();
+
+				totalQuestions += 1;
+				totalLinks += 1;
+			}
+		}
+	}
+
+	console.log(`   ✓ Questions inserted: ${totalQuestions}`);
+	console.log(`   ✓ Question-concept links: ${totalLinks}`);
+}
+
+async function seedSpanishQuestions(db: ReturnType<typeof drizzle>) {
+	await seedLanguageQuestions(db, 'es', SPANISH_SKILL_GRAPH);
+}
+
+async function seedItalianQuestions(db: ReturnType<typeof drizzle>) {
+	await seedLanguageQuestions(db, 'it', ITALIAN_SKILL_GRAPH);
+}
+
 type HiraganaChar = {
 	char: string;
 	romaji: string;
@@ -1047,6 +1510,8 @@ async function seed() {
 	}
 
 	await seedJapaneseQuestions(db);
+	await seedSpanishQuestions(db);
+	await seedItalianQuestions(db);
 
 	console.log('\n🎉 Learning content seed finished (additive, idempotent).');
 	await client.end();

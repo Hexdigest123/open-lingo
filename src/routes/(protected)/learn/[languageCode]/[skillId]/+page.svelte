@@ -286,12 +286,27 @@
 			{:else if currentBlock.blockType === 'drill' || currentBlock.blockType === 'review'}
 				{@const blockQuestions = getBlockQuestions(currentBlock)}
 				{#if blockQuestions.length === 0}
-					<div class="card text-center">
-						<p class="text-text-muted">
-							{m['learn.unsupportedType']()}
-						</p>
-						<button class="btn btn-primary mt-4" onclick={nextBlock}>{m['learn.continue']()}</button
+					<div class="space-y-4 card text-center">
+						<div
+							class="mx-auto flex h-16 w-16 items-center justify-center rounded-full bg-yellow/10 text-yellow-dark"
 						>
+							<svg
+								xmlns="http://www.w3.org/2000/svg"
+								class="h-8 w-8"
+								viewBox="0 0 20 20"
+								fill="currentColor"
+							>
+								<path
+									fill-rule="evenodd"
+									d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7 4a1 1 0 11-2 0 1 1 0 012 0zm-1-9a1 1 0 00-1 1v4a1 1 0 102 0V6a1 1 0 00-1-1z"
+									clip-rule="evenodd"
+								/>
+							</svg>
+						</div>
+						<p class="text-text-muted">
+							{m['learn.noQuestions']()}
+						</p>
+						<a href="/skills" class="btn btn-primary">← {m['learn.backToSkills']()}</a>
 					</div>
 				{:else}
 					{#key `${currentBlock.id}-${checkpointAttempt}`}
@@ -325,13 +340,27 @@
 						{/if}
 					</div>
 					{#if checkpointQuestions.length === 0}
-						<div class="card text-center">
-							<p class="text-text-muted">
-								{m['learn.unsupportedType']()}
-							</p>
-							<button class="btn btn-primary mt-4" onclick={nextBlock}
-								>{m['learn.continue']()}</button
+						<div class="space-y-4 card text-center">
+							<div
+								class="mx-auto flex h-16 w-16 items-center justify-center rounded-full bg-yellow/10 text-yellow-dark"
 							>
+								<svg
+									xmlns="http://www.w3.org/2000/svg"
+									class="h-8 w-8"
+									viewBox="0 0 20 20"
+									fill="currentColor"
+								>
+									<path
+										fill-rule="evenodd"
+										d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7 4a1 1 0 11-2 0 1 1 0 012 0zm-1-9a1 1 0 00-1 1v4a1 1 0 102 0V6a1 1 0 00-1-1z"
+										clip-rule="evenodd"
+									/>
+								</svg>
+							</div>
+							<p class="text-text-muted">
+								{m['learn.noQuestions']()}
+							</p>
+							<a href="/skills" class="btn btn-primary">← {m['learn.backToSkills']()}</a>
 						</div>
 					{:else}
 						{#key `checkpoint-${currentBlock.id}-${checkpointAttempt}`}

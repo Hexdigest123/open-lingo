@@ -193,7 +193,7 @@
 	<!-- Feedback Sheet -->
 	{#if showFeedback}
 		<div
-			class="fixed right-0 bottom-0 left-0 z-50 border-t-2 p-6 shadow-2xl transition-transform duration-300
+			class="fixed right-0 bottom-0 left-0 z-[60] border-t-2 p-6 shadow-2xl transition-transform duration-300
 			{isCorrect
 				? 'border-success bg-success/10 text-success-dark'
 				: 'border-error bg-error/10 text-error-dark'}

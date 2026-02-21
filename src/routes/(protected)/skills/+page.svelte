@@ -12,7 +12,8 @@
 		Mic,
 		Pencil,
 		RefreshCw,
-		BookMarked
+		BookMarked,
+		Volume2
 	} from 'lucide-svelte';
 	import type { ComponentType } from 'svelte';
 
@@ -77,6 +78,8 @@
 				return Pencil;
 			case 'conjugation':
 				return RefreshCw;
+			case 'pronunciation':
+				return Volume2;
 			default:
 				return BookMarked;
 		}
@@ -110,12 +113,12 @@
 				{m['skills.title']()}
 			</h1>
 			<p class="text-text-muted">
-				{m['skills.subtitle']({ language: data.languageCode.toUpperCase() })}
+				{m['skills.subtitle']({ language: data.languageName })}
 			</p>
 		</div>
 		<a href="/review" class="btn btn-primary">
 			{m['review.title']()}
-			<span class="ml-2 rounded-full bg-white/20 px-2 py-0.5 text-xs font-bold"
+			<span class="ml-2 rounded-full bg-white/30 px-2 py-0.5 text-xs font-bold text-white"
 				>{data.dueReviewCount}</span
 			>
 		</a>
@@ -128,10 +131,12 @@
 			</p>
 		</div>
 	{:else}
-		<div class="space-y-8">
+		<div class="space-y-8 pb-24">
 			{#each groupedSkills as group}
 				<section class="space-y-4">
-					<h2 class="text-lg font-bold tracking-wide text-text-light uppercase">
+					<h2
+						class="border-b border-border-light pb-2 text-xl font-bold tracking-wide text-text-light uppercase"
+					>
 						{group.level === 'other' ? '—' : group.level}
 					</h2>
 					<div class="grid gap-4 md:grid-cols-2 xl:grid-cols-3">
@@ -141,6 +146,8 @@
 							{@const prereqs = getPrerequisiteNames(skill)}
 							<a
 								href={locked ? undefined : `/learn/${data.languageCode}/${skill.id}`}
+								aria-disabled={locked ? 'true' : undefined}
+								tabindex={locked ? -1 : undefined}
 								class="block card border border-border-light transition-all {locked
 									? 'pointer-events-none opacity-60'
 									: 'hover:border-primary/40 hover:shadow-lg'}"
@@ -154,14 +161,16 @@
 										</div>
 										<div>
 											<p class="font-semibold text-text-light">{getSkillTitle(skill)}</p>
-											<p class="text-xs text-text-muted">{skill.cefrLevel ?? '—'} · {skill.type}</p>
+											<p class="text-xs text-text-light/60">
+												{skill.cefrLevel ?? '—'} · {skill.type}
+											</p>
 										</div>
 									</div>
 									<span
 										class="rounded-full px-2 py-1 text-xs font-semibold {mastered
 											? 'bg-success/15 text-success'
 											: locked
-												? 'bg-surface-100 text-text-muted'
+												? 'bg-surface-200 text-text-light/70'
 												: 'bg-primary/15 text-primary'}"
 									>
 										{getStatusLabel(skill.status)}
@@ -169,24 +178,25 @@
 								</div>
 
 								{#if getSkillDescription(skill)}
-									<p class="mb-3 text-sm text-text-muted">{getSkillDescription(skill)}</p>
+									<p class="mb-3 text-sm text-text-light/70">{getSkillDescription(skill)}</p>
 								{/if}
 
 								<div class="space-y-1">
-									<div class="flex items-center justify-between text-xs text-text-muted">
+									<div class="flex items-center text-xs text-text-light/60">
 										<span>{m['skills.mastery']({ percent: Math.round(skill.mastery * 100) })}</span>
-										<span>{Math.round(skill.mastery * 100)}%</span>
 									</div>
 									<div class="bg-surface-100 h-2 overflow-hidden rounded-full">
 										<div
-											class="h-full rounded-full {mastered ? 'bg-success' : 'bg-primary'}"
-											style="width: {Math.round(skill.mastery * 100)}%"
+											class="h-full rounded-full {mastered
+												? 'bg-success'
+												: 'bg-primary'} {skill.mastery === 0 ? 'opacity-30' : ''}"
+											style="width: {Math.max(Math.round(skill.mastery * 100), 2)}%"
 										></div>
 									</div>
 								</div>
 
 								{#if prereqs.length > 0}
-									<p class="mt-3 text-xs text-text-muted">
+									<p class="mt-3 text-xs text-text-light/60">
 										{m['skills.prerequisites']()}: {prereqs.join(', ')}
 									</p>
 								{/if}
