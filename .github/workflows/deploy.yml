@@ -76,9 +76,6 @@ jobs:
           # mark 0000-0005 as applied so only migration 0006+ runs.
           # 0000-0005 were applied via drizzle-kit push; 0006 is the first
           # migration that needs to run (multi-language support).
-          docker compose -f compose.yaml exec -T db psql -U "$POSTGRES_USER" -d "$POSTGRES_DB" -c \
-            "DELETE FROM \"drizzle\".\"__drizzle_migrations\" WHERE created_at = 1771623572546;" 2>/dev/null || true
-
           MIGRATION_COUNT=$(docker compose -f compose.yaml exec -T db psql -U "$POSTGRES_USER" -d "$POSTGRES_DB" -t -c \
             "SELECT COUNT(*) FROM \"drizzle\".\"__drizzle_migrations\";" | tr -d ' \r\n')
 
@@ -141,6 +138,9 @@ jobs:
       - name: Seed database
         if: steps.check-seed.outputs.needs_seed == 'true'
         run: docker compose -f compose.yaml run --rm migrate npm run db:seed
+
+      - name: Seed learning content (skill tree)
+        run: docker compose -f compose.yaml run --rm migrate npm run db:seed:learning
 
       - name: Build and start app
         run: docker compose -f compose.yaml up -d --build app
