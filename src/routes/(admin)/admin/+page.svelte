@@ -36,7 +36,9 @@
 	<!-- Quick Actions -->
 	<div class="grid gap-4 md:grid-cols-2">
 		<a href="/admin/lessons" class="flex items-center gap-4 card transition-shadow hover:shadow-lg">
-			<div class="flex h-12 w-12 items-center justify-center rounded-xl bg-success/10 text-2xl">
+			<div
+				class="flex h-12 w-12 items-center justify-center rounded-xl bg-success/10 text-2xl text-success"
+			>
 				<BookOpen size={24} />
 			</div>
 			<div>
@@ -45,7 +47,9 @@
 			</div>
 		</a>
 		<a href="/admin/users" class="flex items-center gap-4 card transition-shadow hover:shadow-lg">
-			<div class="flex h-12 w-12 items-center justify-center rounded-xl bg-primary/10 text-2xl">
+			<div
+				class="flex h-12 w-12 items-center justify-center rounded-xl bg-primary/10 text-2xl text-primary"
+			>
 				<Users size={24} />
 			</div>
 			<div>
@@ -57,7 +61,9 @@
 			href="/admin/settings"
 			class="flex items-center gap-4 card transition-shadow hover:shadow-lg"
 		>
-			<div class="flex h-12 w-12 items-center justify-center rounded-xl bg-purple/10 text-2xl">
+			<div
+				class="flex h-12 w-12 items-center justify-center rounded-xl bg-purple/10 text-2xl text-purple"
+			>
 				<Settings size={24} />
 			</div>
 			<div>
@@ -69,7 +75,9 @@
 			href="/admin/api-usage"
 			class="flex items-center gap-4 card transition-shadow hover:shadow-lg"
 		>
-			<div class="flex h-12 w-12 items-center justify-center rounded-xl bg-yellow/10 text-2xl">
+			<div
+				class="flex h-12 w-12 items-center justify-center rounded-xl bg-yellow/10 text-2xl text-yellow-dark"
+			>
 				<BarChart3 size={24} />
 			</div>
 			<div>
