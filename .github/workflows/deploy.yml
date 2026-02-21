@@ -149,6 +149,9 @@ jobs:
       - name: Seed learning content (skill tree)
         run: docker compose -f compose.yaml run --rm migrate npm run db:seed:learning
 
+      - name: Seed shop items
+        run: docker compose -f compose.yaml run --rm -e DATABASE_URL=postgres://${{ secrets.POSTGRES_USER }}:${{ secrets.POSTGRES_PASSWORD }}@db:5432/${{ secrets.POSTGRES_DB }} migrate npx tsx scripts/seed-shop.ts
+
       - name: Build and start app
         run: docker compose -f compose.yaml up -d --build app
 
