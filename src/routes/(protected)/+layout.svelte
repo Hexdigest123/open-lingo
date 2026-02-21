@@ -23,27 +23,25 @@
 		Trophy,
 		User,
 		Flame,
-		Snowflake,
 		Globe,
 		Wrench,
 		LogOut,
-		Star,
 		Heart,
 		Gem,
-		Target,
 		Shield,
 		Menu,
 		X,
 		Settings,
 		ShoppingBag,
-		Users
+		Users,
+		ChevronDown
 	} from 'lucide-svelte';
 
 	let { children, data }: { children: Snippet; data: LayoutData } = $props();
 
-	let showLangMenu = $state(false);
 	let showUserMenu = $state(false);
 	let showMobileMenu = $state(false);
+	let showMoreMenu = $state(false);
 
 	// Initialize locale from server data if available
 	onMount(() => {
@@ -90,6 +88,19 @@
 		{ href: '/profile', labelKey: 'nav.profile', icon: User }
 	];
 
+	const primaryNavItems = [
+		navItems[0], // Dashboard
+		navItems[1], // Learn
+		navItems[3] // Shop
+	];
+
+	const secondaryNavItems = [
+		navItems[2], // Chat
+		navItems[4], // Friends
+		navItems[5], // Leaderboard
+		navItems[6] // Profile
+	];
+
 	const isAdmin = $derived(data.user.role === 'admin');
 
 	// Detect if user is in an active lesson (hide mobile nav to avoid blocking vision)
@@ -97,14 +108,6 @@
 	const levelProgress = $derived(getXpProgress(data.stats.xpTotal));
 	const rank = $derived(getRankFromXp(data.stats.xpTotal));
 	const rankColor = $derived(rank.color);
-	const dailyGoalRatio = $derived(
-		data.stats.dailyXpGoal > 0
-			? Math.min(data.stats.dailyXpProgress / data.stats.dailyXpGoal, 1)
-			: 0
-	);
-	const ringCircumference = $derived(2 * Math.PI * 9);
-	const ringOffset = $derived(ringCircumference * (1 - dailyGoalRatio));
-
 	$effect(() => {
 		setSoundEnabled(data.stats.soundEnabled);
 	});
@@ -113,13 +116,9 @@
 		return $page.url.pathname === href || $page.url.pathname.startsWith(href + '/');
 	}
 
-	function toggleLangMenu() {
-		showLangMenu = !showLangMenu;
-	}
-
 	function selectLocale(locale: 'en' | 'de') {
 		setLocale(locale);
-		showLangMenu = false;
+		showUserMenu = false;
 	}
 </script>
 
@@ -134,7 +133,7 @@
 
 			<!-- Desktop Navigation -->
 			<nav class="hidden items-center gap-3 lg:flex">
-				{#each navItems as item}
+				{#each primaryNavItems as item}
 					<a
 						href={item.href}
 						class="flex items-center gap-1.5 rounded-xl px-3 py-1.5 text-sm font-medium transition-colors
@@ -147,16 +146,49 @@
 						>
 					</a>
 				{/each}
-				{#if isAdmin}
-					<a
-						href="/admin"
-						class="flex items-center gap-1.5 rounded-xl px-3 py-1.5 text-sm font-medium transition-colors
-							{isActive('/admin') ? 'bg-purple/10 text-purple' : 'text-text-muted hover:text-purple'}"
+
+				<!-- More Dropdown -->
+				<div class="relative" use:clickOutside={() => (showMoreMenu = false)}>
+					<button
+						onclick={() => (showMoreMenu = !showMoreMenu)}
+						class="flex cursor-pointer items-center gap-1.5 rounded-xl px-3 py-1.5 text-sm font-medium text-text-muted transition-colors hover:text-text-light"
 					>
-						<Wrench size={20} />
-						<span>{m['nav.admin']()}</span>
-					</a>
-				{/if}
+						<span>{m['nav.menu']()}</span>
+						<ChevronDown size={16} />
+					</button>
+
+					{#if showMoreMenu}
+						<div
+							class="absolute top-full left-0 mt-2 w-48 rounded-xl border border-border-light bg-white py-1 shadow-lg"
+						>
+							{#each secondaryNavItems as item}
+								<a
+									href={item.href}
+									onclick={() => (showMoreMenu = false)}
+									class="flex w-full items-center gap-2 px-4 py-2 text-left text-sm font-medium transition-colors hover:bg-bg-light-secondary
+										{isActive(item.href) ? 'text-success' : 'text-text-muted'}"
+								>
+									<item.icon size={16} />
+									<span
+										>{(m[item.labelKey as keyof typeof m] as unknown as () => string)?.() ??
+											item.labelKey}</span
+									>
+								</a>
+							{/each}
+							{#if isAdmin}
+								<div class="my-1 border-t border-border-light"></div>
+								<a
+									href="/admin"
+									onclick={() => (showMoreMenu = false)}
+									class="flex w-full items-center gap-2 px-4 py-2 text-left text-sm font-medium text-text-muted transition-colors hover:bg-purple/10 hover:text-purple"
+								>
+									<Wrench size={16} />
+									<span>{m['nav.admin']()}</span>
+								</a>
+							{/if}
+						</div>
+					{/if}
+				</div>
 			</nav>
 
 			<!-- Gamification Stats -->
@@ -185,58 +217,8 @@
 					{/if}
 				</div>
 
-				<!-- Streak Freezes -->
-				{#if data.stats.streakFreezes > 0}
-					<div
-						class="hidden items-center gap-1 rounded-xl bg-primary/10 px-2 py-1 md:flex"
-						title={m['gamification.streakFreezes']()}
-					>
-						<Snowflake size={16} class="text-primary" />
-						<span class="text-sm font-bold text-primary">{data.stats.streakFreezes}</span>
-					</div>
-				{/if}
-
-				<!-- XP -->
-				<div
-					class="hidden items-center gap-1 rounded-xl bg-yellow/10 px-2 py-1 min-[360px]:flex"
-					title={m['gamification.xp']()}
-				>
-					<Star size={16} class="text-yellow-dark" />
-					<span class="text-sm font-bold text-yellow-dark">{data.stats.xpTotal}</span>
-					<div
-						class="flex items-center gap-1 rounded-full bg-success/10 px-1 py-0.5"
-						title={m['gamification.dailyGoal']()}
-					>
-						<Target size={12} class="text-success" />
-						<svg
-							width="24"
-							height="24"
-							viewBox="0 0 24 24"
-							style="--ring-circumference: {ringCircumference}; --ring-offset: {ringOffset};"
-						>
-							<circle
-								cx="12"
-								cy="12"
-								r="9"
-								fill="none"
-								stroke="currentColor"
-								stroke-width="3"
-								class="text-success/25"
-							/>
-							<circle
-								cx="12"
-								cy="12"
-								r="9"
-								fill="none"
-								stroke="currentColor"
-								stroke-width="3"
-								stroke-linecap="round"
-								class="animate-progress-ring text-success"
-								style="stroke-dasharray: var(--ring-circumference); stroke-dashoffset: var(--ring-offset); transform: rotate(-90deg); transform-origin: 50% 50%;"
-							/>
-						</svg>
-					</div>
-				</div>
+				<!-- Streak Freezes (Removed from header) -->
+				<!-- XP (Removed from header) -->
 
 				<div
 					class="hidden items-center gap-1 rounded-xl bg-purple/10 px-2 py-1 sm:flex"
@@ -246,45 +228,7 @@
 					<span class="text-sm font-bold text-purple">{data.stats.gems}</span>
 				</div>
 
-				<!-- Language Switcher -->
-				{#if showLangMenu}
-					<div class="relative" use:clickOutside={() => (showLangMenu = false)}>
-						<button
-							onclick={toggleLangMenu}
-							class="flex cursor-pointer items-center gap-1 rounded-xl bg-primary/10 px-2 py-1 text-sm font-medium text-primary hover:bg-primary/20"
-						>
-							<Globe size={16} />
-							<span class="hidden sm:inline">{getLocale() === 'de' ? 'DE' : 'EN'}</span>
-						</button>
-						<div
-							class="absolute top-full right-0 mt-2 w-32 rounded-xl border border-border-light bg-white py-1 shadow-lg"
-						>
-							{#each availableLocales as locale}
-								<button
-									onclick={() => selectLocale(locale.code)}
-									class="w-full px-4 py-2 text-left first:rounded-t-lg last:rounded-b-lg hover:bg-bg-light-secondary {getLocale() ===
-									locale.code
-										? 'font-bold text-primary'
-										: 'text-text-light'}"
-								>
-									{locale.name}
-								</button>
-							{/each}
-						</div>
-					</div>
-				{:else}
-					<div class="relative">
-						<button
-							onclick={toggleLangMenu}
-							class="flex cursor-pointer items-center gap-1 rounded-xl bg-primary/10 px-2 py-1 text-sm font-medium text-primary hover:bg-primary/20"
-						>
-							<Globe size={16} />
-							<span class="hidden sm:inline">{getLocale() === 'de' ? 'DE' : 'EN'}</span>
-						</button>
-					</div>
-				{/if}
-
-				<!-- User Menu with Logout -->
+				<!-- User Menu -->
 				{#if showUserMenu}
 					<div
 						class="relative flex items-center gap-1"
@@ -312,6 +256,25 @@
 							<div class="border-b border-border-light px-4 py-2">
 								<p class="font-medium text-text-light">{data.user.displayName}</p>
 								<p class="text-xs text-text-muted">{data.user.email}</p>
+							</div>
+							<div class="border-b border-border-light px-4 py-2">
+								<p class="mb-1.5 flex items-center gap-1.5 text-xs font-medium text-text-muted">
+									<Globe size={12} />
+									{m['settings.language']()}
+								</p>
+								<div class="flex gap-1">
+									{#each availableLocales as locale}
+										<button
+											onclick={() => selectLocale(locale.code)}
+											class="rounded-lg px-3 py-1 text-xs font-medium transition-colors {getLocale() ===
+											locale.code
+												? 'bg-primary/15 text-primary'
+												: 'text-text-muted hover:bg-bg-light-secondary'}"
+										>
+											{locale.name}
+										</button>
+									{/each}
+								</div>
 							</div>
 							<a
 								href="/settings"

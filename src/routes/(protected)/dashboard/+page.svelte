@@ -184,7 +184,7 @@
 	{/if}
 
 	<!-- Stats Overview -->
-	<div class="grid gap-4 sm:grid-cols-2 lg:grid-cols-6">
+	<div class="grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
 		<div class="card">
 			<div class="flex items-center gap-4">
 				<div
