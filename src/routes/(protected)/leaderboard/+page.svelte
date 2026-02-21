@@ -42,12 +42,12 @@
 	</div>
 
 	<!-- Timeframe Tabs -->
-	<div class="flex justify-center">
-		<div class="inline-flex rounded-xl bg-bg-light-secondary p-1">
+	<div class="flex justify-center overflow-x-auto px-2">
+		<div class="flex min-w-0 flex-nowrap rounded-xl bg-bg-light-secondary p-1">
 			{#each timeframes as tf}
 				<button
 					onclick={() => selectTimeframe(tf)}
-					class="rounded-lg px-4 py-2 text-sm font-medium transition-colors
+					class="rounded-lg px-2.5 py-2 text-sm font-medium transition-colors sm:px-4
 						{data.timeframe === tf ? 'bg-white text-primary shadow' : 'text-text-muted hover:text-text-light'}"
 				>
 					{tabLabels[tf]?.() ?? tf}

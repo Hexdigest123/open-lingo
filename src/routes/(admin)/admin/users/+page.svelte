@@ -217,7 +217,7 @@
 										{#if !user.heartsDisabled && (user.hearts ?? 10) < 10}
 											<form method="POST" action="?/restoreHearts" use:enhance class="inline">
 												<input type="hidden" name="userId" value={user.id} />
-												<button type="submit" class="text-sm text-error hover:underline">
+												<button type="submit" class="py-1 text-sm text-error hover:underline">
 													{m['admin.users.restoreHearts']()}
 												</button>
 											</form>
@@ -234,7 +234,7 @@
 												type="submit"
 												class="text-sm text-text-light {user.heartsDisabled
 													? 'text-success'
-													: 'text-warning'} hover:underline"
+													: 'text-warning'} py-1 hover:underline"
 											>
 												{user.heartsDisabled
 													? m['admin.users.enableHearts']()
@@ -246,7 +246,7 @@
 											<form method="POST" action="?/changeRole" use:enhance class="inline">
 												<input type="hidden" name="userId" value={user.id} />
 												<input type="hidden" name="newRole" value="user" />
-												<button type="submit" class="text-sm text-orange hover:underline">
+												<button type="submit" class="py-1 text-sm text-orange hover:underline">
 													{m['admin.users.removeAdmin']()}
 												</button>
 											</form>
@@ -254,7 +254,7 @@
 											<form method="POST" action="?/changeRole" use:enhance class="inline">
 												<input type="hidden" name="userId" value={user.id} />
 												<input type="hidden" name="newRole" value="admin" />
-												<button type="submit" class="text-sm text-purple hover:underline">
+												<button type="submit" class="py-1 text-sm text-purple hover:underline">
 													{m['admin.users.makeAdmin']()}
 												</button>
 											</form>
@@ -263,20 +263,20 @@
 										{#if deleteConfirm === user.id}
 											<form method="POST" action="?/deleteUser" use:enhance class="inline">
 												<input type="hidden" name="userId" value={user.id} />
-												<button type="submit" class="text-sm text-error hover:underline"
+												<button type="submit" class="py-1 text-sm text-error hover:underline"
 													>{m['common.confirm']()}</button
 												>
 											</form>
 											<button
 												onclick={() => (deleteConfirm = null)}
-												class="text-sm text-text-muted hover:underline"
+												class="py-1 text-sm text-text-muted hover:underline"
 											>
 												{m['common.cancel']()}
 											</button>
 										{:else}
 											<button
 												onclick={() => (deleteConfirm = user.id)}
-												class="text-sm text-error hover:underline"
+												class="py-1 text-sm text-error hover:underline"
 											>
 												{m['common.delete']()}
 											</button>

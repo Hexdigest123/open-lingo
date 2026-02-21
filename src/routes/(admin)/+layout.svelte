@@ -82,15 +82,15 @@
 				{@const IconComponent = iconMap[item.icon]}
 				<a
 					href={item.href}
-					class="flex flex-col items-center gap-1 rounded-xl px-4 py-2 whitespace-nowrap transition-colors
+					class="flex flex-col items-center gap-1 rounded-xl px-1.5 py-2 whitespace-nowrap transition-colors sm:px-4
 					{isActive(item.href) ? 'text-purple' : 'text-text-muted'}"
 				>
 					{#if IconComponent}
-						<IconComponent size={20} />
+						<IconComponent size={18} />
 					{:else}
 						<span class="text-xl">{item.icon}</span>
 					{/if}
-					<span class="text-xs font-medium"
+					<span class="max-w-[4.5rem] truncate text-xs font-medium"
 						>{(m[item.label as keyof typeof m] as (...args: any[]) => string)()}</span
 					>
 				</a>

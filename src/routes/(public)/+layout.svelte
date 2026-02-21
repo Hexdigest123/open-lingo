@@ -12,7 +12,7 @@
 			<a href="/" class="flex items-center gap-2">
 				<span class="text-2xl font-bold text-success">OpenLingo</span>
 			</a>
-			<nav class="hidden items-center gap-3 md:flex">
+			<nav class="flex items-center gap-3">
 				<a href="/login" class="btn btn-ghost btn-sm flex items-center justify-center"
 					>{m['nav.login']()}</a
 				>

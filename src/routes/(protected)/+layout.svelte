@@ -7,6 +7,8 @@
 	import { goto } from '$app/navigation';
 	import Toast from '$lib/components/ui/Toast.svelte';
 	import CelebrationOverlay from '$lib/components/ui/CelebrationOverlay.svelte';
+	import { setSoundEnabled } from '$lib/stores/sounds.svelte';
+	import { getRankFromXp, getXpProgress } from '$lib/learning/levels';
 	import { onMount } from 'svelte';
 	const availableLocales = [
 		{ code: 'en' as const, name: 'English' },
@@ -27,6 +29,9 @@
 		LogOut,
 		Star,
 		Heart,
+		Gem,
+		Target,
+		Shield,
 		Menu,
 		X,
 		Settings
@@ -85,6 +90,20 @@
 
 	// Detect if user is in an active lesson (hide mobile nav to avoid blocking vision)
 	const isInLesson = $derived($page.url.pathname.match(/^\/lessons\/[^/]+$/));
+	const levelProgress = $derived(getXpProgress(data.stats.xpTotal));
+	const rank = $derived(getRankFromXp(data.stats.xpTotal));
+	const rankColor = $derived(rank.color);
+	const dailyGoalRatio = $derived(
+		data.stats.dailyXpGoal > 0
+			? Math.min(data.stats.dailyXpProgress / data.stats.dailyXpGoal, 1)
+			: 0
+	);
+	const ringCircumference = $derived(2 * Math.PI * 9);
+	const ringOffset = $derived(ringCircumference * (1 - dailyGoalRatio));
+
+	$effect(() => {
+		setSoundEnabled(data.stats.soundEnabled);
+	});
 
 	function isActive(href: string): boolean {
 		return $page.url.pathname === href || $page.url.pathname.startsWith(href + '/');
@@ -137,7 +156,7 @@
 			</nav>
 
 			<!-- Gamification Stats -->
-			<div class="flex items-center gap-2">
+			<div class="flex items-center gap-1.5 sm:gap-2">
 				<!-- Hearts -->
 				<div
 					class="flex items-center gap-1 rounded-xl bg-error/10 px-2 py-1"
@@ -169,7 +188,7 @@
 
 				<!-- XP -->
 				<div
-					class="flex items-center gap-1 rounded-xl bg-yellow/10 px-2 py-1"
+					class="hidden items-center gap-1 rounded-xl bg-yellow/10 px-2 py-1 min-[360px]:flex"
 					title={m['gamification.xp']()}
 				>
 					<Star size={16} class="text-yellow-dark" />

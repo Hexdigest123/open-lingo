@@ -249,7 +249,7 @@
 
 		<!-- CTA Section -->
 		<div
-			class="mt-24 rounded-3xl bg-gradient-to-r from-success to-success-dark p-8 text-center text-white lg:p-12"
+			class="mt-24 rounded-3xl bg-gradient-to-r from-success to-success-dark p-6 text-center text-white sm:p-8 lg:p-12"
 		>
 			<h2 class="text-3xl font-bold">{m['landing.ctaTitle']()}</h2>
 			<p class="mt-4 text-lg opacity-90">
@@ -257,7 +257,7 @@
 			</p>
 			<a
 				href="/register"
-				class="btn btn-lg mt-8 transform bg-white text-success transition-transform hover:scale-105 hover:bg-gray-100"
+				class="btn btn-lg mt-8 transform bg-white text-sm whitespace-nowrap text-success transition-transform hover:scale-105 hover:bg-gray-100 sm:text-base"
 			>
 				{m['landing.ctaButton']()}
 			</a>
