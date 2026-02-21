@@ -4,8 +4,15 @@
 	import { goto } from '$app/navigation';
 	import { page } from '$app/stores';
 	import { Flame, Medal } from 'lucide-svelte';
+	import { getRankFromXp } from '$lib/learning/levels';
 
 	let { data }: { data: PageData } = $props();
+	let showFriendsOnly = $state(false);
+	const filteredLeaderboard = $derived(
+		showFriendsOnly
+			? data.leaderboard.filter((entry) => data.friendIds.includes(entry.id))
+			: data.leaderboard
+	);
 
 	const timeframes = ['daily', 'weekly', 'monthly', 'all_time'] as const;
 
@@ -27,6 +34,14 @@
 		if (rank === 2) return 'bg-gray-100 border-gray-300';
 		if (rank === 3) return 'bg-orange/20 border-orange';
 		return '';
+	}
+
+	function getLevel(entry: { level: number | null }): number {
+		return entry.level ?? 1;
+	}
+
+	function getLevelColor(entry: { xp: number }): string {
+		return getRankFromXp(entry.xp).color;
 	}
 </script>
 
@@ -57,14 +72,27 @@
 	</div>
 
 	<!-- Leaderboard Table -->
-	{#if data.leaderboard.length === 0}
+	<div class="flex justify-center">
+		<button
+			type="button"
+			onclick={() => {
+				showFriendsOnly = !showFriendsOnly;
+			}}
+			class="btn btn-ghost btn-sm"
+			aria-pressed={showFriendsOnly}
+		>
+			{showFriendsOnly ? m['leaderboard.friendsOnly']() : m['leaderboard.allPlayers']()}
+		</button>
+	</div>
+
+	{#if filteredLeaderboard.length === 0}
 		<div class="card text-center">
 			<p class="text-text-muted">{m['leaderboard.noData']()}</p>
 		</div>
 	{:else}
 		<!-- Mobile View (< sm: 640px) -->
 		<div class="space-y-3 sm:hidden">
-			{#each data.leaderboard as entry}
+			{#each filteredLeaderboard as entry}
 				<div
 					class="flex items-center gap-3 card p-3 {entry.isCurrentUser
 						? 'border-2 border-primary'
@@ -88,6 +116,13 @@
 					</div>
 					<div class="min-w-0 flex-1">
 						<p class="truncate font-medium text-text-light">
+							<span
+								class="mr-2 inline-flex h-5 w-5 items-center justify-center rounded-full text-[10px] font-bold text-white"
+								style="background: {getLevelColor(entry)}"
+								title={m['leaderboard.level']()}
+							>
+								{getLevel(entry)}
+							</span>
 							{entry.displayName}
 							{#if entry.isCurrentUser}
 								<span class="text-xs text-primary">({m['leaderboard.you']()})</span>
@@ -126,7 +161,7 @@
 					</tr>
 				</thead>
 				<tbody class="divide-y divide-border-light">
-					{#each data.leaderboard as entry}
+					{#each filteredLeaderboard as entry}
 						<tr class="{entry.isCurrentUser ? 'bg-primary/5' : ''} {getRankClass(entry.rank)}">
 							<td class="px-4 py-3">
 								<span
@@ -152,6 +187,13 @@
 									>
 										{entry.displayName.charAt(0).toUpperCase()}
 									</div>
+									<span
+										class="inline-flex h-5 w-5 items-center justify-center rounded-full text-[10px] font-bold text-white"
+										style="background: {getLevelColor(entry)}"
+										title={m['leaderboard.level']()}
+									>
+										{getLevel(entry)}
+									</span>
 									<span
 										class="font-medium {entry.isCurrentUser ? 'text-primary' : 'text-text-light'}"
 									>

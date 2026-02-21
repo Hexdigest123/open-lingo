@@ -2,16 +2,24 @@ import type { PageServerLoad } from './$types';
 import { db } from '$lib/server/db';
 import { users, userStats, dailyStreaks } from '$lib/server/db/schema';
 import { eq, desc, sql, gte, and } from 'drizzle-orm';
+import { getFriendIds } from '$lib/server/learning/friend-service';
 
 export const load: PageServerLoad = async ({ locals, url }) => {
 	const userId = locals.user!.id;
+	const friendIds = await getFriendIds(userId);
 	const timeframe = (url.searchParams.get('timeframe') || 'all_time') as
 		| 'daily'
 		| 'weekly'
 		| 'monthly'
 		| 'all_time';
 
-	let leaderboardData;
+	let leaderboardData: Array<{
+		id: number;
+		displayName: string;
+		xp: number;
+		streak: number | null;
+		level: number | null;
+	}>;
 
 	if (timeframe === 'all_time') {
 		// All-time leaderboard based on total XP
@@ -20,7 +28,8 @@ export const load: PageServerLoad = async ({ locals, url }) => {
 				id: users.id,
 				displayName: users.displayName,
 				xp: userStats.xpTotal,
-				streak: userStats.currentStreak
+				streak: userStats.currentStreak,
+				level: userStats.level
 			})
 			.from(userStats)
 			.innerJoin(users, eq(userStats.userId, users.id))
@@ -46,7 +55,8 @@ export const load: PageServerLoad = async ({ locals, url }) => {
 				id: users.id,
 				displayName: users.displayName,
 				xp: sql<number>`COALESCE(SUM(${dailyStreaks.xpEarned}), 0)`.as('xp'),
-				streak: userStats.currentStreak
+				streak: userStats.currentStreak,
+				level: userStats.level
 			})
 			.from(users)
 			.leftJoin(userStats, eq(users.id, userStats.userId))
@@ -54,7 +64,7 @@ export const load: PageServerLoad = async ({ locals, url }) => {
 				dailyStreaks,
 				and(eq(users.id, dailyStreaks.userId), gte(dailyStreaks.activityDate, startDate))
 			)
-			.groupBy(users.id, users.displayName, userStats.currentStreak)
+			.groupBy(users.id, users.displayName, userStats.currentStreak, userStats.level)
 			.orderBy(desc(sql`COALESCE(SUM(${dailyStreaks.xpEarned}), 0)`))
 			.limit(50);
 	}
@@ -70,7 +80,8 @@ export const load: PageServerLoad = async ({ locals, url }) => {
 				id: users.id,
 				displayName: users.displayName,
 				xp: userStats.xpTotal,
-				streak: userStats.currentStreak
+				streak: userStats.currentStreak,
+				level: userStats.level
 			})
 			.from(userStats)
 			.innerJoin(users, eq(userStats.userId, users.id))
@@ -89,6 +100,7 @@ export const load: PageServerLoad = async ({ locals, url }) => {
 			...currentUserData,
 			rank: userRank || '50+'
 		},
-		timeframe
+		timeframe,
+		friendIds
 	};
 };

@@ -1,8 +1,9 @@
 import { redirect } from '@sveltejs/kit';
 import type { LayoutServerLoad } from './$types';
 import { db } from '$lib/server/db';
-import { languages, userStats, users } from '$lib/server/db/schema';
-import { eq } from 'drizzle-orm';
+import { dailyStreaks, languages, userStats, users } from '$lib/server/db/schema';
+import { and, eq, gte, lt } from 'drizzle-orm';
+import { computeEffectiveStreak } from '$lib/server/learning/streak-service';
 
 export const load: LayoutServerLoad = async ({ locals, url }) => {
 	if (!locals.user) {
@@ -89,6 +90,25 @@ export const load: LayoutServerLoad = async ({ locals, url }) => {
 		}
 	}
 
+	const startOfToday = new Date();
+	startOfToday.setHours(0, 0, 0, 0);
+	const startOfTomorrow = new Date(startOfToday);
+	startOfTomorrow.setDate(startOfTomorrow.getDate() + 1);
+
+	const [todayProgress] = await db
+		.select({ xpEarned: dailyStreaks.xpEarned })
+		.from(dailyStreaks)
+		.where(
+			and(
+				eq(dailyStreaks.userId, locals.user.id),
+				gte(dailyStreaks.activityDate, startOfToday),
+				lt(dailyStreaks.activityDate, startOfTomorrow)
+			)
+		)
+		.limit(1);
+
+	const dailyXpProgress = todayProgress?.xpEarned ?? 0;
+
 	return {
 		user: locals.user,
 		userLocale: user?.locale || null,
@@ -105,7 +125,12 @@ export const load: LayoutServerLoad = async ({ locals, url }) => {
 			? {
 					hearts: currentHearts,
 					xpTotal: stats.xpTotal,
-					currentStreak: stats.currentStreak,
+					dailyXpGoal: stats.dailyXpGoal,
+					gems: stats.gems,
+					level: stats.level,
+					soundEnabled: stats.soundEnabled,
+					dailyXpProgress,
+					currentStreak: computeEffectiveStreak(stats),
 					longestStreak: stats.longestStreak,
 					streakFreezes: stats.streakFreezes,
 					totalCorrectAnswers: stats.totalCorrectAnswers
@@ -113,6 +138,11 @@ export const load: LayoutServerLoad = async ({ locals, url }) => {
 			: {
 					hearts: 10,
 					xpTotal: 0,
+					dailyXpGoal: 20,
+					gems: 0,
+					level: 1,
+					soundEnabled: true,
+					dailyXpProgress: 0,
 					currentStreak: 0,
 					longestStreak: 0,
 					streakFreezes: 0,

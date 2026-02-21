@@ -1,6 +1,7 @@
 <script lang="ts">
 	import * as m from '$lib/paraglide/messages.js';
 	import { getLocale, setLocale } from '$lib/paraglide/runtime.js';
+	import { setSoundEnabled } from '$lib/stores/sounds.svelte';
 	import type { PageData, ActionData } from './$types';
 	import { enhance } from '$app/forms';
 	import { invalidateAll } from '$app/navigation';
@@ -20,6 +21,10 @@
 	type ExtendedPageData = PageData & {
 		availableLanguages?: LearningLanguage[];
 		currentActiveLanguage?: string;
+		gamificationSettings?: {
+			dailyXpGoal: number;
+			soundEnabled: boolean;
+		};
 	};
 
 	let { data, form }: { data: ExtendedPageData; form: ActionData } = $props();
@@ -30,6 +35,10 @@
 	let confirmPassword = $state('');
 	let isUpdatingProfile = $state(false);
 	let isChangingPassword = $state(false);
+	let selectedDailyGoal = $state(data.gamificationSettings?.dailyXpGoal ?? 20);
+	let soundEnabled = $state(data.gamificationSettings?.soundEnabled ?? true);
+	let soundForm = $state<HTMLFormElement | null>(null);
+	const dailyGoalOptions = [10, 20, 30, 50] as const;
 
 	async function changeLocale(locale: Locale) {
 		setLocale(locale);
@@ -65,6 +74,13 @@
 		currentPassword = '';
 		newPassword = '';
 		confirmPassword = '';
+	}
+
+	function handleSoundToggleChange(event: Event) {
+		const target = event.currentTarget as HTMLInputElement;
+		soundEnabled = target.checked;
+		setSoundEnabled(soundEnabled);
+		soundForm?.requestSubmit();
 	}
 </script>
 
@@ -257,6 +273,86 @@
 					{m['settings.changePassword']() || 'Change Password'}
 				{/if}
 			</button>
+		</form>
+	</div>
+
+	<div class="card">
+		<h2 class="text-xl font-bold text-text-light">{m['settings.dailyGoal.title']()}</h2>
+		<p class="mt-1 text-text-muted">{m['settings.dailyGoal.description']()}</p>
+		<div class="mt-4 grid gap-3 sm:grid-cols-2 lg:grid-cols-4">
+			{#each dailyGoalOptions as goal}
+				<form
+					method="POST"
+					action="?/updateDailyGoal"
+					use:enhance={({ formData }) => {
+						const nextGoal = Number.parseInt(formData.get('dailyXpGoal')?.toString() ?? '', 10);
+						return async ({ update, result }) => {
+							if (
+								result.type === 'success' &&
+								dailyGoalOptions.includes(nextGoal as (typeof dailyGoalOptions)[number])
+							) {
+								selectedDailyGoal = nextGoal;
+							}
+							await update();
+						};
+					}}
+				>
+					<input type="hidden" name="dailyXpGoal" value={goal} />
+					<button
+						type="submit"
+						class="w-full cursor-pointer rounded-xl border-2 px-4 py-3 text-left font-medium transition-colors
+							{selectedDailyGoal === goal
+							? 'border-primary bg-primary/10 text-primary'
+							: 'border-border-light text-text-light hover:border-primary/50'}"
+					>
+						{m['settings.dailyGoal.xpPerDay']({ amount: String(goal) })}
+					</button>
+				</form>
+			{/each}
+		</div>
+	</div>
+
+	<div class="card">
+		<h2 class="text-xl font-bold text-text-light">{m['settings.sound.title']()}</h2>
+		<p class="mt-1 text-text-muted">{m['settings.sound.description']()}</p>
+		<form
+			method="POST"
+			action="?/updateSound"
+			bind:this={soundForm}
+			use:enhance={({ formData }) => {
+				const nextEnabled = formData.get('soundEnabled') === 'on';
+				return async ({ update, result }) => {
+					if (result.type !== 'success') {
+						soundEnabled = !nextEnabled;
+						setSoundEnabled(soundEnabled);
+					}
+					await update();
+				};
+			}}
+			class="mt-4"
+		>
+			<label
+				class="flex cursor-pointer items-center justify-between gap-4 rounded-xl border border-border-light p-4"
+			>
+				<span class="text-sm font-medium text-text-light">
+					{soundEnabled ? m['settings.sound.enabled']() : m['settings.sound.disabled']()}
+				</span>
+				<span class="relative inline-flex h-7 w-12 items-center">
+					<input
+						type="checkbox"
+						name="soundEnabled"
+						checked={soundEnabled}
+						onchange={handleSoundToggleChange}
+						class="peer sr-only"
+					/>
+					<span
+						class="absolute inset-0 rounded-full bg-border-light transition-colors peer-checked:bg-primary"
+					></span>
+					<span
+						class="absolute left-1 h-5 w-5 rounded-full bg-white transition-transform peer-checked:translate-x-5"
+					></span>
+				</span>
+			</label>
 		</form>
 	</div>
 

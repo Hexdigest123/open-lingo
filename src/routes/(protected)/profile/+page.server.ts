@@ -27,9 +27,9 @@ export const load: PageServerLoad = async ({ locals }) => {
 	const earnedAchievements = await db
 		.select({
 			id: achievements.id,
+			code: achievements.code,
 			name: achievements.name,
 			description: achievements.description,
-			iconUrl: achievements.iconUrl,
 			earnedAt: userAchievements.earnedAt
 		})
 		.from(userAchievements)
@@ -37,7 +37,10 @@ export const load: PageServerLoad = async ({ locals }) => {
 		.where(eq(userAchievements.userId, userId));
 
 	// Get all achievements for display
-	const allAchievements = await db.select().from(achievements);
+	const allAchievements = (await db.select().from(achievements)).map((achievement) => ({
+		...achievement,
+		iconUrl: `/achievements/${achievement.code}.svg`
+	}));
 
 	// Count completed lessons
 	const [lessonStats] = await db
@@ -58,10 +61,16 @@ export const load: PageServerLoad = async ({ locals }) => {
 			hearts: 5,
 			xpTotal: 0,
 			currentStreak: 0,
-			longestStreak: 0
+			longestStreak: 0,
+			level: 1,
+			gems: 0,
+			perfectLessons: 0
 		},
 		lessonsCompleted: lessonStats?.completed || 0,
-		earnedAchievements,
+		earnedAchievements: earnedAchievements.map((achievement) => ({
+			...achievement,
+			iconUrl: `/achievements/${achievement.code}.svg`
+		})),
 		allAchievements
 	};
 };

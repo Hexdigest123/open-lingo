@@ -1,7 +1,7 @@
 import type { PageServerLoad, Actions } from './$types';
 import { fail } from '@sveltejs/kit';
 import { db } from '$lib/server/db';
-import { languages, users } from '$lib/server/db/schema';
+import { languages, userStats, users } from '$lib/server/db/schema';
 import { asc, eq } from 'drizzle-orm';
 import { verifyPassword, hashPassword } from '$lib/server/auth/password';
 import {
@@ -24,6 +24,15 @@ export const load: PageServerLoad = async ({ locals }) => {
 		.where(eq(users.id, userId))
 		.limit(1);
 
+	const [stats] = await db
+		.select({
+			dailyXpGoal: userStats.dailyXpGoal,
+			soundEnabled: userStats.soundEnabled
+		})
+		.from(userStats)
+		.where(eq(userStats.userId, userId))
+		.limit(1);
+
 	const availableLanguages = await db
 		.select({
 			code: languages.code,
@@ -42,7 +51,11 @@ export const load: PageServerLoad = async ({ locals }) => {
 			displayName: user?.displayName ?? ''
 		},
 		availableLanguages,
-		activeLanguage: user?.activeLanguage ?? 'es'
+		activeLanguage: user?.activeLanguage ?? 'es',
+		gamificationSettings: {
+			dailyXpGoal: stats?.dailyXpGoal ?? 20,
+			soundEnabled: stats?.soundEnabled ?? true
+		}
 	};
 };
 
@@ -137,6 +150,51 @@ export const actions: Actions = {
 		} catch (error) {
 			console.error('Failed to update active language:', error);
 			return fail(500, { languageError: 'Failed to update active language' });
+		}
+	},
+
+	updateDailyGoal: async ({ request, locals }) => {
+		const userId = locals.user!.id;
+		const data = await request.formData();
+		const dailyXpGoalRaw = data.get('dailyXpGoal')?.toString().trim();
+		const dailyXpGoal = Number.parseInt(dailyXpGoalRaw ?? '', 10);
+
+		if (![10, 20, 30, 50].includes(dailyXpGoal)) {
+			return fail(400, { dailyGoalError: 'Invalid daily XP goal' });
+		}
+
+		try {
+			await db
+				.update(userStats)
+				.set({
+					dailyXpGoal
+				})
+				.where(eq(userStats.userId, userId));
+
+			return { dailyGoalSuccess: true };
+		} catch (error) {
+			console.error('Failed to update daily XP goal:', error);
+			return fail(500, { dailyGoalError: 'Failed to update daily XP goal' });
+		}
+	},
+
+	updateSound: async ({ request, locals }) => {
+		const userId = locals.user!.id;
+		const data = await request.formData();
+		const soundEnabled = data.get('soundEnabled') === 'on';
+
+		try {
+			await db
+				.update(userStats)
+				.set({
+					soundEnabled
+				})
+				.where(eq(userStats.userId, userId));
+
+			return { soundSuccess: true };
+		} catch (error) {
+			console.error('Failed to update sound setting:', error);
+			return fail(500, { soundError: 'Failed to update sound setting' });
 		}
 	},
 

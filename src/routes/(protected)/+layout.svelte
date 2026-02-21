@@ -34,7 +34,9 @@
 		Shield,
 		Menu,
 		X,
-		Settings
+		Settings,
+		ShoppingBag,
+		Users
 	} from 'lucide-svelte';
 
 	let { children, data }: { children: Snippet; data: LayoutData } = $props();
@@ -82,6 +84,8 @@
 		{ href: '/dashboard', labelKey: 'nav.dashboard', icon: Home },
 		{ href: '/lessons', labelKey: 'nav.learn', icon: BookOpen },
 		{ href: '/chat', labelKey: 'nav.chat', icon: MessageCircle },
+		{ href: '/shop', labelKey: 'nav.shop', icon: ShoppingBag },
+		{ href: '/friends', labelKey: 'nav.friends', icon: Users },
 		{ href: '/leaderboard', labelKey: 'nav.leaderboard', icon: Trophy },
 		{ href: '/profile', labelKey: 'nav.profile', icon: User }
 	];
@@ -173,6 +177,12 @@
 				>
 					<Flame size={16} class="text-orange" />
 					<span class="text-sm font-bold text-orange">{data.stats.currentStreak}</span>
+					{#if data.stats.currentStreak >= 7}
+						<Shield
+							size={12}
+							class="text-orange {data.stats.currentStreak >= 30 ? 'animate-shield-pulse' : ''}"
+						/>
+					{/if}
 				</div>
 
 				<!-- Streak Freezes -->
@@ -193,6 +203,47 @@
 				>
 					<Star size={16} class="text-yellow-dark" />
 					<span class="text-sm font-bold text-yellow-dark">{data.stats.xpTotal}</span>
+					<div
+						class="flex items-center gap-1 rounded-full bg-success/10 px-1 py-0.5"
+						title={m['gamification.dailyGoal']()}
+					>
+						<Target size={12} class="text-success" />
+						<svg
+							width="24"
+							height="24"
+							viewBox="0 0 24 24"
+							style="--ring-circumference: {ringCircumference}; --ring-offset: {ringOffset};"
+						>
+							<circle
+								cx="12"
+								cy="12"
+								r="9"
+								fill="none"
+								stroke="currentColor"
+								stroke-width="3"
+								class="text-success/25"
+							/>
+							<circle
+								cx="12"
+								cy="12"
+								r="9"
+								fill="none"
+								stroke="currentColor"
+								stroke-width="3"
+								stroke-linecap="round"
+								class="animate-progress-ring text-success"
+								style="stroke-dasharray: var(--ring-circumference); stroke-dashoffset: var(--ring-offset); transform: rotate(-90deg); transform-origin: 50% 50%;"
+							/>
+						</svg>
+					</div>
+				</div>
+
+				<div
+					class="hidden items-center gap-1 rounded-xl bg-purple/10 px-2 py-1 sm:flex"
+					title={m['gamification.gems']()}
+				>
+					<Gem size={16} class="animate-gem-sparkle text-purple" />
+					<span class="text-sm font-bold text-purple">{data.stats.gems}</span>
 				</div>
 
 				<!-- Language Switcher -->
@@ -235,7 +286,19 @@
 
 				<!-- User Menu with Logout -->
 				{#if showUserMenu}
-					<div class="relative" use:clickOutside={() => (showUserMenu = false)}>
+					<div
+						class="relative flex items-center gap-1"
+						use:clickOutside={() => (showUserMenu = false)}
+					>
+						<span
+							class="text-xs font-bold"
+							style="color: {rankColor}"
+							title="{m['gamification.level']()} {data.stats.level} ({Math.round(
+								levelProgress.progress * 100
+							)}%)"
+						>
+							Lv.{data.stats.level}
+						</span>
 						<button
 							onclick={() => (showUserMenu = !showUserMenu)}
 							class="flex h-8 w-8 cursor-pointer items-center justify-center rounded-full bg-gradient-to-br from-success to-primary text-xs font-bold text-white hover:opacity-90"
@@ -278,7 +341,16 @@
 						</div>
 					</div>
 				{:else}
-					<div class="relative">
+					<div class="relative flex items-center gap-1">
+						<span
+							class="text-xs font-bold"
+							style="color: {rankColor}"
+							title="{m['gamification.level']()} {data.stats.level} ({Math.round(
+								levelProgress.progress * 100
+							)}%)"
+						>
+							Lv.{data.stats.level}
+						</span>
 						<button
 							onclick={() => (showUserMenu = !showUserMenu)}
 							class="flex h-8 w-8 cursor-pointer items-center justify-center rounded-full bg-gradient-to-br from-success to-primary text-xs font-bold text-white hover:opacity-90"
