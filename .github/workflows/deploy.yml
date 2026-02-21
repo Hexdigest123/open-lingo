@@ -72,14 +72,29 @@ jobs:
             );
           "
 
+          # Detect empty DB: if migration tracking has entries but core schema
+          # objects are missing (e.g. after a major version upgrade that reset
+          # the data directory), clear tracking so all migrations run fresh.
+          SCHEMA_EXISTS=$(docker compose -f compose.yaml exec -T db psql -U "$POSTGRES_USER" -d "$POSTGRES_DB" -t -c \
+            "SELECT EXISTS(SELECT 1 FROM pg_type WHERE typname = 'question_type');" | tr -d ' \r\n')
+
+          MIGRATION_COUNT=$(docker compose -f compose.yaml exec -T db psql -U "$POSTGRES_USER" -d "$POSTGRES_DB" -t -c \
+            "SELECT COUNT(*) FROM \"drizzle\".\"__drizzle_migrations\";" | tr -d ' \r\n')
+
+          if [ "$SCHEMA_EXISTS" = "f" ] && [ "$MIGRATION_COUNT" != "0" ]; then
+            echo "⚠️  Database is empty but has stale migration tracking ($MIGRATION_COUNT entries)."
+            echo "Clearing migration tracking so all migrations run from scratch..."
+            docker compose -f compose.yaml exec -T db psql -U "$POSTGRES_USER" -d "$POSTGRES_DB" -c \
+              "DELETE FROM \"drizzle\".\"__drizzle_migrations\";"
+            MIGRATION_COUNT="0"
+            echo "Migration tracking cleared"
+          fi
+
           # If no migrations recorded yet (first switch from push to migrate),
           # mark 0000-0005 as applied so only migration 0006+ runs.
           # 0000-0005 were applied via drizzle-kit push; 0006 is the first
           # migration that needs to run (multi-language support).
-          MIGRATION_COUNT=$(docker compose -f compose.yaml exec -T db psql -U "$POSTGRES_USER" -d "$POSTGRES_DB" -t -c \
-            "SELECT COUNT(*) FROM \"drizzle\".\"__drizzle_migrations\";" | tr -d ' \r\n')
-
-          if [ "$MIGRATION_COUNT" = "0" ]; then
+          if [ "$MIGRATION_COUNT" = "0" ] && [ "$SCHEMA_EXISTS" = "t" ]; then
             echo "First migrate run — marking existing migrations (0000-0005) as applied..."
             HASH_0005=$(docker compose -f compose.yaml run -T --rm migrate sh -c \
               "sha256sum drizzle/0005_melted_proemial_gods.sql | cut -d' ' -f1")
@@ -87,6 +102,8 @@ jobs:
             docker compose -f compose.yaml exec -T db psql -U "$POSTGRES_USER" -d "$POSTGRES_DB" -c \
               "INSERT INTO \"drizzle\".\"__drizzle_migrations\" (hash, created_at) VALUES ('$HASH_0005', 1766791441364);"
             echo "Done — migrations 0000-0005 marked as applied"
+          elif [ "$MIGRATION_COUNT" = "0" ] && [ "$SCHEMA_EXISTS" = "f" ]; then
+            echo "Fresh database detected — all migrations will run from scratch"
           else
             echo "Migration tracking already initialized ($MIGRATION_COUNT entries)"
           fi
