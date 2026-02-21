@@ -3,7 +3,7 @@
 ## Project Structure & Module Organization
 
 - SvelteKit app with routes in `src/routes`, grouped into `(public)`, `(protected)`, and `(admin)` layouts plus shared styles in `src/routes/layout.css`.
-- UI pieces live in `src/lib/components`; shared data in `src/lib/data`; translations in `src/lib/i18n/*.json` and re-exported via `src/lib/index.ts`.
+- UI pieces live in `src/lib/components`; shared data in `src/lib/data`; UI translations managed by Paraglide.js v2 in `messages/en.json` and `messages/de.json`; DB content resolved server-side via `src/lib/server/i18n/resolve.ts`.
 - Server-side helpers are under `src/lib/server` (auth, JWT/password utilities). Database client and schema live in `src/lib/server/db/index.ts` and `schema.ts`.
 - Database migrations reside in `drizzle/` with config in `drizzle.config.ts`; seed script is `scripts/seed.ts`.
 - Tests: unit/spec examples sit near source such as `src/demo.spec.ts`; Playwright E2E specs live in `e2e/`.
@@ -26,7 +26,7 @@
 
 - Prettier + ESLint enforce 2-space, Svelte/TypeScript-friendly formatting; run `npm run format` before commits.
 - Svelte components use PascalCase filenames; utilities/types use camelCase; route files follow the SvelteKit `+page.svelte` / `+page.server.ts` pattern.
-- Keep locale keys consistent across `src/lib/i18n/*.json`; export shared modules through `src/lib/index.ts`.
+- Keep Paraglide message keys consistent across `messages/en.json` and `messages/de.json`; use `m["key"]()` imports from `$lib/paraglide/messages.js` for UI text. DB content locale resolution uses `pickFromJson()` / `resolveQuestionContent()` from `$lib/server/i18n/resolve.ts` in server loaders.
 - Database changes should include matching Drizzle migration files under `drizzle/`.
 
 ## Testing Guidelines

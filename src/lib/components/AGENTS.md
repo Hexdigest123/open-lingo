@@ -45,11 +45,11 @@ The parent route (`src/routes/(protected)/lessons/[lessonId]/+page.svelte`) rend
 - **Props** - Use `let { prop1, prop2 }: Props = $props()` pattern
 - **Events** - Callback props, not `createEventDispatcher`
 - **Styling** - Tailwind utility classes inline. Global theme in `src/routes/layout.css`
-- **i18n** - Import `t` from `$lib/i18n` for all user-facing text
+- **i18n** - Import `* as m` from `$lib/paraglide/messages.js` and use `m["key"]()` for all user-facing text
 
 ## ANTI-PATTERNS
 
 - Do NOT use Svelte 4 store syntax (`$storeName`) - this project uses Svelte 5 runes exclusively
 - Do NOT import server modules (`$lib/server/*`) from components
-- Do NOT hardcode English strings - use `t('key')` for all UI text
+- Do NOT hardcode English strings - use `m["key"]()` from Paraglide for all UI text
 - `ListeningQuestion.svelte` (301 lines) is the most complex component - audio playback + answer input + TTS integration

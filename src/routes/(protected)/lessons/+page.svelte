@@ -1,9 +1,8 @@
 <script lang="ts">
 	import * as m from '$lib/paraglide/messages.js';
 	import type { PageData } from './$types';
-import { enhance } from '$app/forms';
+	import { enhance } from '$app/forms';
 	import { goto, invalidateAll } from '$app/navigation';
-	import { getBilingualText } from '$lib/utils/bilingual';
 	import { HeartCrack, Construction, BookOpen, Check, Star, Pencil, Circle } from 'lucide-svelte';
 
 	type LevelWithCount = {
@@ -28,7 +27,7 @@ import { enhance } from '$app/forms';
 	let { data }: { data: PageData & { activeLanguage?: ActiveLanguage } } = $props();
 
 	const activeLanguageName = $derived(
-		data.activeLanguage?.name || m["lesson.languages.targetLanguage"]()
+		data.activeLanguage?.name || m['lesson.languages.targetLanguage']()
 	);
 
 	// Handle error messages - use $derived to react to data.error changes from navigation
@@ -87,7 +86,7 @@ import { enhance } from '$app/forms';
 
 <svelte:head>
 	<title
-		>{data.selectedLevel ? `${getBilingualText(data.selectedLevel.name)} - ` : ''}{m["nav.learn"]()} - OpenLingo</title
+		>{data.selectedLevel ? `${data.selectedLevel.name} - ` : ''}{m['nav.learn']()} - OpenLingo</title
 	>
 </svelte:head>
 
@@ -98,11 +97,11 @@ import { enhance } from '$app/forms';
 			<div class="flex justify-center">
 				<HeartCrack size={64} class="text-error" />
 			</div>
-			<h2 class="mt-4 text-2xl font-bold text-error">{m["lesson.outOfHearts.title"]()}</h2>
-			<p class="mt-2 text-text-muted">{m["lesson.outOfHearts.message"]()}</p>
+			<h2 class="mt-4 text-2xl font-bold text-error">{m['lesson.outOfHearts.title']()}</h2>
+			<p class="mt-2 text-text-muted">{m['lesson.outOfHearts.message']()}</p>
 
 			<button onclick={dismissError} class="btn btn-primary btn-lg mt-6 w-full">
-				{m["common.back"]()}
+				{m['common.back']()}
 			</button>
 		</div>
 	</div>
@@ -114,16 +113,16 @@ import { enhance } from '$app/forms';
 			<div class="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
 				<div>
 					<p class="font-semibold text-text-light">
-						{m["lesson.trySkillTreeBanner"]()}
+						{m['lesson.trySkillTreeBanner']()}
 					</p>
 				</div>
 				<div class="flex items-center gap-2">
-					<a href="/skills" class="btn btn-sm btn-success">{m["skills.title"]()}</a>
+					<a href="/skills" class="btn btn-sm btn-success">{m['skills.title']()}</a>
 					<button
 						type="button"
 						class="btn btn-sm btn-ghost"
 						onclick={() => (showSkillTreeBanner = false)}
-						aria-label={m["common.dismiss"]()}
+						aria-label={m['common.dismiss']()}
 					>
 						×
 					</button>
@@ -136,13 +135,13 @@ import { enhance } from '$app/forms';
 		<!-- Level Selected - Show Units and Lessons -->
 		<div class="flex items-center gap-4">
 			<a href="/lessons" class="text-text-muted hover:text-text-light">
-				← {m["common.back"]()}
+				← {m['common.back']()}
 			</a>
 			<div>
 				<h1 class="text-2xl font-bold text-text-light">
-					{data.selectedLevel.code}: {getBilingualText(data.selectedLevel.name)}
+					{data.selectedLevel.code}: {data.selectedLevel.name}
 				</h1>
-				<p class="text-text-muted">{getBilingualText(data.selectedLevel.description)}</p>
+				<p class="text-text-muted">{data.selectedLevel.description}</p>
 			</div>
 		</div>
 
@@ -163,9 +162,9 @@ import { enhance } from '$app/forms';
 									{unit.order}
 								</div>
 								<div>
-									<h3 class="font-bold text-text-light">{getBilingualText(unit.title)}</h3>
+									<h3 class="font-bold text-text-light">{unit.title}</h3>
 									{#if unit.description}
-										<p class="text-sm text-text-muted">{getBilingualText(unit.description)}</p>
+										<p class="text-sm text-text-muted">{unit.description}</p>
 									{/if}
 									<p class="mt-1 text-xs text-text-muted">
 										{unit.lessons.length}
@@ -196,10 +195,10 @@ import { enhance } from '$app/forms';
 												<svelte:component this={getStatusIcon(status)} size={20} />
 											</span>
 											<div>
-												<p class="font-medium text-text-light">{getBilingualText(lesson.title)}</p>
+												<p class="font-medium text-text-light">{lesson.title}</p>
 												{#if lesson.description}
 													<p class="text-xs text-text-muted">
-														{getBilingualText(lesson.description)}
+														{lesson.description}
 													</p>
 												{/if}
 											</div>
@@ -217,8 +216,8 @@ import { enhance } from '$app/forms';
 													: 'btn-success'}"
 											>
 												{status === 'completed' || status === 'mastered'
-													? m["lesson.practice"]()
-													: m["lesson.start"]()}
+													? m['lesson.practice']()
+													: m['lesson.start']()}
 											</a>
 											{#if status !== 'completed' && status !== 'mastered'}
 												<form
@@ -237,7 +236,7 @@ import { enhance } from '$app/forms';
 														type="submit"
 														class="btn btn-sm btn-ghost cursor-pointer text-text-muted"
 													>
-														{m["lesson.skip"]()}
+														{m['lesson.skip']()}
 													</button>
 												</form>
 											{/if}
@@ -245,7 +244,7 @@ import { enhance } from '$app/forms';
 									</div>
 								{:else}
 									<p class="text-center text-text-muted py-4">
-										{m["lesson.noLessons"]()}
+										{m['lesson.noLessons']()}
 									</p>
 								{/each}
 							</div>
@@ -259,12 +258,12 @@ import { enhance } from '$app/forms';
 				<div class="flex justify-center">
 					<Construction size={64} class="text-warning" />
 				</div>
-				<h3 class="mt-4 text-xl font-bold text-text-light">{m["lesson.comingSoon"]()}</h3>
+				<h3 class="mt-4 text-xl font-bold text-text-light">{m['lesson.comingSoon']()}</h3>
 				<p class="mt-2 text-text-muted">
-					{m["lesson.unitsBeingPrepared"]()}
+					{m['lesson.unitsBeingPrepared']()}
 				</p>
 				<a href="/lessons" class="btn btn-primary mt-4">
-					← {m["lesson.backToLevels"]()}
+					← {m['lesson.backToLevels']()}
 				</a>
 			</div>
 		{/if}
@@ -272,9 +271,9 @@ import { enhance } from '$app/forms';
 		<!-- No Level Selected - Show Level Selection -->
 		<div>
 			<h1 class="text-2xl font-bold text-text-light">
-				{m["lesson.languageLessons"]({ language: activeLanguageName })}
+				{m['lesson.languageLessons']({ language: activeLanguageName })}
 			</h1>
-			<p class="text-text-muted">{m["lesson.chooseLevelToStart"]()}</p>
+			<p class="text-text-muted">{m['lesson.chooseLevelToStart']()}</p>
 		</div>
 
 		<!-- Levels Grid -->
@@ -289,8 +288,8 @@ import { enhance } from '$app/forms';
 							{level.code}
 						</div>
 						<div class="flex-1">
-							<h3 class="font-bold text-text-light">{getBilingualText(level.name)}</h3>
-							<p class="mt-1 text-sm text-text-muted">{getBilingualText(level.description)}</p>
+							<h3 class="font-bold text-text-light">{level.name}</h3>
+							<p class="mt-1 text-sm text-text-muted">{level.description}</p>
 							<p class="mt-1 text-xs text-text-muted">
 								{level.unitCount || 0}
 								{(level.unitCount || 0) === 1 ? 'unit' : 'units'}
@@ -298,10 +297,10 @@ import { enhance } from '$app/forms';
 							<div class="mt-4">
 								{#if (level.unitCount || 0) > 0}
 									<a href="/lessons?level={level.code}" class="btn btn-success btn-sm">
-										{m["lesson.startLearning"]()}
+										{m['lesson.startLearning']()}
 									</a>
 								{:else}
-									<span class="text-sm text-text-muted">{m["lesson.comingSoon"]()}</span>
+									<span class="text-sm text-text-muted">{m['lesson.comingSoon']()}</span>
 								{/if}
 							</div>
 						</div>
@@ -316,9 +315,9 @@ import { enhance } from '$app/forms';
 				<div class="flex justify-center">
 					<BookOpen size={64} class="text-text-muted" />
 				</div>
-				<h3 class="mt-4 text-xl font-bold text-text-light">{m["lesson.noLessons"]()}</h3>
+				<h3 class="mt-4 text-xl font-bold text-text-light">{m['lesson.noLessons']()}</h3>
 				<p class="mt-2 text-text-muted">
-					{m["lesson.lessonsBeingPrepared"]()}
+					{m['lesson.lessonsBeingPrepared']()}
 				</p>
 			</div>
 		{/if}

@@ -9,10 +9,12 @@ import {
 	users
 } from '$lib/server/db/schema';
 import { and, asc, eq, inArray } from 'drizzle-orm';
+import { pickFromJson } from '$lib/server/i18n/resolve';
 
 export const load: PageServerLoad = async ({ url, locals }) => {
 	const levelCode = url.searchParams.get('level');
 	const errorParam = url.searchParams.get('error');
+	const locale = locals.locale ?? 'en';
 
 	const [userLanguage] = await db
 		.select({ activeLanguage: users.activeLanguage })
@@ -56,7 +58,11 @@ export const load: PageServerLoad = async ({ url, locals }) => {
 				.where(eq(levels.languageCode, activeLanguageCode))
 				.orderBy(asc(levels.order));
 			return {
-				levels: allLevels,
+				levels: allLevels.map((l) => ({
+					...l,
+					name: pickFromJson(l.name, locale),
+					description: pickFromJson(l.description, locale)
+				})),
 				selectedLevel: null,
 				units: [],
 				userProgress: [],
@@ -95,11 +101,23 @@ export const load: PageServerLoad = async ({ url, locals }) => {
 
 		const unitsWithLessons = levelUnits.map((unit) => ({
 			...unit,
-			lessons: levelLessons.filter((lesson) => lesson.unitId === unit.id)
+			title: pickFromJson(unit.title, locale),
+			description: pickFromJson(unit.description, locale),
+			lessons: levelLessons
+				.filter((lesson) => lesson.unitId === unit.id)
+				.map((lesson) => ({
+					...lesson,
+					title: pickFromJson(lesson.title, locale),
+					description: pickFromJson(lesson.description, locale)
+				}))
 		}));
 
 		return {
-			selectedLevel: level,
+			selectedLevel: {
+				...level,
+				name: pickFromJson(level.name, locale),
+				description: pickFromJson(level.description, locale)
+			},
 			units: unitsWithLessons,
 			userProgress,
 			levels: null,
@@ -127,6 +145,8 @@ export const load: PageServerLoad = async ({ url, locals }) => {
 
 			return {
 				...level,
+				name: pickFromJson(level.name, locale),
+				description: pickFromJson(level.description, locale),
 				unitCount: levelUnits.length
 			};
 		})
