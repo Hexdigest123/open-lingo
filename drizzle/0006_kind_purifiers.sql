@@ -32,6 +32,18 @@ CREATE TABLE "concepts" (
 	CONSTRAINT "concepts_lang_key_unique" UNIQUE("language_code","key")
 );
 --> statement-breakpoint
+CREATE TABLE "languages" (
+	"code" varchar(10) PRIMARY KEY NOT NULL,
+	"name" varchar(100) NOT NULL,
+	"native_name" varchar(100) NOT NULL,
+	"flag_emoji" varchar(10) NOT NULL,
+	"whisper_code" varchar(10) NOT NULL,
+	"tutor_name" varchar(100) NOT NULL,
+	"tutor_greeting" text,
+	"is_active" boolean DEFAULT true NOT NULL,
+	"order" integer NOT NULL
+);
+--> statement-breakpoint
 CREATE TABLE "lesson_blocks" (
 	"id" serial PRIMARY KEY NOT NULL,
 	"lesson_id" integer NOT NULL,
@@ -135,7 +147,11 @@ CREATE TABLE "user_skill_progress" (
 	CONSTRAINT "user_skill_progress_unique" UNIQUE("user_id","skill_id")
 );
 --> statement-breakpoint
+ALTER TABLE "levels" DROP CONSTRAINT "levels_code_unique";--> statement-breakpoint
 ALTER TABLE "lessons" ADD COLUMN "mode" "lesson_mode" DEFAULT 'legacy_quiz' NOT NULL;--> statement-breakpoint
+ALTER TABLE "levels" ADD COLUMN "language_code" varchar(10) DEFAULT 'es' NOT NULL;--> statement-breakpoint
+ALTER TABLE "users" ADD COLUMN "active_language" varchar(10) DEFAULT 'es';--> statement-breakpoint
+ALTER TABLE "users" ADD COLUMN "onboarding_completed" boolean DEFAULT false NOT NULL;--> statement-breakpoint
 ALTER TABLE "concepts" ADD CONSTRAINT "concepts_language_code_languages_code_fk" FOREIGN KEY ("language_code") REFERENCES "public"."languages"("code") ON DELETE cascade ON UPDATE no action;--> statement-breakpoint
 ALTER TABLE "lesson_blocks" ADD CONSTRAINT "lesson_blocks_lesson_id_lessons_id_fk" FOREIGN KEY ("lesson_id") REFERENCES "public"."lessons"("id") ON DELETE cascade ON UPDATE no action;--> statement-breakpoint
 ALTER TABLE "lesson_skills" ADD CONSTRAINT "lesson_skills_lesson_id_lessons_id_fk" FOREIGN KEY ("lesson_id") REFERENCES "public"."lessons"("id") ON DELETE cascade ON UPDATE no action;--> statement-breakpoint
@@ -171,4 +187,7 @@ CREATE INDEX "skills_type_idx" ON "skills" USING btree ("type");--> statement-br
 CREATE INDEX "user_concept_progress_user_id_idx" ON "user_concept_progress" USING btree ("user_id");--> statement-breakpoint
 CREATE INDEX "user_concept_progress_due_idx" ON "user_concept_progress" USING btree ("user_id","next_review_at");--> statement-breakpoint
 CREATE INDEX "user_skill_progress_user_id_idx" ON "user_skill_progress" USING btree ("user_id");--> statement-breakpoint
-CREATE INDEX "user_skill_progress_skill_id_idx" ON "user_skill_progress" USING btree ("skill_id");
+CREATE INDEX "user_skill_progress_skill_id_idx" ON "user_skill_progress" USING btree ("skill_id");--> statement-breakpoint
+ALTER TABLE "levels" ADD CONSTRAINT "levels_language_code_languages_code_fk" FOREIGN KEY ("language_code") REFERENCES "public"."languages"("code") ON DELETE cascade ON UPDATE no action;--> statement-breakpoint
+ALTER TABLE "users" ADD CONSTRAINT "users_active_language_languages_code_fk" FOREIGN KEY ("active_language") REFERENCES "public"."languages"("code") ON DELETE no action ON UPDATE no action;--> statement-breakpoint
+ALTER TABLE "levels" ADD CONSTRAINT "levels_code_language_unique" UNIQUE("code","language_code");

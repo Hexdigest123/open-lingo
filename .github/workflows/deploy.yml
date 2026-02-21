@@ -73,18 +73,23 @@ jobs:
           "
 
           # If no migrations recorded yet (first switch from push to migrate),
-          # mark 0000-0006 as applied so only new migrations run
+          # mark 0000-0005 as applied so only migration 0006+ runs.
+          # 0000-0005 were applied via drizzle-kit push; 0006 is the first
+          # migration that needs to run (multi-language support).
+          docker compose -f compose.yaml exec -T db psql -U "$POSTGRES_USER" -d "$POSTGRES_DB" -c \
+            "DELETE FROM \"drizzle\".\"__drizzle_migrations\" WHERE created_at = 1771623572546;" 2>/dev/null || true
+
           MIGRATION_COUNT=$(docker compose -f compose.yaml exec -T db psql -U "$POSTGRES_USER" -d "$POSTGRES_DB" -t -c \
             "SELECT COUNT(*) FROM \"drizzle\".\"__drizzle_migrations\";" | tr -d ' \r\n')
 
           if [ "$MIGRATION_COUNT" = "0" ]; then
-            echo "First migrate run — marking existing migrations (0000-0006) as applied..."
-            HASH_0006=$(docker compose -f compose.yaml run -T --rm migrate sh -c \
-              "sha256sum drizzle/0006_panoramic_piledriver.sql | cut -d' ' -f1")
-            HASH_0006=$(echo "$HASH_0006" | tr -d ' \r\n')
+            echo "First migrate run — marking existing migrations (0000-0005) as applied..."
+            HASH_0005=$(docker compose -f compose.yaml run -T --rm migrate sh -c \
+              "sha256sum drizzle/0005_melted_proemial_gods.sql | cut -d' ' -f1")
+            HASH_0005=$(echo "$HASH_0005" | tr -d ' \r\n')
             docker compose -f compose.yaml exec -T db psql -U "$POSTGRES_USER" -d "$POSTGRES_DB" -c \
-              "INSERT INTO \"drizzle\".\"__drizzle_migrations\" (hash, created_at) VALUES ('$HASH_0006', 1771623572546);"
-            echo "Done — migrations 0000-0006 marked as applied"
+              "INSERT INTO \"drizzle\".\"__drizzle_migrations\" (hash, created_at) VALUES ('$HASH_0005', 1766791441364);"
+            echo "Done — migrations 0000-0005 marked as applied"
           else
             echo "Migration tracking already initialized ($MIGRATION_COUNT entries)"
           fi
