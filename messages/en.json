@@ -841,5 +841,22 @@
 	"skills.startSkill": "Start Learning",
 	"skills.subtitle": "Your learning path for {language}",
 	"skills.title": "Skill Tree",
-	"skills.unlocked": "Ready to learn"
+	"skills.unlocked": "Ready to learn",
+	"admin.questions.section.characterRecognition": "Character Recognition Content",
+	"admin.questions.section.characterWriting": "Character Writing Content",
+	"admin.questions.section.conjugationCloze": "Conjugation Cloze Content",
+	"admin.questions.section.dictation": "Dictation Content",
+	"admin.questions.section.grammarTransformation": "Grammar Transformation Content",
+	"admin.questions.section.guidedComposition": "Guided Composition Content",
+	"admin.questions.section.kanjiComposition": "Kanji Composition Content",
+	"admin.questions.section.minimalPair": "Minimal Pair Content",
+	"admin.questions.section.particleSelection": "Particle Selection Content",
+	"admin.questions.section.scriptTransliteration": "Script Transliteration Content",
+	"admin.questions.types.conjugationCloze": "Conjugation Cloze",
+	"admin.questions.types.dictation": "Dictation",
+	"admin.questions.types.grammarTransformation": "Grammar Transformation",
+	"admin.questions.types.guidedComposition": "Guided Composition",
+	"admin.questions.types.kanjiComposition": "Kanji Composition",
+	"admin.questions.types.minimalPair": "Minimal Pair Discrimination",
+	"admin.questions.types.particleSelection": "Particle Selection"
 }

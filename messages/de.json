@@ -841,5 +841,22 @@
 	"skills.startSkill": "Lernen beginnen",
 	"skills.subtitle": "Dein Lernpfad für {language}",
 	"skills.title": "Fähigkeitenbaum",
-	"skills.unlocked": "Bereit zum Lernen"
+	"skills.unlocked": "Bereit zum Lernen",
+	"admin.questions.section.characterRecognition": "Zeichenerkennung-Inhalt",
+	"admin.questions.section.characterWriting": "Zeichen-Schreiben-Inhalt",
+	"admin.questions.section.conjugationCloze": "Konjugations-Lückentext-Inhalt",
+	"admin.questions.section.dictation": "Diktat-Inhalt",
+	"admin.questions.section.grammarTransformation": "Grammatik-Umformung-Inhalt",
+	"admin.questions.section.guidedComposition": "Geführtes-Schreiben-Inhalt",
+	"admin.questions.section.kanjiComposition": "Kanji-Zusammensetzung-Inhalt",
+	"admin.questions.section.minimalPair": "Minimalpaar-Inhalt",
+	"admin.questions.section.particleSelection": "Partikelauswahl-Inhalt",
+	"admin.questions.section.scriptTransliteration": "Schriftübertragung-Inhalt",
+	"admin.questions.types.conjugationCloze": "Konjugations-Lückentext",
+	"admin.questions.types.dictation": "Diktat",
+	"admin.questions.types.grammarTransformation": "Grammatik-Umformung",
+	"admin.questions.types.guidedComposition": "Geführtes Schreiben",
+	"admin.questions.types.kanjiComposition": "Kanji-Zusammensetzung",
+	"admin.questions.types.minimalPair": "Minimalpaar-Unterscheidung",
+	"admin.questions.types.particleSelection": "Partikelauswahl"
 }
