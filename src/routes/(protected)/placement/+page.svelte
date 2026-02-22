@@ -3,13 +3,7 @@
 	import type { PageData } from './$types';
 	import { deserialize } from '$app/forms';
 	import { goto } from '$app/navigation';
-	import MultipleChoiceQuestion from '$lib/components/lessons/MultipleChoiceQuestion.svelte';
-	import FillBlankQuestion from '$lib/components/lessons/FillBlankQuestion.svelte';
-	import TranslationQuestion from '$lib/components/lessons/TranslationQuestion.svelte';
-	import MatchingQuestion from '$lib/components/lessons/MatchingQuestion.svelte';
-	import WordOrderQuestion from '$lib/components/lessons/WordOrderQuestion.svelte';
-	import SpeakingQuestion from '$lib/components/lessons/SpeakingQuestion.svelte';
-	import ListeningQuestion from '$lib/components/lessons/ListeningQuestion.svelte';
+	import QuestionRenderer from '$lib/components/lessons/QuestionRenderer.svelte';
 	import { Flag, Compass } from 'lucide-svelte';
 
 	type PlacementQuestion = {
@@ -197,89 +191,15 @@
 			</div>
 		</div>
 
-		{#if currentQuestion.type === 'multiple_choice'}
-			<MultipleChoiceQuestion
-				questionText={(currentQuestion.content.question as string) ?? ''}
-				options={(currentQuestion.content.options as string[]) ?? []}
-				disabled={showFeedback || isSubmitting}
-				onAnswer={submitAnswer}
-			/>
-		{:else if currentQuestion.type === 'fill_blank'}
-			<FillBlankQuestion
-				sentence={(currentQuestion.content.sentence as string) ?? ''}
-				hint={(currentQuestion.content.hint as string) ?? ''}
-				disabled={showFeedback || isSubmitting}
-				onAnswer={submitAnswer}
-			/>
-		{:else if currentQuestion.type === 'translation'}
-			<TranslationQuestion
-				text={typeof currentQuestion.content.text === 'string' ? currentQuestion.content.text : ''}
-				direction={typeof currentQuestion.content.direction === 'string'
-					? currentQuestion.content.direction
-					: ''}
-				targetLanguageName={data.languageCode.toUpperCase()}
-				disabled={showFeedback || isSubmitting}
-				onAnswer={submitAnswer}
-			/>
-		{:else if currentQuestion.type === 'matching'}
-			<MatchingQuestion
-				pairs={Array.isArray(currentQuestion.content.pairs)
-					? (currentQuestion.content.pairs as any[])
-					: []}
-				targetLanguageName={data.languageCode.toUpperCase()}
-				disabled={showFeedback || isSubmitting}
-				onAnswer={submitAnswer}
-			/>
-		{:else if currentQuestion.type === 'word_order'}
-			<WordOrderQuestion
-				words={Array.isArray(currentQuestion.content.words)
-					? currentQuestion.content.words.filter(
-							(value): value is string => typeof value === 'string'
-						)
-					: []}
-				instruction={typeof currentQuestion.content.instruction === 'string'
-					? currentQuestion.content.instruction
-					: ''}
-				disabled={showFeedback || isSubmitting}
-				onAnswer={submitAnswer}
-			/>
-		{:else if currentQuestion.type === 'speaking'}
-			<SpeakingQuestion
-				textToSpeak={typeof currentQuestion.content.textToSpeak === 'string'
-					? currentQuestion.content.textToSpeak
-					: ''}
-				hint={typeof currentQuestion.content.hint === 'string' ? currentQuestion.content.hint : ''}
-				hasApiKey={false}
-				disabled={showFeedback || isSubmitting}
-				onAnswer={submitAnswer}
-			/>
-		{:else if currentQuestion.type === 'listening'}
-			<ListeningQuestion
-				textToHear={typeof currentQuestion.content.textToHear === 'string'
-					? currentQuestion.content.textToHear
-					: ''}
-				answerType={typeof currentQuestion.content.answerType === 'string' &&
-				(currentQuestion.content.answerType === 'type' ||
-					currentQuestion.content.answerType === 'multiple_choice')
-					? currentQuestion.content.answerType
-					: 'type'}
-				options={(currentQuestion.content.options as string[]) ?? []}
-				hasApiKey={false}
-				disabled={showFeedback || isSubmitting}
-				onAnswer={submitAnswer}
-			/>
-		{:else}
-			<div class="card text-center">
-				<p class="text-text-muted">
-					{m['learn.unsupportedType']()}
-				</p>
-				<button
-					class="btn btn-primary mt-4"
-					onclick={() => submitAnswer(currentQuestion.correctAnswer)}
-					>{m['learn.continue']()}</button
-				>
-			</div>
-		{/if}
+		<QuestionRenderer
+			type={currentQuestion.type}
+			content={currentQuestion.content}
+			disabled={showFeedback || isSubmitting}
+			hasApiKey={false}
+			targetLanguageName={data.languageCode.toUpperCase()}
+			correctAnswer={currentQuestion.correctAnswer}
+			onAnswer={submitAnswer}
+		/>
 
 		{#if showFeedback && feedback}
 			<div

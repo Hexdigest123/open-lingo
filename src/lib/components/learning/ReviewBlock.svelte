@@ -1,15 +1,6 @@
 <script lang="ts">
 	import * as m from '$lib/paraglide/messages.js';
-	import MultipleChoiceQuestion from '../lessons/MultipleChoiceQuestion.svelte';
-	import FillBlankQuestion from '../lessons/FillBlankQuestion.svelte';
-	import TranslationQuestion from '../lessons/TranslationQuestion.svelte';
-	import MatchingQuestion from '../lessons/MatchingQuestion.svelte';
-	import WordOrderQuestion from '../lessons/WordOrderQuestion.svelte';
-	import SpeakingQuestion from '../lessons/SpeakingQuestion.svelte';
-	import ListeningQuestion from '../lessons/ListeningQuestion.svelte';
-	import CharacterRecognitionQuestion from '../lessons/CharacterRecognitionQuestion.svelte';
-	import CharacterWritingQuestion from '../lessons/CharacterWritingQuestion.svelte';
-	import ScriptTransliterationQuestion from '../lessons/ScriptTransliterationQuestion.svelte';
+	import QuestionRenderer from '../lessons/QuestionRenderer.svelte';
 
 	interface ReviewQuestion {
 		id: number;
@@ -113,96 +104,15 @@
 		</div>
 
 		<div class="mb-8">
-			{#if currentReview.question.type === 'multiple_choice'}
-				<MultipleChoiceQuestion
-					questionText={currentReview.question.content.question as string}
-					options={currentReview.question.content.options as string[]}
-					disabled={showFeedback}
-					onAnswer={handleAnswer}
-				/>
-			{:else if currentReview.question.type === 'fill_blank'}
-				<FillBlankQuestion
-					sentence={currentReview.question.content.sentence as string}
-					hint={currentReview.question.content.hint as string}
-					disabled={showFeedback}
-					onAnswer={handleAnswer}
-				/>
-			{:else if currentReview.question.type === 'translation'}
-				<TranslationQuestion
-					text={currentReview.question.content.text as string}
-					direction={currentReview.question.content.direction as string}
-					targetLanguageName={currentReview.question.content.targetLanguageName as string}
-					disabled={showFeedback}
-					onAnswer={handleAnswer}
-				/>
-			{:else if currentReview.question.type === 'matching'}
-				<MatchingQuestion
-					pairs={currentReview.question.content.pairs as any[]}
-					targetLanguageName={currentReview.question.content.targetLanguageName as string}
-					disabled={showFeedback}
-					onAnswer={handleAnswer}
-				/>
-			{:else if currentReview.question.type === 'word_order'}
-				<WordOrderQuestion
-					words={currentReview.question.content.words as string[]}
-					instruction={currentReview.question.content.instruction as string}
-					disabled={showFeedback}
-					onAnswer={handleAnswer}
-				/>
-			{:else if currentReview.question.type === 'speaking'}
-				<SpeakingQuestion
-					textToSpeak={currentReview.question.content.textToSpeak as string}
-					hint={currentReview.question.content.hint as string}
-					disabled={showFeedback}
-					{hasApiKey}
-					onAnswer={handleAnswer}
-				/>
-			{:else if currentReview.question.type === 'listening'}
-				<ListeningQuestion
-					textToHear={currentReview.question.content.textToHear as string}
-					answerType={currentReview.question.content.answerType as 'type' | 'multiple_choice'}
-					options={currentReview.question.content.options as string[]}
-					disabled={showFeedback}
-					{hasApiKey}
-					onAnswer={handleAnswer}
-				/>
-			{:else if currentReview.question.type === 'character_recognition'}
-				<CharacterRecognitionQuestion
-					character={currentReview.question.content.character as string}
-					characterType={currentReview.question.content.characterType as string}
-					options={currentReview.question.content.options as string[]}
-					disabled={showFeedback}
-					onAnswer={handleAnswer}
-				/>
-			{:else if currentReview.question.type === 'character_writing'}
-				<CharacterWritingQuestion
-					reading={currentReview.question.content.reading as string}
-					characterType={currentReview.question.content.characterType as string}
-					hint={currentReview.question.content.hint as string}
-					disabled={showFeedback}
-					onAnswer={handleAnswer}
-				/>
-			{:else if currentReview.question.type === 'script_transliteration'}
-				<ScriptTransliterationQuestion
-					sourceText={currentReview.question.content.sourceText as string}
-					sourceScript={currentReview.question.content.sourceScript as string}
-					targetScript={currentReview.question.content.targetScript as string}
-					disabled={showFeedback}
-					onAnswer={handleAnswer}
-				/>
-			{:else}
-				<div class="rounded-xl border-2 border-dashed border-text-muted/30 p-8 text-center">
-					<p class="text-lg font-medium text-text-light">
-						{m['lesson.unsupportedType']()}: {currentReview.question.type}
-					</p>
-					<button
-						onclick={() => handleAnswer(currentReview.question.correctAnswer)}
-						class="btn btn-secondary mt-4"
-					>
-						{m['lesson.skip']()}
-					</button>
-				</div>
-			{/if}
+			<QuestionRenderer
+				type={currentReview.question.type}
+				content={currentReview.question.content}
+				disabled={showFeedback}
+				{hasApiKey}
+				targetLanguageName={currentReview.question.content.targetLanguageName as string}
+				correctAnswer={currentReview.question.correctAnswer}
+				onAnswer={handleAnswer}
+			/>
 		</div>
 	{/if}
 

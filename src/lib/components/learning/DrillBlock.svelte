@@ -1,15 +1,6 @@
 <script lang="ts">
 	import * as m from '$lib/paraglide/messages.js';
-	import MultipleChoiceQuestion from '../lessons/MultipleChoiceQuestion.svelte';
-	import FillBlankQuestion from '../lessons/FillBlankQuestion.svelte';
-	import TranslationQuestion from '../lessons/TranslationQuestion.svelte';
-	import MatchingQuestion from '../lessons/MatchingQuestion.svelte';
-	import WordOrderQuestion from '../lessons/WordOrderQuestion.svelte';
-	import SpeakingQuestion from '../lessons/SpeakingQuestion.svelte';
-	import ListeningQuestion from '../lessons/ListeningQuestion.svelte';
-	import CharacterRecognitionQuestion from '../lessons/CharacterRecognitionQuestion.svelte';
-	import CharacterWritingQuestion from '../lessons/CharacterWritingQuestion.svelte';
-	import ScriptTransliterationQuestion from '../lessons/ScriptTransliterationQuestion.svelte';
+	import QuestionRenderer from '../lessons/QuestionRenderer.svelte';
 
 	interface Question {
 		id: number;
@@ -97,96 +88,15 @@
 	<!-- Question Component -->
 	<div class="mb-8">
 		{#if currentQuestion}
-			{#if currentQuestion.type === 'multiple_choice'}
-				<MultipleChoiceQuestion
-					questionText={currentQuestion.content.question as string}
-					options={currentQuestion.content.options as string[]}
-					disabled={showFeedback || disabled}
-					onAnswer={handleAnswer}
-				/>
-			{:else if currentQuestion.type === 'fill_blank'}
-				<FillBlankQuestion
-					sentence={currentQuestion.content.sentence as string}
-					hint={currentQuestion.content.hint as string}
-					disabled={showFeedback || disabled}
-					onAnswer={handleAnswer}
-				/>
-			{:else if currentQuestion.type === 'translation'}
-				<TranslationQuestion
-					text={currentQuestion.content.text as string}
-					direction={currentQuestion.content.direction as string}
-					targetLanguageName={currentQuestion.content.targetLanguageName as string}
-					disabled={showFeedback || disabled}
-					onAnswer={handleAnswer}
-				/>
-			{:else if currentQuestion.type === 'matching'}
-				<MatchingQuestion
-					pairs={currentQuestion.content.pairs as any[]}
-					targetLanguageName={currentQuestion.content.targetLanguageName as string}
-					disabled={showFeedback || disabled}
-					onAnswer={handleAnswer}
-				/>
-			{:else if currentQuestion.type === 'word_order'}
-				<WordOrderQuestion
-					words={currentQuestion.content.words as string[]}
-					instruction={currentQuestion.content.instruction as string}
-					disabled={showFeedback || disabled}
-					onAnswer={handleAnswer}
-				/>
-			{:else if currentQuestion.type === 'speaking'}
-				<SpeakingQuestion
-					textToSpeak={currentQuestion.content.textToSpeak as string}
-					hint={currentQuestion.content.hint as string}
-					disabled={showFeedback || disabled}
-					{hasApiKey}
-					onAnswer={handleAnswer}
-				/>
-			{:else if currentQuestion.type === 'listening'}
-				<ListeningQuestion
-					textToHear={currentQuestion.content.textToHear as string}
-					answerType={currentQuestion.content.answerType as 'type' | 'multiple_choice'}
-					options={currentQuestion.content.options as string[]}
-					disabled={showFeedback || disabled}
-					{hasApiKey}
-					onAnswer={handleAnswer}
-				/>
-			{:else if currentQuestion.type === 'character_recognition'}
-				<CharacterRecognitionQuestion
-					character={currentQuestion.content.character as string}
-					characterType={currentQuestion.content.characterType as string}
-					options={currentQuestion.content.options as string[]}
-					disabled={showFeedback || disabled}
-					onAnswer={handleAnswer}
-				/>
-			{:else if currentQuestion.type === 'character_writing'}
-				<CharacterWritingQuestion
-					reading={currentQuestion.content.reading as string}
-					characterType={currentQuestion.content.characterType as string}
-					hint={currentQuestion.content.hint as string}
-					disabled={showFeedback || disabled}
-					onAnswer={handleAnswer}
-				/>
-			{:else if currentQuestion.type === 'script_transliteration'}
-				<ScriptTransliterationQuestion
-					sourceText={currentQuestion.content.sourceText as string}
-					sourceScript={currentQuestion.content.sourceScript as string}
-					targetScript={currentQuestion.content.targetScript as string}
-					disabled={showFeedback || disabled}
-					onAnswer={handleAnswer}
-				/>
-			{:else}
-				<div class="rounded-xl border-2 border-dashed border-text-muted/30 p-8 text-center">
-					<p class="text-lg font-medium text-text-light">
-						{m['lesson.unsupportedType']()}: {currentQuestion.type}
-					</p>
-					<button
-						onclick={() => handleAnswer(currentQuestion.correctAnswer)}
-						class="btn btn-secondary mt-4"
-					>
-						{m['lesson.skip']()}
-					</button>
-				</div>
-			{/if}
+			<QuestionRenderer
+				type={currentQuestion.type}
+				content={currentQuestion.content}
+				disabled={showFeedback || disabled}
+				{hasApiKey}
+				targetLanguageName={currentQuestion.content.targetLanguageName as string}
+				correctAnswer={currentQuestion.correctAnswer}
+				onAnswer={handleAnswer}
+			/>
 		{/if}
 	</div>
 

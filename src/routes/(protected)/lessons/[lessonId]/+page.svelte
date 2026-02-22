@@ -4,13 +4,7 @@
 	import type { PageData } from './$types';
 	import { goto, invalidateAll } from '$app/navigation';
 	import { deserialize } from '$app/forms';
-	import MultipleChoiceQuestion from '$lib/components/lessons/MultipleChoiceQuestion.svelte';
-	import FillBlankQuestion from '$lib/components/lessons/FillBlankQuestion.svelte';
-	import TranslationQuestion from '$lib/components/lessons/TranslationQuestion.svelte';
-	import MatchingQuestion from '$lib/components/lessons/MatchingQuestion.svelte';
-	import WordOrderQuestion from '$lib/components/lessons/WordOrderQuestion.svelte';
-	import SpeakingQuestion from '$lib/components/lessons/SpeakingQuestion.svelte';
-	import ListeningQuestion from '$lib/components/lessons/ListeningQuestion.svelte';
+	import QuestionRenderer from '$lib/components/lessons/QuestionRenderer.svelte';
 	import AiExplanation from '$lib/components/lessons/AiExplanation.svelte';
 	import AnimatedCounter from '$lib/components/ui/AnimatedCounter.svelte';
 	import { PartyPopper, HeartCrack, Heart, CircleCheck, CircleX, Bot, X } from 'lucide-svelte';
@@ -498,67 +492,16 @@
 
 		<!-- Question Content -->
 		{#key currentQuestion.id}
-			{#if currentQuestion.type === 'multiple_choice'}
-				<MultipleChoiceQuestion
-					questionText={(questionContent.question as string) ?? ''}
-					options={(questionContent.options as string[]) ?? []}
-					disabled={showFeedback || isSubmitting}
-					onAnswer={handleAnswer}
-				/>
-			{:else if currentQuestion.type === 'fill_blank'}
-				<FillBlankQuestion
-					sentence={(questionContent.sentence as string) ?? ''}
-					hint={(questionContent.hint as string) ?? ''}
-					disabled={showFeedback || isSubmitting}
-					onAnswer={handleAnswer}
-				/>
-			{:else if currentQuestion.type === 'translation'}
-				<TranslationQuestion
-					text={(questionContent.text as string) ?? ''}
-					direction={questionContent.direction as string}
-					targetLanguageName={data.activeLanguage?.name || m['lesson.languages.targetLanguage']()}
-					disabled={showFeedback || isSubmitting}
-					onAnswer={handleAnswer}
-				/>
-			{:else if currentQuestion.type === 'matching'}
-				<MatchingQuestion
-					pairs={Array.isArray(questionContent.pairs) ? (questionContent.pairs as any[]) : []}
-					targetLanguageName={data.activeLanguage?.name || m['lesson.languages.targetLanguage']()}
-					disabled={showFeedback || isSubmitting}
-					onAnswer={handleAnswer}
-					onWrongMatch={handleWrongMatch}
-				/>
-			{:else if currentQuestion.type === 'word_order'}
-				<WordOrderQuestion
-					words={questionContent.words as string[]}
-					instruction={(questionContent.instruction as string) ?? ''}
-					disabled={showFeedback || isSubmitting}
-					onAnswer={handleAnswer}
-				/>
-			{:else if currentQuestion.type === 'speaking'}
-				<SpeakingQuestion
-					textToSpeak={questionContent.textToSpeak as string}
-					hint={questionContent.hint as string | undefined}
-					disabled={showFeedback || isSubmitting}
-					hasApiKey={data.hasApiKey}
-					onAnswer={handleAnswer}
-					onSkip={handleSkip}
-				/>
-			{:else if currentQuestion.type === 'listening'}
-				<ListeningQuestion
-					textToHear={questionContent.textToHear as string}
-					answerType={(questionContent.answerType as 'type' | 'multiple_choice') || 'type'}
-					options={questionContent.options as string[]}
-					disabled={showFeedback || isSubmitting}
-					hasApiKey={data.hasApiKey}
-					onAnswer={handleAnswer}
-					onSkip={handleSkip}
-				/>
-			{:else}
-				<div class="card text-center">
-					<p class="text-text-muted">Unknown question type: {currentQuestion.type}</p>
-				</div>
-			{/if}
+			<QuestionRenderer
+				type={currentQuestion.type}
+				content={questionContent}
+				disabled={showFeedback || isSubmitting}
+				hasApiKey={data.hasApiKey}
+				targetLanguageName={data.activeLanguage?.name || ''}
+				onAnswer={handleAnswer}
+				onSkip={handleSkip}
+				onWrongMatch={handleWrongMatch}
+			/>
 		{/key}
 
 		<!-- Feedback -->

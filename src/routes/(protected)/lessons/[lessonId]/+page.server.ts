@@ -12,7 +12,9 @@ import {
 	userAchievements,
 	users,
 	units,
-	levels
+	levels,
+	lessonSkills,
+	skills
 } from '$lib/server/db/schema';
 import { eq, and, sql, desc } from 'drizzle-orm';
 import { isAnswerCorrect } from '$lib/server/validation/answers';
@@ -244,6 +246,25 @@ export const load: PageServerLoad = async ({ params, locals }) => {
 		error(403, 'This lesson is not available yet');
 	}
 
+
+	// Redirect guided_skill lessons to the skill tree learn route
+	if (lesson.mode === 'guided_skill') {
+		const [link] = await db
+			.select({ skillId: lessonSkills.skillId })
+			.from(lessonSkills)
+			.where(eq(lessonSkills.lessonId, lessonId))
+			.limit(1);
+		if (link) {
+			const [skill] = await db
+				.select({ languageCode: skills.languageCode })
+				.from(skills)
+				.where(eq(skills.id, link.skillId))
+				.limit(1);
+			if (skill) {
+				redirect(302, `/learn/${skill.languageCode}/${link.skillId}`);
+			}
+		}
+	}
 	// Get questions for this lesson
 	const lessonQuestions = await db
 		.select()

@@ -8,7 +8,7 @@ import {
 	userLessonProgress,
 	users
 } from '$lib/server/db/schema';
-import { and, asc, eq, inArray } from 'drizzle-orm';
+import { and, asc, eq, inArray, ne } from 'drizzle-orm';
 import { pickFromJson } from '$lib/server/i18n/resolve';
 
 export const load: PageServerLoad = async ({ url, locals }) => {
@@ -86,7 +86,7 @@ export const load: PageServerLoad = async ({ url, locals }) => {
 				? await db
 						.select()
 						.from(lessons)
-						.where(inArray(lessons.unitId, unitIds))
+						.where(and(inArray(lessons.unitId, unitIds), ne(lessons.mode, 'guided_skill')))
 						.orderBy(asc(lessons.order))
 				: [];
 
