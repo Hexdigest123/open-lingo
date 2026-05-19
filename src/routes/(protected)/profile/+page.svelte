@@ -1,6 +1,7 @@
 <script lang="ts">
 	import type { PageData } from './$types';
 	import { t } from '$lib/i18n/index.svelte';
+	import { Trophy, Lock } from 'lucide-svelte';
 
 	let { data }: { data: PageData } = $props();
 
@@ -132,7 +133,11 @@
 				<div class="card relative {isEarned ? '' : 'opacity-50 grayscale'}">
 					<div class="flex flex-col items-center gap-2 text-center">
 						<div class="flex h-16 w-16 items-center justify-center rounded-full {isEarned ? 'bg-yellow/20' : 'bg-border-light'}">
-							<span class="text-3xl">{isEarned ? '🏆' : '🔒'}</span>
+							{#if isEarned}
+								<Trophy size={32} class="fill-yellow stroke-yellow-dark" />
+							{:else}
+								<Lock size={28} class="stroke-text-muted" />
+							{/if}
 						</div>
 						<h3 class="font-bold text-text-light">{achievement.name}</h3>
 						<p class="text-xs text-text-muted">{achievement.description}</p>

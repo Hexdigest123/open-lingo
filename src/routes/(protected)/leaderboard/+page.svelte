@@ -3,6 +3,7 @@
 	import { t } from '$lib/i18n/index.svelte';
 	import { goto } from '$app/navigation';
 	import { page } from '$app/stores';
+	import { Medal, Flame } from 'lucide-svelte';
 
 	let { data }: { data: PageData } = $props();
 
@@ -14,11 +15,11 @@
 		goto(url.toString(), { replaceState: true });
 	}
 
-	function getRankEmoji(rank: number): string {
-		if (rank === 1) return '🥇';
-		if (rank === 2) return '🥈';
-		if (rank === 3) return '🥉';
-		return '';
+	function getMedalColor(rank: number): string | undefined {
+		if (rank === 1) return 'stroke-yellow-dark fill-yellow';
+		if (rank === 2) return 'stroke-gray-500 fill-gray-300';
+		if (rank === 3) return 'stroke-orange fill-orange/60';
+		return undefined;
 	}
 
 	function getRankClass(rank: number): string {
@@ -65,7 +66,13 @@
 		<div class="space-y-3 sm:hidden">
 			{#each data.leaderboard as entry}
 				<div class="card flex items-center gap-3 p-3 {entry.isCurrentUser ? 'border-primary border-2' : ''} {getRankClass(entry.rank)}">
-					<span class="text-lg font-bold w-8 text-center">{getRankEmoji(entry.rank) || entry.rank}</span>
+					<span class="flex w-8 items-center justify-center text-lg font-bold">
+						{#if getMedalColor(entry.rank)}
+							<Medal size={22} class={getMedalColor(entry.rank)} />
+						{:else}
+							{entry.rank}
+						{/if}
+					</span>
 					<div class="flex h-10 w-10 flex-shrink-0 items-center justify-center rounded-full bg-gradient-to-br from-success to-primary text-sm font-bold text-white">
 						{entry.displayName.charAt(0).toUpperCase()}
 					</div>
@@ -78,7 +85,10 @@
 						</p>
 						<div class="flex items-center gap-3 text-sm">
 							<span class="text-yellow-dark font-bold">{entry.xp} XP</span>
-							<span class="flex items-center gap-1 text-orange">🔥 {entry.streak || 0}</span>
+							<span class="flex items-center gap-1 text-orange">
+								<Flame size={14} class="fill-orange stroke-orange" />
+								{entry.streak || 0}
+							</span>
 						</div>
 					</div>
 				</div>
@@ -115,7 +125,9 @@
 										? 'text-lg'
 										: ''}"
 								>
-									{getRankEmoji(entry.rank)}
+									{#if getMedalColor(entry.rank)}
+										<Medal size={22} class={getMedalColor(entry.rank)} />
+									{/if}
 									{entry.rank}
 								</span>
 							</td>
@@ -141,7 +153,7 @@
 							</td>
 							<td class="hidden px-4 py-3 text-right sm:table-cell">
 								<span class="flex items-center justify-end gap-1">
-									<span>🔥</span>
+									<Flame size={16} class="fill-orange stroke-orange" />
 									<span class="font-medium text-orange">{entry.streak || 0}</span>
 								</span>
 							</td>

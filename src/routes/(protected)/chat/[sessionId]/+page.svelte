@@ -5,6 +5,7 @@
 	import ChatInput from '$lib/components/chat/ChatInput.svelte';
 	import ModeToggle from '$lib/components/chat/ModeToggle.svelte';
 	import VoiceRecorder from '$lib/components/chat/VoiceRecorder.svelte';
+	import { MessageCircle, Bot } from 'lucide-svelte';
 
 	let { data }: { data: PageData } = $props();
 
@@ -156,7 +157,9 @@
 	>
 		{#if messages.length === 0}
 			<div class="text-center py-8">
-				<div class="text-4xl mb-4">💬</div>
+				<div class="mb-4 flex justify-center">
+					<MessageCircle size={48} class="stroke-text-muted" />
+				</div>
 				<p class="text-text-muted">{t('chat.startConversation')}</p>
 			</div>
 		{:else}
@@ -171,7 +174,7 @@
 		{#if isLoading}
 			<div class="flex gap-3">
 				<div class="flex h-8 w-8 shrink-0 items-center justify-center rounded-full bg-primary text-white">
-					🤖
+					<Bot size={18} />
 				</div>
 				<div class="rounded-2xl bg-bg-light-secondary px-4 py-3">
 					<div class="flex gap-1">

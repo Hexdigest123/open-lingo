@@ -1,6 +1,7 @@
 <script lang="ts">
 	import type { PageData } from './$types';
 	import { t } from '$lib/i18n/index.svelte';
+	import { Star, Flame, Heart, Snowflake, Trophy, BookOpen, Bot } from 'lucide-svelte';
 
 	let { data }: { data: PageData } = $props();
 
@@ -29,7 +30,7 @@
 		<div class="card">
 			<div class="flex items-center gap-4">
 				<div class="flex h-12 w-12 items-center justify-center rounded-xl bg-yellow/10">
-					<span class="text-2xl">⭐</span>
+					<Star size={24} class="fill-yellow-dark stroke-yellow-dark" />
 				</div>
 				<div>
 					<p class="text-sm text-text-muted">{t('dashboard.stats.xp')}</p>
@@ -41,7 +42,7 @@
 		<div class="card">
 			<div class="flex items-center gap-4">
 				<div class="flex h-12 w-12 items-center justify-center rounded-xl bg-orange/10">
-					<span class="text-2xl">🔥</span>
+					<Flame size={24} class="fill-orange stroke-orange" />
 				</div>
 				<div>
 					<p class="text-sm text-text-muted">{t('dashboard.stats.streak')}</p>
@@ -53,7 +54,7 @@
 		<div class="card">
 			<div class="flex items-center gap-4">
 				<div class="flex h-12 w-12 items-center justify-center rounded-xl bg-error/10">
-					<span class="text-2xl">❤️</span>
+					<Heart size={24} class="fill-error stroke-error" />
 				</div>
 				<div>
 					<p class="text-sm text-text-muted">{t('dashboard.stats.hearts')}</p>
@@ -66,7 +67,7 @@
 		<div class="card {data.stats.streakFreezes > 0 ? 'border-primary/30 bg-primary/5' : ''}">
 			<div class="flex items-center gap-4">
 				<div class="flex h-12 w-12 items-center justify-center rounded-xl bg-primary/10 {data.stats.streakFreezes > 0 ? 'animate-freeze-earned' : ''}">
-					<span class="text-2xl">❄️</span>
+					<Snowflake size={24} class="stroke-primary" />
 				</div>
 				<div class="flex-1">
 					<p class="text-sm text-text-muted">{t('gamification.streakFreezes')}</p>
@@ -88,7 +89,7 @@
 		<div class="card">
 			<div class="flex items-center gap-4">
 				<div class="flex h-12 w-12 items-center justify-center rounded-xl bg-purple/10">
-					<span class="text-2xl">🏆</span>
+					<Trophy size={24} class="fill-purple stroke-purple" />
 				</div>
 				<div>
 					<p class="text-sm text-text-muted">{t('dashboard.stats.bestStreak')}</p>
@@ -125,7 +126,9 @@
 		<div class="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
 			<a href="/lessons" class="card transition-shadow hover:shadow-lg">
 				<div class="flex items-center gap-4">
-					<span class="text-3xl">📚</span>
+					<div class="flex h-12 w-12 items-center justify-center rounded-xl bg-success/10 text-success">
+						<BookOpen size={28} strokeWidth={2.25} />
+					</div>
 					<div>
 						<h3 class="font-bold text-text-light">Browse Lessons</h3>
 						<p class="text-sm text-text-muted">Explore all available lessons</p>
@@ -135,7 +138,9 @@
 
 			<a href="/leaderboard" class="card transition-shadow hover:shadow-lg">
 				<div class="flex items-center gap-4">
-					<span class="text-3xl">🏆</span>
+					<div class="flex h-12 w-12 items-center justify-center rounded-xl bg-purple/10 text-purple">
+						<Trophy size={28} strokeWidth={2.25} />
+					</div>
 					<div>
 						<h3 class="font-bold text-text-light">Leaderboard</h3>
 						<p class="text-sm text-text-muted">See how you rank</p>
@@ -145,7 +150,9 @@
 
 			<a href="/settings/api-key" class="card transition-shadow hover:shadow-lg">
 				<div class="flex items-center gap-4">
-					<span class="text-3xl">🤖</span>
+					<div class="flex h-12 w-12 items-center justify-center rounded-xl bg-primary/10 text-primary">
+						<Bot size={28} strokeWidth={2.25} />
+					</div>
 					<div>
 						<h3 class="font-bold text-text-light">AI Settings</h3>
 						<p class="text-sm text-text-muted">Configure your OpenAI key</p>

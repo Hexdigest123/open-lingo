@@ -3,6 +3,7 @@
 	import { i18n, t } from '$lib/i18n/index.svelte';
 	import { goto, invalidateAll } from '$app/navigation';
 	import ConfirmModal from '$lib/components/ConfirmModal.svelte';
+	import { MessageCircle, Mic, X } from 'lucide-svelte';
 
 	let { data }: { data: PageData } = $props();
 
@@ -110,7 +111,9 @@
 
 		{#if data.sessions.length === 0}
 			<div class="card text-center">
-				<div class="text-4xl mb-4">💬</div>
+				<div class="mb-4 flex justify-center">
+					<MessageCircle size={48} class="stroke-text-muted" />
+				</div>
 				<p class="text-text-muted">{t('chat.noSessions')}</p>
 			</div>
 		{:else}
@@ -126,7 +129,11 @@
 								<p class="text-sm text-text-muted">{formatDate(session.updatedAt)}</p>
 							</div>
 							<div class="ml-4 flex items-center gap-2">
-								<span class="text-lg">{session.mode === 'voice' ? '🎤' : '💬'}</span>
+								{#if session.mode === 'voice'}
+									<Mic size={20} class="stroke-primary" />
+								{:else}
+									<MessageCircle size={20} class="stroke-primary" />
+								{/if}
 								<button
 									onclick={(e) => promptDeleteSession(e, session.id)}
 									disabled={deletingSessionId === session.id}
@@ -136,9 +143,7 @@
 									{#if deletingSessionId === session.id}
 										<span class="inline-block h-4 w-4 animate-spin rounded-full border-2 border-error border-t-transparent"></span>
 									{:else}
-										<svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" class="h-4 w-4">
-											<path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12" />
-										</svg>
+										<X size={16} />
 									{/if}
 								</button>
 							</div>

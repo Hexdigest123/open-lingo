@@ -4,6 +4,7 @@
 	import { goto, invalidateAll } from '$app/navigation';
 	import { getBilingualText } from '$lib/utils/bilingual';
 	import { deserialize } from '$app/forms';
+	import { PartyPopper, HeartCrack, X, Heart, CircleCheck, CircleX, Bot } from 'lucide-svelte';
 	import MultipleChoiceQuestion from '$lib/components/lessons/MultipleChoiceQuestion.svelte';
 	import FillBlankQuestion from '$lib/components/lessons/FillBlankQuestion.svelte';
 	import TranslationQuestion from '$lib/components/lessons/TranslationQuestion.svelte';
@@ -289,7 +290,9 @@
 	<!-- Lesson Complete Screen -->
 	<div class="fixed inset-0 z-50 flex items-center justify-center bg-black/50 p-4">
 		<div class="card w-full max-w-md text-center">
-			<div class="text-6xl">🎉</div>
+			<div class="flex justify-center">
+				<PartyPopper size={72} class="stroke-success" />
+			</div>
 			<h2 class="mt-4 text-2xl font-bold text-text-light">{t('lesson.complete.title')}</h2>
 			<p class="mt-2 text-lg text-text-muted">
 				{getAccuracyMessage(Math.round((correctCount / totalQuestions) * 100))}
@@ -317,7 +320,9 @@
 	<!-- Out of Hearts Screen -->
 	<div class="fixed inset-0 z-50 flex items-center justify-center bg-black/50 p-4">
 		<div class="card w-full max-w-md text-center">
-			<div class="text-6xl">💔</div>
+			<div class="flex justify-center">
+				<HeartCrack size={72} class="stroke-error" />
+			</div>
 			<h2 class="mt-4 text-2xl font-bold text-error">{t('lesson.outOfHearts.title')}</h2>
 			<p class="mt-2 text-text-muted">{t('lesson.outOfHearts.message')}</p>
 
@@ -333,7 +338,9 @@
 	<div class="mx-auto max-w-2xl">
 		<!-- Header -->
 		<div class="mb-6 flex items-center justify-between">
-			<button onclick={exitLesson} class="text-text-muted hover:text-text-light"> ✕ </button>
+			<button onclick={exitLesson} class="text-text-muted hover:text-text-light" aria-label="Exit lesson">
+				<X size={24} />
+			</button>
 
 			<!-- Progress Bar -->
 			<div class="mx-4 flex-1">
@@ -347,7 +354,7 @@
 
 			<!-- Hearts -->
 			<div class="flex items-center gap-1">
-				<span class="text-error">❤️</span>
+				<Heart size={18} class="fill-error stroke-error" />
 				<span class="font-bold text-error">{hearts}</span>
 			</div>
 		</div>
@@ -431,7 +438,11 @@
 		{#if showFeedback && lastAnswer}
 			<div class="mt-6 rounded-xl p-4 {lastAnswer.isCorrect ? 'bg-success/10' : 'bg-error/10'}">
 				<div class="flex items-start gap-3">
-					<span class="text-2xl">{lastAnswer.isCorrect ? '✅' : '❌'}</span>
+					{#if lastAnswer.isCorrect}
+						<CircleCheck size={28} class="fill-success stroke-white shrink-0" />
+					{:else}
+						<CircleX size={28} class="fill-error stroke-white shrink-0" />
+					{/if}
 					<div class="flex-1">
 						<p class="font-bold {lastAnswer.isCorrect ? 'text-success' : 'text-error'}">
 							{lastAnswer.isCorrect ? t('lesson.correct') : t('lesson.incorrect')}
@@ -444,9 +455,10 @@
 							{#if data.hasApiKey && !aiExplanation && !isLoadingExplanation}
 								<button
 									onclick={fetchExplanation}
-									class="btn btn-ghost mt-3 -ml-2 px-2 text-sm text-primary hover:bg-primary/10"
+									class="btn btn-ghost mt-3 -ml-2 inline-flex items-center gap-1.5 px-2 text-sm text-primary hover:bg-primary/10"
 								>
-									🤖 {t('lesson.explain')}
+									<Bot size={16} />
+									<span>{t('lesson.explain')}</span>
 								</button>
 							{/if}
 						{/if}

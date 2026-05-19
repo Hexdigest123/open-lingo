@@ -1,6 +1,7 @@
 <script lang="ts">
 	import type { LayoutData } from '../$types';
 	import { t } from '$lib/i18n/index.svelte';
+	import { BookOpen, Users, Settings, ChartBar } from 'lucide-svelte';
 
 	let { data }: { data: LayoutData } = $props();
 </script>
@@ -35,8 +36,8 @@
 	<!-- Quick Actions -->
 	<div class="grid gap-4 md:grid-cols-2">
 		<a href="/admin/lessons" class="card flex items-center gap-4 transition-shadow hover:shadow-lg">
-			<div class="flex h-12 w-12 items-center justify-center rounded-xl bg-success/10 text-2xl">
-				📚
+			<div class="flex h-12 w-12 items-center justify-center rounded-xl bg-success/10 text-success">
+				<BookOpen size={28} strokeWidth={2.25} />
 			</div>
 			<div>
 				<h3 class="font-bold text-text-light">{t('admin.lessons.title')}</h3>
@@ -44,8 +45,8 @@
 			</div>
 		</a>
 		<a href="/admin/users" class="card flex items-center gap-4 transition-shadow hover:shadow-lg">
-			<div class="flex h-12 w-12 items-center justify-center rounded-xl bg-primary/10 text-2xl">
-				👥
+			<div class="flex h-12 w-12 items-center justify-center rounded-xl bg-primary/10 text-primary">
+				<Users size={28} strokeWidth={2.25} />
 			</div>
 			<div>
 				<h3 class="font-bold text-text-light">{t('admin.users.title')}</h3>
@@ -53,8 +54,8 @@
 			</div>
 		</a>
 		<a href="/admin/settings" class="card flex items-center gap-4 transition-shadow hover:shadow-lg">
-			<div class="flex h-12 w-12 items-center justify-center rounded-xl bg-purple/10 text-2xl">
-				⚙️
+			<div class="flex h-12 w-12 items-center justify-center rounded-xl bg-purple/10 text-purple">
+				<Settings size={28} strokeWidth={2.25} />
 			</div>
 			<div>
 				<h3 class="font-bold text-text-light">{t('admin.settings.title')}</h3>
@@ -62,8 +63,8 @@
 			</div>
 		</a>
 		<a href="/admin/api-usage" class="card flex items-center gap-4 transition-shadow hover:shadow-lg">
-			<div class="flex h-12 w-12 items-center justify-center rounded-xl bg-yellow/10 text-2xl">
-				📊
+			<div class="flex h-12 w-12 items-center justify-center rounded-xl bg-yellow/10 text-yellow-dark">
+				<ChartBar size={28} strokeWidth={2.25} />
 			</div>
 			<div>
 				<h3 class="font-bold text-text-light">API Usage</h3>

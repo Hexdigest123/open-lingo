@@ -2,6 +2,7 @@
 	import { page } from '$app/stores';
 	import { t } from '$lib/i18n/index.svelte';
 	import type { PageData } from './$types';
+	import { Heart, Star, Gamepad2, Mic, Bot } from 'lucide-svelte';
 
 	let { data }: { data: PageData } = $props();
 
@@ -89,11 +90,11 @@
 							class="mt-2 flex items-center justify-between text-xs sm:mt-3 sm:text-sm md:mt-4 md:text-base"
 						>
 							<div class="flex items-center gap-1 text-error">
-								<span>&#10084;</span>
+								<Heart size={14} class="fill-error stroke-error" />
 								<span class="font-bold">5</span>
 							</div>
 							<div class="flex items-center gap-1 text-yellow">
-								<span>&#9733;</span>
+								<Star size={14} class="fill-yellow stroke-yellow" />
 								<span class="font-bold">150 XP</span>
 							</div>
 						</div>
@@ -129,7 +130,7 @@
 					<div
 						class="mx-auto mb-4 flex h-16 w-16 items-center justify-center rounded-full bg-success/10 transition-colors group-hover:bg-success/20"
 					>
-						<span class="text-3xl">🎮</span>
+						<Gamepad2 size={32} class="stroke-success" strokeWidth={2.25} />
 					</div>
 					<h3 class="text-xl font-bold text-text-light">{t('landing.features.gamified.title')}</h3>
 					<p class="mt-2 text-text-muted">
@@ -142,7 +143,7 @@
 					<div
 						class="mx-auto mb-4 flex h-16 w-16 items-center justify-center rounded-full bg-primary/10 transition-colors group-hover:bg-primary/20"
 					>
-						<span class="text-3xl">🎤</span>
+						<Mic size={32} class="stroke-primary" strokeWidth={2.25} />
 					</div>
 					<h3 class="text-xl font-bold text-text-light">{t('landing.features.voice.title')}</h3>
 					<p class="mt-2 text-text-muted">
@@ -155,7 +156,7 @@
 					<div
 						class="mx-auto mb-4 flex h-16 w-16 items-center justify-center rounded-full bg-purple/10 transition-colors group-hover:bg-purple/20"
 					>
-						<span class="text-3xl">🤖</span>
+						<Bot size={32} class="stroke-purple" strokeWidth={2.25} />
 					</div>
 					<h3 class="text-xl font-bold text-text-light">{t('landing.features.ai.title')}</h3>
 					<p class="mt-2 text-text-muted">

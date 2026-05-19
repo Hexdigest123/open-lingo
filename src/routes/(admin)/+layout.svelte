@@ -3,15 +3,16 @@
 	import type { LayoutData } from './$types';
 	import { page } from '$app/stores';
 	import { t } from '$lib/i18n/index.svelte';
+	import { LayoutDashboard, BookOpen, Users, TrendingUp, Settings, ArrowLeft } from 'lucide-svelte';
 
 	let { children, data }: { children: Snippet; data: LayoutData } = $props();
 
 	const navItems = [
-		{ href: '/admin', label: 'admin.nav.dashboard', icon: '📊' },
-		{ href: '/admin/lessons', label: 'admin.nav.lessons', icon: '📚' },
-		{ href: '/admin/users', label: 'admin.nav.users', icon: '👥' },
-		{ href: '/admin/api-usage', label: 'API Usage', icon: '📈' },
-		{ href: '/admin/settings', label: 'admin.nav.settings', icon: '⚙️' }
+		{ href: '/admin', label: 'admin.nav.dashboard', icon: LayoutDashboard },
+		{ href: '/admin/lessons', label: 'admin.nav.lessons', icon: BookOpen },
+		{ href: '/admin/users', label: 'admin.nav.users', icon: Users },
+		{ href: '/admin/api-usage', label: 'API Usage', icon: TrendingUp },
+		{ href: '/admin/settings', label: 'admin.nav.settings', icon: Settings }
 	];
 
 	function isActive(href: string): boolean {
@@ -35,20 +36,22 @@
 
 			<nav class="hidden items-center gap-2 md:flex">
 				{#each navItems as item}
+					{@const Icon = item.icon}
 					<a
 						href={item.href}
 						class="flex items-center gap-2 whitespace-nowrap rounded-xl px-4 py-2 font-medium transition-colors
 							{isActive(item.href) ? 'bg-white/20 text-white' : 'text-white/70 hover:text-white'}"
 					>
-						<span>{item.icon}</span>
+						<Icon size={18} strokeWidth={2.25} />
 						<span>{t(item.label)}</span>
 					</a>
 				{/each}
 			</nav>
 
 			<div class="flex items-center gap-4">
-				<a href="/dashboard" class="text-white/70 hover:text-white">
-					← {t('nav.dashboard')}
+				<a href="/dashboard" class="flex items-center gap-1.5 text-white/70 hover:text-white">
+					<ArrowLeft size={16} />
+					<span>{t('nav.dashboard')}</span>
 				</a>
 			</div>
 		</div>
@@ -63,12 +66,13 @@
 	<nav class="fixed bottom-0 left-0 right-0 z-50 border-t border-border-light bg-white md:hidden">
 		<div class="flex items-center justify-around py-2">
 			{#each navItems as item}
+				{@const Icon = item.icon}
 				<a
 					href={item.href}
 					class="flex flex-col items-center gap-1 whitespace-nowrap rounded-xl px-4 py-2 transition-colors
 						{isActive(item.href) ? 'text-purple' : 'text-text-muted'}"
 				>
-					<span class="text-xl">{item.icon}</span>
+					<Icon size={22} strokeWidth={2.25} />
 					<span class="text-xs font-medium">{t(item.label)}</span>
 				</a>
 			{/each}

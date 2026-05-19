@@ -1,5 +1,6 @@
 <script lang="ts">
 	import { i18n, t } from '$lib/i18n/index.svelte';
+	import { Mic, Square, LoaderCircle } from 'lucide-svelte';
 
 	interface Props {
 		textToSpeak: string;
@@ -131,7 +132,9 @@
 	{#if !hasApiKey}
 		<!-- No API key - show skip option -->
 		<div class="rounded-xl bg-yellow/10 p-6 text-center">
-			<div class="mb-4 text-4xl">🎤</div>
+			<div class="mb-4 flex justify-center">
+				<Mic size={48} class="stroke-yellow-dark" />
+			</div>
 			<p class="font-medium text-yellow-dark">{t('lesson.speaking.noApiKey')}</p>
 			<p class="mt-2 text-sm text-text-muted">{t('lesson.speaking.noApiKeyHint')}</p>
 			{#if onSkip}
@@ -161,16 +164,7 @@
 					aria-label={t('lesson.speaking.stopRecording')}
 					class="flex h-20 w-20 items-center justify-center rounded-full bg-error text-white shadow-lg transition-all hover:bg-error/90 active:scale-95"
 				>
-					<svg
-						xmlns="http://www.w3.org/2000/svg"
-						fill="none"
-						viewBox="0 0 24 24"
-						stroke-width="2"
-						stroke="currentColor"
-						class="h-8 w-8"
-					>
-						<path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12" />
-					</svg>
+					<Square size={32} class="fill-white stroke-white" />
 				</button>
 				<p class="text-sm font-medium text-error">{t('lesson.speaking.recording')}</p>
 				<div class="flex gap-1">
@@ -185,22 +179,7 @@
 				<div
 					class="flex h-20 w-20 items-center justify-center rounded-full bg-primary/20 text-primary"
 				>
-					<svg class="h-8 w-8 animate-spin" viewBox="0 0 24 24">
-						<circle
-							class="opacity-25"
-							cx="12"
-							cy="12"
-							r="10"
-							stroke="currentColor"
-							stroke-width="4"
-							fill="none"
-						></circle>
-						<path
-							class="opacity-75"
-							fill="currentColor"
-							d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"
-						></path>
-					</svg>
+					<LoaderCircle size={32} class="animate-spin" />
 				</div>
 				<p class="text-sm font-medium text-primary">{t('lesson.speaking.processing')}</p>
 			{:else}
@@ -211,20 +190,7 @@
 					class="flex h-20 w-20 items-center justify-center rounded-full bg-primary text-white shadow-lg transition-all hover:bg-primary/90 active:scale-95
 						{disabled ? 'cursor-not-allowed opacity-50' : ''}"
 				>
-					<svg
-						xmlns="http://www.w3.org/2000/svg"
-						fill="none"
-						viewBox="0 0 24 24"
-						stroke-width="2"
-						stroke="currentColor"
-						class="h-8 w-8"
-					>
-						<path
-							stroke-linecap="round"
-							stroke-linejoin="round"
-							d="M12 18.75a6 6 0 006-6v-1.5m-6 7.5a6 6 0 01-6-6v-1.5m6 7.5v3.75m-3.75 0h7.5M12 15.75a3 3 0 01-3-3V4.5a3 3 0 116 0v8.25a3 3 0 01-3 3z"
-						/>
-					</svg>
+					<Mic size={32} strokeWidth={2.25} />
 				</button>
 				<p class="text-sm text-text-muted">{t('lesson.speaking.tapToRecord')}</p>
 			{/if}

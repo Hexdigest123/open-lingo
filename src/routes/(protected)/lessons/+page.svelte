@@ -4,6 +4,17 @@
 	import { enhance } from '$app/forms';
 	import { goto, invalidateAll } from '$app/navigation';
 	import { getBilingualText } from '$lib/utils/bilingual';
+	import {
+		ArrowLeft,
+		ChevronDown,
+		Check,
+		Star,
+		PencilLine,
+		Circle,
+		HeartCrack,
+		Construction,
+		BookOpen
+	} from 'lucide-svelte';
 
 	type LevelWithCount = {
 		id: number;
@@ -45,13 +56,13 @@
 	function getStatusIcon(status: string | undefined) {
 		switch (status) {
 			case 'completed':
-				return '✅';
+				return Check;
 			case 'mastered':
-				return '⭐';
+				return Star;
 			case 'in_progress':
-				return '📝';
+				return PencilLine;
 			default:
-				return '○';
+				return Circle;
 		}
 	}
 
@@ -77,7 +88,9 @@
 	<!-- Out of Hearts Modal -->
 	<div class="fixed inset-0 z-50 flex items-center justify-center bg-black/50 p-4">
 		<div class="card w-full max-w-md text-center">
-			<div class="text-6xl">💔</div>
+			<div class="flex justify-center">
+				<HeartCrack size={72} class="stroke-error" />
+			</div>
 			<h2 class="mt-4 text-2xl font-bold text-error">{t('lesson.outOfHearts.title')}</h2>
 			<p class="mt-2 text-text-muted">{t('lesson.outOfHearts.message')}</p>
 
@@ -92,8 +105,9 @@
 	{#if data.selectedLevel}
 		<!-- Level Selected - Show Units and Lessons -->
 		<div class="flex items-center gap-4">
-			<a href="/lessons" class="text-text-muted hover:text-text-light">
-				← {t('common.back')}
+			<a href="/lessons" class="flex items-center gap-1.5 text-text-muted hover:text-text-light">
+				<ArrowLeft size={18} />
+				<span>{t('common.back')}</span>
 			</a>
 			<div>
 				<h1 class="text-2xl font-bold text-text-light">
@@ -129,8 +143,8 @@
 									</p>
 								</div>
 							</div>
-							<span class="text-2xl text-text-muted transition-transform {expandedUnits.has(unit.id) ? 'rotate-180' : ''}">
-								▼
+							<span class="text-text-muted transition-transform {expandedUnits.has(unit.id) ? 'rotate-180' : ''}">
+								<ChevronDown size={24} />
 							</span>
 						</button>
 
@@ -140,10 +154,11 @@
 								{#each unit.lessons as lesson}
 									{@const progress = getLessonProgress(lesson.id)}
 									{@const status = progress?.status}
+									{@const StatusIcon = getStatusIcon(status)}
 									<div class="flex flex-col gap-2 sm:flex-row sm:items-center sm:justify-between rounded-xl bg-bg-light-secondary p-3">
 										<div class="flex items-center gap-3">
-											<span class="text-lg {getStatusColor(status)}">
-												{getStatusIcon(status)}
+											<span class={getStatusColor(status)}>
+												<StatusIcon size={20} strokeWidth={2.5} />
 											</span>
 											<div>
 												<p class="font-medium text-text-light">{getBilingualText(lesson.title)}</p>
@@ -192,13 +207,16 @@
 		{:else}
 			<!-- No Units Yet -->
 			<div class="card text-center py-12">
-				<span class="text-6xl">🚧</span>
+				<div class="flex justify-center">
+					<Construction size={64} class="stroke-orange" />
+				</div>
 				<h3 class="mt-4 text-xl font-bold text-text-light">{t('lesson.comingSoon')}</h3>
 				<p class="mt-2 text-text-muted">
 					{t('lesson.unitsBeingPrepared')}
 				</p>
-				<a href="/lessons" class="btn btn-primary mt-4">
-					← {t('lesson.backToLevels')}
+				<a href="/lessons" class="btn btn-primary mt-4 inline-flex items-center gap-1.5">
+					<ArrowLeft size={16} />
+					<span>{t('lesson.backToLevels')}</span>
 				</a>
 			</div>
 		{/if}
@@ -244,7 +262,9 @@
 		<!-- Empty State -->
 		{#if levelsWithCount.length === 0}
 			<div class="card text-center py-12">
-				<span class="text-6xl">📚</span>
+				<div class="flex justify-center">
+					<BookOpen size={64} class="stroke-text-muted" />
+				</div>
 				<h3 class="mt-4 text-xl font-bold text-text-light">{t('lesson.noLessons')}</h3>
 				<p class="mt-2 text-text-muted">
 					{t('lesson.lessonsBeingPrepared')}

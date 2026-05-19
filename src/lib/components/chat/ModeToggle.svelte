@@ -1,5 +1,6 @@
 <script lang="ts">
 	import { t } from '$lib/i18n/index.svelte';
+	import { MessageCircle, Mic } from 'lucide-svelte';
 
 	interface Props {
 		mode: 'voice' | 'text';
@@ -18,7 +19,7 @@
 			{mode === 'text' ? 'bg-white text-success shadow-sm' : 'text-text-muted hover:text-text-light'}
 			{disabled ? 'cursor-not-allowed opacity-50' : ''}"
 	>
-		<span>💬</span>
+		<MessageCircle size={18} />
 		<span>{t('chat.textMode')}</span>
 	</button>
 	<button
@@ -28,7 +29,7 @@
 			{mode === 'voice' ? 'bg-white text-primary shadow-sm' : 'text-text-muted hover:text-text-light'}
 			{disabled ? 'cursor-not-allowed opacity-50' : ''}"
 	>
-		<span>🎙️</span>
+		<Mic size={18} />
 		<span>{t('chat.voiceMode')}</span>
 	</button>
 </div>

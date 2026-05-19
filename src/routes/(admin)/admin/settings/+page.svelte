@@ -2,6 +2,7 @@
 	import type { PageData, ActionData } from './$types';
 	import { t } from '$lib/i18n/index.svelte';
 	import { enhance } from '$app/forms';
+	import { Eye, EyeOff } from 'lucide-svelte';
 
 	let { data, form }: { data: PageData; form: ActionData } = $props();
 
@@ -262,8 +263,13 @@
 						type="button"
 						onclick={() => (showKey = !showKey)}
 						class="absolute right-3 top-1/2 -translate-y-1/2 text-text-muted hover:text-text-light"
+						aria-label={showKey ? 'Hide key' : 'Show key'}
 					>
-						{showKey ? '🙈' : '👁️'}
+						{#if showKey}
+							<EyeOff size={20} />
+						{:else}
+							<Eye size={20} />
+						{/if}
 					</button>
 				</div>
 			</div>
